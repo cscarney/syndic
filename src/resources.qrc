@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/ArticleList.qml</file>
+        <file>qml/ArticleListEntry.qml</file>
+        <file>qml/ArticleView.qml</file>
+        <file>qml/ArticlePage.qml</file>
+        <file>qml/ArticleListPage.qml</file>
+        <file>qml/FeedList.qml</file>
+        <file>qml/FeedListDrawer.qml</file>
+        <file>qml/AboutPage.qml</file>
+        <file>qml/PageDisplayDialog.qml</file>
+    </qresource>
+</RCC>
