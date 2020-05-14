@@ -51,11 +51,12 @@ void TTRSSFeedSource::gotLogin(QJsonDocument const &doc, QJsonObject const & /*r
     m_loginInProgress = false;
     if (!m_sessionId.isNull()) {
         loginSuccess();
-        QObject::disconnect(this, &TTRSSFeedSource::loginSuccess, nullptr, nullptr);
     } else {
         qDebug("login failed");
         updateError("Login Failed");
     }
+
+    QObject::disconnect(this, &TTRSSFeedSource::loginSuccess, nullptr, nullptr);
 }
 
 void TTRSSFeedSource::beginUpdate()
@@ -130,16 +131,14 @@ void TTRSSFeedSource::performAuthenticatedRequest(QJsonObject const &requestData
         m_pendingRequests++;
         auto authenticatedData = requestData;
         authenticatedData.insert("sid", m_sessionId);
-        auto *reply = performRequest(authenticatedData);
-        QObject::connect(reply, &QNetworkReply::finished, this,  [=] {
-            gotAuthenticatedReply(reply, authenticatedData, callback);
+        performRequest(authenticatedData, [this, callback](auto reply, auto requestData) {
+            gotAuthenticatedReply(reply, requestData, callback);
         });
     }
 }
 
-void TTRSSFeedSource::gotAuthenticatedReply(QNetworkReply *reply, QJsonObject const &requestData, TTRSSFeedSource::RequestCallback const &callback)
+void TTRSSFeedSource::gotAuthenticatedReply(QJsonDocument const &replyDoc, QJsonObject const &requestData, TTRSSFeedSource::RequestCallback const &callback)
 {
-    auto replyDoc = docFromReply(reply);
     auto content = replyDoc["content"];
     auto error = content.toObject()["error"].toString();
     if (error == QString("NOT_LOGGED_IN")) {

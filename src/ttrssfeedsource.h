@@ -34,7 +34,7 @@ private:
     QNetworkReply *performRequest(QJsonObject const &requestData);
     void performRequest(QJsonObject const &requestData, const RequestCallback& callback);
     void performAuthenticatedRequest(QJsonObject const &requestData, RequestCallback const &callback);
-    void gotAuthenticatedReply(QNetworkReply *reply, QJsonObject const &requestData, RequestCallback const &callback);
+    void gotAuthenticatedReply(QJsonDocument const &replyDoc, QJsonObject const &requestData, RequestCallback const &callback);
     inline void dispatchResult(RequestCallback const &callback, QJsonDocument const &doc, QJsonObject const &request);
     void beginLogin();
     void gotLogin(QJsonDocument const &doc, QJsonObject const &request);
