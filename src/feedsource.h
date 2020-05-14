@@ -36,7 +36,10 @@ public:
 
     explicit FeedSource(QObject *parent = nullptr) : QObject(parent) {};
     virtual void beginUpdate() = 0;
-    virtual void setFlag(qint64 id, ItemFlag flag, bool state) = 0;
+
+    virtual void setFlag(qint64 id, ItemFlag flag, bool state) {}
+    virtual void addFeed(const QUrl&) {}
+
 signals:
     void foundFeed(Feed const &feed);
     void foundContent(Item const &item);

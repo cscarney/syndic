@@ -12,6 +12,7 @@ public:
     explicit TTRSSFeedSource(QObject *parent=nullptr);
     void beginUpdate() override;
     void setFlag(qint64 id, ItemFlag flag, bool state) override;
+    void addFeed(const QUrl &) override;
 
 signals:
     void loginSuccess();
@@ -30,20 +31,32 @@ private:
     qint64 m_lastId;
 
     typedef std::function<void(QJsonDocument const &, QJsonObject const &)> RequestCallback;
+    typedef void(TTRSSFeedSource::*UnboundRequestCallback)(QJsonDocument const&, QJsonObject const&);
+    RequestCallback bindCallback(UnboundRequestCallback member);
 
-    QNetworkReply *performRequest(QJsonObject const &requestData);
     void performRequest(QJsonObject const &requestData, const RequestCallback& callback);
-    void performAuthenticatedRequest(QJsonObject const &requestData, RequestCallback const &callback);
+    void performAuthenticatedRequest(QJsonObject const &requestData, RequestCallback const &callback = nullptr);
+    void performAuthenticatedRequest(QJsonObject const &requestData, UnboundRequestCallback callback);
     void gotAuthenticatedReply(QJsonDocument const &replyDoc, QJsonObject const &requestData, RequestCallback const &callback);
-    inline void dispatchResult(RequestCallback const &callback, QJsonDocument const &doc, QJsonObject const &request);
+    void dispatchResult(RequestCallback const &callback, QJsonDocument const &doc, QJsonObject const &request);
+
     void beginLogin();
     void gotLogin(QJsonDocument const &doc, QJsonObject const &request);
+
+    void getHeadlines(qint64 sinceId);
     void gotHeadlines(QJsonDocument const &doc, QJsonObject const &request);
-    void gotStatusUpdate(QJsonDocument const &doc, QJsonObject const &request);
     void processContent(QJsonArray const &entries, bool haveContent);
     void nextBatch(QJsonObject const &request, int skip, RequestCallback const &callback);
+
+    void getFeeds();
     void gotFeeds(QJsonDocument const &doc, QJsonObject const &request);
+
+
     void syncReadStatus(qint64 feedId, qint64 unreadCount);
+    void gotStatusUpdate(QJsonDocument const &doc, QJsonObject const &request);
+
+    void gotAddFeedStatus(QJsonDocument const &replyDoc, QJsonObject const &requestData);
+
     void finishUpdate();
 };
 
