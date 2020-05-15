@@ -196,9 +196,9 @@ void TTRSSFeedSource::performRequest(QJsonObject const &requestData, RequestCall
 
 void TTRSSFeedSource::processContent(QJsonArray const &entries, bool haveContent)
 {
-    for (auto i=entries.begin(); i!=entries.end(); ++i)
+    for (auto const &item : entries)
     {
-        auto entry = i->toObject();
+        auto entry = item.toObject();
         auto timestamp = entry["updated"].toInt();
         auto time = QDateTime::fromSecsSinceEpoch(timestamp);
         auto id = entry["id"].toInt();
@@ -290,9 +290,9 @@ void TTRSSFeedSource::gotFeeds(QJsonDocument const &doc, QJsonObject const & /*r
      */
     auto content = doc["content"];
     auto entries = content.toArray();
-    for (auto i=entries.begin(); i!=entries.end(); ++i)
+    for (auto const &item : entries)
     {
-        auto entry = i->toObject();
+        auto entry = item.toObject();
         auto feedId = entry["id"].toInt();
         foundFeed({
             .id=feedId,

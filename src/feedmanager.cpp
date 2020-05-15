@@ -94,6 +94,11 @@ void FeedManager::setAllUnread(QVariant const &feedFilter, bool value)
     }
 }
 
+void FeedManager::addFeed(QUrl url)
+{
+    m_source->addFeed(url);
+}
+
 void FeedManager::receiveItem(FeedSource::Item const &item)
 {
     auto storedItem = m_storage->getById(item.id);

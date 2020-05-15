@@ -72,8 +72,8 @@ static void loadFeeds(QList<FeedSource::Feed> &feeds)
         feedsFile.open(QFile::ReadOnly);
         auto feedsDoc = QJsonDocument::fromJson(feedsFile.readAll());
         auto feedsList = feedsDoc.array();
-        for (auto i=feedsList.constBegin();i!=feedsList.constEnd(); ++i){
-            FeedSource::Feed feed = deserializeFeed(i->toObject());
+        for (auto const &i : feedsList){
+            FeedSource::Feed feed = deserializeFeed(i.toObject());
             feeds.append(feed);
         }
     }
@@ -86,8 +86,8 @@ static void loadItems(QHash<qint64, FeedSource::Item> &itemsById)
         itemsFile.open(QFile::ReadOnly);
         auto itemsDoc = QJsonDocument::fromJson(itemsFile.readAll());
         auto itemsList = itemsDoc.array();
-        for (auto i=itemsList.constBegin();i!=itemsList.constEnd(); ++i){
-            FeedSource::Item item = deserializeItem(i->toObject());
+        for (auto const &i : itemsList){
+            FeedSource::Item item = deserializeItem(i.toObject());
             itemsById[item.id] = item;
         }
     }
@@ -148,8 +148,8 @@ QList<FeedSource::Feed> BasicFeedStorage::getFeeds()
 static inline void saveItems(QHash<qint64,FeedSource::Item> const &itemsById)
 {
     QJsonArray items;
-    for(auto i=itemsById.constBegin();i!=itemsById.constEnd();++i) {
-        items.append(serializeItem(*i));
+    for(auto const &i : itemsById) {
+        items.append(serializeItem(i));
     }
 
     QFile jsonFile(filePath(itemsFileName));
@@ -164,8 +164,8 @@ static inline void saveItems(QHash<qint64,FeedSource::Item> const &itemsById)
 static inline void saveFeeds(QList<FeedSource::Feed> const &feeds)
 {
     QJsonArray output;
-    for(auto i=feeds.constBegin();i!=feeds.constEnd();++i) {
-        output.append(serializeFeed(*i));
+    for(auto const &i : feeds) {
+        output.append(serializeFeed(i));
     }
 
     QFile jsonFile(filePath(feedsFileName));

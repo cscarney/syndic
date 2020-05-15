@@ -27,8 +27,10 @@ public:
     Q_INVOKABLE void setUnread(qint64 id, bool value=true);
     Q_INVOKABLE void setStarred(qint64 id, bool value=true);
     Q_INVOKABLE void setAllUnread(QVariant const &feedFilter=QVariant(), bool value=false);
+    Q_INVOKABLE void addFeed(QUrl url);
 
     void markItem(FeedSource::Item const &item, FeedSource::ItemFlag flag, bool value);
+
 
 signals:
     void itemAdded(FeedSource::Item const &item);

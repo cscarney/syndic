@@ -33,6 +33,9 @@ Kirigami.ApplicationWindow {
             Kirigami.Action {
                 text: "Add Content..."
                 iconName: "list-add"
+                onTriggered: {
+                    openDialog("qrc:/qml/AddFeedPage.qml")
+                }
             },
             Kirigami.Action {
                 text: "Preferences"

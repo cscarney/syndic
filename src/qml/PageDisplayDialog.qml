@@ -9,10 +9,20 @@ Window {
 
     modality: Qt.WindowModal
     flags: Qt.Dialog
+    title: pageRow.currentItem ? pageRow.currentItem.title : ""
 
     Kirigami.PageRow {
         id: pageRow
         anchors.fill: parent
+
+        onPagePushed: {
+            lastItem.pageRow = pageRow
+        }
+
+        onPageRemoved: {
+            if (items.length === 0)
+                root.close()
+        }
     }
 
     Component.onCompleted: {
