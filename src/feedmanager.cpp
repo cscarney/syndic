@@ -117,9 +117,31 @@ void FeedManager::receiveFeed(const FeedSource::Feed &feed)
     }
 }
 
-void FeedManager::clearUnread(qint64 feedId)
+static inline bool isOlderThan(QDateTime candidate, QDateTime predicate)
 {
-    setAllUnread(feedId, false);
+    if (!predicate.isValid()) {
+        return true;
+    } else {
+        return candidate < predicate;
+    }
+}
+
+/* this function does NOT notify the FeedSource of changes
+ *  and should ONLY be used when we are processing updates
+ *  FROM the source */
+void FeedManager::clearUnread(qint64 feedId, QDateTime olderThan)
+{
+    auto storedItems = m_storage->getAll();
+    for (auto const &item : storedItems) {
+        if ((item.feedId == feedId)
+            && (isOlderThan(item.date, olderThan))
+            && (item.isUnread)) {
+            auto newItem = item;
+            newItem.isUnread = false;
+            m_storage->storeItem(newItem);
+            itemChanged(newItem);
+        }
+    }
 }
 
 

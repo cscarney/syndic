@@ -194,29 +194,25 @@ void TTRSSFeedSource::performRequest(QJsonObject const &requestData, RequestCall
     });
 }
 
-void TTRSSFeedSource::processContent(QJsonArray const &entries, bool haveContent)
+auto TTRSSFeedSource::deserializeHeadline(QJsonObject const &item, bool haveContent) -> Item
 {
-    for (auto const &item : entries)
-    {
-        auto entry = item.toObject();
-        auto timestamp = entry["updated"].toInt();
-        auto time = QDateTime::fromSecsSinceEpoch(timestamp);
-        auto id = entry["id"].toInt();
-        if (m_lastId < id)
-            m_lastId = id;
+    auto timestamp = item["updated"].toInt();
+    auto time = QDateTime::fromSecsSinceEpoch(timestamp);
+    auto id = item["id"].toInt();
+    if (m_lastId < id)
+        m_lastId = id;
 
-        foundContent({
-            .id=id,
-            .feedId=entry["feed_id"].toString().toInt(),
-            .headline=entry["title"].toString(),
-            .author=entry["author"].toString(),
-            .date=time,
-            .content=haveContent ? entry["content"].toString() : QString(),
-            .url=entry["link"].toString(),
-            .isUnread=entry["unread"].toBool(),
-            .isStarred=entry["marked"].toBool()
-         });
-    }
+   return {
+        .id=id,
+        .feedId=item["feed_id"].toString().toInt(),
+        .headline=item["title"].toString(),
+        .author=item["author"].toString(),
+        .date=time,
+        .content=haveContent ? item["content"].toString() : QString(),
+        .url=item["link"].toString(),
+        .isUnread=item["unread"].toBool(),
+        .isStarred=item["marked"].toBool()
+     };
 }
 
 void TTRSSFeedSource::nextBatch(QJsonObject const &request, int skip, RequestCallback const &callback)
@@ -260,11 +256,14 @@ void TTRSSFeedSource::gotHeadlines(QJsonDocument const &doc, QJsonObject const &
      *       ]
      * }
      */
+    auto showContent = request["show_content"].toBool();
     auto content = doc["content"];
     auto entries = content.toArray();
     qDebug("Got %d new items", entries.size());
-
-    processContent(entries, request["show_content"].toBool());
+    for (auto const &item : entries)
+    {
+        foundContent(deserializeHeadline(item.toObject(), showContent));
+    }
     nextBatch(request, entries.size(), bindCallback(&TTRSSFeedSource::gotHeadlines));
 }
 
@@ -360,17 +359,52 @@ void TTRSSFeedSource::gotAddFeedStatus(QJsonDocument const &replyDoc, QJsonObjec
 void TTRSSFeedSource::syncReadStatus(qint64 feedId, qint64 unreadCount)
 {
     if (unreadCount>0) {
-        /* TODO we don't need to suck down all of the headlines.
-         * We can get smaller batches (w/ limit param) and stop
-         * when we've seen $unread items */
+        using namespace std::placeholders;
+        auto callback = std::bind(&TTRSSFeedSource::gotStatusUpdate, this, feedId, unreadCount, _1, _2);
         performAuthenticatedRequest({
             {"op", "getHeadlines"},
             {"feed_id", feedId},
             {"view_mode", "all_articles"},
+            {"order_by", "feed_dates"},
             {"show_content", false}
-        }, &TTRSSFeedSource::gotHeadlines);
+        }, callback);
     } else {
         feedRead(feedId);
+    }
+}
+
+void TTRSSFeedSource::gotStatusUpdate( qint64 feedId, qint64 unreadCount, QJsonDocument const &doc, QJsonObject const &request)
+{
+    auto content = doc["content"];
+    auto entries = content.toArray();
+    auto oldestSeen = QDateTime();
+    auto remainingUnread = unreadCount;
+
+    qDebug("Got %d status entries for feed %lld", entries.size(), feedId);
+    for (auto const &entry : entries)
+    {
+        auto item = deserializeHeadline(entry.toObject(), false);
+        foundContent(item);
+
+        if (item.isUnread) {
+            remainingUnread--;
+        }
+
+        oldestSeen = item.date;
+    }
+
+    /* TODO this ends up fetching the entire list of headlines
+     * if any item in the feed gets marked read while we're working.
+     * We should probaby queue any mark-read requests until after
+     * we finish syncing.
+     */
+    if (remainingUnread <= 0) {
+        feedRead(feedId, oldestSeen);
+    } else {
+        qDebug("%lld unread entries remain for feed %lld", remainingUnread, feedId);
+        using namespace std::placeholders;
+        auto callback = std::bind(&TTRSSFeedSource::gotStatusUpdate, this, feedId, remainingUnread, _1, _2);
+        nextBatch(request, entries.size(), callback);
     }
 }
 

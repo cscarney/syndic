@@ -45,7 +45,7 @@ signals:
     void foundContent(Item const &item);
     void updateError(QString errorMessage);
 
-    void feedRead(qint64 feedId);
+    void feedRead(qint64 feedId, QDateTime olderThan=QDateTime());
 };
 
 #endif // FEEDSOURCE_H

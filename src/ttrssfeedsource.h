@@ -45,7 +45,7 @@ private:
 
     void getHeadlines(qint64 sinceId);
     void gotHeadlines(QJsonDocument const &doc, QJsonObject const &request);
-    void processContent(QJsonArray const &entries, bool haveContent);
+    Item deserializeHeadline(QJsonObject const &item, bool haveContent);
     void nextBatch(QJsonObject const &request, int skip, RequestCallback const &callback);
 
     void getFeeds();
@@ -53,7 +53,7 @@ private:
 
 
     void syncReadStatus(qint64 feedId, qint64 unreadCount);
-    void gotStatusUpdate(QJsonDocument const &doc, QJsonObject const &request);
+    void gotStatusUpdate(qint64 feedId, qint64 unreadCount, QJsonDocument const &doc, QJsonObject const &request);
 
     void gotAddFeedStatus(QJsonDocument const &replyDoc, QJsonObject const &requestData);
 

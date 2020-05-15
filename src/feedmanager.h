@@ -43,7 +43,7 @@ private:
 
     void receiveItem(FeedSource::Item const &item);
     void receiveFeed(FeedSource::Feed const &feed);
-    void clearUnread(qint64 feedId);
+    void clearUnread(qint64 feedId, QDateTime olderThan=QDateTime());
 };
 
 #endif // FEEDMANAGER_H
