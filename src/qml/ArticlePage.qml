@@ -57,7 +57,7 @@ Kirigami.ScrollablePage {
             iconName: "mail-mark-unread"
             checkable: true
             checked: false
-            onCheckedChanged: feedManager.setUnread(item.id, checked)
+            onCheckedChanged: feedManager.setRead(item.id, !checked)
             displayHint: Kirigami.Action.DisplayHint.KeepVisible
         }
         left: Kirigami.Action {

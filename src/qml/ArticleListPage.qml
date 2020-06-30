@@ -33,7 +33,7 @@ Kirigami.ScrollablePage {
         if (articleList.currentItem) {
             var data = articleList.currentItem.data
             root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data})
-            if (data.isUnread) feedManager.setUnread(data.id, false)
+            if (data.isUnread) feedManager.setRead(data.id, true)
         }
     }
 

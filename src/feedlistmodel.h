@@ -2,7 +2,7 @@
 #define FEEDLISTMODEL_H
 
 #include <QAbstractListModel>
-#include "feedsource.h"
+#include "storedfeed.h"
 
 class FeedListModel : public QAbstractListModel
 {
@@ -22,10 +22,10 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
 private:
-    QVector<FeedSource::Feed> m_feeds;
+    QVector<StoredFeed> m_feeds;
 
 public slots:
-    void addFeed(FeedSource::Feed const &feed);
+    void addFeed(StoredFeed const &feed);
 
 };
 

@@ -5,7 +5,7 @@
 #include <optional>
 
 #include <QAbstractListModel>
-#include "feedsource.h"
+#include "storeditem.h"
 
 class ItemModel : public QAbstractListModel
 {
@@ -32,15 +32,12 @@ public:
 
     QHash<int, QByteArray> roleNames() const override;
 
-signals:
-    void itemMarked(FeedSource::Item const &item, FeedSource::ItemFlag flag, bool value);
-
 public slots:
-    void addItem(FeedSource::Item const &item);
-    void updateItem(FeedSource::Item const &item);
+    void addItem(StoredItem const &item);
+    void updateItem(StoredItem const &item);
 
 private:
-    QVector<FeedSource::Item> m_items;
+    QVector<StoredItem> m_items;
     std::optional<qint64> m_feedFilter;
     bool m_unreadFilter;
 };

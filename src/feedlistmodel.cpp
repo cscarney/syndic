@@ -5,7 +5,7 @@ FeedListModel::FeedListModel(QObject *parent)
 {
     m_feeds.append({
         .id=-1,
-        .name=""
+        .headers={.name=""}
      });
 }
 
@@ -28,7 +28,7 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
             return m_feeds[indexRow].id;
 
         case Roles::Name:
-            return m_feeds[indexRow].name;
+            return m_feeds[indexRow].headers.name;
 
         case Roles::UnreadCount:
             return 0;
@@ -46,7 +46,7 @@ QHash<int, QByteArray> FeedListModel::roleNames() const
     };
 }
 
-static int findFeed(QVector<FeedSource::Feed> const &list, qint64 feedId)
+static int findFeed(QVector<StoredFeed> const &list, qint64 feedId)
 {
     for (int i=0; i<list.size(); i++)
     {
@@ -55,7 +55,7 @@ static int findFeed(QVector<FeedSource::Feed> const &list, qint64 feedId)
     return -1;
 }
 
-void FeedListModel::addFeed(FeedSource::Feed const &feed)
+void FeedListModel::addFeed(StoredFeed const &feed)
 {
     auto i = findFeed(m_feeds, feed.id);
     if (i<0) {

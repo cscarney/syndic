@@ -2,7 +2,7 @@
 #define FEEDSOURCE_H
 
 #include <QObject>
-#include <QNetworkAccessManager>
+#include <QDateTime>
 
 #include <optional>
 #include <functional>

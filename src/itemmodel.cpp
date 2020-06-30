@@ -32,10 +32,10 @@ QHash<int, QByteArray> ItemModel::roleNames() const
     };
 }
 
-void ItemModel::addItem(FeedSource::Item const &item)
+void ItemModel::addItem(StoredItem const &item)
 {
     if (((m_feedFilter==std::nullopt) || ((*m_feedFilter) == item.feedId))
-         && (!m_unreadFilter || item.isUnread))
+         && (!m_unreadFilter || !item.status.isRead))
     {
         beginInsertRows(QModelIndex(), m_items.size(), m_items.size());
         m_items.append(item);
@@ -43,11 +43,17 @@ void ItemModel::addItem(FeedSource::Item const &item)
     }
 }
 
-void ItemModel::updateItem(const FeedSource::Item &item)
+void ItemModel::updateItem(StoredItem const &item)
 {
     for(auto i=0; i<m_items.size(); i++) {
         if (m_items[i].id == item.id) {
-            m_items[i] = item;
+
+            // changing the date interferes with the selection
+            // when the list is sorted by date, so don't do that
+            auto newItem = item;
+            newItem.headers.date = m_items[i].headers.date;
+
+            m_items[i] = newItem;
             auto idx = index(i);
             dataChanged(idx, idx);
             break;
@@ -74,25 +80,25 @@ QVariant ItemModel::data(const QModelIndex &index, int role) const
             return m_items[indexRow].id;
 
         case Roles::Headline:
-            return m_items[indexRow].headline;
+            return m_items[indexRow].headers.headline;
 
         case Roles::Author:
-            return m_items[indexRow].author;
+            return m_items[indexRow].headers.author;
 
         case Roles::Date:
-            return m_items[indexRow].date;
+            return m_items[indexRow].headers.date;
 
         case Roles::Content:
             return m_items[indexRow].content;
 
         case Roles::Url:
-            return m_items[indexRow].url;
+            return m_items[indexRow].headers.url;
 
         case Roles::IsUnread:
-            return m_items[indexRow].isUnread;
+            return !m_items[indexRow].status.isRead;
 
         case Roles::IsStarred:
-            return m_items[indexRow].isStarred;
+            return m_items[indexRow].status.isStarred;
     }
 
     return QVariant();

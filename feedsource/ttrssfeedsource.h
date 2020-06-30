@@ -1,6 +1,8 @@
 #ifndef TTRSSFEEDSOURCE_H
 #define TTRSSFEEDSOURCE_H
 
+#include <QNetworkAccessManager>
+
 #include <functional>
 #include <QSettings>
 #include "feedsource.h"

@@ -5,8 +5,11 @@
 
 #include <QObject>
 #include <QAbstractItemModel>
+#include <QUrl>
 
 #include "feedsource.h"
+#include "storeditem.h"
+
 class FeedStorage;
 class FeedListModel;
 
@@ -24,17 +27,14 @@ public:
     /* Returns a model owned by the FeedManager (parent=this) */
     Q_INVOKABLE QAbstractItemModel *getFeedListModel();
 
-    Q_INVOKABLE void setUnread(qint64 id, bool value=true);
+    Q_INVOKABLE void setRead(qint64 id, bool value=true);
     Q_INVOKABLE void setStarred(qint64 id, bool value=true);
-    Q_INVOKABLE void setAllUnread(QVariant const &feedFilter=QVariant(), bool value=false);
+    Q_INVOKABLE void setAllRead(QVariant const &feedFilter=QVariant(), bool value=false);
     Q_INVOKABLE void addFeed(QUrl url);
 
-    void markItem(FeedSource::Item const &item, FeedSource::ItemFlag flag, bool value);
-
-
 signals:
-    void itemAdded(FeedSource::Item const &item);
-    void itemChanged(FeedSource::Item const &item);
+    void itemAdded(StoredItem const &item);
+    void itemChanged(StoredItem const &item);
 
 private:
     std::unique_ptr<FeedSource> m_source;
@@ -43,7 +43,6 @@ private:
 
     void receiveItem(FeedSource::Item const &item);
     void receiveFeed(FeedSource::Feed const &feed);
-    void clearUnread(qint64 feedId, QDateTime olderThan=QDateTime());
 };
 
 #endif // FEEDMANAGER_H

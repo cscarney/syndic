@@ -1,21 +1,15 @@
 set(feedkeeper_HEADERS
-    basicfeedstorage.h
     feedlistmodel.h
     feedmanager.h
-    feedsource.h
-    feedstorage.h
     itemmodel.h
-    ttrssfeedsource.h
     )
 
 set(feedkeeper_SRCS
     ${feedkeeper_HEADERS}
-    basicfeedstorage.cpp
     feedlistmodel.cpp
     feedmanager.cpp
     itemmodel.cpp
     main.cpp
-    ttrssfeedsource.cpp
     resources.qrc
     )
     
@@ -32,6 +26,8 @@ target_link_libraries(feedkeeper
     KF5::Crash
     KF5::I18n
     KF5::Syndication
+    feedsource
+    feedstorage
     )
 
 

@@ -66,7 +66,6 @@ void TTRSSFeedSource::beginUpdate()
     m_fullUpdate = (m_lastId == 0);
 
     qDebug("getting new items since %lld", m_lastId);
-    getHeadlines(m_lastId);
     getFeeds();
 }
 
@@ -287,6 +286,8 @@ void TTRSSFeedSource::gotFeeds(QJsonDocument const &doc, QJsonObject const & /*r
      *       ]
      * }
      */
+    getHeadlines(m_lastId);
+
     auto content = doc["content"];
     auto entries = content.toArray();
     for (auto const &item : entries)
