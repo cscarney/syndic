@@ -1,4 +1,4 @@
-#ifndef FEEDMANAGER_H
+﻿#ifndef FEEDMANAGER_H
 #define FEEDMANAGER_H
 
 #include <memory>
@@ -6,12 +6,10 @@
 #include <QObject>
 #include <QAbstractItemModel>
 #include <QUrl>
+#include <Syndication/Feed>
 
-#include "feedsource.h"
-#include "storeditem.h"
-
-class FeedStorage;
-class FeedListModel;
+class FeedUpdater;
+class StoredItem;
 
 class FeedManager : public QObject
 {
@@ -37,12 +35,11 @@ signals:
     void itemChanged(StoredItem const &item);
 
 private:
-    std::unique_ptr<FeedSource> m_source;
-    std::unique_ptr<FeedStorage> m_storage;
-    FeedListModel *m_feedList;
+    struct PrivData;
+    std::unique_ptr<PrivData> priv;
 
-    void receiveItem(FeedSource::Item const &item);
-    void receiveFeed(FeedSource::Feed const &feed);
+private slots:
+    void slotFeedLoaded(FeedUpdater *updater, Syndication::FeedPtr content);
 };
 
 #endif // FEEDMANAGER_H

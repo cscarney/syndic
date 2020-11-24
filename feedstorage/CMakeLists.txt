@@ -20,4 +20,5 @@ add_library(feedstorage ${feedstorage_SRCS})
 target_link_libraries(feedstorage
     Qt5::Core
     Qt5::Sql
+    KF5::Syndication
 )

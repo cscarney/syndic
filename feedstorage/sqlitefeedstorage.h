@@ -20,12 +20,12 @@ public:
     ItemQuery *getById(qint64 id) override final;
     ItemQuery *getByFeed(qint64 feedId) override final;
     ItemQuery *getUnreadByFeed(qint64 feedId) override final;
-    ItemQuery *storeItem(const FeedSource::Item &item) override final;
+    ItemQuery *storeItem(qint64 feedId, Syndication::ItemPtr item) override final;
     ItemQuery *updateItemRead(qint64 itemId, bool isRead) override final;
     ItemQuery *updateItemStarred(qint64 itemId, bool isStarred) override final;
 
     FeedQuery *getFeeds() override final;
-    FeedQuery *storeFeed(const FeedSource::Feed &feed) override final;
+    // FeedQuery *storeFeed(const FeedSource::Feed &feed) override final;
 };
 
 #endif // SQLITEFEEDSTORAGE_H

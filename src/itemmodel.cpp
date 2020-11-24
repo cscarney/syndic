@@ -1,5 +1,3 @@
-#include "itemmodel.h"
-
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -7,15 +5,30 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QSortFilterProxyModel>
 
-#include "ttrssfeedsource.h"
+#include "itemmodel.h"
+#include "feedmanager.h"
+#include "feedstorage.h"
 
-ItemModel::ItemModel(QObject *parent, bool unreadFilter, std::optional<qint64> feedFilter)
+ItemModel::ItemModel(bool unreadFilter, std::optional<qint64> feedFilter, QObject *parent)
     : QAbstractListModel(parent),
       m_feedFilter(feedFilter),
       m_unreadFilter(unreadFilter)
 {
 
+}
+
+void ItemModel::populate(FeedStorage *storage)
+{
+    auto *q = storage->startItemQuery(m_feedFilter, m_unreadFilter);
+    QObject::connect(q, &FeedStorage::ItemQuery::finished, this, &ItemModel::slotQueryFinished);
+}
+
+void ItemModel::listenForUpdates(FeedManager *fm)
+{
+    QObject::connect(fm, &FeedManager::itemAdded, this, &ItemModel::addItem);
+    QObject::connect(fm, &FeedManager::itemChanged, this,&ItemModel::updateItem);
 }
 
 QHash<int, QByteArray> ItemModel::roleNames() const
@@ -58,6 +71,25 @@ void ItemModel::updateItem(StoredItem const &item)
             dataChanged(idx, idx);
             break;
         }
+    }
+}
+
+QAbstractItemModel *ItemModel::createSortedProxy()
+{
+    auto *sortedModel = new QSortFilterProxyModel;
+    sortedModel->setSourceModel(this);
+    sortedModel->setSortRole(ItemModel::Date);
+    sortedModel->sort(0, Qt::DescendingOrder);
+    setParent(sortedModel);
+    return sortedModel;
+}
+
+void ItemModel::slotQueryFinished()
+{
+    auto *q = static_cast<FeedStorage::ItemQuery *>(QObject::sender());
+    auto &storedItems = q->result;
+    for (auto const &storedItem : storedItems) {
+        addItem(storedItem);
     }
 }
 

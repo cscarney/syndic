@@ -3,6 +3,7 @@
 #include <QVector>
 #include <QTimer>
 #include <QDebug>
+#include <Syndication/Person>
 
 SqliteFeedStorage::SqliteFeedStorage()
 {
@@ -56,19 +57,24 @@ FeedStorage::ItemQuery *SqliteFeedStorage::getUnreadByFeed(qint64 feedId)
     });
 }
 
-static inline StoredItem makeStoredItem(FeedSource::Item const &item, qint64 feedId)
+static inline StoredItem makeStoredItem(Syndication::ItemPtr item, qint64 feedId)
 {
+    auto authors = item->authors();
+    auto authorName = authors.empty() ? "" : authors[0]->name();
+    auto date = QDateTime::fromTime_t(item->dateUpdated());
+    auto content = item->content();
+    if (content.isEmpty()) content = item->description();
     return {
         .id = 0, // overwritten below
         .feedId = feedId,
-        .localId = QString::number(item.id),
+        .localId = item->id(),
         .headers = {
-            .headline = item.headline,
-            .author = item.author,
-            .date = item.date,
-            .url = item.url
+            .headline = item->title(),
+            .author = authorName,
+            .date = date,
+            .url = item->link()
         },
-        .content = item.content,
+        .content = content,
         .status = {
             .isRead = false,
             .isStarred = false
@@ -91,16 +97,10 @@ static inline bool upsertItem(FeedDatabase &db, StoredItem &item)
     }
 }
 
-FeedStorage::ItemQuery *SqliteFeedStorage::storeItem(const FeedSource::Item &item)
+FeedStorage::ItemQuery *SqliteFeedStorage::storeItem(qint64 feedId, Syndication::ItemPtr item)
 {
-    return doAsync<ItemQuery>([this, item](auto op){
-        auto feedId = m_db.selectFeedId(0, QString::number(item.feedId));
-        if (!feedId) {
-            qDebug() << "Tried to store item for non-existent feed\n";
-            op->result = {};
-            return;
-        }
-        StoredItem result = makeStoredItem(item, *feedId);
+    return doAsync<ItemQuery>([this, item, feedId](auto op){
+        StoredItem result = makeStoredItem(item, feedId);
         if (upsertItem(m_db, result)) {
             op->result = {result};
         } else {
@@ -132,6 +132,7 @@ FeedStorage::FeedQuery *SqliteFeedStorage::getFeeds()
     });
 }
 
+/*
 FeedStorage::FeedQuery *SqliteFeedStorage::storeFeed(const FeedSource::Feed &feed)
 {
     return doAsync<FeedQuery>([this, feed](auto op){
@@ -141,7 +142,8 @@ FeedStorage::FeedQuery *SqliteFeedStorage::storeFeed(const FeedSource::Feed &fee
             .sourceId = 0, // TODO not robust to multiple sources
             .localId = localId,
             .headers = {
-                .name = feed.name
+                .name = feed.name,
+                .url = feed.url
             }
         };
 
@@ -155,4 +157,4 @@ FeedStorage::FeedQuery *SqliteFeedStorage::storeFeed(const FeedSource::Feed &fee
         op->result = {result};
     });
 }
-
+*/

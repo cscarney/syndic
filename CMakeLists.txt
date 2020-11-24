@@ -26,7 +26,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
  
  include_directories(feedsource feedstorage src)
 
- add_subdirectory(feedsource)
  add_subdirectory(feedstorage)
  add_subdirectory(src)
 

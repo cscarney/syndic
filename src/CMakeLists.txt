@@ -2,6 +2,11 @@ set(feedkeeper_HEADERS
     feedlistmodel.h
     feedmanager.h
     itemmodel.h
+    feedupdater.h
+    xmlfeedupdater.h
+    updatescheduler.h
+    dataretriever.h
+    loadstatus.h
     )
 
 set(feedkeeper_SRCS
@@ -9,6 +14,10 @@ set(feedkeeper_SRCS
     feedlistmodel.cpp
     feedmanager.cpp
     itemmodel.cpp
+    feedupdater.cpp
+    xmlfeedupdater.cpp
+    updatescheduler.cpp
+    dataretriever.cpp
     main.cpp
     resources.qrc
     )
@@ -26,7 +35,6 @@ target_link_libraries(feedkeeper
     KF5::Crash
     KF5::I18n
     KF5::Syndication
-    feedsource
     feedstorage
     )
 

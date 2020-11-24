@@ -5,7 +5,7 @@
 
 struct FeedHeaders {
     QString name;
-    QUrl location;
+    QUrl url;
     QUrl icon;
 };
 

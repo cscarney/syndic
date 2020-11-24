@@ -63,16 +63,12 @@ static void initDatabase(QSqlDatabase &db)
     bool success = true;
     if (v==0) {
         success = exec(db,{
-                         "CREATE TABLE FeedSource("
-                         "id INTEGER PRIMARY KEY,"
-                         "type TEXT,"
-                         "displayName TEXT);",
-
                          "CREATE TABLE Feed("
                          "id INTEGER PRIMARY KEY,"
                          "source INTEGER REFERENCES FeedSource,"
                          "localId TEXT NOT NULL,"
                          "displayName TEXT,"
+                         "url TEXT NOT NULL,"
                          "UNIQUE(source,localId));",
 
                          "CREATE TABLE Item("
@@ -132,7 +128,7 @@ static inline void cursorToStruct(QSqlQuery &q, StoredItem &result)
 }
 
 static const QString feed_fields =
-        "id, source, localId, displayName";
+        "id, source, localId, displayName, url";
 
 static inline void cursorToStruct(QSqlQuery &q, StoredFeed &result)
 {
@@ -141,7 +137,8 @@ static inline void cursorToStruct(QSqlQuery &q, StoredFeed &result)
         .sourceId = q.value(1).toLongLong(),
         .localId = q.value(2).toString(),
         .headers = {
-            .name = q.value(3).toString()
+            .name = q.value(3).toString(),
+            .url = q.value(4).toString()
         }
     };
 }
@@ -288,7 +285,6 @@ void FeedDatabase::insertItem(StoredItem &item)
 void FeedDatabase::updateItemHeaders(qint64 id, FeedItemHeaders const &headers)
 {
     QSqlQuery q(db());
-    assert(headers.date.toSecsSinceEpoch() != 0);
     q.prepare(
                 "UPDATE Item SET "
                 "headline=:headline,"
@@ -421,11 +417,12 @@ std::optional<qint64> FeedDatabase::selectFeedId(qint64 source, QString localId)
 void FeedDatabase::insertFeed(StoredFeed &feed)
 {
     QSqlQuery q(db());
-    q.prepare("INSERT INTO Feed (source, localId, displayName) "
-              "VALUES (:source, :localId, :displayName);");
+    q.prepare("INSERT INTO Feed (source, localId, displayName, url) "
+              "VALUES (:source, :localId, :displayName, :url);");
     q.bindValue(":source", feed.sourceId);
     q.bindValue(":localId", feed.localId);
     q.bindValue(":displayName", feed.headers.name);
+    q.bindValue(":url", feed.headers.url);
     if (!q.exec()) {
         qDebug() << "SQL Error in insertFeed: " + q.lastError().text();
     } else {
