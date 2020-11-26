@@ -45,6 +45,13 @@ Kirigami.ScrollablePage {
            modelIteration;
            return feedManager.getModel(feedFilter, settings.unreadFilter);
        }
+
+       Connections {
+           target: articleList.model
+           onModelReset: {
+               if (articleList.currentIndex < 0) articleList.currentIndex = 0;
+           }
+       }
    } /* ArticleList */
 
     actions {

@@ -87,10 +87,11 @@ QAbstractItemModel *ItemModel::createSortedProxy()
 void ItemModel::slotQueryFinished()
 {
     auto *q = static_cast<FeedStorage::ItemQuery *>(QObject::sender());
-    auto &storedItems = q->result;
-    for (auto const &storedItem : storedItems) {
-        addItem(storedItem);
+    beginResetModel();
+    for (auto const &storedItem : q->result) {
+        m_items.append(storedItem);
     }
+    endResetModel();
 }
 
 int ItemModel::rowCount(const QModelIndex &parent) const
