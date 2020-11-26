@@ -14,7 +14,13 @@ Kirigami.ScrollablePage {
     Layout.fillWidth: true
     title:  item.headline
     // @disable-check M16
-    titleDelegate: Item {  }
+    titleDelegate: Kirigami.Heading {
+        visible: !scroller.atYBeginning
+        elide: Text.ElideRight
+         text: articlePage.title
+         maximumLineCount: 1
+         Layout.maximumWidth: 0.66 * articlePage.width
+    }
 
     /* extract <img> tags from the text so that we can use them as cover images */
     property var splitContent: {
