@@ -1,11 +1,17 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
 
 
 ColumnLayout {
     id: mainLayout
+
+    Settings {
+        category: "ArticlePage"
+        property alias fontSize: contentTextEdit.font.pointSize
+    }
 
     property var item
     property var firstImage: ""
@@ -34,6 +40,7 @@ ColumnLayout {
         verticalAlignment: Text.AlignVCenter
         wrapMode: Text.Wrap
         color: Kirigami.Theme.textColor
+        textFormat: Text.RichText
 
 
         MouseArea {
@@ -85,6 +92,7 @@ ColumnLayout {
     }
 
     TextEdit {
+        id: contentTextEdit
         Layout.fillWidth: true
         Layout.topMargin: 20
         textFormat: Text.RichText

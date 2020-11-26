@@ -21,6 +21,7 @@ ColumnLayout {
         wrapMode: Text.WordWrap
         font.weight: isUnread ? Font.Bold : Font.ExtraLight
         color: textColor
+        textFormat: Text.RichText
     }
 
     RowLayout {
