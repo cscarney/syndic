@@ -20,9 +20,6 @@ Kirigami.ScrollablePage {
     property var pageRow: null
     property var feedFilter: null
 
-    /* HACK: incrementing this reloads the model */
-    property int modelIteration: 0
-
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Kirigami.Theme.backgroundColor: Kirigami.Theme.alternateBackgroundColor
 
@@ -42,7 +39,6 @@ Kirigami.ScrollablePage {
        anchors.fill: parent
        onCurrentItemChanged: openChild()
        model: {
-           modelIteration;
            return feedManager.getModel(feedFilter, settings.unreadFilter);
        }
 
@@ -59,8 +55,7 @@ Kirigami.ScrollablePage {
             text: qsTr("Mark All Read")
             iconName: "mail-read"
             onTriggered: {
-                feedManager.setAllUnread(feedFilter, false);
-                modelIteration++;
+                feedManager.setAllRead(feedFilter, true);
             }
             displayHint: Kirigami.Action.DisplayHint.KeepVisible
         }
