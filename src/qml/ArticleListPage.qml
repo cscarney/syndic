@@ -2,6 +2,8 @@ import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
+import ItemModel 1.0
+import FeedManager 1.0
 
 Kirigami.ScrollablePage {
     id: root
@@ -38,15 +40,11 @@ Kirigami.ScrollablePage {
        id: articleList
        anchors.fill: parent
        onCurrentItemChanged: openChild()
-       model: {
-           return feedManager.getModel(feedFilter, settings.unreadFilter);
-       }
-
-       Connections {
-           target: articleList.model
-           onModelReset: {
-               if (articleList.currentIndex < 0) articleList.currentIndex = 0;
-           }
+       model: ItemModel {
+           manager: feedManager
+           unreadFilter: settings.unreadFilter
+           feedFilter: root.feedFilter
+           onModelReset: articleList.currentIndex = 0
        }
    } /* ArticleList */
 

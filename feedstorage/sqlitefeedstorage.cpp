@@ -22,35 +22,35 @@ static inline OperationType *doAsync(Callable call)
     return op;
 }
 
-FeedStorage::ItemQuery *SqliteFeedStorage::getAll()
+ItemQuery *SqliteFeedStorage::getAll()
 {
     return doAsync<ItemQuery>([this](auto op){
         op->result = m_db.selectAllItems();
     });
 }
 
-FeedStorage::ItemQuery *SqliteFeedStorage::getUnread()
+ItemQuery *SqliteFeedStorage::getUnread()
 {
     return doAsync<ItemQuery>([this](auto op){
         op->result = m_db.selectUnreadItems();
     });
 }
 
-FeedStorage::ItemQuery *SqliteFeedStorage::getById(qint64 id)
+ItemQuery *SqliteFeedStorage::getById(qint64 id)
 {
     return doAsync<ItemQuery>([this, id](auto op){
         op->result = {m_db.selectItem(id)};
     });
 }
 
-FeedStorage::ItemQuery *SqliteFeedStorage::getByFeed(qint64 feedId)
+ItemQuery *SqliteFeedStorage::getByFeed(qint64 feedId)
 {
     return doAsync<ItemQuery>([this, feedId](auto op){
         op->result = m_db.selectItemsByFeed(feedId);
     });
 }
 
-FeedStorage::ItemQuery *SqliteFeedStorage::getUnreadByFeed(qint64 feedId)
+ItemQuery *SqliteFeedStorage::getUnreadByFeed(qint64 feedId)
 {
     return doAsync<ItemQuery>([this, feedId](auto op){
         op->result = m_db.selectUnreadItemsByFeed(feedId);
@@ -97,7 +97,7 @@ static inline bool upsertItem(FeedDatabase &db, StoredItem &item)
     }
 }
 
-FeedStorage::ItemQuery *SqliteFeedStorage::storeItem(qint64 feedId, Syndication::ItemPtr item)
+ItemQuery *SqliteFeedStorage::storeItem(qint64 feedId, Syndication::ItemPtr item)
 {
     return doAsync<ItemQuery>([this, item, feedId](auto op){
         StoredItem result = makeStoredItem(item, feedId);
@@ -109,7 +109,7 @@ FeedStorage::ItemQuery *SqliteFeedStorage::storeItem(qint64 feedId, Syndication:
     });
 }
 
-FeedStorage::ItemQuery *SqliteFeedStorage::updateItemRead(qint64 itemId, bool isRead)
+ItemQuery *SqliteFeedStorage::updateItemRead(qint64 itemId, bool isRead)
 {
     return doAsync<ItemQuery>([this, itemId, isRead](auto op){
         m_db.updateItemRead(itemId, isRead);
@@ -117,7 +117,7 @@ FeedStorage::ItemQuery *SqliteFeedStorage::updateItemRead(qint64 itemId, bool is
     });
 }
 
-FeedStorage::ItemQuery *SqliteFeedStorage::updateItemStarred(qint64 itemId, bool isStarred)
+ItemQuery *SqliteFeedStorage::updateItemStarred(qint64 itemId, bool isStarred)
 {
     return doAsync<ItemQuery>([this, itemId, isStarred](auto op){
         m_db.updateItemStarred(itemId, isStarred);
@@ -125,7 +125,7 @@ FeedStorage::ItemQuery *SqliteFeedStorage::updateItemStarred(qint64 itemId, bool
     });
 }
 
-FeedStorage::FeedQuery *SqliteFeedStorage::getFeeds()
+FeedQuery *SqliteFeedStorage::getFeeds()
 {
     return doAsync<FeedQuery>([this](auto op){
         op->result = m_db.selectAllFeeds();

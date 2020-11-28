@@ -7,6 +7,7 @@ set(feedstorage_HEADERS
     feedstorage.h
     feeddatabase.h
     sqlitefeedstorage.h
+    feedstorageoperation.h
     )
     
 set(feedstorage_SRCS

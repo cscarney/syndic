@@ -10,6 +10,7 @@
 #endif
 
 #include "feedmanager.h"
+#include "itemmodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -30,6 +31,8 @@ int main(int argc, char *argv[])
 #endif
 
     auto *fm = new FeedManager(&app);
+    qmlRegisterType<FeedManager>("FeedManager", 1, 0, "FeedManager");
+    qmlRegisterType<ItemModel>("ItemModel", 1, 0, "ItemModel");
     engine.rootContext()->setContextProperty("feedManager", fm);
     engine.load(QUrl("qrc:/qml/main.qml"));
 

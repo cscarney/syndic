@@ -36,23 +36,6 @@ FeedManager::PrivData::PrivData(FeedManager *parent) :
     feedList(new FeedListModel(parent))
 { }
 
-QAbstractItemModel *FeedManager::getModel(std::optional<qint64> feedFilter, bool unreadOnly)
-{
-    qDebug("getting a model");
-    auto *itemModel = new ItemModel(unreadOnly, feedFilter);
-    itemModel->populate(priv->storage.get());
-    itemModel->listenForUpdates(this);
-    return itemModel->createSortedProxy();
-}
-
-QAbstractItemModel *FeedManager::getModel(QVariant const &feedFilter, bool unreadOnly)
-{
-    bool haveFeedFilter = false;
-    auto feedId = feedFilter.toLongLong(&haveFeedFilter);
-    auto feedOpt = haveFeedFilter ? std::make_optional(feedId) : std::nullopt;
-    return getModel(feedOpt, unreadOnly);
-}
-
 QAbstractItemModel *FeedManager::getFeedListModel()
 {
     return priv->feedList;
@@ -97,6 +80,11 @@ void FeedManager::addFeed(QUrl url)
     // m_source->addFeed(url);
 }
 
+ItemQuery *FeedManager::startQuery(std::optional<qint64> feedFilter, bool unreadFilter)
+{
+    return priv->storage->startItemQuery(feedFilter, unreadFilter);
+}
+
 void FeedManager::slotFeedLoaded(FeedUpdater *updater, Syndication::FeedPtr content)
 {
     qDebug() << "Got Feed " << content->title() << "\n";
@@ -112,7 +100,7 @@ void FeedManager::slotFeedLoaded(FeedUpdater *updater, Syndication::FeedPtr cont
 
 void FeedManager::PrivData::populateFeedList() {
     auto *queryFeeds = storage->getFeeds();
-    QObject::connect(queryFeeds, &FeedStorage::ItemQuery::finished, parent, [this, queryFeeds] {
+    QObject::connect(queryFeeds, &FeedStorageOperation::finished, parent, [this, queryFeeds] {
         auto &feeds = queryFeeds->result;
         for (auto i=feeds.constBegin(); i!=feeds.constEnd(); ++i) {
             feedList->addFeed(*i);

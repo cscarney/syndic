@@ -4,29 +4,12 @@
 #include <QObject>
 #include <Syndication/Item>
 #include "feeddatabase.h"
-
-class FeedStorageOperation: public QObject {
-    Q_OBJECT
-
-signals:
-    void finished();
-};
-
+#include "feedstorageoperation.h"
 
 class FeedStorage : public QObject {
     Q_OBJECT
 public:
     explicit FeedStorage(QObject *parent = nullptr) : QObject(parent) {};
-
-    class ItemQuery: public FeedStorageOperation {
-    public:
-        QVector<StoredItem> result;
-    };
-
-    class FeedQuery : public FeedStorageOperation {
-    public:
-        QVector<StoredFeed> result;
-    };
 
     virtual ItemQuery *getAll() = 0;
     virtual ItemQuery *getUnread() = 0;

@@ -8,8 +8,10 @@
 #include <QUrl>
 #include <Syndication/Feed>
 
+#include "feedstorageoperation.h"
+
 class FeedUpdater;
-class StoredItem;
+class ItemModel;
 
 class FeedManager : public QObject
 {
@@ -18,10 +20,6 @@ public:
     explicit FeedManager(QObject *parent = nullptr);
     ~FeedManager();
 
-    /* Returns a model owned by the caller (parent=null) */
-    QAbstractItemModel *getModel(std::optional<qint64> feedFilter=std::nullopt, bool unreadOnly=false);
-    Q_INVOKABLE QAbstractItemModel *getModel(QVariant const& feedFilter, bool unreadOnly=false);
-
     /* Returns a model owned by the FeedManager (parent=this) */
     Q_INVOKABLE QAbstractItemModel *getFeedListModel();
 
@@ -29,6 +27,8 @@ public:
     Q_INVOKABLE void setStarred(qint64 id, bool value=true);
     Q_INVOKABLE void setAllRead(QVariant const &feedFilter=QVariant(), bool value=false);
     Q_INVOKABLE void addFeed(QUrl url);
+
+    ItemQuery *startQuery(std::optional<qint64> feedFilter, bool unreadFilter);
 
 signals:
     void itemAdded(StoredItem const &item);

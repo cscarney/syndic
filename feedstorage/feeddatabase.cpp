@@ -160,10 +160,12 @@ static inline QVector<T> performQuery(QSqlQuery q)
     return v;
 }
 
+static const QString select_sort = "ORDER BY date DESC";
+
 QVector<StoredItem> FeedDatabase::selectAllItems()
 {
     QSqlQuery q(db());
-    q.prepare("SELECT "+item_fields+" FROM Item;");
+    q.prepare("SELECT "+item_fields+" FROM Item "+select_sort);
     return performQuery<StoredItem>(q);
 }
 
@@ -172,7 +174,7 @@ QVector<StoredItem> FeedDatabase::selectUnreadItems()
     QSqlQuery q(db());
     q.prepare(
         "SELECT "+item_fields+" FROM Item "
-        "WHERE isRead=0");
+        "WHERE isRead=0 " + select_sort);
     return performQuery<StoredItem>(q);
 }
 
@@ -181,7 +183,7 @@ QVector<StoredItem> FeedDatabase::selectItemsByFeed(qint64 feedId)
     QSqlQuery q(db());
     q.prepare(
         "SELECT "+item_fields+" FROM Item "
-        "WHERE feed=:feed");
+        "WHERE feed=:feed "+select_sort);
     q.bindValue(":feed", feedId);
     return performQuery<StoredItem>(q);
 }
@@ -191,7 +193,7 @@ QVector<StoredItem> FeedDatabase::selectUnreadItemsByFeed(qint64 feedId)
     QSqlQuery q(db());
     q.prepare(
         "SELECT "+item_fields+" FROM Item "
-        "WHERE feed=:feed AND isRead=0");
+        "WHERE feed=:feed AND isRead=0 "+select_sort);
     q.bindValue(":feed", feedId);
     return performQuery<StoredItem>(q);
 }
