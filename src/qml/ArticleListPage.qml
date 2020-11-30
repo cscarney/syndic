@@ -46,12 +46,19 @@ Kirigami.ScrollablePage {
            feedFilter: root.feedFilter
            onModelReset: articleList.currentIndex = 0
        }
+
+       EmptyFeedOverlay {
+           id: emptyOverlay
+           anchors.fill: parent
+           visible: articleList.count == 0
+       }
    } /* ArticleList */
 
     actions {
         main: Kirigami.Action {
             text: qsTr("Mark All Read")
             iconName: "mail-read"
+            enabled: articleList.count > 0
             onTriggered: {
                 feedManager.setAllRead(feedFilter, true);
             }

@@ -11,5 +11,6 @@
         <file>qml/AboutPage.qml</file>
         <file>qml/PageDisplayDialog.qml</file>
         <file>qml/AddFeedPage.qml</file>
+        <file>qml/EmptyFeedOverlay.qml</file>
     </qresource>
 </RCC>
