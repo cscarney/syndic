@@ -12,5 +12,7 @@
         <file>qml/PageDisplayDialog.qml</file>
         <file>qml/AddFeedPage.qml</file>
         <file>qml/EmptyFeedOverlay.qml</file>
+        <file>qml/AllItemsPage.qml</file>
+        <file>qml/FeedItemsPage.qml</file>
     </qresource>
 </RCC>

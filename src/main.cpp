@@ -11,6 +11,8 @@
 
 #include "feedmanager.h"
 #include "itemmodel.h"
+#include "feeditemmodel.h"
+#include "allitemmodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,7 +34,9 @@ int main(int argc, char *argv[])
 
     auto *fm = new FeedManager(&app);
     qmlRegisterType<FeedManager>("FeedManager", 1, 0, "FeedManager");
-    qmlRegisterType<ItemModel>("ItemModel", 1, 0, "ItemModel");
+    qmlRegisterUncreatableType<ItemModel>("ItemModel", 1, 0, "ItemModel", "abstract base class");
+    qmlRegisterType<FeedItemModel>("FeedItemModel", 1, 0, "FeedItemModel");
+    qmlRegisterType<AllItemModel>("AllItemModel", 1, 0, "AllItemModel");
     engine.rootContext()->setContextProperty("feedManager", fm);
     engine.load(QUrl("qrc:/qml/main.qml"));
 

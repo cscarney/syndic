@@ -2,6 +2,8 @@ set(feedkeeper_HEADERS
     feedlistmodel.h
     feedmanager.h
     itemmodel.h
+    allitemmodel.h
+    feeditemmodel.h
     feedupdater.h
     xmlfeedupdater.h
     updatescheduler.h
@@ -14,6 +16,8 @@ set(feedkeeper_SRCS
     feedlistmodel.cpp
     feedmanager.cpp
     itemmodel.cpp
+    allitemmodel.cpp
+    feeditemmodel.cpp
     feedupdater.cpp
     xmlfeedupdater.cpp
     updatescheduler.cpp

@@ -8,6 +8,7 @@
 #include <QUrl>
 #include <Syndication/Feed>
 
+#include "loadstatus.h"
 #include "feedstorageoperation.h"
 
 class FeedUpdater;
@@ -25,14 +26,16 @@ public:
 
     Q_INVOKABLE void setRead(qint64 id, bool value=true);
     Q_INVOKABLE void setStarred(qint64 id, bool value=true);
-    Q_INVOKABLE void setAllRead(QVariant const &feedFilter=QVariant(), bool value=false);
     Q_INVOKABLE void addFeed(QUrl url);
 
     ItemQuery *startQuery(std::optional<qint64> feedFilter, bool unreadFilter);
+    LoadStatus getFeedStatus(qint64 feedId);
+    bool updatesInProgress();
 
 signals:
     void itemAdded(StoredItem const &item);
     void itemChanged(StoredItem const &item);
+    void feedStatusChanged(qint64 feedId, LoadStatus status);
 
 private:
     struct PrivData;

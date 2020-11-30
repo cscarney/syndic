@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QUrl>
+#include <QSet>
 #include <Syndication/Feed>
 #include <time.h>
 
@@ -19,8 +20,14 @@ public:
     void unschedule(qint64 feedId);
     void start(int resolution=60000);
     void stop();
+    void update(qint64 feedId);
     void updateStale();
     void updateAll();
+    LoadStatus getStatus(qint64 feedId);
+    bool updatesInProgress();
+
+public slots:
+    void slotFeedStatusChanged(FeedUpdater *updater, LoadStatus status);
 
 signals:
     void feedLoaded(FeedUpdater *updater, Syndication::FeedPtr feed);
@@ -29,6 +36,7 @@ signals:
 private:
     QList<FeedUpdater *> m_schedule;
     QTimer m_timer;
+    QSet<FeedUpdater *>m_active;
 };
 
 #endif // UPDATESCHEDULER_H

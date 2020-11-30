@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
 import ItemModel 1.0
+import AllItemModel 1.0
 import FeedManager 1.0
 
 Kirigami.ScrollablePage {
@@ -20,7 +21,8 @@ Kirigami.ScrollablePage {
     }
 
     property var pageRow: null
-    property var feedFilter: null
+    property alias model: articleList.model;
+    property alias unreadFilter: unreadFilterAction.checked
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Kirigami.Theme.backgroundColor: Kirigami.Theme.alternateBackgroundColor
@@ -40,16 +42,17 @@ Kirigami.ScrollablePage {
        id: articleList
        anchors.fill: parent
        onCurrentItemChanged: openChild()
-       model: ItemModel {
-           manager: feedManager
-           unreadFilter: settings.unreadFilter
-           feedFilter: root.feedFilter
-           onModelReset: articleList.currentIndex = 0
+
+       Connections {
+           target: articleList.model
+           onModelReset: articleList.currentIndex = 0;
        }
 
        EmptyFeedOverlay {
            id: emptyOverlay
            anchors.fill: parent
+           unreadFilter: root.unreadFilter
+           status: (articleList.model) ? articleList.model.status : ItemModel.Loading
            visible: articleList.count == 0
        }
    } /* ArticleList */
@@ -60,7 +63,7 @@ Kirigami.ScrollablePage {
             iconName: "mail-read"
             enabled: articleList.count > 0
             onTriggered: {
-                feedManager.setAllRead(feedFilter, true);
+                model.markAllRead();
             }
             displayHint: Kirigami.Action.DisplayHint.KeepVisible
         }

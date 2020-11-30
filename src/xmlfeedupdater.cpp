@@ -26,28 +26,28 @@ void XMLFeedUpdater::loadingComplete(Syndication::Loader *loader, Syndication::F
         qDebug() << "load aborted for " << m_url;
         break;
     case Syndication::Timeout:
-        qDebug() << "timeout loading " << m_url;
+        setError(tr("Timeout", "error message"));
         break;
     case Syndication::UnknownHost:
-        qDebug() << "unknown host " << m_url.host();
+        setError(tr("Unknown Host", "error message"));
         break;
     case Syndication::FileNotFound:
-        qDebug() << "file not found " << m_url;
+        setError(tr("File Not Found", "error message"));
         break;
     case Syndication::OtherRetrieverError:
-        qDebug() << "other retriever error" << m_url;
+        setError(tr("Retriever Error", "error message"));
         break;
     case Syndication::InvalidXml:
-        qDebug() << "invalid xml" << m_url;
+        setError(tr("Invalid XML", "error message"));
         break;
     case Syndication::XmlNotAccepted:
-        qDebug() << "xml not accepted" << m_url;
+        setError(tr("XML Not Accepted", "error message"));
         break;
     case Syndication::InvalidFormat:
-        qDebug() << "invalid format" << m_url;
+        setError(tr("Invalid Format", "error message"));
         break;
     default:
         qDebug() << "unknown error loading " << m_url;
-        setError(tr("unknown error", "error message"));
+        setError(tr("Unknown Error", "error message"));
     }
 }

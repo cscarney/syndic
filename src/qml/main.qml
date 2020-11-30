@@ -59,14 +59,14 @@ Kirigami.ApplicationWindow {
 
     function pushAll() {
         pageStack.clear()
-        pageStack.push("qrc:/qml/ArticleListPage.qml", {pageRow: pageStack})
+        pageStack.push("qrc:/qml/AllItemsPage.qml", {pageRow: pageStack})
     }
 
     function pushFeed(feed) {
         pageStack.clear()
-        pageStack.push("qrc:/qml/ArticleListPage.qml",
+        pageStack.push("qrc:/qml/FeedItemsPage.qml",
                        {pageRow: pageStack,
-                           feedFilter: feed.feedId,
+                           feedId: feed.feedId,
                            title: feed.feedName})
     }
 

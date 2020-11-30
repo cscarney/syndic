@@ -7,10 +7,10 @@
 
 struct ItemModel::PrivData {
     QVector<StoredItem> items;
-    std::optional<qint64> feedFilter;
     bool unreadFilter;
     FeedManager *manager;
     bool active;
+    Status status = Ok;
 };
 
 ItemModel::ItemModel(QObject *parent) :
@@ -18,15 +18,6 @@ ItemModel::ItemModel(QObject *parent) :
     priv(std::make_unique<PrivData>())
 {
 
-}
-
-ItemModel::ItemModel(FeedManager *manager, bool unreadFilter, std::optional<qint64> feedFilter, QObject *parent)
-    : ItemModel(parent)
-{
-    setFeedFilter(feedFilter);
-    setUnreadFilter(unreadFilter);
-    setManager(manager);
-    refresh();
 }
 
 bool ItemModel::unreadFilter() const
@@ -47,33 +38,6 @@ void ItemModel::setUnreadFilter(bool unreadFilter)
     }
 }
 
-std::optional<qint64> ItemModel::feedFilter() const
-{
-    return priv->feedFilter;
-}
-
-QVariant ItemModel::feedFilterVariant() const
-{
-    return priv->feedFilter ? *priv->feedFilter : QVariant();
-}
-
-void ItemModel::setFeedFilter(std::optional<qint64> feedFilter)
-{
-    if (priv->feedFilter != feedFilter) {
-        priv->feedFilter = feedFilter;
-        if (priv->active) refresh();
-        emit feedFilterChanged();
-    }
-}
-
-void ItemModel::setFeedFilter(QVariant feedFilter)
-{
-    bool haveFilter = false;
-    auto filterVal = feedFilter.toLongLong(&haveFilter);
-    std::optional<qint64> newval = haveFilter ? std::make_optional(filterVal) : std::nullopt;
-    setFeedFilter(newval);
-}
-
 FeedManager *ItemModel::manager() const
 {
     return priv->manager;
@@ -86,18 +50,36 @@ void ItemModel::setManager(FeedManager *manager)
     priv->manager = manager;
     QObject::connect(manager, &FeedManager::itemAdded, this, &ItemModel::slotItemAdded);
     QObject::connect(manager, &FeedManager::itemChanged, this, &ItemModel::slotItemChanged);
+    QObject::connect(manager, &FeedManager::feedStatusChanged, this, &ItemModel::slotFeedStatusChanged);
     if (priv->active) refresh();
     managerChanged();
+}
+
+ItemModel::Status ItemModel::status()
+{
+    return priv->status;
+}
+
+void ItemModel::setStatusFromUpstream()
+{
+    setStatus(Ok);
 }
 
 void ItemModel::refresh()
 {
     if (!priv->manager) return;
+    setStatus(Loading);
     priv->active = true;
-    auto q = priv->manager->startQuery(feedFilter(), unreadFilter());
+    auto q = startQuery();
     QObject::connect(q, &FeedStorageOperation::finished, this, &ItemModel::slotQueryFinished);
 }
 
+void ItemModel::markAllRead()
+{
+    for (const auto &item : priv->items) {
+        manager()->setRead(item.id, true);
+    }
+}
 
 
 void ItemModel::classBegin()
@@ -132,6 +114,7 @@ void ItemModel::slotQueryFinished()
     beginResetModel();
     priv->items = q->result;
     endResetModel();
+    setStatusFromUpstream();
 }
 
 void ItemModel::slotQueryFinishedMerge()
@@ -163,7 +146,7 @@ inline qint64 indexForDate(const QVector<StoredItem> &list, QDateTime dt)
 
 void ItemModel::slotItemAdded(StoredItem const &item)
 {
-    if (((priv->feedFilter==std::nullopt) || ((*priv->feedFilter) == item.feedId))
+    if ((itemFilter(item))
          && (!priv->unreadFilter || !item.status.isRead))
     {
         auto idx = indexForDate(priv->items, item.headers.date);
@@ -190,6 +173,20 @@ void ItemModel::slotItemChanged(StoredItem const &item)
     }
 }
 
+void ItemModel::slotFeedStatusChanged(qint64 feedId, LoadStatus status)
+{
+    if (this->status() == Loading) return;
+    setStatusFromUpstream();
+}
+
+void ItemModel::setStatus(ItemModel::Status status)
+{
+    if (status != priv->status) {
+        status = priv->status;
+        emit statusChanged();
+    }
+}
+
 void ItemModel::insertAndNotify(qint64 index, const StoredItem &item)
 {
     beginInsertRows(QModelIndex(), index, index);
@@ -199,7 +196,7 @@ void ItemModel::insertAndNotify(qint64 index, const StoredItem &item)
 
 void ItemModel::refreshMerge()
 {
-    auto q = manager()->startQuery(feedFilter(), unreadFilter());
+    auto q = startQuery();
     QObject::connect(q, &FeedStorageOperation::finished, this, &ItemModel::slotQueryFinishedMerge);
 }
 

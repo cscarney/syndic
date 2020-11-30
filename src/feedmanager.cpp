@@ -61,19 +61,6 @@ void FeedManager::setStarred(qint64 id, bool value)
     });
 }
 
-void FeedManager::setAllRead(QVariant const &feedFilter, bool value)
-{
-    bool haveFeedFilter = false;
-    qint64 feedId = feedFilter.toLongLong(&haveFeedFilter);
-    auto filterOpt = haveFeedFilter ? std::optional(feedId) : std::nullopt;
-    auto q = priv->storage->startItemQuery(filterOpt, true);
-    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q, value](){
-        for(auto const &item : q->result) {
-            setRead(item.id, value);
-        }
-    });
-}
-
 void FeedManager::addFeed(QUrl url)
 {
     // TODO implement this
@@ -83,6 +70,16 @@ void FeedManager::addFeed(QUrl url)
 ItemQuery *FeedManager::startQuery(std::optional<qint64> feedFilter, bool unreadFilter)
 {
     return priv->storage->startItemQuery(feedFilter, unreadFilter);
+}
+
+LoadStatus FeedManager::getFeedStatus(qint64 feedId)
+{
+    return priv->updateScheduler->getStatus(feedId);
+}
+
+bool FeedManager::updatesInProgress()
+{
+    return priv->updateScheduler->updatesInProgress();
 }
 
 void FeedManager::slotFeedLoaded(FeedUpdater *updater, Syndication::FeedPtr content)
