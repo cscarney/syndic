@@ -27,10 +27,6 @@ Kirigami.ApplicationWindow {
 
         actions: [
             Kirigami.Action {
-                // @disable-check M16
-                separator: true
-            },
-            Kirigami.Action {
                 text: "Add Content..."
                 iconName: "list-add"
                 onTriggered: {

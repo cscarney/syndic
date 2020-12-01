@@ -12,12 +12,23 @@ Kirigami.GlobalDrawer {
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
-    topContent: FeedList {
-        id: feedList
-        Layout.fillHeight: true
+    topContent: ColumnLayout {
+        spacing: 0
         Layout.fillWidth: true
-        implicitHeight: root.height
-        onFeedSelected: root.feedSelected()
-        onItemClicked: root.drawerOpen = !root.modal
+
+        FeedList {
+            id: feedList
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            implicitHeight: root.height
+            onFeedSelected: root.feedSelected()
+            onItemClicked: root.drawerOpen = !root.modal
+        }
+
+        Kirigami.Separator {
+            Layout.fillWidth: true
+            Layout.leftMargin: -root.leftPadding
+            Layout.rightMargin: -root.rightPadding
+        }
     }
 }
