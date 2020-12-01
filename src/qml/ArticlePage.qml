@@ -12,7 +12,7 @@ Kirigami.ScrollablePage {
     rightPadding: 0
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Layout.fillWidth: true
-    title:  item.headline
+    title:  item.headline || ""
     // @disable-check M16
     titleDelegate: Kirigami.Heading {
         visible: !scroller.atYBeginning
@@ -24,9 +24,9 @@ Kirigami.ScrollablePage {
 
     /* extract <img> tags from the text so that we can use them as cover images */
     property var splitContent: {
-        var src = item ? item.content : ""
+        var src = item ? item.content || "" : ""
         var images = []
-        var text = item.content.replace(/<img .*src="([^"]*)".*>/ig, function(match, src){
+        var text = src.replace(/<img .*src="([^"]*)".*>/ig, function(match, src){
             images.push(src)
             return "";
         })
@@ -70,7 +70,7 @@ Kirigami.ScrollablePage {
             text: qsTr("Star")
             iconName: checked ? "starred-symbolic" : "non-starred-symbolic"
             checkable: true
-            checked: item.isStarred
+            checked: item.isStarred ? true : false
             onCheckedChanged: feedManager.setStarred(item.id, checked)
             displayHint: Kirigami.Action.DisplayHint.KeepVisible
         }

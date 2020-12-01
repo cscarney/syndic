@@ -34,7 +34,7 @@ ColumnLayout {
     Kirigami.Heading {
         level: 1
         Layout.fillWidth: true
-        text: item.headline
+        text: item.headline || ""
         elide: Text.ElideRight
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
@@ -54,7 +54,7 @@ ColumnLayout {
     RowLayout {
         Label {
             Layout.fillWidth: true
-            text: item.author
+            text: item.author || ""
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
