@@ -1,33 +1,36 @@
 import QtQuick 2.0
 import org.kde.kirigami 2.7 as Kirigami
 import ItemModel 1.0
+import QtQuick.Layouts 1.12
 
-Rectangle {
+Item {
     id: root
-    property var status;
-    property bool unreadFilter: false;
 
-    color: Kirigami.Theme.backgroundColor
-    Kirigami.Heading {
-        id: emptyText
+    ColumnLayout {
         anchors {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
         }
-        color: Kirigami.Theme.textColor
-        text: {
-            switch (status) {
-            case ItemModel.Ok:
-                return unreadFilter ? qsTr("All Read") : qsTr("Empty Feed");
-            case ItemModel.Loading:
-                return qsTr("Loading Feed");
-            case ItemModel.Updating:
-                return qsTr("Updating Feed");
-            case ItemModel.Error:
-                return qsTr("Error Updating Feed");
-            default:
-                return qsTr("Nothing to Show");
-            }
+
+        Kirigami.Icon {
+            id: theIcon
+            source: "feedkeeper-feed-empty"
+            Layout.minimumWidth: 32
+            Layout.minimumHeight: 32
+            Layout.preferredWidth: 128
+            Layout.preferredHeight: 128
+            isMask: true;
+            property var themeColor: Kirigami.Theme.textColor
+            property var alpha: 0.5
+            color: Qt.rgba(themeColor.r, themeColor.g, themeColor.b, alpha)
+        }
+
+        Kirigami.Heading {
+            id: emptyText
+            color: Kirigami.Theme.textColor
+            horizontalAlignment: Text.AlignHCenter
+            Layout.alignment: Qt.AlignHCenter
+            text: qsTr("No Items");
         }
     }
 }

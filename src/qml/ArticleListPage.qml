@@ -51,8 +51,6 @@ Kirigami.ScrollablePage {
        EmptyFeedOverlay {
            id: emptyOverlay
            anchors.fill: parent
-           unreadFilter: root.unreadFilter
-           status: (articleList.model) ? articleList.model.status : ItemModel.Loading
            visible: articleList.count == 0
        }
    } /* ArticleList */
