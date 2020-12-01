@@ -30,7 +30,7 @@ ListView {
         visible: model.status === ItemModel.Updating
         height: visible ? updatingText.implicitHeight * 3 : 0
         width: parent.width
-        color: "yellow"
+        color: Kirigami.Theme.neutralBackgroundColor
 
         Label {
             id: updatingText
@@ -39,7 +39,7 @@ ListView {
                 right: parent.right
                 verticalCenter: parent.verticalCenter
             }
-            color: "black"
+            color: Kirigami.Theme.neutralTextColor
             horizontalAlignment: Text.AlignHCenter
             text: qsTr("Updating")
         }

@@ -14,5 +14,6 @@
         <file>qml/EmptyFeedOverlay.qml</file>
         <file>qml/AllItemsPage.qml</file>
         <file>qml/FeedItemsPage.qml</file>
+        <file>qml/NoContentPage.qml</file>
     </qresource>
 </RCC>

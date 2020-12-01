@@ -19,6 +19,7 @@ Item {
             Layout.minimumHeight: 32
             Layout.preferredWidth: 128
             Layout.preferredHeight: 128
+            Layout.alignment: Qt.AlignHCenter
             isMask: true;
             property var themeColor: Kirigami.Theme.textColor
             property var alpha: 0.5

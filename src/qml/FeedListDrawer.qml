@@ -20,7 +20,7 @@ Kirigami.GlobalDrawer {
             id: feedList
             Layout.fillHeight: true
             Layout.fillWidth: true
-            implicitHeight: root.height
+            Layout.preferredHeight: root.height
             onFeedSelected: root.feedSelected()
             onItemClicked: root.drawerOpen = !root.modal
         }

@@ -35,17 +35,25 @@ Kirigami.ScrollablePage {
             var data = articleList.currentItem.data
             root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data})
             if (data.isUnread) feedManager.setRead(data.id, true)
+        } else if (model) {
+            root.pageRow.push("qrc:/qml/NoContentPage.qml", {model: model});
         }
     }
 
     ArticleList {
        id: articleList
        anchors.fill: parent
+       currentIndex: -1
        onCurrentItemChanged: openChild()
 
        Connections {
            target: articleList.model
-           onModelReset: articleList.currentIndex = 0;
+           onStatusChanged: {
+               console.log("status changed to "+model.status)
+               if (model.status === ItemModel.Ok)
+                   articleList.currentIndex = 0;
+               else if (!articleList.currentItem) openChild();
+           }
        }
 
        EmptyFeedOverlay {
