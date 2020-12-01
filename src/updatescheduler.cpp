@@ -1,6 +1,8 @@
 #include "updatescheduler.h"
 #include "xmlfeedupdater.h"
 
+#include <QDebug>
+
 UpdateScheduler::UpdateScheduler(QObject *parent) : QObject(parent)
 {
 }
@@ -103,9 +105,9 @@ bool UpdateScheduler::updatesInProgress()
 void UpdateScheduler::slotFeedStatusChanged(FeedUpdater *updater, LoadStatus status)
 {
     if (status == LoadStatus::Updating) {
-        m_active << updater;
+        m_active << updater->feedId();
     } else {
-        m_active.remove(updater);
+        m_active.remove(updater->feedId());
     }
     emit feedStatusChanged(updater, status);
 }

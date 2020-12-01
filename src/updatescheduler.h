@@ -36,7 +36,7 @@ signals:
 private:
     QList<FeedUpdater *> m_schedule;
     QTimer m_timer;
-    QSet<FeedUpdater *>m_active;
+    QSet<qint64>m_active;
 };
 
 #endif // UPDATESCHEDULER_H

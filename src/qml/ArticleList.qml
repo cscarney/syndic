@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.9 as Kirigami
+import ItemModel 1.0
 
 ListView {
     id: articleList
@@ -22,6 +23,25 @@ ListView {
         highlighted: ListView.isCurrentItem
         onClicked: {
             articleList.currentIndex = model.index
+        }
+    }
+
+    header: Rectangle {
+        visible: model.status === ItemModel.Updating
+        height: visible ? updatingText.implicitHeight * 3 : 0
+        width: parent.width
+        color: "yellow"
+
+        Label {
+            id: updatingText
+            anchors {
+                left: parent.left
+                right: parent.right
+                verticalCenter: parent.verticalCenter
+            }
+            color: "black"
+            horizontalAlignment: Text.AlignHCenter
+            text: qsTr("Updating")
         }
     }
 }

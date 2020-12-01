@@ -27,7 +27,6 @@ bool ItemModel::unreadFilter() const
 
 void ItemModel::setUnreadFilter(bool unreadFilter)
 {
-    qDebug() << "set unread filter to " << unreadFilter;
     if (priv->unreadFilter != unreadFilter) {
         priv->unreadFilter = unreadFilter;
         if (priv->active) {
@@ -182,7 +181,7 @@ void ItemModel::slotFeedStatusChanged(qint64 feedId, LoadStatus status)
 void ItemModel::setStatus(ItemModel::Status status)
 {
     if (status != priv->status) {
-        status = priv->status;
+        priv->status = status;
         emit statusChanged();
     }
 }

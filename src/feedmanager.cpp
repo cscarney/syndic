@@ -23,6 +23,7 @@ FeedManager::FeedManager(QObject *parent)
       priv(std::make_unique<PrivData>(this))
 {
     QObject::connect(priv->updateScheduler.get(), &UpdateScheduler::feedLoaded, this, &FeedManager::slotFeedLoaded);
+    QObject::connect(priv->updateScheduler.get(), &UpdateScheduler::feedStatusChanged, this, &FeedManager::slotFeedStatusChanged);
     priv->populateFeedList();
     priv->updateScheduler->start();
 }
@@ -93,6 +94,11 @@ void FeedManager::slotFeedLoaded(FeedUpdater *updater, Syndication::FeedPtr cont
             for (auto item : result) itemAdded(item);
         });
     }
+}
+
+void FeedManager::slotFeedStatusChanged(FeedUpdater *updater, LoadStatus status)
+{
+    emit feedStatusChanged(updater->feedId(), status);
 }
 
 void FeedManager::PrivData::populateFeedList() {

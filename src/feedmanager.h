@@ -43,6 +43,7 @@ private:
 
 private slots:
     void slotFeedLoaded(FeedUpdater *updater, Syndication::FeedPtr content);
+    void slotFeedStatusChanged(FeedUpdater *updater, LoadStatus status);
 };
 
 #endif // FEEDMANAGER_H
