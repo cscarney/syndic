@@ -320,7 +320,6 @@ void FeedDatabase::updateItemContent(qint64 id, QString content)
 
 void FeedDatabase::updateItemRead(qint64 id, bool isRead)
 {
-    qDebug() << "updateItemRead called for id " + QString::number(id);
     QSqlQuery q(db());
     q.prepare(
                 "UPDATE Item SET "
