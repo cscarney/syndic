@@ -43,5 +43,10 @@ ListView {
             horizontalAlignment: Text.AlignHCenter
             text: qsTr("Updating")
         }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: articleList.currentIndex = -1
+        }
     }
 }
