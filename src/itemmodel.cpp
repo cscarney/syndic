@@ -1,12 +1,13 @@
 #include <QSortFilterProxyModel>
 #include <QDebug>
+#include <QList>
 
 #include "itemmodel.h"
 #include "feedmanager.h"
 #include "feedstorageoperation.h"
 
 struct ItemModel::PrivData {
-    QVector<StoredItem> items;
+    QList<StoredItem> items;
     bool unreadFilter;
     FeedManager *manager;
     bool active;
@@ -111,7 +112,7 @@ void ItemModel::slotQueryFinished()
 {
     auto *q = static_cast<ItemQuery *>(QObject::sender());
     beginResetModel();
-    priv->items = q->result;
+    priv->items = QList<StoredItem>::fromVector(q->result);
     endResetModel();
     setStatusFromUpstream();
 }
@@ -135,7 +136,7 @@ void ItemModel::slotQueryFinishedMerge()
     }
 }
 
-inline qint64 indexForDate(const QVector<StoredItem> &list, QDateTime dt)
+inline qint64 indexForDate(const QList<StoredItem> &list, QDateTime dt)
 {
     for (int i=0; i<list.count(); i++) {
         if (list.at(i).headers.date <= dt) return i;
