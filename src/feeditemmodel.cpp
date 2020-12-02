@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "feeditemmodel.h"
 #include "feedmanager.h"
 
@@ -19,6 +21,11 @@ void FeedItemModel::setFeedId(qint64 feedId)
         refresh();
         emit feedIdChanged();
     }
+}
+
+void FeedItemModel::requestUpdate()
+{
+    manager()->requestUpdate(feedId());
 }
 
 ItemQuery *FeedItemModel::startQuery()

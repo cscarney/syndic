@@ -30,6 +30,9 @@ public:
 
     ItemQuery *startQuery(std::optional<qint64> feedFilter, bool unreadFilter);
     LoadStatus getFeedStatus(qint64 feedId);
+
+    void requestUpdate();
+    void requestUpdate(qint64 feedId);
     bool updatesInProgress();
 
 signals:

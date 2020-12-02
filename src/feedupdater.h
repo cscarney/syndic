@@ -19,7 +19,8 @@ public:
     virtual void run() = 0;
     virtual void cancel() {}
 
-    void start(time_t timestamp=0);
+    void start();
+    void start(time_t timestamp);
     LoadStatus status();
     QString error();
     qint64 feedId();

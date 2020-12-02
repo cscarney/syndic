@@ -78,6 +78,16 @@ LoadStatus FeedManager::getFeedStatus(qint64 feedId)
     return priv->updateScheduler->getStatus(feedId);
 }
 
+void FeedManager::requestUpdate()
+{
+    priv->updateScheduler->updateAll();
+}
+
+void FeedManager::requestUpdate(qint64 feedId)
+{
+    priv->updateScheduler->update(feedId);
+}
+
 bool FeedManager::updatesInProgress()
 {
     return priv->updateScheduler->updatesInProgress();

@@ -62,7 +62,6 @@ Kirigami.ScrollablePage {
        Connections {
            target: articleList.model
            onStatusChanged: {
-               console.log("status changed to "+model.status)
                if (articleList.currentItem) return;
                if ((model.status === ItemModel.Ok) && (model.rowCount() > 0))
                    articleList.currentIndex = 0;

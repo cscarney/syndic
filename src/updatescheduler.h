@@ -16,6 +16,7 @@ class UpdateScheduler : public QObject
     Q_OBJECT
 public:
     explicit UpdateScheduler(QObject *parent = nullptr);
+    void add(qint64 feedId, QUrl url);
     void schedule(qint64 feedId, QUrl url, time_t updateInterval, time_t lastUpdate);
     void unschedule(qint64 feedId);
     void start(int resolution=60000);
@@ -37,6 +38,7 @@ private:
     QList<FeedUpdater *> m_schedule;
     QTimer m_timer;
     QSet<qint64>m_active;
+    QHash<qint64, FeedUpdater *> m_updaters;
 };
 
 #endif // UPDATESCHEDULER_H

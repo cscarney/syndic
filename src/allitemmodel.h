@@ -11,6 +11,9 @@ public:
     AllItemModel(QObject *parent=nullptr);
 
     // ItemModel interface
+public:
+    void requestUpdate() override final;
+
 protected:
     ItemQuery *startQuery() override final;
     bool itemFilter(const StoredItem &item) override final;

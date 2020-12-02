@@ -20,6 +20,9 @@ signals:
     void feedIdChanged();
 
     // ItemModel interface
+public:
+    void requestUpdate() override final;
+
 protected:
     ItemQuery *startQuery() override final;
     bool itemFilter(const StoredItem &item) override final;

@@ -54,6 +54,7 @@ public:
     Q_PROPERTY(Status status READ status NOTIFY statusChanged);
 
     void refresh();
+    Q_INVOKABLE virtual void requestUpdate() {}
     Q_INVOKABLE void markAllRead();
     void classBegin() override;
     void componentComplete() override;

@@ -26,6 +26,13 @@ float FeedUpdater::progress()
     return (status() == LoadStatus::Updating) ? 0.1f : 0;
 }
 
+void FeedUpdater::start()
+{
+    time_t t;
+    time(&t);
+    start(t);
+}
+
 void FeedUpdater::start(time_t timestamp)
 {
     if (status() != LoadStatus::Updating) {

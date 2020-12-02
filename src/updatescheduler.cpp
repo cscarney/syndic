@@ -27,11 +27,13 @@ void UpdateScheduler::schedule(qint64 feedId, QUrl url, time_t updateInterval, t
     auto *updater = new XMLFeedUpdater(feedId, url, updateInterval, lastUpdate, this);
     QObject::connect(updater, &FeedUpdater::feedLoaded, this, &UpdateScheduler::feedLoaded);
     QObject::connect(updater, &FeedUpdater::statusChanged, this, &UpdateScheduler::slotFeedStatusChanged);
+    m_updaters.insert(feedId, updater);
     updater->updateIfNecessary(timestamp);
     insertIntoSchedule(m_schedule, updater);
 }
 
-inline FeedUpdater *findInSchedule(QList<FeedUpdater *> &schedule, qint64 feedId, int &outIdx)
+/*
+inline FeedUpdater *findInSchedule(QList<FeedUpdater *> &schedule, FeedUpdater *needle, int &outIdx)
 {
     auto len = schedule.length();
     for (outIdx=0; outIdx<len; outIdx++) {
@@ -42,14 +44,14 @@ inline FeedUpdater *findInSchedule(QList<FeedUpdater *> &schedule, qint64 feedId
     }
     return nullptr;
 }
+*/
 
 void UpdateScheduler::unschedule(qint64 feedId)
 {
-    int idx;
-    auto entry = findInSchedule(m_schedule, feedId, idx);
-    if (!entry) return;
-    m_schedule.removeAt(idx);
-    delete entry;
+    auto *updater = m_updaters.take(feedId);
+    if (!updater) return;
+    m_schedule.removeOne(updater);
+    delete updater;
 }
 
 void UpdateScheduler::start(int resolution)
@@ -69,11 +71,14 @@ void UpdateScheduler::stop()
 
 void UpdateScheduler::update(qint64 feedId)
 {
-    int idx;
-    auto *entry = findInSchedule(m_schedule, feedId, idx);
-    m_schedule.removeAt(idx);
-    entry->start();
-    insertIntoSchedule(m_schedule, entry);
+    auto *entry = m_updaters[feedId];
+    if (entry) {
+        m_schedule.removeOne(entry);
+        entry->start();
+        insertIntoSchedule(m_schedule, entry);
+    } else {
+        qDebug() << "called UpdateScheduler::update with a feed id that has no updater";
+    }
 }
 
 void UpdateScheduler::updateStale()
@@ -89,10 +94,20 @@ void UpdateScheduler::updateStale()
     }
 }
 
+void UpdateScheduler::updateAll()
+{
+    time_t timestamp;
+    time(&timestamp);
+    m_schedule.clear();
+    for (auto *entry : m_updaters) {
+        entry->start(timestamp);
+        insertIntoSchedule(m_schedule, entry);
+    }
+}
+
 LoadStatus UpdateScheduler::getStatus(qint64 feedId)
 {
-    int idx;
-    auto *entry = findInSchedule(m_schedule, feedId, idx);
+    auto *entry = m_updaters[feedId];
     if (!entry) return LoadStatus::Idle;
     return entry->status();
 }

@@ -9,6 +9,11 @@ AllItemModel::AllItemModel(QObject *parent):
 
 }
 
+void AllItemModel::requestUpdate()
+{
+    manager()->requestUpdate();
+}
+
 
 ItemQuery *AllItemModel::startQuery()
 {
