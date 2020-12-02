@@ -27,6 +27,19 @@ Kirigami.ScrollablePage {
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Kirigami.Theme.backgroundColor: Kirigami.Theme.alternateBackgroundColor
 
+    function pushPlaceholder() {
+        switch(model.status) {
+        case ItemModel.Updating:
+            root.pageRow.push("qrc:/qml/Placeholders/UpdatingPlaceholderPage.qml");
+            break;
+        case ItemModel.Error:
+            root.pageRow.push("qrc:/qml/Placeholders/ErrorPlaceholderPage.qml", {model:model})
+            break;
+        default:
+            root.pageRow.push("qrc:/qml/Placeholders/EmptyFeedPlaceholderPage.qml", {model:model});
+        }
+    }
+
     function openChild() {
         if (!pageRow) return
         while (pageRow.depth > Kirigami.ColumnView.index + 1)
@@ -36,7 +49,7 @@ Kirigami.ScrollablePage {
             root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data})
             if (data.isUnread) feedManager.setRead(data.id, true)
         } else if (model) {
-            root.pageRow.push("qrc:/qml/Placeholders/AbstractPlaceholderPage.qml", {model: model});
+            pushPlaceholder();
         }
     }
 
@@ -51,7 +64,7 @@ Kirigami.ScrollablePage {
            onStatusChanged: {
                console.log("status changed to "+model.status)
                if (articleList.currentItem) return;
-               if (model.status === ItemModel.Ok)
+               if ((model.status === ItemModel.Ok) && (model.rowCount() > 0))
                    articleList.currentIndex = 0;
                else openChild();
            }

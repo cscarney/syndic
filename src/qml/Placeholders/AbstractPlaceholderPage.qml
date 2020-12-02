@@ -6,7 +6,6 @@ import ItemModel 1.0
 
 Kirigami.Page {
     id: root
-   property var model: {"status": ItemModel.Ok, "unreadFilter": false}
 
     property string iconName: ""
     property string headingText: ""
@@ -43,38 +42,4 @@ Kirigami.Page {
             text: descriptionText
         }
     }
-
-    states: [
-        State {
-            name: "updating"
-            when: model.status === ItemModel.Updating
-            PropertyChanges {
-                target: root
-                iconName: "content-loading-symbolic"
-                headingText: qsTr("Update in Progress")
-            }
-        },
-
-        State {
-            name: "allRead"
-            when: (model.status===ItemModel.Ok) && (model.unreadFilter)
-            PropertyChanges {
-                target: root
-                iconName: "Finished"
-                headingText: "All Read"
-            }
-        },
-
-        State {
-            name: "error"
-            when: (model.status===ItemModel.Error)
-            PropertyChanges {
-                target: root
-                iconName: "dialog-error-symbolic"
-                headingText: "Error Updating Feed"
-                descriptionText: "This feed is currently offline"
-            }
-        }
-
-    ]
 }

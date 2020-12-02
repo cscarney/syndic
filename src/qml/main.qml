@@ -60,7 +60,7 @@ Kirigami.ApplicationWindow {
 
     function pushFeed(feed) {
         pageStack.clear()
-        pageStack.push("qrc:/qml/ItemListFeedItemListPage.qml",
+        pageStack.push("qrc:/qml/ItemList/FeedItemListPage.qml",
                        {pageRow: pageStack,
                            feedId: feed.feedId,
                            title: feed.feedName})

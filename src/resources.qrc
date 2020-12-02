@@ -16,5 +16,8 @@
         <file>qml/FeedList.qml</file>
         <file>qml/FeedListDrawer.qml</file>
         <file>qml/PageDisplayDialog.qml</file>
+        <file>qml/Placeholders/ErrorPlaceholderPage.qml</file>
+        <file>qml/Placeholders/UpdatingPlaceholderPage.qml</file>
+        <file>qml/Placeholders/EmptyFeedPlaceholderPage.qml</file>
     </qresource>
 </RCC>
