@@ -1,7 +1,7 @@
 import FeedManager 1.0
 import FeedItemModel 1.0
 
-ArticleListPage {
+AbstractItemListPage {
     id: root
     property var feedId: 0;
 

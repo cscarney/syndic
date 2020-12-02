@@ -36,11 +36,11 @@ Kirigami.ScrollablePage {
             root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data})
             if (data.isUnread) feedManager.setRead(data.id, true)
         } else if (model) {
-            root.pageRow.push("qrc:/qml/NoContentPage.qml", {model: model});
+            root.pageRow.push("qrc:/qml/Placeholders/AbstractPlaceholderPage.qml", {model: model});
         }
     }
 
-    ArticleList {
+    ItemListView {
        id: articleList
        anchors.fill: parent
        currentIndex: -1
@@ -50,9 +50,10 @@ Kirigami.ScrollablePage {
            target: articleList.model
            onStatusChanged: {
                console.log("status changed to "+model.status)
+               if (articleList.currentItem) return;
                if (model.status === ItemModel.Ok)
                    articleList.currentIndex = 0;
-               else if (!articleList.currentItem) openChild();
+               else openChild();
            }
        }
 

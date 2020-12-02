@@ -1,19 +1,20 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/main.qml</file>
-        <file>qml/ArticleList.qml</file>
-        <file>qml/ArticleListEntry.qml</file>
+        <file>qml/ItemList/AbstractItemListPage.qml</file>
+        <file>qml/ItemList/AllItemListPage.qml</file>
+        <file>qml/ItemList/EmptyFeedOverlay.qml</file>
+        <file>qml/ItemList/FeedItemListPage.qml</file>
+        <file>qml/ItemList/ItemListEntry.qml</file>
+        <file>qml/ItemList/ItemListView.qml</file>
+        <file>qml/Placeholders/AbstractPlaceholderPage.qml</file>
+        <file>qml/AboutPage.qml</file>
+        <file>qml/AddFeedPage.qml</file>
+        <file>qml/ArticlePage.qml</file>
         <file>qml/ArticleView.qml</file>
         <file>qml/ArticlePage.qml</file>
-        <file>qml/ArticleListPage.qml</file>
         <file>qml/FeedList.qml</file>
         <file>qml/FeedListDrawer.qml</file>
-        <file>qml/AboutPage.qml</file>
         <file>qml/PageDisplayDialog.qml</file>
-        <file>qml/AddFeedPage.qml</file>
-        <file>qml/EmptyFeedOverlay.qml</file>
-        <file>qml/AllItemsPage.qml</file>
-        <file>qml/FeedItemsPage.qml</file>
-        <file>qml/NoContentPage.qml</file>
     </qresource>
 </RCC>

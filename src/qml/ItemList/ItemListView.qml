@@ -16,7 +16,7 @@ ListView {
 
         text: headline
         padding: 10
-        contentItem: ArticleListEntry { }
+        contentItem: ItemListEntry { }
         
         property var data: model
 
