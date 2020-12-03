@@ -34,10 +34,13 @@ int main(int argc, char *argv[])
 
     auto *fm = new FeedManager(&app);
     qmlRegisterType<FeedManager>("FeedManager", 1, 0, "FeedManager");
+    engine.rootContext()->setContextProperty("feedManager", fm);
+
+    qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
     qmlRegisterUncreatableType<ItemModel>("ItemModel", 1, 0, "ItemModel", "abstract base class");
     qmlRegisterType<FeedItemModel>("FeedItemModel", 1, 0, "FeedItemModel");
     qmlRegisterType<AllItemModel>("AllItemModel", 1, 0, "AllItemModel");
-    engine.rootContext()->setContextProperty("feedManager", fm);
+
     engine.load(QUrl("qrc:/qml/main.qml"));
 
     int result = QApplication::exec();

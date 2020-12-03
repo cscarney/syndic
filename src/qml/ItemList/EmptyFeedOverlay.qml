@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import org.kde.kirigami 2.7 as Kirigami
-import ItemModel 1.0
 import QtQuick.Layouts 1.12
 
 Item {

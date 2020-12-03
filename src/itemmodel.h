@@ -6,7 +6,7 @@
 #include <QAbstractListModel>
 #include <QQmlParserStatus>
 
-#include "loadstatus.h"
+#include "enums.h"
 #include "feedstorageoperation.h"
 #include "storeditem.h"
 
@@ -34,14 +34,6 @@ public:
     };
     Q_ENUM(Roles);
 
-    enum Status {
-        Ok,
-        Loading,
-        Updating,
-        Error
-    };
-    Q_ENUM(Status);
-
     bool unreadFilter() const;
     void setUnreadFilter(bool unreadFilter);
     Q_PROPERTY(bool unreadFilter READ unreadFilter WRITE setUnreadFilter NOTIFY unreadFilterChanged);
@@ -50,8 +42,8 @@ public:
     void setManager(FeedManager *manager);
     Q_PROPERTY(FeedManager *manager READ manager WRITE setManager NOTIFY managerChanged);
 
-    Status status();
-    Q_PROPERTY(Status status READ status NOTIFY statusChanged);
+    LoadStatus status();
+    Q_PROPERTY(Enums::LoadStatus status READ status NOTIFY statusChanged);
 
     void refresh();
     Q_INVOKABLE virtual void requestUpdate() {}
@@ -68,7 +60,7 @@ private slots:
     void slotQueryFinishedMerge();
     void slotItemAdded(const StoredItem &item);
     void slotItemChanged(const StoredItem &item);
-    void slotFeedStatusChanged(qint64 feedId, LoadStatus status);
+    void slotFeedStatusChanged(qint64 feedId, Enums::LoadStatus status);
 
 signals:
     void unreadFilterChanged();
@@ -79,7 +71,7 @@ protected:
     virtual ItemQuery *startQuery() = 0;
     virtual bool itemFilter(const StoredItem &item) = 0;
     virtual void setStatusFromUpstream();
-    void setStatus(Status status);
+    void setStatus(LoadStatus status);
 
 private:
     struct PrivData;

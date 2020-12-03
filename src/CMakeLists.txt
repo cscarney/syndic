@@ -8,7 +8,7 @@ set(feedkeeper_HEADERS
     xmlfeedupdater.h
     updatescheduler.h
     dataretriever.h
-    loadstatus.h
+    enums.h
     )
 
 set(feedkeeper_SRCS

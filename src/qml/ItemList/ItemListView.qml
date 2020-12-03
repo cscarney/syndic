@@ -2,7 +2,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.9 as Kirigami
-import ItemModel 1.0
+import Enums 1.0
 
 ListView {
     id: articleList
@@ -27,7 +27,7 @@ ListView {
     }
 
     header: Rectangle {
-        visible: model.status === ItemModel.Updating
+        visible: model.status === Enums.Updating
         height: visible ? updatingText.implicitHeight * 3 : 0
         width: parent.width
         color: Kirigami.Theme.backgroundColor
@@ -38,7 +38,7 @@ ListView {
                 verticalCenter: parent.verticalCenter
             }
             BusyIndicator {
-                running: model.status === ItemModel.Updating
+                running: model.status === Enums.Updating
             }
             Label {
                 id: updatingText

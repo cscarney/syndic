@@ -1,7 +1,6 @@
 #ifndef ALLITEMMODEL_H
 #define ALLITEMMODEL_H
 
-#include "loadstatus.h"
 #include "itemmodel.h"
 
 class AllItemModel : public ItemModel

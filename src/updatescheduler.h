@@ -8,7 +8,7 @@
 #include <Syndication/Feed>
 #include <time.h>
 
-#include "loadstatus.h"
+#include "enums.h"
 class FeedUpdater;
 
 class UpdateScheduler : public QObject

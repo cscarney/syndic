@@ -1,4 +1,3 @@
-import FeedManager 1.0
 import FeedItemModel 1.0
 
 AbstractItemListPage {

@@ -1,7 +1,6 @@
 #ifndef FEEDITEMMODEL_H
 #define FEEDITEMMODEL_H
 
-#include "loadstatus.h"
 #include "itemmodel.h"
 
 class FeedItemModel : public ItemModel

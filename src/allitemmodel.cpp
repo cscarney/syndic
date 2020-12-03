@@ -28,8 +28,8 @@ bool AllItemModel::itemFilter(const StoredItem &item)
 void AllItemModel::setStatusFromUpstream()
 {
     if (manager()->updatesInProgress()) {
-        setStatus(Updating);
+        setStatus(LoadStatus::Updating);
     } else {
-        setStatus(Ok);
+        setStatus(LoadStatus::Idle);
     }
 }

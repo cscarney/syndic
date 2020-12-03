@@ -8,7 +8,7 @@
 #include <QUrl>
 #include <Syndication/Feed>
 
-#include "loadstatus.h"
+#include "enums.h"
 #include "feedstorageoperation.h"
 
 class FeedUpdater;

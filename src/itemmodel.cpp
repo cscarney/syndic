@@ -11,7 +11,7 @@ struct ItemModel::PrivData {
     bool unreadFilter;
     FeedManager *manager;
     bool active;
-    Status status = Ok;
+    LoadStatus status = LoadStatus::Idle;
 };
 
 ItemModel::ItemModel(QObject *parent) :
@@ -55,20 +55,20 @@ void ItemModel::setManager(FeedManager *manager)
     managerChanged();
 }
 
-ItemModel::Status ItemModel::status()
+LoadStatus ItemModel::status()
 {
     return priv->status;
 }
 
 void ItemModel::setStatusFromUpstream()
 {
-    setStatus(Ok);
+    setStatus(LoadStatus::Idle);
 }
 
 void ItemModel::refresh()
 {
     if (!priv->manager) return;
-    setStatus(Loading);
+    setStatus(LoadStatus::Loading);
     priv->active = true;
     auto q = startQuery();
     QObject::connect(q, &FeedStorageOperation::finished, this, &ItemModel::slotQueryFinished);
@@ -175,11 +175,11 @@ void ItemModel::slotItemChanged(StoredItem const &item)
 
 void ItemModel::slotFeedStatusChanged(qint64 feedId, LoadStatus status)
 {
-    if (this->status() == Loading) return;
+    if (this->status() == LoadStatus::Loading) return;
     setStatusFromUpstream();
 }
 
-void ItemModel::setStatus(ItemModel::Status status)
+void ItemModel::setStatus(LoadStatus status)
 {
     if (status != priv->status) {
         priv->status = status;

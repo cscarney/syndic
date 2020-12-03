@@ -6,7 +6,7 @@
 #include <time.h>
 #include <memory>
 
-#include "loadstatus.h"
+#include "enums.h"
 
 class FeedUpdater : public QObject
 {

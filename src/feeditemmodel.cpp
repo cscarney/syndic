@@ -42,20 +42,8 @@ void FeedItemModel::setStatusFromUpstream()
 {
     auto *manager = this->manager();
     if (!manager) {
-        setStatus(Ok);
+        setStatus(LoadStatus::Idle);
         return;
     }
-    switch (manager->getFeedStatus(m_feedId)) {
-    case LoadStatus::Idle:
-        setStatus(Ok);
-        return;
-
-    case LoadStatus::Updating:
-        setStatus(Updating);
-        return;
-
-    case LoadStatus::Error:
-        setStatus(Error);
-        return;
-    }
+    setStatus( manager->getFeedStatus(m_feedId));
 }

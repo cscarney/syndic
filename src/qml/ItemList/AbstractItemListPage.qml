@@ -2,9 +2,8 @@ import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
-import ItemModel 1.0
+import Enums 1.0
 import AllItemModel 1.0
-import FeedManager 1.0
 
 Kirigami.ScrollablePage {
     id: root
@@ -29,10 +28,10 @@ Kirigami.ScrollablePage {
 
     function pushPlaceholder() {
         switch(model.status) {
-        case ItemModel.Updating:
+        case Enums.Updating:
             root.pageRow.push("qrc:/qml/Placeholders/UpdatingPlaceholderPage.qml");
             break;
-        case ItemModel.Error:
+        case Enums.Error:
             root.pageRow.push("qrc:/qml/Placeholders/ErrorPlaceholderPage.qml", {model:model})
             break;
         default:
@@ -63,7 +62,7 @@ Kirigami.ScrollablePage {
            target: articleList.model
            onStatusChanged: {
                if (articleList.currentItem) return;
-               if ((model.status === ItemModel.Ok) && (model.rowCount() > 0))
+               if ((model.status === Enums.Idle) && (model.rowCount() > 0))
                    articleList.currentIndex = 0;
                else openChild();
            }
