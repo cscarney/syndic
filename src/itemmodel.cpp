@@ -9,16 +9,22 @@
 struct ItemModel::PrivData {
     QList<StoredItem> items;
     bool unreadFilter;
-    FeedManager *manager;
-    bool active;
     LoadStatus status = LoadStatus::Idle;
 };
 
 ItemModel::ItemModel(QObject *parent) :
-    QAbstractListModel(parent),
+    ManagedListModel(parent),
     priv(std::make_unique<PrivData>())
 {
 
+}
+
+void ItemModel::initialize() {
+    auto m = manager();
+    QObject::connect(m, &FeedManager::itemAdded, this, &ItemModel::slotItemAdded);
+    QObject::connect(m, &FeedManager::itemChanged, this, &ItemModel::slotItemChanged);
+    QObject::connect(m, &FeedManager::feedStatusChanged, this, &ItemModel::slotFeedStatusChanged);
+    refresh();
 }
 
 bool ItemModel::unreadFilter() const
@@ -30,29 +36,12 @@ void ItemModel::setUnreadFilter(bool unreadFilter)
 {
     if (priv->unreadFilter != unreadFilter) {
         priv->unreadFilter = unreadFilter;
-        if (priv->active) {
+        if (active()) {
             if (unreadFilter) refresh();
             else refreshMerge();
         }
         emit unreadFilterChanged();
     }
-}
-
-FeedManager *ItemModel::manager() const
-{
-    return priv->manager;
-}
-
-void ItemModel::setManager(FeedManager *manager)
-{
-    assert(priv->manager == nullptr);
-    assert(manager != nullptr);
-    priv->manager = manager;
-    QObject::connect(manager, &FeedManager::itemAdded, this, &ItemModel::slotItemAdded);
-    QObject::connect(manager, &FeedManager::itemChanged, this, &ItemModel::slotItemChanged);
-    QObject::connect(manager, &FeedManager::feedStatusChanged, this, &ItemModel::slotFeedStatusChanged);
-    if (priv->active) refresh();
-    managerChanged();
 }
 
 LoadStatus ItemModel::status()
@@ -67,9 +56,8 @@ void ItemModel::setStatusFromUpstream()
 
 void ItemModel::refresh()
 {
-    if (!priv->manager) return;
+    assert(manager() != nullptr);
     setStatus(LoadStatus::Loading);
-    priv->active = true;
     auto q = startQuery();
     QObject::connect(q, &FeedStorageOperation::finished, this, &ItemModel::slotQueryFinished);
 }
@@ -79,17 +67,6 @@ void ItemModel::markAllRead()
     for (const auto &item : priv->items) {
         manager()->setRead(item.id, true);
     }
-}
-
-
-void ItemModel::classBegin()
-{
-
-}
-
-void ItemModel::componentComplete()
-{
-    refresh();
 }
 
 ItemModel::~ItemModel() = default;

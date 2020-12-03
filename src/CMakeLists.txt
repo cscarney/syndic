@@ -7,6 +7,7 @@ set(feedkeeper_HEADERS
     feedupdater.h
     xmlfeedupdater.h
     updatescheduler.h
+    managedlistmodel.h
     dataretriever.h
     enums.h
     )
@@ -21,6 +22,7 @@ set(feedkeeper_SRCS
     feedupdater.cpp
     xmlfeedupdater.cpp
     updatescheduler.cpp
+    managedlistmodel.cpp
     dataretriever.cpp
     main.cpp
     resources.qrc

@@ -18,7 +18,7 @@ void FeedItemModel::setFeedId(qint64 feedId)
 {
     if (m_feedId != feedId) {
         m_feedId = feedId;
-        refresh();
+        if (active()) refresh();
         emit feedIdChanged();
     }
 }

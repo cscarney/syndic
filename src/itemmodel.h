@@ -3,16 +3,14 @@
 
 #include <memory>
 
-#include <QAbstractListModel>
-#include <QQmlParserStatus>
-
+#include "managedlistmodel.h"
 #include "enums.h"
 #include "feedstorageoperation.h"
 #include "storeditem.h"
 
 class FeedManager;
 
-class ItemModel : public QAbstractListModel, public QQmlParserStatus
+class ItemModel : public ManagedListModel
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
@@ -34,22 +32,17 @@ public:
     };
     Q_ENUM(Roles);
 
+    void initialize() override;
+
     bool unreadFilter() const;
     void setUnreadFilter(bool unreadFilter);
     Q_PROPERTY(bool unreadFilter READ unreadFilter WRITE setUnreadFilter NOTIFY unreadFilterChanged);
 
-    FeedManager *manager() const;
-    void setManager(FeedManager *manager);
-    Q_PROPERTY(FeedManager *manager READ manager WRITE setManager NOTIFY managerChanged);
-
     LoadStatus status();
     Q_PROPERTY(Enums::LoadStatus status READ status NOTIFY statusChanged);
 
-    void refresh();
     Q_INVOKABLE virtual void requestUpdate() {}
     Q_INVOKABLE void markAllRead();
-    void classBegin() override;
-    void componentComplete() override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -72,6 +65,7 @@ protected:
     virtual bool itemFilter(const StoredItem &item) = 0;
     virtual void setStatusFromUpstream();
     void setStatus(LoadStatus status);
+    void refresh();
 
 private:
     struct PrivData;
