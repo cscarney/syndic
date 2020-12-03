@@ -38,8 +38,6 @@ target_link_libraries(feedkeeper
     Qt5::QuickControls2
     KF5::Declarative
     KF5::QuickAddons
-    KF5::Crash
-    KF5::I18n
     KF5::Syndication
     feedstorage
     )

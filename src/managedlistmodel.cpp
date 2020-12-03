@@ -1,3 +1,5 @@
+#include <QTimer>
+
 #include "managedlistmodel.h"
 
 ManagedListModel::ManagedListModel(QObject *parent) :
@@ -32,5 +34,6 @@ void ManagedListModel::classBegin()
 
 void ManagedListModel::componentComplete()
 {
-    activate();
+    // make sure we don't activate until the settings item is complete
+    QTimer::singleShot(0,this, &ManagedListModel::activate);
 }

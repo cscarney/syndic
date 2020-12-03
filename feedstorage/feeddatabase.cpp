@@ -128,7 +128,9 @@ static inline void cursorToStruct(QSqlQuery &q, StoredItem &result)
 }
 
 static const QString feed_fields =
-        "id, source, localId, displayName, url";
+        "Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.url, COUNT(Item.id)";
+static const QString feed_join =
+        "Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false";
 
 static inline void cursorToStruct(QSqlQuery &q, StoredFeed &result)
 {
@@ -139,7 +141,8 @@ static inline void cursorToStruct(QSqlQuery &q, StoredFeed &result)
         .headers = {
             .name = q.value(3).toString(),
             .url = q.value(4).toString()
-        }
+        },
+        .unreadCount = q.value(5).toInt()
     };
 }
 
@@ -349,7 +352,9 @@ void FeedDatabase::updateItemStarred(qint64 id, bool isStarred)
 QVector<StoredFeed> FeedDatabase::selectAllFeeds()
 {
     QSqlQuery q(db());
-    q.prepare("SELECT "+feed_fields+" FROM Feed");
+    q.prepare(
+                "SELECT "+feed_fields+" FROM "+feed_join+
+                " GROUP BY Feed.id");
     return performQuery<StoredFeed>(q);
 }
 
@@ -357,8 +362,8 @@ StoredFeed FeedDatabase::selectFeed(qint64 id)
 {
     QSqlQuery q(db());
     q.prepare(
-                "SELECT "+feed_fields+" FROM Feed "
-                "WHERE id=:id;");
+                "SELECT "+feed_fields+" FROM "+feed_join+
+                " WHERE id=:id;");
     q.bindValue(":id", id);
     if (!q.exec()) {
         qDebug() << "SQL Error in selectFeed: " + q.lastError().text();
@@ -378,8 +383,8 @@ StoredFeed FeedDatabase::selectFeed(qint64 source, QString localId)
 {
     QSqlQuery q(db());
     q.prepare(
-                "SELECT "+feed_fields+" FROM Feed "
-                "WHERE source=:source AND localId=:localId;");
+                "SELECT "+feed_fields+" FROM " + feed_join +
+                " WHERE source=:source AND localId=:localId");
     q.bindValue(":source", source);
     q.bindValue(":localId", localId);
     if (!q.exec()) {

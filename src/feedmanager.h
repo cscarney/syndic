@@ -24,6 +24,8 @@ public:
     /* Returns a model owned by the FeedManager (parent=this) */
     Q_INVOKABLE QAbstractItemModel *getFeedListModel();
 
+    FeedQuery *startFeedQuery();
+
     Q_INVOKABLE void setRead(qint64 id, bool value=true);
     Q_INVOKABLE void setStarred(qint64 id, bool value=true);
     Q_INVOKABLE void addFeed(QUrl url);
@@ -38,6 +40,8 @@ public:
 signals:
     void itemAdded(StoredItem const &item);
     void itemChanged(StoredItem const &item);
+    void itemReadChanged(StoredItem const &item);
+    void itemStarredChanged(StoredItem const &item);
     void feedStatusChanged(qint64 feedId, LoadStatus status);
 
 private:

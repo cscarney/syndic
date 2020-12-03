@@ -15,17 +15,14 @@ struct FeedManager::PrivData {
     FeedListModel *feedList;
 
     PrivData(FeedManager *parent);
-    void populateFeedList();
+    void configureUpdater();
 };
 
 FeedManager::FeedManager(QObject *parent)
     : QObject(parent),
       priv(std::make_unique<PrivData>(this))
 {
-    QObject::connect(priv->updateScheduler.get(), &UpdateScheduler::feedLoaded, this, &FeedManager::slotFeedLoaded);
-    QObject::connect(priv->updateScheduler.get(), &UpdateScheduler::feedStatusChanged, this, &FeedManager::slotFeedStatusChanged);
-    priv->populateFeedList();
-    priv->updateScheduler->start();
+    priv->configureUpdater();
 }
 
 FeedManager::~FeedManager() = default;
@@ -42,12 +39,18 @@ QAbstractItemModel *FeedManager::getFeedListModel()
     return priv->feedList;
 }
 
+FeedQuery *FeedManager::startFeedQuery()
+{
+    return priv->storage->getFeeds();
+}
+
 void FeedManager::setRead(qint64 id, bool value)
 {
     auto *q = priv->storage->updateItemRead(id, value);
     QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
         for (const auto &item : q->result) {
             itemChanged(item);
+            itemReadChanged(item);
         }
     });
 }
@@ -58,6 +61,7 @@ void FeedManager::setStarred(qint64 id, bool value)
     QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
         for (const auto &item : q->result) {
             itemChanged(item);
+            itemStarredChanged(item);
         }
     });
 }
@@ -65,7 +69,6 @@ void FeedManager::setStarred(qint64 id, bool value)
 void FeedManager::addFeed(QUrl url)
 {
     // TODO implement this
-    // m_source->addFeed(url);
 }
 
 ItemQuery *FeedManager::startQuery(std::optional<qint64> feedFilter, bool unreadFilter)
@@ -111,15 +114,12 @@ void FeedManager::slotFeedStatusChanged(FeedUpdater *updater, LoadStatus status)
     emit feedStatusChanged(updater->feedId(), status);
 }
 
-void FeedManager::PrivData::populateFeedList() {
+void FeedManager::PrivData::configureUpdater() {
+    QObject::connect(updateScheduler.get(), &UpdateScheduler::feedLoaded, parent, &FeedManager::slotFeedLoaded);
+    QObject::connect(updateScheduler.get(), &UpdateScheduler::feedStatusChanged, parent, &FeedManager::slotFeedStatusChanged);
     auto *queryFeeds = storage->getFeeds();
-    QObject::connect(queryFeeds, &FeedStorageOperation::finished, parent, [this, queryFeeds] {
-        auto &feeds = queryFeeds->result;
-        for (auto i=feeds.constBegin(); i!=feeds.constEnd(); ++i) {
-            feedList->addFeed(*i);
-            updateScheduler->schedule(i->id, i->headers.url, 60000, 0);
-        }
-    });
+    updateScheduler->schedule(queryFeeds);
+    updateScheduler->start();
 }
 
 

@@ -1,12 +1,104 @@
+#include <QString>
+#include <QVector>
+#include <QIcon>
+#include <QDebug>
+
 #include "feedlistmodel.h"
 
+struct FeedListEntry {
+    qint64 id;
+    FeedListModel::EntryType entryType;
+    QString name;
+    QIcon icon;
+    LoadStatus status;
+    int unreadCount;
+
+    inline bool matchItem(const StoredItem item)
+    {
+        switch (entryType) {
+        case FeedListModel::SingleFeedType:
+            return id == item.feedId;
+
+        case FeedListModel::AllType:
+            return true;
+
+        case FeedListModel::StarredType:
+            return item.status.isStarred;
+
+        default:
+            return false;
+        }
+    }
+};
+
+class FeedListModel::PrivData {
+public:
+    FeedListModel *parent;
+    QVector<FeedListEntry> feeds;
+
+    PrivData(FeedListModel *parent) :
+        parent(parent)
+    {}
+
+    void addAllFeedsItem();
+    void addItem(const StoredFeed &feed);
+    void incrementUnreadCounts(const StoredItem &matchItem, int increment);
+};
+
 FeedListModel::FeedListModel(QObject *parent)
-    : QAbstractListModel(parent)
+    : ManagedListModel(parent),
+      priv(std::make_unique<PrivData>(this))
 {
-    m_feeds.append({
+
+}
+
+FeedListModel::~FeedListModel()=default;
+
+void FeedListModel::PrivData::addAllFeedsItem()
+{
+    FeedListEntry item = {
         .id=-1,
-        .headers={.name=""}
-     });
+        .entryType=AllType,
+        .name=tr("All Items"),
+        .icon=QIcon::fromTheme("folder-symbolic"),
+        .status=LoadStatus::Idle,
+        .unreadCount=0
+    };
+    feeds << item;
+}
+
+void FeedListModel::PrivData::addItem(const StoredFeed &feed)
+{
+    auto *manager = parent->manager();
+    FeedListEntry item = {
+        .id=feed.id,
+        .entryType=SingleFeedType,
+        .name=feed.headers.name,
+        .icon=QIcon::fromTheme("feed-subscribe"),
+        .status=manager->getFeedStatus(feed.id),
+        .unreadCount=feed.unreadCount
+    };
+    feeds << item;
+}
+
+void FeedListModel::PrivData::incrementUnreadCounts(const StoredItem &matchItem, int increment)
+{
+    auto size = feeds.size();
+    for (int i=0; i<size; i++) {
+        auto &entry = feeds[i];
+        if (entry.matchItem(matchItem)){
+            entry.unreadCount += increment;
+            auto index = parent->index(i);
+            parent->dataChanged(index, index, {Roles::UnreadCount});
+        }
+    }
+}
+
+void FeedListModel::initialize()
+{
+    auto *q = manager()->startFeedQuery();
+    QObject::connect(q, &FeedStorageOperation::finished, this, &FeedListModel::slotFeedQueryFinished);
+    QObject::connect(manager(), &FeedManager::itemReadChanged, this, &FeedListModel::slotItemReadChanged);
 }
 
 int FeedListModel::rowCount(const QModelIndex &parent) const
@@ -14,7 +106,7 @@ int FeedListModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    return m_feeds.size();
+    return priv->feeds.size();
 }
 
 QVariant FeedListModel::data(const QModelIndex &index, int role) const
@@ -23,48 +115,66 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     int indexRow = index.row();
+    const auto &entry = priv->feeds[indexRow];
+
     switch(role){
         case Roles::Id:
-            return m_feeds[indexRow].id;
+            return entry.id;
+
+        case Roles::Type:
+            return entry.entryType;
 
         case Roles::Name:
-            return m_feeds[indexRow].headers.name;
+            return entry.name;
+
+        case Roles::Icon:
+            return entry.icon;
+
+        case Roles::Status:
+            return entry.status;
 
         case Roles::UnreadCount:
-            return 0;
+            return entry.unreadCount;
     }
 
     return QVariant();
 }
 
+
 QHash<int, QByteArray> FeedListModel::roleNames() const
 {
     return {
         {Roles::Id, "id"},
+        {Roles::Type, "entryType"},
         {Roles::Name, "name"},
+        {Roles::Icon, "icon"},
+        {Roles::Status, "status"},
         {Roles::UnreadCount, "unreadCount"}
     };
 }
 
-static int findFeed(QVector<StoredFeed> const &list, qint64 feedId)
+void FeedListModel::slotFeedQueryFinished()
 {
-    for (int i=0; i<list.size(); i++)
-    {
-        if (list[i].id == feedId) return i;
+    beginResetModel();
+    auto *q = static_cast<FeedQuery *>(QObject::sender());
+    priv->feeds.clear();
+    priv->addAllFeedsItem();
+    for (const auto &item : q->result){
+        priv->addItem(item);
+        priv->feeds[0].unreadCount  += item.unreadCount;
     }
-    return -1;
+    endResetModel();
 }
 
-void FeedListModel::addFeed(StoredFeed const &feed)
+void FeedListModel::slotItemReadChanged(const StoredItem &item)
 {
-    auto i = findFeed(m_feeds, feed.id);
-    if (i<0) {
-        beginInsertRows(QModelIndex(), m_feeds.size(), m_feeds.size());
-        m_feeds.append(feed);
-        endInsertRows();
-    } else {
-        m_feeds[i] = feed;
-        auto idx = index(i);
-        dataChanged(idx, idx);
-    }
+    auto increment = item.status.isRead ? -1 : 1;
+    priv->incrementUnreadCounts(item, increment);
 }
+
+void FeedListModel::slotItemAdded(const StoredItem &item)
+{
+    if (item.status.isRead) return;
+    priv->incrementUnreadCounts(item, 1);
+}
+

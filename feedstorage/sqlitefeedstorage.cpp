@@ -112,16 +112,28 @@ ItemQuery *SqliteFeedStorage::storeItem(qint64 feedId, Syndication::ItemPtr item
 ItemQuery *SqliteFeedStorage::updateItemRead(qint64 itemId, bool isRead)
 {
     return doAsync<ItemQuery>([this, itemId, isRead](auto op){
-        m_db.updateItemRead(itemId, isRead);
-        op->result = {m_db.selectItem(itemId)};
+        auto item = m_db.selectItem(itemId);
+        if (item.status.isRead == isRead) {
+            op->result = {};
+        } else {
+            m_db.updateItemRead(itemId, isRead);
+            item.status.isRead = isRead;
+            op->result = {item};
+        }
     });
 }
 
 ItemQuery *SqliteFeedStorage::updateItemStarred(qint64 itemId, bool isStarred)
 {
     return doAsync<ItemQuery>([this, itemId, isStarred](auto op){
-        m_db.updateItemStarred(itemId, isStarred);
-        op->result = {m_db.selectItem(itemId)};
+        auto item = m_db.selectItem(itemId);
+        if (item.status.isStarred == isStarred) {
+            op->result = {};
+        } else {
+            m_db.updateItemStarred(itemId, isStarred);
+            item.status.isStarred = isStarred;
+            op->result = {item};
+        }
     });
 }
 

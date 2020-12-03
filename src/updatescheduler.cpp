@@ -19,17 +19,34 @@ inline void insertIntoSchedule(QList<FeedUpdater *> &schedule, FeedUpdater *upda
     schedule.append(updater);
 }
 
-void UpdateScheduler::schedule(qint64 feedId, QUrl url, time_t updateInterval, time_t lastUpdate)
+void UpdateScheduler::schedule(qint64 feedId, QUrl url, time_t updateInterval, time_t lastUpdate, time_t timestamp)
 {
     unschedule(feedId);     // there can only be one
-    time_t timestamp;
-    time(&timestamp);
     auto *updater = new XMLFeedUpdater(feedId, url, updateInterval, lastUpdate, this);
     QObject::connect(updater, &FeedUpdater::feedLoaded, this, &UpdateScheduler::feedLoaded);
     QObject::connect(updater, &FeedUpdater::statusChanged, this, &UpdateScheduler::slotFeedStatusChanged);
     m_updaters.insert(feedId, updater);
     updater->updateIfNecessary(timestamp);
     insertIntoSchedule(m_schedule, updater);
+}
+
+void UpdateScheduler::schedule(qint64 feedId, QUrl url, time_t updateInterval, time_t lastUpdate)
+{
+    time_t timestamp;
+    time(&timestamp);
+    schedule(feedId, url, updateInterval, lastUpdate, timestamp);
+}
+
+void UpdateScheduler::schedule(FeedQuery *q)
+{
+    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q] {
+        time_t timestamp;
+        time(&timestamp);
+        auto &feeds = q->result;
+        for (auto i=feeds.constBegin(); i!=feeds.constEnd(); ++i) {
+            schedule(i->id, i->headers.url, 60000, 0);
+        }
+    });
 }
 
 /*

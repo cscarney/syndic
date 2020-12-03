@@ -7,6 +7,7 @@ struct StoredFeed {
     qint64 sourceId;
     QString localId;
     FeedHeaders headers;
+    int unreadCount;
 };
 
 #endif // STOREDFEED_H

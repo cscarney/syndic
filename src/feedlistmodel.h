@@ -1,28 +1,51 @@
 #ifndef FEEDLISTMODEL_H
 #define FEEDLISTMODEL_H
 
-#include <QAbstractListModel>
+#include "managedlistmodel.h"
 #include "storedfeed.h"
+#include "feedmanager.h"
 
-class FeedListModel : public QAbstractListModel
+
+class FeedListModel : public ManagedListModel
 {
     Q_OBJECT
 public:
     explicit FeedListModel(QObject *parent = nullptr);
+    ~FeedListModel();
+
+    enum EntryType {
+        SingleFeedType,
+        AllType,
+        StarredType,
+        GroupType
+    };
+    Q_ENUM(EntryType);
 
     enum Roles {
         Id = Qt::UserRole,
+        Type,
         Name,
+        Icon,
+        Status,
         UnreadCount
     };
+    Q_ENUM(Roles);
 
+    void initialize() override;
+
+    // QAbstractListModel
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
-    void addFeed(StoredFeed const &feed);
+
+private slots:
+    void slotFeedQueryFinished();
+    void slotItemReadChanged(const StoredItem &item);
+    void slotItemAdded(const StoredItem &item);
 
 private:
-    QVector<StoredFeed> m_feeds;
+    class PrivData;
+    std::unique_ptr<PrivData> priv;
 };
 
 #endif // FEEDLISTMODEL_H

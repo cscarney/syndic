@@ -15,19 +15,23 @@ Kirigami.ScrollablePage {
 
     Settings {
         id: settings
+        // @disable-check M16
         category: "ArticleList"
         property alias unreadFilter: unreadFilterAction.checked
     }
 
     property var pageRow: null
     property alias model: articleList.model;
-    property alias unreadFilter: unreadFilterAction.checked
+    property alias unreadFilter: settings.unreadFilter
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Kirigami.Theme.backgroundColor: Kirigami.Theme.alternateBackgroundColor
 
     function pushPlaceholder() {
         switch(model.status) {
+        case Enums.Loading:
+            // just wait for the load...
+            break;
         case Enums.Updating:
             root.pageRow.push("qrc:/qml/Placeholders/UpdatingPlaceholderPage.qml");
             break;

@@ -9,6 +9,8 @@
 #include <time.h>
 
 #include "enums.h"
+#include "feedstorageoperation.h"
+
 class FeedUpdater;
 
 class UpdateScheduler : public QObject
@@ -17,7 +19,9 @@ class UpdateScheduler : public QObject
 public:
     explicit UpdateScheduler(QObject *parent = nullptr);
     void add(qint64 feedId, QUrl url);
+    void schedule(qint64 feedId, QUrl url, time_t updateInterval, time_t lastUpdate, time_t timestamp);
     void schedule(qint64 feedId, QUrl url, time_t updateInterval, time_t lastUpdate);
+    void schedule(FeedQuery *q);
     void unschedule(qint64 feedId);
     void start(int resolution=60000);
     void stop();
