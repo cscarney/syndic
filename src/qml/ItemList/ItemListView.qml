@@ -30,18 +30,21 @@ ListView {
         visible: model.status === ItemModel.Updating
         height: visible ? updatingText.implicitHeight * 3 : 0
         width: parent.width
-        color: Kirigami.Theme.neutralBackgroundColor
+        color: Kirigami.Theme.backgroundColor
 
-        Label {
-            id: updatingText
+        RowLayout {
             anchors {
-                left: parent.left
-                right: parent.right
+                horizontalCenter: parent.horizontalCenter
                 verticalCenter: parent.verticalCenter
             }
-            color: Kirigami.Theme.neutralTextColor
-            horizontalAlignment: Text.AlignHCenter
-            text: qsTr("Updating")
+            BusyIndicator {
+                running: model.status === ItemModel.Updating
+            }
+            Label {
+                id: updatingText
+                color: Kirigami.Theme.neutralTextColor
+                Layout.alignment: Qt.AlignVCenter
+            }
         }
 
         MouseArea {
