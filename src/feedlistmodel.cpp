@@ -9,7 +9,7 @@ struct FeedListEntry {
     qint64 id;
     FeedListModel::EntryType entryType;
     QString name;
-    QIcon icon;
+    QString icon;
     LoadStatus status;
     int unreadCount;
 
@@ -60,7 +60,7 @@ void FeedListModel::PrivData::addAllFeedsItem()
         .id=-1,
         .entryType=AllType,
         .name=tr("All Items"),
-        .icon=QIcon::fromTheme("folder-symbolic"),
+        .icon="folder-symbolic",
         .status=LoadStatus::Idle,
         .unreadCount=0
     };
@@ -74,7 +74,7 @@ void FeedListModel::PrivData::addItem(const StoredFeed &feed)
         .id=feed.id,
         .entryType=SingleFeedType,
         .name=feed.headers.name,
-        .icon=QIcon::fromTheme("feed-subscribe"),
+        .icon="feed-subscribe",
         .status=manager->getFeedStatus(feed.id),
         .unreadCount=feed.unreadCount
     };
@@ -99,6 +99,7 @@ void FeedListModel::initialize()
     auto *q = manager()->startFeedQuery();
     QObject::connect(q, &FeedStorageOperation::finished, this, &FeedListModel::slotFeedQueryFinished);
     QObject::connect(manager(), &FeedManager::itemReadChanged, this, &FeedListModel::slotItemReadChanged);
+    QObject::connect(manager(), &FeedManager::feedStatusChanged, this, &FeedListModel::slotFeedStatusChanged);
 }
 
 int FeedListModel::rowCount(const QModelIndex &parent) const
@@ -178,3 +179,14 @@ void FeedListModel::slotItemAdded(const StoredItem &item)
     priv->incrementUnreadCounts(item, 1);
 }
 
+void FeedListModel::slotFeedStatusChanged(qint64 feedId, LoadStatus loadStatus)
+{
+    auto count = priv->feeds.count();
+    for (int i = 0; i<count; i++) {
+        auto &entry = priv->feeds[i];
+        if ((entry.entryType == SingleFeedType) && (entry.id == feedId)) {
+            entry.status = loadStatus;
+            dataChanged(index(i), index(i));
+        }
+    }
+}

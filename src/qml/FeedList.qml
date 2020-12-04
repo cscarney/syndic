@@ -2,8 +2,8 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.7 as Kirigami
-import org.kde.kquickcontrolsaddons 2.0
 import FeedListModel 1.0
+import Enums 1.0
 
 ScrollView {
     id: root
@@ -32,10 +32,8 @@ ScrollView {
             topPadding: Kirigami.Units.largeSpacing
             bottomPadding: Kirigami.Units.largeSpacing
             contentItem: RowLayout {
-
-                // @disable-check M300
-                QIconItem {
-                    icon: model.icon
+                Kirigami.Icon {
+                    source: model.icon
                     Layout.minimumHeight: feedNameLabel.height
                     Layout.minimumWidth: feedNameLabel.height
                 }
@@ -47,6 +45,22 @@ ScrollView {
                     Layout.fillWidth: true
                     text: model.name
                     font.weight: model.unreadCount !== 0 ? Font.Black : Font.Light
+                }
+
+                Kirigami.Icon {
+                    Layout.alignment: Qt.AlignRight
+                    Layout.preferredHeight: feedNameLabel.implicitHeight
+                    Layout.preferredWidth: feedNameLabel.implicitHeight
+                    source: "view-refresh"
+                    visible: model.status === Enums.Updating
+                }
+
+                Kirigami.Icon {
+                    Layout.alignment: Qt.AlignRight
+                    Layout.preferredHeight: feedNameLabel.implicitHeight
+                    Layout.preferredWidth: feedNameLabel.implicitHeight
+                    source: "error"
+                    visible: model.status === Enums.Error
                 }
 
                 Label {

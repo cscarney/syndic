@@ -42,6 +42,7 @@ private slots:
     void slotFeedQueryFinished();
     void slotItemReadChanged(const StoredItem &item);
     void slotItemAdded(const StoredItem &item);
+    void slotFeedStatusChanged(qint64 feedId, LoadStatus status);
 
 private:
     class PrivData;
