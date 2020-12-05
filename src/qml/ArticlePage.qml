@@ -6,6 +6,9 @@ import org.kde.kirigami 2.7 as Kirigami
 Kirigami.ScrollablePage {
     id: articlePage
     property alias item: articleView.item
+    property var nextItem: function() {}
+    property var previousItem: function() {}
+
     topPadding: 0
     bottomPadding: 0
     leftPadding: 0
@@ -55,6 +58,33 @@ Kirigami.ScrollablePage {
             firstImage: splitContent.images[0] || ""
             textWithoutImages: splitContent.text
         }
+
+        Behavior on contentY {
+            id: animateScroll
+            enabled: false
+            NumberAnimation {
+                duration: 1000
+                easing.type: Easing.OutExpo
+            }
+        }
+    }
+
+    Keys.onSpacePressed: {
+        if (!scroller.atYEnd) {
+            animateScroll.enabled = true
+            scroller.contentY = scroller.contentY + scroller.height * 0.8
+            animateScroll.enabled = false
+        } else {
+            nextItem()
+        }
+    }
+
+    Keys.onLeftPressed: {
+        previousItem()
+    }
+
+    Keys.onRightPressed: {
+        nextItem()
     }
 
     actions {

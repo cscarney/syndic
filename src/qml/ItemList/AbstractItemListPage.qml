@@ -49,12 +49,15 @@ Kirigami.ScrollablePage {
             pageRow.pop()
         if (articleList.currentItem) {
             var data = articleList.currentItem.data
-            root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data})
+            root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data, nextItem: nextItem, previousItem: previousItem})
             if (data.isUnread) feedManager.setRead(data.id, true)
         } else if (model) {
             pushPlaceholder();
         }
     }
+
+    function nextItem () { articleList.currentIndex++ }
+    function previousItem () { articleList.currentIndex-- }
 
     ItemListView {
        id: articleList
@@ -96,13 +99,6 @@ Kirigami.ScrollablePage {
              checkable: true
              checked: true
              displayHint: Kirigami.Action.DisplayHint.KeepVisible
-         }
-         right: Kirigami.Action {
-             text: qsTr("Search")
-             iconName: "search"
-             checkable: true
-             checked: false
-             displayHint: Kirigami.Action.DisplayHint.KeepVisible | Kirigami.Action.DisplayHint.IconOnly
          }
     }
 }
