@@ -98,6 +98,7 @@ void FeedListModel::initialize()
 {
     auto *q = manager()->startFeedQuery();
     QObject::connect(q, &FeedStorageOperation::finished, this, &FeedListModel::slotFeedQueryFinished);
+    QObject::connect(manager(), &FeedManager::itemAdded, this, &FeedListModel::slotItemAdded);
     QObject::connect(manager(), &FeedManager::itemReadChanged, this, &FeedListModel::slotItemReadChanged);
     QObject::connect(manager(), &FeedManager::feedStatusChanged, this, &FeedListModel::slotFeedStatusChanged);
 }
