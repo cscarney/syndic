@@ -21,9 +21,6 @@ public:
     explicit FeedManager(QObject *parent = nullptr);
     ~FeedManager();
 
-    /* Returns a model owned by the FeedManager (parent=this) */
-    Q_INVOKABLE QAbstractItemModel *getFeedListModel();
-
     FeedQuery *startFeedQuery();
 
     Q_INVOKABLE void setRead(qint64 id, bool value=true);
@@ -32,6 +29,7 @@ public:
 
     ItemQuery *startQuery(std::optional<qint64> feedFilter, bool unreadFilter);
     LoadStatus getFeedStatus(qint64 feedId);
+    qint64 getFeedUnreadCount(qint64 feedId);
 
     void requestUpdate();
     void requestUpdate(qint64 feedId);

@@ -13,7 +13,7 @@ struct FeedListEntry {
     LoadStatus status;
     int unreadCount;
 
-    inline bool matchItem(const StoredItem item)
+    inline bool matchItem(const StoredItem &item)
     {
         switch (entryType) {
         case FeedListModel::SingleFeedType:

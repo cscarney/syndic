@@ -12,7 +12,6 @@ struct FeedManager::PrivData {
     FeedManager *parent;
     std::unique_ptr<FeedStorage> storage;
     std::unique_ptr<UpdateScheduler> updateScheduler;
-    FeedListModel *feedList;
 
     PrivData(FeedManager *parent);
     void configureUpdater();
@@ -30,14 +29,8 @@ FeedManager::~FeedManager() = default;
 FeedManager::PrivData::PrivData(FeedManager *parent) :
     parent(parent),
     storage(std::make_unique<SqliteFeedStorage>()),
-    updateScheduler(std::make_unique<UpdateScheduler>()),
-    feedList(new FeedListModel(parent))
+    updateScheduler(std::make_unique<UpdateScheduler>())
 { }
-
-QAbstractItemModel *FeedManager::getFeedListModel()
-{
-    return priv->feedList;
-}
 
 FeedQuery *FeedManager::startFeedQuery()
 {
