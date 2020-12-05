@@ -4,13 +4,13 @@ import org.kde.kirigami 2.7 as Kirigami
 AbstractPlaceholderPage {
     property var model;
 
-    iconName: "Finished"
+    iconName: "mail-read-symbolic"
     headingText: "All Read"
 
     actions {
         main: Kirigami.Action {
             text: qsTr("Refresh Feed")
-            iconName: "reload"
+            iconName: "view-refresh"
             onTriggered: model.requestUpdate()
         }
     }

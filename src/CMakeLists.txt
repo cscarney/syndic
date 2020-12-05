@@ -42,5 +42,6 @@ target_link_libraries(feedkeeper
     feedstorage
     )
 
+install(TARGETS feedkeeper DESTINATION bin)
 
     

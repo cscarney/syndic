@@ -11,7 +11,7 @@ AbstractPlaceholderPage {
     actions {
         main: Kirigami.Action {
             text: qsTr("Retry")
-            iconName: "reload"
+            iconName: "view-refresh"
             onTriggered: model.requestUpdate()
         }
     }

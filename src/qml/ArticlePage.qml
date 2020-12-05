@@ -96,6 +96,7 @@ Kirigami.ScrollablePage {
             onCheckedChanged: feedManager.setRead(item.id, !checked)
             displayHint: Kirigami.Action.DisplayHint.KeepVisible
         }
+        /*
         left: Kirigami.Action {
             text: qsTr("Star")
             iconName: checked ? "starred-symbolic" : "non-starred-symbolic"
@@ -103,7 +104,8 @@ Kirigami.ScrollablePage {
             checked: item.isStarred ? true : false
             onCheckedChanged: feedManager.setStarred(item.id, checked)
             displayHint: Kirigami.Action.DisplayHint.KeepVisible
-        }
+        } */
+
         /* right: Kirigami.Action {
             text: qsTr("Share...")
             iconName: "document-share"
