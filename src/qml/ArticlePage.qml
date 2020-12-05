@@ -63,28 +63,50 @@ Kirigami.ScrollablePage {
             id: animateScroll
             enabled: false
             NumberAnimation {
-                duration: 1000
+                duration: Kirigami.Units.longDuration
                 easing.type: Easing.OutExpo
+                onRunningChanged: if (!running) scroller.returnToBounds()
             }
         }
     }
 
-    Keys.onSpacePressed: {
-        if (!scroller.atYEnd) {
-            animateScroll.enabled = true
-            scroller.contentY = scroller.contentY + scroller.height * 0.8
-            animateScroll.enabled = false
-        } else {
-            nextItem()
+    function pageUpDown(increment) {
+        animateScroll.enabled = true
+        scroller.contentY = scroller.contentY + (increment * scroller.height * 0.8)
+        animateScroll.enabled = false
+    }
+
+    Keys.onPressed: {
+        switch (event.key) {
+        case Qt.Key_Space:
+            if (!scroller.atYEnd) {
+                pageUpDown(1);
+            } else {
+                nextItem();
+            }
+            break;
+
+        case Qt.Key_Left:
+            previousItem();
+            break;
+
+        case Qt.Key_Right:
+            nextItem();
+            break;
+
+        case Qt.Key_PageUp:
+            pageUpDown(-1);
+            break;
+
+        case Qt.Key_PageDown:
+            pageUpDown(1);
+            break;
+
+        default:
+            event.accepted = false
+            return;
         }
-    }
-
-    Keys.onLeftPressed: {
-        previousItem()
-    }
-
-    Keys.onRightPressed: {
-        nextItem()
+        event.accepted = true
     }
 
     actions {
