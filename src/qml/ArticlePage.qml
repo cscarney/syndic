@@ -39,6 +39,7 @@ Kirigami.ScrollablePage {
     Flickable {
         id: scroller
         anchors.fill: parent
+        // focus: true
 
         /* setting the content width based on the page width, rather
           than the flickable width to avoid a binding loop:
@@ -69,12 +70,10 @@ Kirigami.ScrollablePage {
             }
         }
     }
-    flickable: scroller
-    mainItem: scroller
 
     function pageUpDown(increment) {
         animateScroll.enabled = true
-        scroller.contentY = scroller.contentY + (increment * scroller.height * 0.8)
+        scroller.contentY = scroller.contentY + (increment * scroller.height)
         animateScroll.enabled = false
     }
 
@@ -82,7 +81,7 @@ Kirigami.ScrollablePage {
         switch (event.key) {
         case Qt.Key_Space:
             if (!scroller.atYEnd) {
-                pageUpDown(1);
+                pageUpDown(0.9);
             } else {
                 nextItem();
             }
@@ -97,15 +96,14 @@ Kirigami.ScrollablePage {
             break;
 
         case Qt.Key_PageUp:
-            pageUpDown(-1);
+            pageUpDown(-0.9);
             break;
 
         case Qt.Key_PageDown:
-            pageUpDown(1);
+            pageUpDown(0.9);
             break;
 
         default:
-            event.accepted = false
             return;
         }
         event.accepted = true
@@ -137,8 +135,17 @@ Kirigami.ScrollablePage {
         } */
     }
 
-    OverlayMessage {
-        text: articleView.hoveredLink
-        Component.onCompleted: parent = overlay
+    data: Item {
+        OverlayMessage {
+            text: articleView.hoveredLink
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            Component.onCompleted: parent = overlay
+        }
+
+        FontMetrics {
+            id: fontMetrics
+        }
     }
 }

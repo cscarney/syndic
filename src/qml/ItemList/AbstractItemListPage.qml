@@ -94,7 +94,7 @@ Kirigami.ScrollablePage {
         }
          left: Kirigami.Action {
              id: unreadFilterAction
-             text: qsTr("Hide Read")
+             text: qsTr("Unread Only")
              iconName: "view-filter"
              checkable: true
              checked: true

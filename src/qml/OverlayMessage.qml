@@ -7,7 +7,6 @@ import org.kde.kirigami 2.7 as Kirigami
 RowLayout {
     id: root
     property alias text: messageLabel.text
-    anchors.bottom: parent.bottom
     Kirigami.Theme.colorSet: Kirigami.Theme.Tooltip
     Kirigami.Theme.inherit: false
 

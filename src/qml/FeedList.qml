@@ -44,6 +44,7 @@ ScrollView {
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                     text: model.name
+                    color: highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor;
                     font.weight: model.unreadCount !== 0 ? Font.Black : Font.Light
                 }
 
