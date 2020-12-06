@@ -19,5 +19,6 @@
         <file>qml/Placeholders/ErrorPlaceholderPage.qml</file>
         <file>qml/Placeholders/UpdatingPlaceholderPage.qml</file>
         <file>qml/Placeholders/EmptyFeedPlaceholderPage.qml</file>
+        <file>qml/OverlayMessage.qml</file>
     </qresource>
 </RCC>

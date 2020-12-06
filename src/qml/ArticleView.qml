@@ -16,6 +16,7 @@ ColumnLayout {
     property var item
     property var firstImage: ""
     property var textWithoutImages: ""
+    property var hoveredLink: titleMouse.containsMouse ? item.url : contentTextEdit.hoveredLink
 
     readonly property string textStyle: "<style>
     * {
@@ -42,10 +43,10 @@ ColumnLayout {
         color: Kirigami.Theme.textColor
         textFormat: Text.RichText
 
-
         MouseArea {
             id: titleMouse
             anchors.fill: parent
+            hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onPressed: Qt.openUrlExternally(item.url)
         }

@@ -69,6 +69,8 @@ Kirigami.ScrollablePage {
             }
         }
     }
+    flickable: scroller
+    mainItem: scroller
 
     function pageUpDown(increment) {
         animateScroll.enabled = true
@@ -118,6 +120,7 @@ Kirigami.ScrollablePage {
             onCheckedChanged: feedManager.setRead(item.id, !checked)
             displayHint: Kirigami.Action.DisplayHint.KeepVisible
         }
+
         /*
         left: Kirigami.Action {
             text: qsTr("Star")
@@ -132,5 +135,10 @@ Kirigami.ScrollablePage {
             text: qsTr("Share...")
             iconName: "document-share"
         } */
+    }
+
+    OverlayMessage {
+        text: articleView.hoveredLink
+        Component.onCompleted: parent = overlay
     }
 }
