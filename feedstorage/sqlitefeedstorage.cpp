@@ -144,29 +144,43 @@ FeedQuery *SqliteFeedStorage::getFeeds()
     });
 }
 
-/*
-FeedStorage::FeedQuery *SqliteFeedStorage::storeFeed(const FeedSource::Feed &feed)
+FeedQuery *SqliteFeedStorage::storeFeed(QUrl url)
 {
-    return doAsync<FeedQuery>([this, feed](auto op){
-        auto localId = QString::number(feed.id);
+    return doAsync<FeedQuery>([this, url](auto op){
+        auto localId = url.toString();
+        auto displayName = url.host();
         StoredFeed result = {
-            .id = 0, // overwritten below
-            .sourceId = 0, // TODO not robust to multiple sources
+            .id = 0, // overridden on insert
+            .sourceId = 0,
             .localId = localId,
             .headers = {
-                .name = feed.name,
-                .url = feed.url
+                .name = displayName,
+                .url = url.toString()
             }
         };
 
         auto id = m_db.selectFeedId(0, localId);
-        if (!id) {
-            m_db.insertFeed(result);
+        if (id) {
+            qDebug() << "trying to insert feed for " << url << "which already exists";
+            op->result = {};
         } else {
-            result.id = *id;
-            // TODO update feed headers
+            m_db.insertFeed(result);
+            op->result = {result};
         }
-        op->result = {result};
     });
 }
-*/
+
+FeedQuery *SqliteFeedStorage::updateFeed(qint64 id, Syndication::FeedPtr feed)
+{
+    return doAsync<FeedQuery>([this, id, feed](auto op){
+        auto oldItem = m_db.selectFeed(id);
+        auto newName = feed->title();
+        if (oldItem.headers.name != newName) {
+            oldItem.headers.name = newName;
+            m_db.updateFeed(oldItem);
+            op->result = {oldItem};
+        } else {
+            op->result = {};
+        }
+    });
+}

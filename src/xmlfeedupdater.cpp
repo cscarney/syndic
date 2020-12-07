@@ -18,36 +18,45 @@ void XMLFeedUpdater::run()
 
 void XMLFeedUpdater::loadingComplete(Syndication::Loader *loader, Syndication::FeedPtr feed, Syndication::ErrorCode status)
 {
+    QString errorMessage;
     switch (status) {
     case Syndication::Success:
         finish(feed);
-        break;
+        return;
     case Syndication::Aborted:
         qDebug() << "load aborted for " << m_url;
-        break;
+        return;
     case Syndication::Timeout:
-        setError(tr("Timeout", "error message"));
+        errorMessage = tr("Timeout", "error message");
         break;
     case Syndication::UnknownHost:
-        setError(tr("Unknown Host", "error message"));
+        errorMessage = tr("Unknown Host", "error message");
         break;
     case Syndication::FileNotFound:
-        setError(tr("File Not Found", "error message"));
+        errorMessage = tr("File Not Found", "error message");
         break;
     case Syndication::OtherRetrieverError:
-        setError(tr("Retriever Error", "error message"));
+        errorMessage = tr("Retriever Error", "error message");
         break;
     case Syndication::InvalidXml:
-        setError(tr("Invalid XML", "error message"));
+        errorMessage = tr("Invalid XML", "error message");
         break;
     case Syndication::XmlNotAccepted:
-        setError(tr("XML Not Accepted", "error message"));
+        errorMessage = tr("XML Not Accepted", "error message");
         break;
     case Syndication::InvalidFormat:
-        setError(tr("Invalid Format", "error message"));
+        errorMessage = tr("Invalid Format", "error message");
         break;
     default:
         qDebug() << "unknown error loading " << m_url;
-        setError(tr("Unknown Error", "error message"));
+        errorMessage = tr("Unknown Error", "error message");
+    }
+
+    // try the discovered url
+    if (loader->discoveredFeedURL().isValid()) {
+        m_url = loader->discoveredFeedURL();
+        run();
+    } else {
+        setError(errorMessage);
     }
 }

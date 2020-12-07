@@ -361,9 +361,8 @@ QVector<StoredFeed> FeedDatabase::selectAllFeeds()
 StoredFeed FeedDatabase::selectFeed(qint64 id)
 {
     QSqlQuery q(db());
-    q.prepare(
-                "SELECT "+feed_fields+" FROM "+feed_join+
-                " WHERE id=:id;");
+    q.prepare("SELECT "+feed_fields+" FROM "+feed_join+
+              " WHERE Feed.id=:id");
     q.bindValue(":id", id);
     if (!q.exec()) {
         qDebug() << "SQL Error in selectFeed: " + q.lastError().text();
@@ -384,7 +383,7 @@ StoredFeed FeedDatabase::selectFeed(qint64 source, QString localId)
     QSqlQuery q(db());
     q.prepare(
                 "SELECT "+feed_fields+" FROM " + feed_join +
-                " WHERE source=:source AND localId=:localId");
+                " WHERE Feed.source=:source AND Feed.localId=:localId");
     q.bindValue(":source", source);
     q.bindValue(":localId", localId);
     if (!q.exec()) {
@@ -433,5 +432,18 @@ void FeedDatabase::insertFeed(StoredFeed &feed)
         qDebug() << "SQL Error in insertFeed: " + q.lastError().text();
     } else {
         feed.id = q.lastInsertId().toLongLong();
+    }
+}
+
+void FeedDatabase::updateFeed(const StoredFeed &feed)
+{
+    QSqlQuery q(db());
+    q.prepare("UPDATE Feed SET "
+              "displayName=:displayName "
+              "WHERE id=:id");
+    q.bindValue(":displayName", feed.headers.name);
+    q.bindValue(":id", feed.id);
+    if (!q.exec()){
+        qDebug() << "SQL Error in updateFeed: " << q.lastError().text();
     }
 }

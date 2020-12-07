@@ -61,7 +61,12 @@ void FeedManager::setStarred(qint64 id, bool value)
 
 void FeedManager::addFeed(QUrl url)
 {
-    // TODO implement this
+    qDebug() << "addFeed called";
+    auto q = priv->storage->storeFeed(url);
+    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
+        for (auto &feed : q->result) emit feedAdded(feed);
+    });
+    priv->updateScheduler->schedule(q);
 }
 
 ItemQuery *FeedManager::startQuery(std::optional<qint64> feedFilter, bool unreadFilter)
@@ -92,12 +97,19 @@ bool FeedManager::updatesInProgress()
 void FeedManager::slotFeedLoaded(FeedUpdater *updater, Syndication::FeedPtr content)
 {
     qDebug() << "Got Feed " << content->title() << "\n";
+    auto updateFeedQuery = priv->storage->updateFeed(updater->feedId(), content);
+    auto id = updater->feedId();
+    QObject::connect(updateFeedQuery, &FeedStorageOperation::finished, this, [this, id, updateFeedQuery]{
+        auto &result = updateFeedQuery->result;
+        for (auto &feed : result) feedNameChanged(id, feed.headers.name);
+    });
+
     auto items = content->items();
     for (auto item : items) {
         auto *q = priv->storage->storeItem(updater->feedId(), item);
         QObject::connect(q, &FeedStorageOperation::finished, this, [this,q]{
             auto &result = q->result;
-            for (auto item : result) itemAdded(item);
+            for (auto &item : result) itemAdded(item);
         });
     }
 }

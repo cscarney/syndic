@@ -35,6 +35,7 @@ public:
     StoredFeed selectFeed(qint64 source, QString localId);
     std::optional<qint64> selectFeedId(qint64 source, QString localId);
     void insertFeed(StoredFeed &feed);
+    void updateFeed(const StoredFeed &feed);
 };
 
 #endif // FEEDDATABASE_H

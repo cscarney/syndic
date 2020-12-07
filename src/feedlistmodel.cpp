@@ -101,6 +101,8 @@ void FeedListModel::initialize()
     QObject::connect(manager(), &FeedManager::itemAdded, this, &FeedListModel::slotItemAdded);
     QObject::connect(manager(), &FeedManager::itemReadChanged, this, &FeedListModel::slotItemReadChanged);
     QObject::connect(manager(), &FeedManager::feedStatusChanged, this, &FeedListModel::slotFeedStatusChanged);
+    QObject::connect(manager(), &FeedManager::feedNameChanged, this, &FeedListModel::slotFeedNameChanged);
+    QObject::connect(manager(), &FeedManager::feedAdded, this, &FeedListModel::slotFeedAdded);
 }
 
 int FeedListModel::rowCount(const QModelIndex &parent) const
@@ -187,6 +189,25 @@ void FeedListModel::slotFeedStatusChanged(qint64 feedId, LoadStatus loadStatus)
         auto &entry = priv->feeds[i];
         if ((entry.entryType == SingleFeedType) && (entry.id == feedId)) {
             entry.status = loadStatus;
+            dataChanged(index(i), index(i));
+        }
+    }
+}
+
+void FeedListModel::slotFeedAdded(StoredFeed feed)
+{
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    priv->addItem(feed);
+    endInsertRows();
+}
+
+void FeedListModel::slotFeedNameChanged(qint64 feedId, QString newName)
+{
+    auto count = priv->feeds.count();
+    for (int i = 0; i<count; i++) {
+        auto &entry = priv->feeds[i];
+        if ((entry.entryType == SingleFeedType) && (entry.id == feedId)) {
+            entry.name = newName;
             dataChanged(index(i), index(i));
         }
     }

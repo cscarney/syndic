@@ -46,6 +46,7 @@ ScrollView {
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                     text: model.name
+                    textFormat: Text.StyledText
                     color: fgColor
                     font.weight: model.unreadCount !== 0 ? Font.Black : Font.Light
                 }

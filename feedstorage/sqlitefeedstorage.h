@@ -25,7 +25,8 @@ public:
     ItemQuery *updateItemStarred(qint64 itemId, bool isStarred) override final;
 
     FeedQuery *getFeeds() override final;
-    // FeedQuery *storeFeed(const FeedSource::Feed &feed) override final;
+    FeedQuery *storeFeed(QUrl url) override final;
+    FeedQuery *updateFeed(qint64 id, Syndication::FeedPtr feed) override final;
 };
 
 #endif // SQLITEFEEDSTORAGE_H

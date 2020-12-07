@@ -40,7 +40,10 @@ signals:
     void itemChanged(StoredItem const &item);
     void itemReadChanged(StoredItem const &item);
     void itemStarredChanged(StoredItem const &item);
+
+    void feedAdded(StoredFeed const &feed);
     void feedStatusChanged(qint64 feedId, LoadStatus status);
+    void feedNameChanged(qint64 feedId, QString newName);
 
 private:
     struct PrivData;

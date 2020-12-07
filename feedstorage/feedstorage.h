@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <Syndication/Item>
+#include <Syndication/Feed>
 #include "feeddatabase.h"
 #include "feedstorageoperation.h"
 
@@ -22,7 +23,8 @@ public:
     virtual ItemQuery *updateItemStarred(qint64 itemId, bool isStarred) = 0;
 
     virtual FeedQuery *getFeeds() = 0;
-    // virtual FeedQuery *storeFeed(FeedSource::Feed const &feed) = 0; /* TODO use KSyndication types */
+    virtual FeedQuery *storeFeed(QUrl url)=0;
+    virtual FeedQuery *updateFeed(qint64 id, Syndication::FeedPtr feed)=0;
 
     inline ItemQuery *startItemQuery(std::optional<qint64> feedFilter, bool unreadOnly)
     {
