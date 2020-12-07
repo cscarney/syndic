@@ -110,12 +110,17 @@ ColumnLayout {
         onLinkActivated: function(link){
             Qt.openUrlExternally(link)
         }
+
         MouseArea
         {
             id: contentMouse
             anchors.fill: parent
             cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
-            onPressed:  mouse.accepted = false
+            onPressed: {
+                // HACK only select by mouse if we're using a mouse
+                contentTextEdit.selectByMouse = (mouse.source === Qt.MouseEventNotSynthesized)
+                mouse.accepted = false
+            }
             onWheel: {
                     if (wheel.modifiers & Qt.ControlModifier) {
                         parent.font.pointSize += (wheel.angleDelta.y/Math.abs(wheel.angleDelta.y))

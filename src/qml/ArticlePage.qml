@@ -36,6 +36,15 @@ Kirigami.ScrollablePage {
         return {images: images, text:text}
     }
 
+    /* Gets reparented to the overlay by ScrollablePage */
+    OverlayMessage {
+        id: hoveredLinkToolTip
+        text: articleView.hoveredLink
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+    }
+
     Flickable {
         id: scroller
         anchors.fill: parent
@@ -133,19 +142,5 @@ Kirigami.ScrollablePage {
             text: qsTr("Share...")
             iconName: "document-share"
         } */
-    }
-
-    data: Item {
-        OverlayMessage {
-            text: articleView.hoveredLink
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            Component.onCompleted: parent = overlay
-        }
-
-        FontMetrics {
-            id: fontMetrics
-        }
     }
 }

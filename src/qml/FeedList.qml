@@ -27,6 +27,8 @@ ScrollView {
         clip: true
 
         delegate: Kirigami.AbstractListItem {
+            property color fgColor: highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+
             separatorVisible: false
             width: parent.width
             topPadding: Kirigami.Units.largeSpacing
@@ -44,7 +46,7 @@ ScrollView {
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                     text: model.name
-                    color: highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor;
+                    color: fgColor
                     font.weight: model.unreadCount !== 0 ? Font.Black : Font.Light
                 }
 
@@ -52,7 +54,9 @@ ScrollView {
                     Layout.alignment: Qt.AlignRight
                     Layout.preferredHeight: feedNameLabel.implicitHeight
                     Layout.preferredWidth: feedNameLabel.implicitHeight
-                    source: "view-refresh"
+                    source: "content-loading-symbolic"
+                    isMask: true
+                    color: fgColor
                     visible: model.status === Enums.Updating
                 }
 
@@ -60,7 +64,9 @@ ScrollView {
                     Layout.alignment: Qt.AlignRight
                     Layout.preferredHeight: feedNameLabel.implicitHeight
                     Layout.preferredWidth: feedNameLabel.implicitHeight
-                    source: "error"
+                    source: "dialog-error-symbolic"
+                    isMask: true
+                    color: fgColor
                     visible: model.status === Enums.Error
                 }
 
