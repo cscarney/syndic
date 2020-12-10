@@ -11,6 +11,8 @@
 #include "enums.h"
 #include "feedstorageoperation.h"
 
+namespace FeedCore {
+
 class FeedUpdater;
 
 class UpdateScheduler : public QObject
@@ -19,30 +21,32 @@ class UpdateScheduler : public QObject
 public:
     explicit UpdateScheduler(QObject *parent = nullptr);
     void add(qint64 feedId, QUrl url);
-    void schedule(qint64 feedId, QUrl url, time_t updateInterval, time_t lastUpdate, time_t timestamp);
-    void schedule(qint64 feedId, QUrl url, time_t updateInterval, time_t lastUpdate);
+    void schedule(const FeedRef &feed, time_t updateInterval, time_t lastUpdate, time_t timestamp);
+    void schedule(const FeedRef &feed, time_t updateInterval, time_t lastUpdate);
     void schedule(FeedQuery *q);
-    void unschedule(qint64 feedId);
+    void unschedule(const FeedRef &feed);
     void start(int resolution=60000);
     void stop();
-    void update(qint64 feedId);
+    void update(const FeedRef &feed);
     void updateStale();
     void updateAll();
-    LoadStatus getStatus(qint64 feedId);
+    LoadStatus getStatus(const FeedRef &feed);
     bool updatesInProgress();
 
 public slots:
-    void slotFeedStatusChanged(FeedUpdater *updater, LoadStatus status);
+    void slotFeedStatusChanged(FeedCore::FeedUpdater *updater, FeedCore::LoadStatus status);
 
 signals:
-    void feedLoaded(FeedUpdater *updater, Syndication::FeedPtr feed);
-    void feedStatusChanged(FeedUpdater *updater, LoadStatus status);
+    void feedLoaded(FeedCore::FeedUpdater *updater, const Syndication::FeedPtr &feed);
+    void feedStatusChanged(FeedCore::FeedUpdater *updater, FeedCore::LoadStatus status);
 
 private:
     QList<FeedUpdater *> m_schedule;
     QTimer m_timer;
-    QSet<qint64>m_active;
-    QHash<qint64, FeedUpdater *> m_updaters;
+    QSet<FeedRef>m_active;
+    QHash<FeedRef, FeedUpdater *> m_updaters;
 };
+
+}
 
 #endif // UPDATESCHEDULER_H

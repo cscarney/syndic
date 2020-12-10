@@ -1,7 +1,10 @@
+#include "feeditemmodel.h"
+
 #include <QDebug>
 
-#include "feeditemmodel.h"
-#include "feedmanager.h"
+#include "context.h"
+#include "storeditem.h"
+using namespace FeedCore;
 
 FeedItemModel::FeedItemModel(QObject * parent):
     ItemModel(parent)
@@ -9,41 +12,57 @@ FeedItemModel::FeedItemModel(QObject * parent):
 
 }
 
-qint64 FeedItemModel::feedId()
+FeedRef FeedItemModel::feed() const
 {
-    return m_feedId;
+    return m_feed;
 }
 
-void FeedItemModel::setFeedId(qint64 feedId)
+void FeedItemModel::setFeed(const FeedRef &feed)
 {
-    if (m_feedId != feedId) {
-        m_feedId = feedId;
-        if (active()) refresh();
-        emit feedIdChanged();
+    if (m_feed != feed) {
+        m_feed = feed;
+        if (active()) {
+            refresh();
+        }
+        emit feedChanged();
     }
+}
+
+FeedRefWrapper FeedItemModel::feedWrapper() const
+{
+    return feed();
+}
+
+void FeedItemModel::setFeedWrapper(const FeedRefWrapper &feed)
+{
+    setFeed(feed);
 }
 
 void FeedItemModel::requestUpdate()
 {
-    manager()->requestUpdate(feedId());
+    manager()->requestUpdate(feed());
 }
 
 ItemQuery *FeedItemModel::startQuery()
 {
-    return manager()->startQuery(m_feedId, unreadFilter());
+    if (m_feed.isNull()) {
+        qDebug() << "starting query with no feed set!";
+        return nullptr;
+    }
+    return manager()->startQuery(m_feed, unreadFilter());
 }
 
 bool FeedItemModel::itemFilter(const StoredItem &item)
 {
-    return item.feedId == m_feedId;
+    return item.feedId == m_feed;
 }
 
 void FeedItemModel::setStatusFromUpstream()
 {
     auto *manager = this->manager();
-    if (!manager) {
+    if (manager == nullptr) {
         setStatus(LoadStatus::Idle);
         return;
     }
-    setStatus( manager->getFeedStatus(m_feedId));
+    setStatus( manager->getFeedStatus(m_feed));
 }

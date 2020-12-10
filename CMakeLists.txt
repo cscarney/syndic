@@ -18,7 +18,7 @@ find_package(ECM CONFIG REQUIRED)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(ECMInstallIcons)
 
- find_package(Qt5 COMPONENTS Core Qml Widgets Quick QuickControls2 Sql REQUIRED)
+ find_package(Qt5 COMPONENTS Core Qml Network Widgets Quick QuickControls2 Sql REQUIRED)
 
  find_package(KF5Declarative REQUIRED)
  find_package(KF5Syndication REQUIRED)
@@ -26,9 +26,9 @@ include(ECMInstallIcons)
  set(CMAKE_CXX_FLAGS_DEBUG "-Wall -Werror")
  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto")
  
- include_directories(feedsource feedstorage src)
+ include_directories(feedcore src)
 
  add_subdirectory(data)
- add_subdirectory(feedstorage)
+ add_subdirectory(feedcore)
  add_subdirectory(src)
 

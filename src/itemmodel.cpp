@@ -1,14 +1,12 @@
-#include <QSortFilterProxyModel>
-#include <QDebug>
-#include <QList>
-
 #include "itemmodel.h"
-#include "feedmanager.h"
-#include "feedstorageoperation.h"
+
+#include "storeditem.h"
+#include "context.h"
+using namespace FeedCore;
 
 struct ItemModel::PrivData {
     QList<StoredItem> items;
-    bool unreadFilter;
+    bool unreadFilter = false;
     LoadStatus status = LoadStatus::Idle;
 };
 
@@ -20,10 +18,10 @@ ItemModel::ItemModel(QObject *parent) :
 }
 
 void ItemModel::initialize() {
-    auto m = manager();
-    QObject::connect(m, &FeedManager::itemAdded, this, &ItemModel::slotItemAdded);
-    QObject::connect(m, &FeedManager::itemChanged, this, &ItemModel::slotItemChanged);
-    QObject::connect(m, &FeedManager::feedStatusChanged, this, &ItemModel::slotFeedStatusChanged);
+    auto *m = manager();
+    QObject::connect(m, &Context::itemAdded, this, &ItemModel::slotItemAdded);
+    QObject::connect(m, &Context::itemChanged, this, &ItemModel::slotItemChanged);
+    QObject::connect(m, &Context::feedStatusChanged, this, &ItemModel::slotFeedStatusChanged);
     refresh();
 }
 
@@ -37,8 +35,11 @@ void ItemModel::setUnreadFilter(bool unreadFilter)
     if (priv->unreadFilter != unreadFilter) {
         priv->unreadFilter = unreadFilter;
         if (active()) {
-            if (unreadFilter) refresh();
-            else refreshMerge();
+            if (unreadFilter) {
+                refresh();
+            } else {
+                refreshMerge();
+            }
         }
         emit unreadFilterChanged();
     }
@@ -58,13 +59,14 @@ void ItemModel::refresh()
 {
     assert(manager() != nullptr);
     setStatus(LoadStatus::Loading);
-    auto q = startQuery();
+    auto *q = startQuery();
     QObject::connect(q, &FeedStorageOperation::finished, this, &ItemModel::slotQueryFinished);
 }
 
 void ItemModel::markAllRead()
 {
-    for (const auto &item : priv->items) {
+    const auto &items = priv->items;
+    for (const auto &item : items) {
         manager()->setRead(item.id, true);
     }
 }
@@ -89,7 +91,7 @@ void ItemModel::slotQueryFinished()
 {
     auto *q = static_cast<ItemQuery *>(QObject::sender());
     beginResetModel();
-    priv->items = QList<StoredItem>::fromVector(q->result);
+    priv->items = QList<StoredItem>::fromVector(q->result());
     endResetModel();
     setStatusFromUpstream();
 }
@@ -99,7 +101,8 @@ void ItemModel::slotQueryFinishedMerge()
     auto *q = static_cast<ItemQuery *>(QObject::sender());
     auto &items = priv->items;
     int itemIndex = 0;
-    for (const auto &resultItem : q->result) {
+    const auto &result = q->result();
+    for (const auto &resultItem : result) {
         while ((itemIndex < items.size()) && (items[itemIndex].headers.date > resultItem.headers.date)) {
             itemIndex++;
         }
@@ -113,10 +116,12 @@ void ItemModel::slotQueryFinishedMerge()
     }
 }
 
-inline qint64 indexForDate(const QList<StoredItem> &list, QDateTime dt)
+inline qint64 indexForDate(const QList<StoredItem> &list, const QDateTime &dt)
 {
     for (int i=0; i<list.count(); i++) {
-        if (list.at(i).headers.date <= dt) return i;
+        if (list.at(i).headers.date <= dt) {
+            return i;
+        }
     }
     return list.count();
 }
@@ -126,7 +131,7 @@ void ItemModel::slotItemAdded(StoredItem const &item)
     if ((itemFilter(item))
          && (!priv->unreadFilter || !item.status.isRead))
     {
-        auto idx = indexForDate(priv->items, item.headers.date);
+        const auto &idx = indexForDate(priv->items, item.headers.date);
         beginInsertRows(QModelIndex(), idx, idx);
         priv->items.insert(idx, item);
         endInsertRows();
@@ -135,24 +140,23 @@ void ItemModel::slotItemAdded(StoredItem const &item)
 
 void ItemModel::slotItemChanged(StoredItem const &item)
 {
-    for(auto i=0; i<priv->items.size(); i++) {
-        if (priv->items[i].id == item.id) {
-            // changing the date interferes with the selection
-            // when the list is sorted by date, so don't do that
-            auto newItem = item;
-            newItem.headers.date = priv->items[i].headers.date;
-
-            priv->items[i] = newItem;
+    const int size = priv->items.size();
+    for(int i=0; i<size; i++) {
+        StoredItem &listItem = priv->items[i];
+        if (listItem.id == item.id) {
+            listItem = item;
             auto idx = index(i);
-            dataChanged(idx, idx);
+            emit dataChanged(idx, idx);
             break;
         }
     }
 }
 
-void ItemModel::slotFeedStatusChanged(qint64 feedId, LoadStatus status)
+void ItemModel::slotFeedStatusChanged(const FeedRef &feed, LoadStatus status)
 {
-    if (this->status() == LoadStatus::Loading) return;
+    if (this->status() == LoadStatus::Loading) {
+        return;
+    }
     setStatusFromUpstream();
 }
 
@@ -173,22 +177,24 @@ void ItemModel::insertAndNotify(qint64 index, const StoredItem &item)
 
 void ItemModel::refreshMerge()
 {
-    auto q = startQuery();
+    auto *q = startQuery();
     QObject::connect(q, &FeedStorageOperation::finished, this, &ItemModel::slotQueryFinishedMerge);
 }
 
 int ItemModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
+    if (parent.isValid()) {
         return 0;
+    }
 
     return priv->items.size();
 }
 
 QVariant ItemModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
+    if (!index.isValid()) {
         return QVariant();
+    }
 
     int indexRow = index.row() ;
 

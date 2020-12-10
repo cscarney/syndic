@@ -1,23 +1,28 @@
+#include "feedlistmodel.h"
+
 #include <QString>
 #include <QVector>
 #include <QIcon>
-#include <QDebug>
 
-#include "feedlistmodel.h"
+#include "context.h"
+#include "feed.h"
+#include "storeditem.h"
+#include "feedstorageoperation.h"
+using namespace FeedCore;
 
 struct FeedListEntry {
-    qint64 id;
+    FeedRef feed;
     FeedListModel::EntryType entryType;
     QString name;
     QString icon;
     LoadStatus status;
     int unreadCount;
 
-    inline bool matchItem(const StoredItem &item)
+    inline bool matchItem(const StoredItem &item) const
     {
         switch (entryType) {
         case FeedListModel::SingleFeedType:
-            return id == item.feedId;
+            return feed == item.feedId;
 
         case FeedListModel::AllType:
             return true;
@@ -41,7 +46,7 @@ public:
     {}
 
     void addAllFeedsItem();
-    void addItem(const StoredFeed &feed);
+    void addItem(const FeedRef &feed);
     void incrementUnreadCounts(const StoredItem &matchItem, int increment);
 };
 
@@ -57,7 +62,7 @@ FeedListModel::~FeedListModel()=default;
 void FeedListModel::PrivData::addAllFeedsItem()
 {
     FeedListEntry item = {
-        .id=-1,
+        .feed=FeedRef(),
         .entryType=AllType,
         .name=tr("All Items"),
         .icon="folder-symbolic",
@@ -67,16 +72,16 @@ void FeedListModel::PrivData::addAllFeedsItem()
     feeds << item;
 }
 
-void FeedListModel::PrivData::addItem(const StoredFeed &feed)
+void FeedListModel::PrivData::addItem(const FeedRef &feed)
 {
     auto *manager = parent->manager();
     FeedListEntry item = {
-        .id=feed.id,
+        .feed=feed,
         .entryType=SingleFeedType,
-        .name=feed.headers.name,
+        .name=feed->name(),
         .icon="feed-subscribe",
-        .status=manager->getFeedStatus(feed.id),
-        .unreadCount=feed.unreadCount
+        .status=manager->getFeedStatus(feed),
+        .unreadCount=feed->unreadCount()
     };
     feeds << item;
 }
@@ -88,8 +93,8 @@ void FeedListModel::PrivData::incrementUnreadCounts(const StoredItem &matchItem,
         auto &entry = feeds[i];
         if (entry.matchItem(matchItem)){
             entry.unreadCount += increment;
-            auto index = parent->index(i);
-            parent->dataChanged(index, index, {Roles::UnreadCount});
+            const auto &index = parent->index(i);
+            emit parent->dataChanged(index, index, {Roles::UnreadCount});
         }
     }
 }
@@ -98,32 +103,34 @@ void FeedListModel::initialize()
 {
     auto *q = manager()->startFeedQuery();
     QObject::connect(q, &FeedStorageOperation::finished, this, &FeedListModel::slotFeedQueryFinished);
-    QObject::connect(manager(), &FeedManager::itemAdded, this, &FeedListModel::slotItemAdded);
-    QObject::connect(manager(), &FeedManager::itemReadChanged, this, &FeedListModel::slotItemReadChanged);
-    QObject::connect(manager(), &FeedManager::feedStatusChanged, this, &FeedListModel::slotFeedStatusChanged);
-    QObject::connect(manager(), &FeedManager::feedNameChanged, this, &FeedListModel::slotFeedNameChanged);
-    QObject::connect(manager(), &FeedManager::feedAdded, this, &FeedListModel::slotFeedAdded);
+    QObject::connect(manager(), &Context::itemAdded, this, &FeedListModel::slotItemAdded);
+    QObject::connect(manager(), &Context::itemReadChanged, this, &FeedListModel::slotItemReadChanged);
+    QObject::connect(manager(), &Context::feedStatusChanged, this, &FeedListModel::slotFeedStatusChanged);
+    QObject::connect(manager(), &Context::feedNameChanged, this, &FeedListModel::slotFeedNameChanged);
+    QObject::connect(manager(), &Context::feedAdded, this, &FeedListModel::slotFeedAdded);
 }
 
 int FeedListModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
+    if (parent.isValid()) {
         return 0;
+    }
 
     return priv->feeds.size();
 }
 
 QVariant FeedListModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
+    if (!index.isValid()) {
         return QVariant();
+    }
 
     int indexRow = index.row();
     const auto &entry = priv->feeds[indexRow];
 
     switch(role){
-        case Roles::Id:
-            return entry.id;
+        case Roles::Ref:
+            return QVariant::fromValue<FeedRefWrapper>(entry.feed);
 
         case Roles::Type:
             return entry.entryType;
@@ -148,7 +155,7 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
 QHash<int, QByteArray> FeedListModel::roleNames() const
 {
     return {
-        {Roles::Id, "id"},
+        {Roles::Ref, "feedRef"},
         {Roles::Type, "entryType"},
         {Roles::Name, "name"},
         {Roles::Icon, "icon"},
@@ -163,52 +170,54 @@ void FeedListModel::slotFeedQueryFinished()
     auto *q = static_cast<FeedQuery *>(QObject::sender());
     priv->feeds.clear();
     priv->addAllFeedsItem();
-    for (const auto &item : q->result){
+    for (const auto &item : q->result()){
         priv->addItem(item);
-        priv->feeds[0].unreadCount  += item.unreadCount;
+        priv->feeds[0].unreadCount  += item->unreadCount();
     }
     endResetModel();
 }
 
 void FeedListModel::slotItemReadChanged(const StoredItem &item)
 {
-    auto increment = item.status.isRead ? -1 : 1;
+    int increment = item.status.isRead ? -1 : 1;
     priv->incrementUnreadCounts(item, increment);
 }
 
 void FeedListModel::slotItemAdded(const StoredItem &item)
 {
-    if (item.status.isRead) return;
+    if (item.status.isRead) {
+        return;
+    }
     priv->incrementUnreadCounts(item, 1);
 }
 
-void FeedListModel::slotFeedStatusChanged(qint64 feedId, LoadStatus loadStatus)
+void FeedListModel::slotFeedStatusChanged(const FeedRef &feed, LoadStatus loadStatus)
 {
-    auto count = priv->feeds.count();
+    const int count = priv->feeds.count();
     for (int i = 0; i<count; i++) {
         auto &entry = priv->feeds[i];
-        if ((entry.entryType == SingleFeedType) && (entry.id == feedId)) {
+        if ((entry.entryType == SingleFeedType) && (entry.feed == feed)) {
             entry.status = loadStatus;
-            dataChanged(index(i), index(i));
+            emit dataChanged(index(i), index(i));
         }
     }
 }
 
-void FeedListModel::slotFeedAdded(StoredFeed feed)
+void FeedListModel::slotFeedAdded(const FeedRef &feed)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     priv->addItem(feed);
     endInsertRows();
 }
 
-void FeedListModel::slotFeedNameChanged(qint64 feedId, QString newName)
+void FeedListModel::slotFeedNameChanged(const FeedRef &feed, const QString &newName)
 {
-    auto count = priv->feeds.count();
+    const int count = priv->feeds.count();
     for (int i = 0; i<count; i++) {
         auto &entry = priv->feeds[i];
-        if ((entry.entryType == SingleFeedType) && (entry.id == feedId)) {
+        if ((entry.entryType == SingleFeedType) && (entry.feed == feed)) {
             entry.name = newName;
-            dataChanged(index(i), index(i));
+            emit dataChanged(index(i), index(i));
         }
     }
 }

@@ -2,6 +2,8 @@
 #define LOADSTATUS_H
 #include <QObject>
 
+namespace FeedCore {
+
 class Enums : public QObject {
     Q_OBJECT
 
@@ -18,5 +20,7 @@ public:
 };
 
 typedef Enums::LoadStatus LoadStatus;
+
+}
 
 #endif // LOADSTATUS_H

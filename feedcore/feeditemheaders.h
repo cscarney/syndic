@@ -4,11 +4,16 @@
 #include <QDateTime>
 #include <QUrl>
 
-struct FeedItemHeaders {
+namespace FeedCore {
+
+class FeedItemHeaders {
+public:
     QString headline;
     QString author;
     QDateTime date;
     QUrl url;
 };
+
+}
 
 #endif // FEEDITEMHEADERS_H

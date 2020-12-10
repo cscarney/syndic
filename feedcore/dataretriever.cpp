@@ -1,11 +1,11 @@
 #include "dataretriever.h"
+
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
-DataRetriever::DataRetriever() :
-    Syndication::DataRetriever()
-{
-}
+namespace FeedCore {
+
+DataRetriever::DataRetriever() = default;
 
 void DataRetriever::retrieveData(const QUrl &url)
 {
@@ -30,14 +30,16 @@ void DataRetriever::abort()
 void DataRetriever::slotFinished()
 {
     if (m_reply->error() == QNetworkReply::NoError) {
-        auto data = m_reply->readAll();
+        const auto &data = m_reply->readAll();
         emit dataRetrieved(data, true);
     } else if (m_reply->error() == QNetworkReply::InsecureRedirectError) {
-        auto location = m_reply->header(QNetworkRequest::LocationHeader);
+        const auto &location = m_reply->header(QNetworkRequest::LocationHeader);
         qDebug() << "insecure redirect to" << location;
         retrieveData(location.toUrl());
     } else {
         qDebug() << "Failed to get data:"<<m_reply->errorString();
         emit dataRetrieved({}, false);
     }
+}
+
 }

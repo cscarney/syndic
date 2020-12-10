@@ -10,25 +10,27 @@ class FeedItemModel : public ItemModel
 public:
     FeedItemModel(QObject *parent=nullptr);
 
-    qint64 feedId();
-    void setFeedId(qint64 feedId);
-    Q_PROPERTY(qint64 feedId READ feedId WRITE setFeedId NOTIFY feedIdChanged);
+    FeedCore::FeedRef feed() const;
+    void setFeed(const FeedCore::FeedRef &feedId);
 
+    void setFeedWrapper(const FeedCore::FeedRefWrapper &feed);
+    FeedCore::FeedRefWrapper feedWrapper() const;
+    Q_PROPERTY(FeedCore::FeedRefWrapper feed READ feedWrapper WRITE setFeedWrapper NOTIFY feedChanged);
 
 signals:
-    void feedIdChanged();
+    void feedChanged();
 
     // ItemModel interface
 public:
     void requestUpdate() override final;
 
 protected:
-    ItemQuery *startQuery() override final;
-    bool itemFilter(const StoredItem &item) override final;
+    FeedCore::ItemQuery *startQuery() override final;
+    bool itemFilter(const FeedCore::StoredItem &item) override final;
     void setStatusFromUpstream() override final;
 
 private:
-    qint64 m_feedId;
+    FeedCore::FeedRef m_feed;
 };
 
 #endif // FEEDITEMMODEL_H

@@ -1,7 +1,9 @@
+#include "allitemmodel.h"
+
 #include <optional>
 
-#include "allitemmodel.h"
-#include "feedmanager.h"
+#include "context.h"
+using namespace FeedCore;
 
 AllItemModel::AllItemModel(QObject *parent):
     ItemModel(parent)
@@ -17,7 +19,7 @@ void AllItemModel::requestUpdate()
 
 ItemQuery *AllItemModel::startQuery()
 {
-    return manager()->startQuery(std::nullopt, unreadFilter());
+    return manager()->startQuery(FeedRef(), unreadFilter());
 }
 
 bool AllItemModel::itemFilter(const StoredItem &item)

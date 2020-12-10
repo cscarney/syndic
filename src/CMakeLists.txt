@@ -1,29 +1,20 @@
 set(feedkeeper_HEADERS
     feedlistmodel.h
-    feedmanager.h
     itemmodel.h
     allitemmodel.h
     feeditemmodel.h
-    feedupdater.h
-    xmlfeedupdater.h
-    updatescheduler.h
     managedlistmodel.h
-    dataretriever.h
-    enums.h
     )
 
 set(feedkeeper_SRCS
     ${feedkeeper_HEADERS}
     feedlistmodel.cpp
-    feedmanager.cpp
     itemmodel.cpp
     allitemmodel.cpp
     feeditemmodel.cpp
-    feedupdater.cpp
-    xmlfeedupdater.cpp
-    updatescheduler.cpp
+
     managedlistmodel.cpp
-    dataretriever.cpp
+ 
     main.cpp
     resources.qrc
     )
@@ -39,7 +30,7 @@ target_link_libraries(feedkeeper
     KF5::Declarative
     KF5::QuickAddons
     KF5::Syndication
-    feedstorage
+    feedcore
     )
 
 install(TARGETS feedkeeper DESTINATION bin)

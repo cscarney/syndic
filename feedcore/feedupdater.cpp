@@ -1,9 +1,11 @@
 #include "feedupdater.h"
+
 #include <QTimer>
-#include <QDebug>
+
+namespace FeedCore {
 
 struct FeedUpdater::PrivData {
-    qint64 feedId;
+    FeedRef feed;
     time_t updateInterval;
     time_t lastUpdate;
     LoadStatus status = LoadStatus::Idle;
@@ -11,10 +13,10 @@ struct FeedUpdater::PrivData {
 };
 
 
-FeedUpdater::FeedUpdater(qint64 feedId, time_t updateInterval, time_t lastUpdate, QObject *parent) :
+FeedUpdater::FeedUpdater(const FeedRef &feed, time_t updateInterval, time_t lastUpdate, QObject *parent) :
     priv(std::make_unique<PrivData>())
 {
-    priv->feedId = feedId;
+    priv->feed = feed;
     priv->updateInterval = updateInterval;
     priv->lastUpdate = lastUpdate;
 }
@@ -52,9 +54,9 @@ QString FeedUpdater::error()
     return priv->errorMsg;
 }
 
-qint64 FeedUpdater::feedId()
+FeedRef FeedUpdater::feed()
 {
-    return priv->feedId;
+    return priv->feed;
 }
 
 time_t FeedUpdater::nextUpdate()
@@ -72,12 +74,11 @@ bool FeedUpdater::updateIfNecessary(time_t timestamp)
     if (needsUpdate(timestamp)) {
         start(timestamp);
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
-void FeedUpdater::finish(Syndication::FeedPtr content)
+void FeedUpdater::finish(const Syndication::FeedPtr &content)
 {
     emit feedLoaded(this, content);
     setStatus(LoadStatus::Idle);
@@ -93,4 +94,6 @@ void FeedUpdater::setError(const QString &errorMsg)
 {
     priv->errorMsg = errorMsg;
     setStatus(LoadStatus::Error);
+}
+
 }

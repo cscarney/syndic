@@ -4,6 +4,8 @@
 #include "feedstorage.h"
 #include "feeddatabase.h"
 
+namespace FeedCore {
+
 class SqliteFeedStorage : public FeedStorage
 {
     Q_OBJECT
@@ -18,15 +20,17 @@ public:
     ItemQuery *getAll() override final;
     ItemQuery *getUnread() override final;
     ItemQuery *getById(qint64 id) override final;
-    ItemQuery *getByFeed(qint64 feedId) override final;
-    ItemQuery *getUnreadByFeed(qint64 feedId) override final;
-    ItemQuery *storeItem(qint64 feedId, Syndication::ItemPtr item) override final;
+    ItemQuery *getByFeed(FeedRef feedId) override final;
+    ItemQuery *getUnreadByFeed(FeedRef feedId) override final;
+    ItemQuery *storeItem(FeedRef feedId, const Syndication::ItemPtr &item) override final;
     ItemQuery *updateItemRead(qint64 itemId, bool isRead) override final;
     ItemQuery *updateItemStarred(qint64 itemId, bool isStarred) override final;
 
     FeedQuery *getFeeds() override final;
-    FeedQuery *storeFeed(QUrl url) override final;
-    FeedQuery *updateFeed(qint64 id, Syndication::FeedPtr feed) override final;
+    FeedQuery *storeFeed(const QUrl &url) override final;
+    FeedQuery *updateFeed(FeedRef &storedFeed, const Syndication::FeedPtr &update) override final;
 };
+
+}
 
 #endif // SQLITEFEEDSTORAGE_H

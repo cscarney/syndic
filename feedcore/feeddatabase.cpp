@@ -5,8 +5,62 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QVariant>
 #include <QDebug>
+#include <Syndication/Item>
+#include <Syndication/Person>
+
+namespace FeedCore {
+
+static const QString feed_fields =
+        QStringLiteral("Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.url, COUNT(Item.id)");
+static const QString feed_join =
+        QStringLiteral("Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false");
+
+class SQLiteFeed : public Feed {
+    Q_OBJECT
+public:
+    qint64 m_id;
+
+    void updateFromQuery(const QSqlQuery &query)
+    {
+        populateName(query.value(3).toString());
+        populateUrl(query.value(4).toString());
+        populateUnreadCount(query.value(5).toInt());
+    }
+
+    void populateNew(const QUrl &url, const QString &name)
+    {
+        populateName(name);
+        populateUrl(url);
+        populateUnreadCount(0);
+    }
+
+    static QSharedPointer<SQLiteFeed> forId(qint64 feedId)
+    {
+        static QHash<qint64, QWeakPointer<SQLiteFeed>> instances;
+        auto &instance = instances[feedId];
+        if (instance.isNull()) {
+            auto newFeed = QSharedPointer<SQLiteFeed>(new SQLiteFeed(feedId));
+            instance = newFeed;
+            return newFeed;
+        }
+        return instance.toStrongRef();
+    };
+
+    static QSharedPointer<SQLiteFeed> fromQuery(const QSqlQuery &q)
+    {
+        qint64 id = q.value(0).toLongLong();
+        const auto &result = forId(id);
+        result->updateFromQuery(q);
+        return result;
+    }
+
+private:
+
+    SQLiteFeed(qint64 feedId) {
+        m_id = feedId;
+    }
+};
 
 static inline QString filePath(QString const &fileName)
 {
@@ -19,7 +73,7 @@ static inline QString filePath(QString const &fileName)
 }
 
 
-static const QString db_name = "FeedDatabase";
+static const QString db_name = QStringLiteral("FeedDatabase");
 
 static inline QSqlDatabase db()
 {
@@ -29,37 +83,37 @@ static inline QSqlDatabase db()
 static inline int getVersion(QSqlDatabase &db)
 {
     QSqlQuery q("PRAGMA user_version", db);
-    if (q.next()) {
-        return q.value(0).toInt();
-    } else {
+    if (!q.next()) {
         qDebug("getVersion returned empty set");
         return 0;
     }
+
+    return q.value(0).toInt();
 }
 
-static inline bool exec(QSqlDatabase &db, QString queryString)
+static inline bool exec(QSqlDatabase &db, const QString& queryString)
 {
     QSqlQuery q(db);
     if (!q.exec(queryString)) {
         qDebug() << "SQL Error: " + q.lastError().text();
         return false;
-    } else {
-        return true;
     }
+    return true;
 }
 
-static inline bool exec(QSqlDatabase &db, std::vector<QString> queries)
+static inline bool exec(QSqlDatabase &db, const QVector<QString> &queries)
 {
-    for(auto q : queries)
-    {
-        if (!exec(db, q)) return false;
+    for(const auto &q : queries) {
+        if (!exec(db, q)) {
+            return false;
+        }
     }
     return true;
 }
 
 static void initDatabase(QSqlDatabase &db)
 {
-    auto v = getVersion(db);
+    const auto &v = getVersion(db);
     bool success = true;
     if (v==0) {
         success = exec(db,{
@@ -105,13 +159,15 @@ FeedDatabase::FeedDatabase()
 }
 
 static const QString item_fields =
-        "id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred";
+        QStringLiteral("id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred");
 
 static inline void cursorToStruct(QSqlQuery &q, StoredItem &result)
 {
+    qint64 feedId = q.value(1).toLongLong();
+    const auto &feed = SQLiteFeed::forId(feedId);
     result = {
         .id = q.value(0).toLongLong(),
-        .feedId = q.value(1).toLongLong(),
+        .feedId = feed,
         .localId  = q.value(2).toString(),
         .headers = {
             .headline = q.value(3).toString(),
@@ -127,23 +183,9 @@ static inline void cursorToStruct(QSqlQuery &q, StoredItem &result)
     };
 }
 
-static const QString feed_fields =
-        "Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.url, COUNT(Item.id)";
-static const QString feed_join =
-        "Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false";
-
-static inline void cursorToStruct(QSqlQuery &q, StoredFeed &result)
+static inline void cursorToStruct(QSqlQuery &q, FeedRef &result)
 {
-    result = {
-        .id = q.value(0).toLongLong(),
-        .sourceId = q.value(1).toLongLong(),
-        .localId = q.value(2).toString(),
-        .headers = {
-            .name = q.value(3).toString(),
-            .url = q.value(4).toString()
-        },
-        .unreadCount = q.value(5).toInt()
-    };
+    result = SQLiteFeed::fromQuery(q);
 }
 
 template<typename T>
@@ -163,7 +205,7 @@ static inline QVector<T> performQuery(QSqlQuery q)
     return v;
 }
 
-static const QString select_sort = "ORDER BY date DESC";
+static const QString select_sort = QStringLiteral("ORDER BY date DESC");
 
 QVector<StoredItem> FeedDatabase::selectAllItems()
 {
@@ -181,23 +223,27 @@ QVector<StoredItem> FeedDatabase::selectUnreadItems()
     return performQuery<StoredItem>(q);
 }
 
-QVector<StoredItem> FeedDatabase::selectItemsByFeed(qint64 feedId)
+QVector<StoredItem> FeedDatabase::selectItemsByFeed(const FeedRef &feed)
 {
+    auto dfeed = feed.staticCast<SQLiteFeed>();
+    assert(!dfeed.isNull());
     QSqlQuery q(db());
     q.prepare(
         "SELECT "+item_fields+" FROM Item "
         "WHERE feed=:feed "+select_sort);
-    q.bindValue(":feed", feedId);
+    q.bindValue(":feed", dfeed->m_id);
     return performQuery<StoredItem>(q);
 }
 
-QVector<StoredItem> FeedDatabase::selectUnreadItemsByFeed(qint64 feedId)
+QVector<StoredItem> FeedDatabase::selectUnreadItemsByFeed(const FeedRef &feed)
 {
+    auto dfeed = feed.staticCast<SQLiteFeed>();
+    assert(!dfeed.isNull());
     QSqlQuery q(db());
     q.prepare(
         "SELECT "+item_fields+" FROM Item "
         "WHERE feed=:feed AND isRead=0 "+select_sort);
-    q.bindValue(":feed", feedId);
+    q.bindValue(":feed", dfeed->m_id);
     return performQuery<StoredItem>(q);
 }
 
@@ -215,14 +261,14 @@ StoredItem FeedDatabase::selectItem(qint64 id)
     if (!q.next()) {
         qDebug("selectItem for non-existent id");
         return {};
-    } else {
-        StoredItem i;
-        cursorToStruct(q,i);
-        return i;
     }
+
+    StoredItem i;
+    cursorToStruct(q,i);
+    return i;
 }
 
-StoredItem FeedDatabase::selectItem(qint64 feed, QString localId)
+StoredItem FeedDatabase::selectItem(qint64 feed, const QString &localId)
 {
     QSqlQuery q(db());
     q.prepare(
@@ -237,20 +283,22 @@ StoredItem FeedDatabase::selectItem(qint64 feed, QString localId)
     if (!q.next()) {
         qDebug("selectItem for non-existent localId");
         return {};
-    } else {
-        StoredItem i;
-        cursorToStruct(q,i);
-        return i;
     }
+
+    StoredItem i;
+    cursorToStruct(q,i);
+    return i;
 }
 
-std::optional<qint64> FeedDatabase::selectItemId(qint64 feed, QString localId)
+std::optional<qint64> FeedDatabase::selectItemId(const FeedRef &feed, const QString &localId)
 {
+    const auto &dfeed = feed.objectCast<SQLiteFeed>();
+    assert(!dfeed.isNull());
     QSqlQuery q(db());
     q.prepare(
                 "SELECT id FROM Item "
                 "WHERE feed=:feed AND localId=:localId;");
-    q.bindValue(":feed", feed);
+    q.bindValue(":feed", dfeed->m_id);
     q.bindValue(":localId", localId);
     if (!q.exec()) {
         qDebug() << "SQL Error in selectItemId: " + q.lastError().text();
@@ -258,20 +306,21 @@ std::optional<qint64> FeedDatabase::selectItemId(qint64 feed, QString localId)
     }
     if (!q.next()) {
         return std::nullopt;
-    } else {
-        return q.value(0).toLongLong();
     }
+    return q.value(0).toLongLong();
 }
 
 
 
 void FeedDatabase::insertItem(StoredItem &item)
 {
+    const auto &id = item.feedId.objectCast<SQLiteFeed>();
+    assert(!id.isNull());
     QSqlQuery q(db());
     q.prepare(
                 "INSERT INTO Item (id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred) "
                 "VALUES (:id, :feed, :localId, :headline, :author, :date, :url, :feedContent, :isRead, :isStarred);");
-    q.bindValue(":feed", item.feedId);
+    q.bindValue(":feed", id->m_id);
     q.bindValue(":localId", item.localId);
     q.bindValue(":headline", item.headers.headline);
     q.bindValue(":author", item.headers.author);
@@ -307,7 +356,7 @@ void FeedDatabase::updateItemHeaders(qint64 id, FeedItemHeaders const &headers)
     }
 }
 
-void FeedDatabase::updateItemContent(qint64 id, QString content)
+void FeedDatabase::updateItemContent(qint64 id, const QString &content)
 {
     QSqlQuery q(db());
     q.prepare(
@@ -349,58 +398,34 @@ void FeedDatabase::updateItemStarred(qint64 id, bool isStarred)
     }
 }
 
-QVector<StoredFeed> FeedDatabase::selectAllFeeds()
+QVector<FeedRef> FeedDatabase::selectAllFeeds()
 {
     QSqlQuery q(db());
     q.prepare(
                 "SELECT "+feed_fields+" FROM "+feed_join+
                 " GROUP BY Feed.id");
-    return performQuery<StoredFeed>(q);
+    return performQuery<FeedRef>(q);
 }
 
-StoredFeed FeedDatabase::selectFeed(qint64 id)
+void FeedDatabase::selectFeed(const FeedRef& feed)
 {
+    auto dfeed = feed.objectCast<SQLiteFeed>();
     QSqlQuery q(db());
     q.prepare("SELECT "+feed_fields+" FROM "+feed_join+
               " WHERE Feed.id=:id");
-    q.bindValue(":id", id);
+    q.bindValue(":id", dfeed->m_id);
     if (!q.exec()) {
         qDebug() << "SQL Error in selectFeed: " + q.lastError().text();
-        return {};
+        return;
     }
     if (!q.next()) {
         qDebug("selectFeed for non-existent id");
-        return {};
-    } else {
-        StoredFeed i;
-        cursorToStruct(q,i);
-        return i;
+        return;
     }
+    dfeed->updateFromQuery(q);
 }
 
-StoredFeed FeedDatabase::selectFeed(qint64 source, QString localId)
-{
-    QSqlQuery q(db());
-    q.prepare(
-                "SELECT "+feed_fields+" FROM " + feed_join +
-                " WHERE Feed.source=:source AND Feed.localId=:localId");
-    q.bindValue(":source", source);
-    q.bindValue(":localId", localId);
-    if (!q.exec()) {
-        qDebug() << "SQL Error in selectFeed: " + q.lastError().text();
-        return {};
-    }
-    if (!q.next()) {
-        qDebug("selectFeed for non-existent localId");
-        return {};
-    } else {
-        StoredFeed i;
-        cursorToStruct(q,i);
-        return i;
-    }
-}
-
-std::optional<qint64> FeedDatabase::selectFeedId(qint64 source, QString localId)
+std::optional<qint64> FeedDatabase::selectFeedId(qint64 source, const QString &localId)
 {
     QSqlQuery q(db());
     q.prepare(
@@ -414,36 +439,79 @@ std::optional<qint64> FeedDatabase::selectFeedId(qint64 source, QString localId)
     }
     if (!q.next()) {
         return std::nullopt;
-    } else {
-        return q.value(0).toLongLong();
     }
+
+    return q.value(0).toLongLong();
 }
 
-void FeedDatabase::insertFeed(StoredFeed &feed)
+FeedRef FeedDatabase::insertFeed(const QUrl& url)
 {
+
     QSqlQuery q(db());
+    const QString &urlString = url.toString();
+    const QString &urlHost = url.host();
     q.prepare("INSERT INTO Feed (source, localId, displayName, url) "
               "VALUES (:source, :localId, :displayName, :url);");
-    q.bindValue(":source", feed.sourceId);
-    q.bindValue(":localId", feed.localId);
-    q.bindValue(":displayName", feed.headers.name);
-    q.bindValue(":url", feed.headers.url);
+    q.bindValue(":source", 0);
+    q.bindValue(":localId", urlString);
+    q.bindValue(":displayName", urlHost);
+    q.bindValue(":url", urlString);
     if (!q.exec()) {
         qDebug() << "SQL Error in insertFeed: " + q.lastError().text();
-    } else {
-        feed.id = q.lastInsertId().toLongLong();
+        return FeedRef();
     }
+    const qint64 id = q.lastInsertId().toLongLong();
+    const auto &result = SQLiteFeed::forId(id);
+    result->populateNew(url, urlHost);
+    return result;
 }
 
-void FeedDatabase::updateFeed(const StoredFeed &feed)
+void FeedDatabase::updateFeed(const FeedRef &feed)
 {
+    auto dfeed = feed.objectCast<SQLiteFeed>();
+    if (dfeed.isNull()) {
+        qDebug() << "updating a feed that is not in the database!";
+        return;
+    }
+
     QSqlQuery q(db());
     q.prepare("UPDATE Feed SET "
               "displayName=:displayName "
               "WHERE id=:id");
-    q.bindValue(":displayName", feed.headers.name);
-    q.bindValue(":id", feed.id);
+    q.bindValue(":displayName", dfeed->name());
+    q.bindValue(":id", dfeed->m_id);
     if (!q.exec()){
         qDebug() << "SQL Error in updateFeed: " << q.lastError().text();
     }
 }
+
+StoredItem FeedDatabase::makeStoredItem(const Syndication::ItemPtr &item, const FeedRef &feed)
+{
+    const auto &authors = item->authors();
+    const auto &authorName = authors.empty() ? "" : authors[0]->name();
+    const auto &date = QDateTime::fromTime_t(item->dateUpdated());
+    auto content = item->content();
+    if (content.isEmpty()) {
+        content = item->description();
+    }
+    return {
+        .id = 0, // overwritten below
+        .feedId = feed,
+        .localId = item->id(),
+        .headers = {
+            .headline = item->title(),
+            .author = authorName,
+            .date = date,
+            .url = item->link()
+        },
+        .content = content,
+        .status = {
+            .isRead = false,
+            .isStarred = false
+        }
+    };
+}
+
+}
+
+#include "feeddatabase.moc"

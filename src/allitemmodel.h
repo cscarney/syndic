@@ -14,8 +14,8 @@ public:
     void requestUpdate() override final;
 
 protected:
-    ItemQuery *startQuery() override final;
-    bool itemFilter(const StoredItem &item) override final;
+    FeedCore::ItemQuery *startQuery() override final;
+    bool itemFilter(const FeedCore::StoredItem &item) override final;
     void setStatusFromUpstream() override final;
 };
 

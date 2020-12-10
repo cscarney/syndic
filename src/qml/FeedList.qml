@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.7 as Kirigami
 import FeedListModel 1.0
+import FeedRefWrapper 1.0
 import Enums 1.0
 
 ScrollView {
@@ -91,9 +92,10 @@ ScrollView {
                 }
             }
 
-            property int feedId: model.id
+            property var feedRef: model.feedRef
+
             property string feedName: model.name
-            property bool isSpecial: model.id < 0
+            property bool isSpecial: model.entryType !== FeedListModel.SingleFeedType
             onClicked: {
                 feedList.currentIndex = index
                 itemClicked()

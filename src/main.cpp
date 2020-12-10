@@ -5,11 +5,11 @@
 
 #include <KDeclarative/KDeclarative>
 
-#include "feedmanager.h"
-#include "itemmodel.h"
+#include "context.h"
 #include "feeditemmodel.h"
 #include "allitemmodel.h"
 #include "feedlistmodel.h"
+using namespace FeedCore;
 
 int main(int argc, char *argv[])
 {
@@ -23,11 +23,12 @@ int main(int argc, char *argv[])
     QQuickStyle::setStyle("org.kde.desktop");
     KDeclarative::KDeclarative::setupEngine(&engine);
 
-    auto *fm = new FeedManager(&app);
-    qmlRegisterType<FeedManager>("FeedManager", 1, 0, "FeedManager");
+    auto *fm = new Context(&app);
+    qmlRegisterType<Context>("FeedManager", 1, 0, "FeedManager");
     engine.rootContext()->setContextProperty("feedManager", fm);
 
     qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
+    qmlRegisterUncreatableType<FeedCore::FeedRefWrapper>("FeedRefWrapper", 1, 0, "FeedRefWrapper", "");
     qmlRegisterType<FeedListModel>("FeedListModel", 1, 0, "FeedListModel");
     qmlRegisterType<FeedItemModel>("FeedItemModel", 1, 0, "FeedItemModel");
     qmlRegisterType<AllItemModel>("AllItemModel", 1, 0, "AllItemModel");

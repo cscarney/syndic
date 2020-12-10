@@ -2,13 +2,17 @@
 #define STOREDITEM_H
 #include "feeditemheaders.h"
 #include "feeditemstatus.h"
+#include "feed.h"
 
-struct StoredItem {
+namespace FeedCore {
+
+class StoredItem {
+public:
     /* unique id within the storage backend */
     qint64 id;
 
     /* id of the feed the item belongs to, within the storage backend */
-    qint64 feedId;
+    FeedRef feedId;
 
     /* identifier provided by the feed, unique within the feed */
     QString localId;
@@ -22,5 +26,7 @@ struct StoredItem {
     /* status flags, set by the client */
     FeedItemStatus status;
 };
+
+}
 
 #endif // STOREDITEM_H

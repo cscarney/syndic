@@ -1,10 +1,15 @@
 #ifndef FEEDLISTMODEL_H
 #define FEEDLISTMODEL_H
 
-#include "managedlistmodel.h"
-#include "storedfeed.h"
-#include "feedmanager.h"
+#include <memory>
 
+#include "managedlistmodel.h"
+#include "enums.h"
+#include "feed.h"
+
+namespace FeedCore {
+class StoredItem;
+}
 
 class FeedListModel : public ManagedListModel
 {
@@ -22,7 +27,7 @@ public:
     Q_ENUM(EntryType);
 
     enum Roles {
-        Id = Qt::UserRole,
+        Ref = Qt::UserRole,
         Type,
         Name,
         Icon,
@@ -40,11 +45,11 @@ public:
 
 private slots:
     void slotFeedQueryFinished();
-    void slotItemReadChanged(const StoredItem &item);
-    void slotItemAdded(const StoredItem &item);
-    void slotFeedStatusChanged(qint64 feedId, LoadStatus status);
-    void slotFeedAdded(StoredFeed feed);
-    void slotFeedNameChanged(qint64 feedId, QString newName);
+    void slotItemReadChanged(const FeedCore::StoredItem &item);
+    void slotItemAdded(const FeedCore::StoredItem &item);
+    void slotFeedStatusChanged(const FeedCore::FeedRef &feed, FeedCore::LoadStatus status);
+    void slotFeedAdded(const FeedCore::FeedRef &feed);
+    void slotFeedNameChanged(const FeedCore::FeedRef &feed, const QString &newName);
 
 private:
     class PrivData;

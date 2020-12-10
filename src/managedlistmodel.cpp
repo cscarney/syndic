@@ -1,6 +1,8 @@
+#include "managedlistmodel.h"
+
 #include <QTimer>
 
-#include "managedlistmodel.h"
+using namespace FeedCore;
 
 ManagedListModel::ManagedListModel(QObject *parent) :
     QAbstractListModel(parent)
@@ -8,16 +10,16 @@ ManagedListModel::ManagedListModel(QObject *parent) :
 
 }
 
-FeedManager *ManagedListModel::manager() const
+Context *ManagedListModel::manager() const
 {
     return m_manager;
 }
 
-void ManagedListModel::setManager(FeedManager *manager)
+void ManagedListModel::setManager(Context *manager)
 {
     assert(!active());
     m_manager = manager;
-    managerChanged();
+    emit managerChanged();
 }
 
 void ManagedListModel::activate()

@@ -1,9 +1,10 @@
 #ifndef DATARETRIEVER_H
 #define DATARETRIEVER_H
 
-#include <QObject>
 #include <Syndication/DataRetriever>
 #include <QNetworkAccessManager>
+
+namespace FeedCore {
 
 class DataRetriever : public Syndication::DataRetriever
 {
@@ -22,5 +23,7 @@ private slots:
     void slotRedirect(const QUrl &url);
     void slotFinished();
 };
+
+}
 
 #endif // DATARETRIEVER_H

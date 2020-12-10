@@ -2,11 +2,12 @@ import FeedItemModel 1.0
 
 AbstractItemListPage {
     id: root
-    property var feedId: 0;
+    property var feed
 
     model: FeedItemModel {
+        id: feedItemModel
         manager: feedManager
-        feedId: root.feedId
+        feed: root.feed
         unreadFilter: root.unreadFilter
     }
 }

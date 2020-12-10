@@ -4,7 +4,9 @@
 #include <QAbstractListModel>
 #include <QQmlParserStatus>
 
-class FeedManager;
+namespace FeedCore {
+class Context;
+}
 
 class ManagedListModel : public QAbstractListModel, public QQmlParserStatus
 {
@@ -12,9 +14,9 @@ class ManagedListModel : public QAbstractListModel, public QQmlParserStatus
 public:
     ManagedListModel(QObject *parent=nullptr);
 
-    FeedManager *manager() const;
-    void setManager(FeedManager *manager);
-    Q_PROPERTY(FeedManager *manager READ manager WRITE setManager NOTIFY managerChanged);
+    FeedCore::Context *manager() const;
+    void setManager(FeedCore::Context *manager);
+    Q_PROPERTY(FeedCore::Context *manager READ manager WRITE setManager NOTIFY managerChanged);
 
     inline bool active() { return m_active; }
     void activate();
@@ -29,8 +31,8 @@ protected:
     virtual void initialize() {};
 
 private:
-    FeedManager *m_manager;
-    bool m_active;
+    FeedCore::Context *m_manager=nullptr;
+    bool m_active = false;
 };
 
 #endif // MANAGEDLISTMODEL_H

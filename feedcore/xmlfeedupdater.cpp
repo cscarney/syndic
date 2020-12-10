@@ -1,10 +1,13 @@
 #include "xmlfeedupdater.h"
+
 #include <Syndication/Loader>
+
 #include "dataretriever.h"
 
-XMLFeedUpdater::XMLFeedUpdater(qint64 feedId, QUrl url, time_t updateInterval, time_t lastUpdate, QObject *parent):
-    FeedUpdater(feedId, updateInterval, lastUpdate, parent),
-    m_url(url)
+namespace FeedCore {
+
+XMLFeedUpdater::XMLFeedUpdater(const FeedRef &feed, time_t updateInterval, time_t lastUpdate, QObject *parent):
+    FeedUpdater(feed, updateInterval, lastUpdate, parent)
 {
 
 }
@@ -13,10 +16,10 @@ void XMLFeedUpdater::run()
 {
     Syndication::Loader *loader = Syndication::Loader::create();
     QObject::connect(loader, &Syndication::Loader::loadingComplete, this, &XMLFeedUpdater::loadingComplete);
-    loader->loadFrom(m_url, new DataRetriever);
+    loader->loadFrom(feed()->url(), new DataRetriever);
 }
 
-void XMLFeedUpdater::loadingComplete(Syndication::Loader *loader, Syndication::FeedPtr feed, Syndication::ErrorCode status)
+void XMLFeedUpdater::loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &feed, Syndication::ErrorCode status)
 {
     QString errorMessage;
     switch (status) {
@@ -24,7 +27,7 @@ void XMLFeedUpdater::loadingComplete(Syndication::Loader *loader, Syndication::F
         finish(feed);
         return;
     case Syndication::Aborted:
-        qDebug() << "load aborted for " << m_url;
+        qDebug() << "load aborted for " << this->feed()->url();
         return;
     case Syndication::Timeout:
         errorMessage = tr("Timeout", "error message");
@@ -48,15 +51,17 @@ void XMLFeedUpdater::loadingComplete(Syndication::Loader *loader, Syndication::F
         errorMessage = tr("Invalid Format", "error message");
         break;
     default:
-        qDebug() << "unknown error loading " << m_url;
+        qDebug() << "unknown error loading " << this->feed()->url();
         errorMessage = tr("Unknown Error", "error message");
     }
 
     // try the discovered url
     if (loader->discoveredFeedURL().isValid()) {
-        m_url = loader->discoveredFeedURL();
+        this->feed()->setUrl(loader->discoveredFeedURL());
         run();
     } else {
         setError(errorMessage);
     }
+}
+
 }

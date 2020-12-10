@@ -112,6 +112,10 @@ Kirigami.ScrollablePage {
             pageUpDown(0.9);
             break;
 
+        case Qt.Key_Return:
+            Qt.openUrlExternally(item.url);
+            break;
+
         default:
             return;
         }
