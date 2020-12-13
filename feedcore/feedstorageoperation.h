@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QVector>
 
-#include "feed.h"
+#include "feedref.h"
 
 namespace FeedCore {
 

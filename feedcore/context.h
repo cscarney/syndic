@@ -8,6 +8,7 @@
 #include <Syndication/Feed>
 
 #include "enums.h"
+#include "feedref.h"
 #include "feedstorageoperation.h"
 
 namespace FeedCore {

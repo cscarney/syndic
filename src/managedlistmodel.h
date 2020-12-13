@@ -11,6 +11,8 @@ class Context;
 class ManagedListModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
+
 public:
     ManagedListModel(QObject *parent=nullptr);
 

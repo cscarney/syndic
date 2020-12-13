@@ -2,6 +2,7 @@
 
 #include "storeditem.h"
 #include "context.h"
+#include "feed.h"
 using namespace FeedCore;
 
 struct ItemModel::PrivData {

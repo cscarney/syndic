@@ -15,7 +15,6 @@ class StoredItem;
 class ItemModel : public ManagedListModel
 {
     Q_OBJECT
-    Q_INTERFACES(QQmlParserStatus)
 
 public:
     explicit ItemModel(QObject *parent=nullptr);

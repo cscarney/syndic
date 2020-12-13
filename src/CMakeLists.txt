@@ -4,6 +4,7 @@ set(feedkeeper_HEADERS
     allitemmodel.h
     feeditemmodel.h
     managedlistmodel.h
+    feedrefwrapper.h
     )
 
 set(feedkeeper_SRCS
@@ -12,9 +13,8 @@ set(feedkeeper_SRCS
     itemmodel.cpp
     allitemmodel.cpp
     feeditemmodel.cpp
-
     managedlistmodel.cpp
- 
+    feedrefwrapper.cpp
     main.cpp
     resources.qrc
     )

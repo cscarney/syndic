@@ -2,6 +2,7 @@
 #define FEEDITEMMODEL_H
 
 #include "itemmodel.h"
+#include "feedrefwrapper.h"
 
 class FeedItemModel : public ItemModel
 {
@@ -13,9 +14,9 @@ public:
     FeedCore::FeedRef feed() const;
     void setFeed(const FeedCore::FeedRef &feedId);
 
-    void setFeedWrapper(const FeedCore::FeedRefWrapper &feed);
-    FeedCore::FeedRefWrapper feedWrapper() const;
-    Q_PROPERTY(FeedCore::FeedRefWrapper feed READ feedWrapper WRITE setFeedWrapper NOTIFY feedChanged);
+    void setFeedWrapper(const FeedRefWrapper &feed);
+    FeedRefWrapper feedWrapper() const;
+    Q_PROPERTY(FeedRefWrapper feed READ feedWrapper WRITE setFeedWrapper NOTIFY feedChanged);
 
 signals:
     void feedChanged();

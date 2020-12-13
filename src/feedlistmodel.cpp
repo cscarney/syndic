@@ -6,8 +6,11 @@
 
 #include "context.h"
 #include "feed.h"
+#include "feedref.h"
 #include "storeditem.h"
 #include "feedstorageoperation.h"
+#include "feedrefwrapper.h"
+
 using namespace FeedCore;
 
 struct FeedListEntry {
@@ -130,7 +133,7 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
 
     switch(role){
         case Roles::Ref:
-            return QVariant::fromValue<FeedRefWrapper>(entry.feed);
+            return QVariant::fromValue(FeedRefWrapper(entry.feed));
 
         case Roles::Type:
             return entry.entryType;

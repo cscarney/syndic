@@ -42,22 +42,6 @@ private:
     int m_unreadCount = 0;
 };
 
-typedef QSharedPointer<Feed> FeedRef;
-
-class FeedRefWrapper {
-    Q_GADGET
-public:
-    inline FeedRefWrapper() = default;
-    inline FeedRefWrapper(const FeedRef &ref):p(ref){};
-    inline Feed *feed() const { return p.get(); };
-    Q_PROPERTY(Feed *feed READ feed CONSTANT);
-    inline operator FeedRef() const { return p; }
-private:
-    FeedRef p;
-};
-
 }
-
-Q_DECLARE_METATYPE(FeedCore::FeedRefWrapper);
 
 #endif // STOREDFEED_H

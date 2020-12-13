@@ -5,7 +5,7 @@
 
 #include "managedlistmodel.h"
 #include "enums.h"
-#include "feed.h"
+#include "feedref.h"
 
 namespace FeedCore {
 class StoredItem;

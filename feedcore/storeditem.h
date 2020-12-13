@@ -2,7 +2,7 @@
 #define STOREDITEM_H
 #include "feeditemheaders.h"
 #include "feeditemstatus.h"
-#include "feed.h"
+#include "feedref.h"
 
 namespace FeedCore {
 

@@ -3,6 +3,7 @@ set(feedcore_HEADERS
     feeditemheaders.h
     feeditemstatus.h
     feed.h
+    feedref.h
     storeditem.h
     feedstorage.h
     feeddatabase.h
