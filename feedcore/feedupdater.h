@@ -30,19 +30,22 @@ public:
     time_t nextUpdate();
     bool needsUpdate(time_t timestamp);
     bool updateIfNecessary(time_t timestamp);
+    bool active();
 
 signals:
     void feedLoaded(FeedCore::FeedUpdater *sender, const Syndication::FeedPtr &content);
-    void statusChanged(FeedCore::FeedUpdater *sender, FeedCore::LoadStatus status);
+    void activeChanged();
 
 protected:
     void finish(const Syndication::FeedPtr &content);
-    void setStatus(LoadStatus status);
     void setError(const QString &errorMsg);
 
 private:
     struct PrivData;
     std::unique_ptr<PrivData> priv;
+
+    void setStatus(LoadStatus status);
+    void setActive(bool active);
 };
 
 }

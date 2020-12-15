@@ -29,7 +29,10 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("feedManager", fm);
 
     qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
-    qmlRegisterUncreatableType<FeedRefWrapper>("FeedRefWrapper", 1, 0, "FeedRefWrapper", "");
+    qmlRegisterUncreatableType<FeedRef>("FeedRef", 1,0,"FeedRef", "obtained from cpp model");
+    qmlRegisterUncreatableType<QmlFeedRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
+    QMetaType::registerConverter<QmlFeedRef, FeedRef>();
+
     qmlRegisterType<FeedListModel>("FeedListModel", 1, 0, "FeedListModel");
     qmlRegisterType<FeedItemModel>("FeedItemModel", 1, 0, "FeedItemModel");
     qmlRegisterType<AllItemModel>("AllItemModel", 1, 0, "AllItemModel");

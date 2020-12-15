@@ -11,6 +11,14 @@ AllItemModel::AllItemModel(QObject *parent):
 
 }
 
+void AllItemModel::initialize() {
+    auto *m = manager();
+    QObject::connect(m, &Context::itemAdded, this, &AllItemModel::slotItemAdded);
+    QObject::connect(m, &Context::itemChanged, this, &AllItemModel::slotItemChanged);
+    refresh();
+}
+
+
 void AllItemModel::requestUpdate()
 {
     manager()->requestUpdate();
@@ -20,11 +28,6 @@ void AllItemModel::requestUpdate()
 ItemQuery *AllItemModel::startQuery()
 {
     return manager()->startQuery(FeedRef(), unreadFilter());
-}
-
-bool AllItemModel::itemFilter(const StoredItem &item)
-{
-    return true;
 }
 
 void AllItemModel::setStatusFromUpstream()

@@ -2,7 +2,7 @@
 #define FEEDITEMMODEL_H
 
 #include "itemmodel.h"
-#include "feedrefwrapper.h"
+#include "qmlfeedref.h"
 
 class FeedItemModel : public ItemModel
 {
@@ -14,21 +14,23 @@ public:
     FeedCore::FeedRef feed() const;
     void setFeed(const FeedCore::FeedRef &feedId);
 
-    void setFeedWrapper(const FeedRefWrapper &feed);
-    FeedRefWrapper feedWrapper() const;
-    Q_PROPERTY(FeedRefWrapper feed READ feedWrapper WRITE setFeedWrapper NOTIFY feedChanged);
+    Q_PROPERTY(FeedCore::FeedRef feed READ feed WRITE setFeed NOTIFY feedChanged);
 
 signals:
     void feedChanged();
 
     // ItemModel interface
 public:
+    void initialize() override final;
     void requestUpdate() override final;
 
 protected:
     FeedCore::ItemQuery *startQuery() override final;
-    bool itemFilter(const FeedCore::StoredItem &item) override final;
     void setStatusFromUpstream() override final;
+
+
+private slots:
+    void slotStatusChanged();
 
 private:
     FeedCore::FeedRef m_feed;

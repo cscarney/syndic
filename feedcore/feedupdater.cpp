@@ -2,14 +2,16 @@
 
 #include <QTimer>
 
+#include "feed.h"
+
 namespace FeedCore {
 
 struct FeedUpdater::PrivData {
     FeedRef feed;
-    time_t updateInterval;
-    time_t lastUpdate;
-    LoadStatus status = LoadStatus::Idle;
+    time_t updateInterval = 0;
+    time_t lastUpdate = 0;
     QString errorMsg;
+    bool active = false;
 };
 
 
@@ -46,7 +48,7 @@ void FeedUpdater::start(time_t timestamp)
 
 LoadStatus FeedUpdater::status()
 {
-    return priv->status;
+    return priv->feed->status();
 }
 
 QString FeedUpdater::error()
@@ -78,22 +80,36 @@ bool FeedUpdater::updateIfNecessary(time_t timestamp)
     return false;
 }
 
+bool FeedUpdater::active()
+{
+    return priv->active;
+}
+
 void FeedUpdater::finish(const Syndication::FeedPtr &content)
 {
     emit feedLoaded(this, content);
     setStatus(LoadStatus::Idle);
+    setActive(false);
 }
 
 void FeedUpdater::setStatus(LoadStatus status)
 {
-    priv->status = status;
-    emit statusChanged(this, status);
+    priv->feed->setStatus(status);
 }
 
 void FeedUpdater::setError(const QString &errorMsg)
 {
     priv->errorMsg = errorMsg;
     setStatus(LoadStatus::Error);
+    setActive(false);
+}
+
+void FeedUpdater::setActive(bool active)
+{
+    if (priv->active != active) {
+        priv->active = active;
+        emit activeChanged();
+    }
 }
 
 }

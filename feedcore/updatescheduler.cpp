@@ -28,7 +28,6 @@ void UpdateScheduler::schedule(const FeedRef &feed, time_t updateInterval, time_
     unschedule(feed);     // there can only be one
     auto *updater = new XMLFeedUpdater(feed, updateInterval, lastUpdate, this);
     QObject::connect(updater, &FeedUpdater::feedLoaded, this, &UpdateScheduler::feedLoaded);
-    QObject::connect(updater, &FeedUpdater::statusChanged, this, &UpdateScheduler::slotFeedStatusChanged);
     m_updaters.insert(feed, updater);
     updater->updateIfNecessary(timestamp);
     insertIntoSchedule(m_schedule, updater);
@@ -47,7 +46,7 @@ void UpdateScheduler::schedule(FeedQuery *q)
         time_t timestamp;
         time(&timestamp);
         for (const auto &i : q->result()) {
-            schedule(i, 60000, 0);
+            schedule(i, 3600, 0);
         }
     });
 }
@@ -129,16 +128,6 @@ LoadStatus UpdateScheduler::getStatus(const FeedRef &feed)
 bool UpdateScheduler::updatesInProgress()
 {
     return !m_active.isEmpty();
-}
-
-void UpdateScheduler::slotFeedStatusChanged(FeedUpdater *updater, LoadStatus status)
-{
-    if (status == LoadStatus::Updating) {
-        m_active << updater->feed();
-    } else {
-        m_active.remove(updater->feed());
-    }
-    emit feedStatusChanged(updater, status);
 }
 
 }

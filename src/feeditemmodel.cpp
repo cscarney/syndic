@@ -22,21 +22,20 @@ void FeedItemModel::setFeed(const FeedRef &feed)
     if (m_feed != feed) {
         m_feed = feed;
         if (active()) {
-            refresh();
+            qDebug() << "set feed after initialization!!";
         }
         emit feedChanged();
     }
 }
 
-FeedRefWrapper FeedItemModel::feedWrapper() const
-{
-    return feed();
+void FeedItemModel::initialize() {
+    auto *m = manager();
+    QObject::connect(m_feed.get(), &Feed::itemAdded, this, &FeedItemModel::slotItemAdded);
+    QObject::connect(m, &Context::itemChanged, this, &FeedItemModel::slotItemChanged);
+    QObject::connect(m_feed.get(), &Feed::statusChanged, this, &FeedItemModel::slotStatusChanged);
+    refresh();
 }
 
-void FeedItemModel::setFeedWrapper(const FeedRefWrapper &feed)
-{
-    setFeed(feed);
-}
 
 void FeedItemModel::requestUpdate()
 {
@@ -52,11 +51,6 @@ ItemQuery *FeedItemModel::startQuery()
     return manager()->startQuery(m_feed, unreadFilter());
 }
 
-bool FeedItemModel::itemFilter(const StoredItem &item)
-{
-    return item.feedId == m_feed;
-}
-
 void FeedItemModel::setStatusFromUpstream()
 {
     auto *manager = this->manager();
@@ -65,4 +59,9 @@ void FeedItemModel::setStatusFromUpstream()
         return;
     }
     setStatus( manager->getFeedStatus(m_feed));
+}
+
+void FeedItemModel::slotStatusChanged()
+{
+    setStatus(m_feed->status());
 }

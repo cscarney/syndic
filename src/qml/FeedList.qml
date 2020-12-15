@@ -3,7 +3,6 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.7 as Kirigami
 import FeedListModel 1.0
-import FeedRefWrapper 1.0
 import Enums 1.0
 
 ScrollView {
@@ -35,6 +34,10 @@ ScrollView {
             topPadding: Kirigami.Units.largeSpacing
             bottomPadding: Kirigami.Units.largeSpacing
             contentItem: RowLayout {
+                property var feed: model.feedRef.feed
+                property var status: feed ? feed.status : Enums.Idle
+                property var name: feed ? feed.name : qsTr("All Items")
+
                 Kirigami.Icon {
                     source: model.icon
                     Layout.minimumHeight: feedNameLabel.height
@@ -46,7 +49,7 @@ ScrollView {
                     horizontalAlignment: Text.AlignLeft
                     elide: Text.ElideRight
                     Layout.fillWidth: true
-                    text: model.name
+                    text: parent.name
                     textFormat: Text.StyledText
                     color: fgColor
                     font.weight: model.unreadCount !== 0 ? Font.Black : Font.Light
@@ -59,7 +62,7 @@ ScrollView {
                     source: "content-loading-symbolic"
                     isMask: true
                     color: fgColor
-                    visible: model.status === Enums.Updating
+                    visible: parent.status === Enums.Updating
                 }
 
                 Kirigami.Icon {
@@ -69,7 +72,7 @@ ScrollView {
                     source: "dialog-error-symbolic"
                     isMask: true
                     color: fgColor
-                    visible: model.status === Enums.Error
+                    visible: parent.status === Enums.Error
                 }
 
                 Label {
@@ -93,9 +96,7 @@ ScrollView {
             }
 
             property var feedRef: model.feedRef
-
-            property string feedName: model.name
-            property bool isSpecial: model.entryType !== FeedListModel.SingleFeedType
+            property bool isSpecial: !feedRef.feed
             onClicked: {
                 feedList.currentIndex = index
                 itemClicked()

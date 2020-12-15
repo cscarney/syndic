@@ -102,32 +102,23 @@ void Context::slotFeedLoaded(FeedUpdater *updater, const Syndication::FeedPtr &c
 {
     qDebug() << "Got Feed " << content->title() << "\n";
     auto feed = updater->feed();
-    auto *updateFeedQuery = priv->storage->updateFeed(feed, content);
-    QObject::connect(updateFeedQuery, &FeedStorageOperation::finished, this, [this, updateFeedQuery]{
-        for (const auto &feed : updateFeedQuery->result()) {
-            emit feedNameChanged(feed, feed->name());
-        }
-    });
+    priv->storage->updateFeed(feed, content);
 
     const auto &items = content->items();
     for (const auto &item : items) {
-        auto *q = priv->storage->storeItem(updater->feed(), item);
-        QObject::connect(q, &FeedStorageOperation::finished, this, [this,q]{
+        const auto &feed = updater->feed();
+        auto *q = priv->storage->storeItem(feed, item);
+        QObject::connect(q, &FeedStorageOperation::finished, this, [this,q, feed]{
             for (const auto &item : q->result()) {
+                emit feed->itemAdded(item);
                 emit itemAdded(item);
             }
         });
     }
 }
 
-void Context::slotFeedStatusChanged(FeedUpdater *updater, LoadStatus status)
-{
-    emit feedStatusChanged(updater->feed(), status);
-}
-
 void Context::PrivData::configureUpdater() {
     QObject::connect(updateScheduler.get(), &UpdateScheduler::feedLoaded, parent, &Context::slotFeedLoaded);
-    QObject::connect(updateScheduler.get(), &UpdateScheduler::feedStatusChanged, parent, &Context::slotFeedStatusChanged);
     auto *queryFeeds = storage->getFeeds();
     updateScheduler->schedule(queryFeeds);
     updateScheduler->start();

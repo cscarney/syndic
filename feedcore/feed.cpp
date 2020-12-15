@@ -57,4 +57,17 @@ int Feed::unreadCount() const
     return m_unreadCount;
 }
 
+LoadStatus Feed::status() const
+{
+    return m_status;
+}
+
+void Feed::setStatus(LoadStatus status)
+{
+    if (m_status != status) {
+        m_status = status;
+        emit statusChanged();
+    }
+}
+
 }

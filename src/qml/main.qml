@@ -23,7 +23,7 @@ Kirigami.ApplicationWindow {
         property real actualWidth: drawerOpen && !modal ? width : 0
         width: feedListProportion * mainWindow.width
         modal: true
-        onFeedSelected: currentItem.isSpecial ? pushAll() : pushFeed(currentItem)
+        onFeedSelected: currentItem.isSpecial ? pushAll() : pushFeed(currentItem.feedRef)
 
         actions: [
             Kirigami.Action {
@@ -58,12 +58,11 @@ Kirigami.ApplicationWindow {
         pageStack.push("qrc:/qml/ItemList/AllItemListPage.qml", {pageRow: pageStack})
     }
 
-    function pushFeed(feed) {
+    function pushFeed(feedRef) {
         pageStack.clear()
         pageStack.push("qrc:/qml/ItemList/FeedItemListPage.qml",
                        {pageRow: pageStack,
-                           feed: feed.feedRef,
-                           title: feed.feedName})
+                           feedRef: feedRef})
     }
 
     function openDialog(pageUrl, pageProps) {

@@ -33,12 +33,8 @@ public:
     LoadStatus getStatus(const FeedRef &feed);
     bool updatesInProgress();
 
-public slots:
-    void slotFeedStatusChanged(FeedCore::FeedUpdater *updater, FeedCore::LoadStatus status);
-
 signals:
     void feedLoaded(FeedCore::FeedUpdater *updater, const Syndication::FeedPtr &feed);
-    void feedStatusChanged(FeedCore::FeedUpdater *updater, FeedCore::LoadStatus status);
 
 private:
     QList<FeedUpdater *> m_schedule;

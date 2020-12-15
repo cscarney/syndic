@@ -6,35 +6,23 @@
 
 #include "context.h"
 #include "feed.h"
-#include "feedref.h"
+#include "qmlfeedref.h"
 #include "storeditem.h"
 #include "feedstorageoperation.h"
-#include "feedrefwrapper.h"
 
 using namespace FeedCore;
 
 struct FeedListEntry {
     FeedRef feed;
-    FeedListModel::EntryType entryType;
-    QString name;
     QString icon;
-    LoadStatus status;
     int unreadCount;
 
     inline bool matchItem(const StoredItem &item) const
     {
-        switch (entryType) {
-        case FeedListModel::SingleFeedType:
+        if (feed.get() != nullptr) {
             return feed == item.feedId;
-
-        case FeedListModel::AllType:
+        } else {
             return true;
-
-        case FeedListModel::StarredType:
-            return item.status.isStarred;
-
-        default:
-            return false;
         }
     }
 };
@@ -66,10 +54,7 @@ void FeedListModel::PrivData::addAllFeedsItem()
 {
     FeedListEntry item = {
         .feed=FeedRef(),
-        .entryType=AllType,
-        .name=tr("All Items"),
         .icon="folder-symbolic",
-        .status=LoadStatus::Idle,
         .unreadCount=0
     };
     feeds << item;
@@ -77,13 +62,9 @@ void FeedListModel::PrivData::addAllFeedsItem()
 
 void FeedListModel::PrivData::addItem(const FeedRef &feed)
 {
-    auto *manager = parent->manager();
     FeedListEntry item = {
         .feed=feed,
-        .entryType=SingleFeedType,
-        .name=feed->name(),
         .icon="feed-subscribe",
-        .status=manager->getFeedStatus(feed),
         .unreadCount=feed->unreadCount()
     };
     feeds << item;
@@ -108,8 +89,6 @@ void FeedListModel::initialize()
     QObject::connect(q, &FeedStorageOperation::finished, this, &FeedListModel::slotFeedQueryFinished);
     QObject::connect(manager(), &Context::itemAdded, this, &FeedListModel::slotItemAdded);
     QObject::connect(manager(), &Context::itemReadChanged, this, &FeedListModel::slotItemReadChanged);
-    QObject::connect(manager(), &Context::feedStatusChanged, this, &FeedListModel::slotFeedStatusChanged);
-    QObject::connect(manager(), &Context::feedNameChanged, this, &FeedListModel::slotFeedNameChanged);
     QObject::connect(manager(), &Context::feedAdded, this, &FeedListModel::slotFeedAdded);
 }
 
@@ -133,19 +112,10 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
 
     switch(role){
         case Roles::Ref:
-            return QVariant::fromValue(FeedRefWrapper(entry.feed));
-
-        case Roles::Type:
-            return entry.entryType;
-
-        case Roles::Name:
-            return entry.name;
+            return QVariant::fromValue(QmlFeedRef(entry.feed));
 
         case Roles::Icon:
             return entry.icon;
-
-        case Roles::Status:
-            return entry.status;
 
         case Roles::UnreadCount:
             return entry.unreadCount;
@@ -159,10 +129,7 @@ QHash<int, QByteArray> FeedListModel::roleNames() const
 {
     return {
         {Roles::Ref, "feedRef"},
-        {Roles::Type, "entryType"},
-        {Roles::Name, "name"},
         {Roles::Icon, "icon"},
-        {Roles::Status, "status"},
         {Roles::UnreadCount, "unreadCount"}
     };
 }
@@ -194,33 +161,9 @@ void FeedListModel::slotItemAdded(const StoredItem &item)
     priv->incrementUnreadCounts(item, 1);
 }
 
-void FeedListModel::slotFeedStatusChanged(const FeedRef &feed, LoadStatus loadStatus)
-{
-    const int count = priv->feeds.count();
-    for (int i = 0; i<count; i++) {
-        auto &entry = priv->feeds[i];
-        if ((entry.entryType == SingleFeedType) && (entry.feed == feed)) {
-            entry.status = loadStatus;
-            emit dataChanged(index(i), index(i));
-        }
-    }
-}
-
 void FeedListModel::slotFeedAdded(const FeedRef &feed)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     priv->addItem(feed);
     endInsertRows();
-}
-
-void FeedListModel::slotFeedNameChanged(const FeedRef &feed, const QString &newName)
-{
-    const int count = priv->feeds.count();
-    for (int i = 0; i<count; i++) {
-        auto &entry = priv->feeds[i];
-        if ((entry.entryType == SingleFeedType) && (entry.feed == feed)) {
-            entry.name = newName;
-            emit dataChanged(index(i), index(i));
-        }
-    }
 }

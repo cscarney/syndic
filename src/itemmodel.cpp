@@ -18,14 +18,6 @@ ItemModel::ItemModel(QObject *parent) :
 
 }
 
-void ItemModel::initialize() {
-    auto *m = manager();
-    QObject::connect(m, &Context::itemAdded, this, &ItemModel::slotItemAdded);
-    QObject::connect(m, &Context::itemChanged, this, &ItemModel::slotItemChanged);
-    QObject::connect(m, &Context::feedStatusChanged, this, &ItemModel::slotFeedStatusChanged);
-    refresh();
-}
-
 bool ItemModel::unreadFilter() const
 {
     return priv->unreadFilter;
@@ -129,9 +121,7 @@ inline qint64 indexForDate(const QList<StoredItem> &list, const QDateTime &dt)
 
 void ItemModel::slotItemAdded(StoredItem const &item)
 {
-    if ((itemFilter(item))
-         && (!priv->unreadFilter || !item.status.isRead))
-    {
+    if (!priv->unreadFilter || !item.status.isRead) {
         const auto &idx = indexForDate(priv->items, item.headers.date);
         beginInsertRows(QModelIndex(), idx, idx);
         priv->items.insert(idx, item);
@@ -151,14 +141,6 @@ void ItemModel::slotItemChanged(StoredItem const &item)
             break;
         }
     }
-}
-
-void ItemModel::slotFeedStatusChanged(const FeedRef &feed, LoadStatus status)
-{
-    if (this->status() == LoadStatus::Loading) {
-        return;
-    }
-    setStatusFromUpstream();
 }
 
 void ItemModel::setStatus(LoadStatus status)

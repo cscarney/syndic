@@ -33,8 +33,6 @@ public:
     };
     Q_ENUM(Roles);
 
-    void initialize() override;
-
     bool unreadFilter() const;
     void setUnreadFilter(bool unreadFilter);
     Q_PROPERTY(bool unreadFilter READ unreadFilter WRITE setUnreadFilter NOTIFY unreadFilterChanged);
@@ -49,12 +47,11 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-private slots:
+protected slots:
     void slotQueryFinished();
     void slotQueryFinishedMerge();
     void slotItemAdded(const FeedCore::StoredItem &item);
     void slotItemChanged(const FeedCore::StoredItem &item);
-    void slotFeedStatusChanged(const FeedCore::FeedRef &feed, FeedCore::Enums::LoadStatus status);
 
 signals:
     void unreadFilterChanged();
@@ -62,7 +59,6 @@ signals:
 
 protected:
     virtual FeedCore::ItemQuery *startQuery() = 0;
-    virtual bool itemFilter(const FeedCore::StoredItem &item) = 0;
     virtual void setStatusFromUpstream();
     void setStatus(FeedCore::LoadStatus status);
     void refresh();

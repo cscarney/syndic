@@ -11,11 +11,11 @@ public:
 
     // ItemModel interface
 public:
+    void initialize() override;
     void requestUpdate() override final;
 
 protected:
     FeedCore::ItemQuery *startQuery() override final;
-    bool itemFilter(const FeedCore::StoredItem &item) override final;
     void setStatusFromUpstream() override final;
 };
 
