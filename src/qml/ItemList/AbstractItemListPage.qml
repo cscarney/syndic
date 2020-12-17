@@ -3,7 +3,6 @@ import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
 import Enums 1.0
-import AllItemModel 1.0
 
 Kirigami.ScrollablePage {
     id: root
@@ -50,7 +49,7 @@ Kirigami.ScrollablePage {
         if (articleList.currentItem) {
             var data = articleList.currentItem.data
             root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data, nextItem: nextItem, previousItem: previousItem})
-            if (data.isUnread) feedManager.setRead(data.id, true)
+            data.article.isRead = true
         } else if (model) {
             pushPlaceholder();
         }

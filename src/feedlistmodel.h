@@ -4,11 +4,12 @@
 #include <memory>
 
 #include "managedlistmodel.h"
+#include "feedstorageoperation.h"
 #include "enums.h"
 #include "feedref.h"
 
 namespace FeedCore {
-class StoredItem;
+class ArticleRef;
 }
 
 class FeedListModel : public ManagedListModel
@@ -21,7 +22,6 @@ public:
     enum Roles {
         Ref = Qt::UserRole,
         Icon,
-        UnreadCount
     };
     Q_ENUM(Roles);
 
@@ -32,15 +32,12 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-private slots:
-    void slotFeedQueryFinished();
-    void slotItemReadChanged(const FeedCore::StoredItem &item);
-    void slotItemAdded(const FeedCore::StoredItem &item);
-    void slotFeedAdded(const FeedCore::FeedRef &feed);
-
 private:
     class PrivData;
     std::unique_ptr<PrivData> priv;
+
+    void onFeedQueryFinished(FeedCore::FeedQuery *sender);
+    void onFeedAdded(const FeedCore::FeedRef &feed);
 };
 
 #endif // FEEDLISTMODEL_H

@@ -14,7 +14,7 @@ void DataRetriever::retrieveData(const QUrl &url)
     request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
     m_reply = m_nam.get(request);
     m_reply->setParent(this);
-    QObject::connect(m_reply, &QNetworkReply::finished, this, &DataRetriever::slotFinished);
+    QObject::connect(m_reply, &QNetworkReply::finished, this, &DataRetriever::onFinished);
 }
 
 int DataRetriever::errorCode() const
@@ -27,7 +27,7 @@ void DataRetriever::abort()
     // TODO implement this
 }
 
-void DataRetriever::slotFinished()
+void DataRetriever::onFinished()
 {
     if (m_reply->error() == QNetworkReply::NoError) {
         const auto &data = m_reply->readAll();

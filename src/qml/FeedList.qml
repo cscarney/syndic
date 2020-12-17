@@ -36,6 +36,7 @@ ScrollView {
             contentItem: RowLayout {
                 property var feed: model.feedRef.feed
                 property var status: feed ? feed.status : Enums.Idle
+                property var unreadCount: feed ? feed.unreadCount : 0
                 property var name: feed ? feed.name : qsTr("All Items")
 
                 Kirigami.Icon {
@@ -52,7 +53,7 @@ ScrollView {
                     text: parent.name
                     textFormat: Text.StyledText
                     color: fgColor
-                    font.weight: model.unreadCount !== 0 ? Font.Black : Font.Light
+                    font.weight: parent.unreadCount !== 0 ? Font.Black : Font.Light
                 }
 
                 Kirigami.Icon {
@@ -77,7 +78,7 @@ ScrollView {
 
                 Label {
                     id: unreadCountLabel
-                    visible: model.unreadCount !== 0
+                    visible: parent.unreadCount !== 0
                     Layout.alignment: Qt.AlignRight
                     Layout.leftMargin: Kirigami.Units.smallSpacing
                     Layout.rightMargin: Kirigami.Units.smallSpacing
@@ -85,7 +86,7 @@ ScrollView {
                     Layout.minimumHeight: feedNameLabel.implicitHeight
                     horizontalAlignment: Text.AlignCenter
                     color: Kirigami.Theme.activeTextColor
-                    text: model.unreadCount
+                    text: parent.unreadCount
                     leftInset: -background.radius
                     rightInset: -background.radius
                     background: Rectangle {
@@ -96,7 +97,6 @@ ScrollView {
             }
 
             property var feedRef: model.feedRef
-            property bool isSpecial: !feedRef.feed
             onClicked: {
                 feedList.currentIndex = index
                 itemClicked()

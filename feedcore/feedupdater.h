@@ -24,7 +24,6 @@ public:
 
     void start();
     void start(time_t timestamp);
-    LoadStatus status();
     QString error();
     FeedRef feed();
     time_t nextUpdate();
@@ -33,7 +32,6 @@ public:
     bool active();
 
 signals:
-    void feedLoaded(FeedCore::FeedUpdater *sender, const Syndication::FeedPtr &content);
     void activeChanged();
 
 protected:
@@ -44,7 +42,6 @@ private:
     struct PrivData;
     std::unique_ptr<PrivData> priv;
 
-    void setStatus(LoadStatus status);
     void setActive(bool active);
 };
 

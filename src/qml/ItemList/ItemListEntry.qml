@@ -13,13 +13,13 @@ ColumnLayout {
     Label {
         id: headlineText
         Layout.fillWidth: parent
-        text: headline
+        text: ref.article.title
         maximumLineCount: 2
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
-        font.weight: isUnread ? Font.Bold : Font.ExtraLight
+        font.weight: ref.article.isRead ? Font.ExtraLight : Font.Bold
         color: textColor
         textFormat: Text.RichText
     }
@@ -28,7 +28,7 @@ ColumnLayout {
         id: details
         Label {
             Layout.fillWidth: true
-            text: author
+            text: ref.article.author
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
@@ -43,7 +43,7 @@ ColumnLayout {
 
         Label {
             Layout.alignment: Qt.AlignRight
-            text: Qt.formatDate(date)
+            text: Qt.formatDate(ref.article.date)
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignRight
             verticalAlignment: Text.AlignVCenter

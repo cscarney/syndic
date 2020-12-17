@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>qml/main.qml</file>
         <file>qml/ItemList/AbstractItemListPage.qml</file>
-        <file>qml/ItemList/AllItemListPage.qml</file>
         <file>qml/ItemList/EmptyFeedOverlay.qml</file>
         <file>qml/ItemList/FeedItemListPage.qml</file>
         <file>qml/ItemList/ItemListEntry.qml</file>

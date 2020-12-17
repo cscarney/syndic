@@ -21,9 +21,16 @@ void Feed::populateUrl(const QUrl &url)
 void Feed::populateUnreadCount(int unreadCount)
 {
     if (m_unreadCount != unreadCount) {
+        int delta = unreadCount - m_unreadCount;
         m_unreadCount = unreadCount;
-        emit unreadCountChanged();
+        emit unreadCountChanged(delta);
     }
+}
+
+void Feed::incrementUnreadCount(int delta)
+{
+    m_unreadCount += delta;
+    emit unreadCountChanged(delta);
 }
 
 QString Feed::name() const

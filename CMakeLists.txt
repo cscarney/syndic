@@ -23,7 +23,7 @@ include(ECMInstallIcons)
  find_package(KF5Declarative REQUIRED)
  find_package(KF5Syndication REQUIRED)
 
- set(CMAKE_CXX_FLAGS_DEBUG "-Wall -Werror")
+ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror")
  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto")
  
  include_directories(feedcore src)

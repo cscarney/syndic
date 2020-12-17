@@ -21,19 +21,17 @@ signals:
 
     // ItemModel interface
 public:
-    void initialize() override final;
-    void requestUpdate() override final;
+    void initialize() final;
+    void requestUpdate() final;
 
 protected:
-    FeedCore::ItemQuery *startQuery() override final;
-    void setStatusFromUpstream() override final;
-
-
-private slots:
-    void slotStatusChanged();
+    FeedCore::ItemQuery *startQuery() final;
+    void setStatusFromUpstream() final;
 
 private:
     FeedCore::FeedRef m_feed;
+
+    void onStatusChanged();
 };
 
 #endif // FEEDITEMMODEL_H

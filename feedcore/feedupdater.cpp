@@ -27,7 +27,7 @@ FeedUpdater::~FeedUpdater() = default;
 
 float FeedUpdater::progress()
 {
-    return (status() == LoadStatus::Updating) ? 0.1f : 0;
+    return (active()) ? 0.1f : 0;
 }
 
 void FeedUpdater::start()
@@ -39,16 +39,12 @@ void FeedUpdater::start()
 
 void FeedUpdater::start(time_t timestamp)
 {
-    if (status() != LoadStatus::Updating) {
-        setStatus(LoadStatus::Updating);
+    if (!active()) {
+        setActive(true);
+        priv->feed->setStatus(LoadStatus::Updating);
         run();
     }
     priv->lastUpdate = timestamp;
-}
-
-LoadStatus FeedUpdater::status()
-{
-    return priv->feed->status();
 }
 
 QString FeedUpdater::error()
@@ -87,20 +83,15 @@ bool FeedUpdater::active()
 
 void FeedUpdater::finish(const Syndication::FeedPtr &content)
 {
-    emit feedLoaded(this, content);
-    setStatus(LoadStatus::Idle);
+    priv->feed->updateFromSource(content);
+    priv->feed->setStatus(LoadStatus::Idle);
     setActive(false);
-}
-
-void FeedUpdater::setStatus(LoadStatus status)
-{
-    priv->feed->setStatus(status);
 }
 
 void FeedUpdater::setError(const QString &errorMsg)
 {
     priv->errorMsg = errorMsg;
-    setStatus(LoadStatus::Error);
+    priv->feed->setStatus(LoadStatus::Error);
     setActive(false);
 }
 

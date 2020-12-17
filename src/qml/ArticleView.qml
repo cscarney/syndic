@@ -3,7 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
-
+import Article 1.0
 
 ColumnLayout {
     id: mainLayout
@@ -16,7 +16,7 @@ ColumnLayout {
     property var item
     property var firstImage: ""
     property var textWithoutImages: ""
-    property var hoveredLink: titleMouse.containsMouse ? item.url : contentTextEdit.hoveredLink
+    property var hoveredLink: titleMouse.containsMouse ? item.article.url : contentTextEdit.hoveredLink
 
     readonly property string textStyle: "<style>
     * {
@@ -35,7 +35,7 @@ ColumnLayout {
     Kirigami.Heading {
         level: 1
         Layout.fillWidth: true
-        text: item.headline || ""
+        text: item.article.title || "(no title)"
         elide: Text.ElideRight
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
@@ -48,14 +48,14 @@ ColumnLayout {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onPressed: Qt.openUrlExternally(item.url)
+            onPressed: Qt.openUrlExternally(item.article.url)
         }
     }
 
     RowLayout {
         Label {
             Layout.fillWidth: true
-            text: item.author || ""
+            text: item.article.author || "(no author)"
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
@@ -69,7 +69,7 @@ ColumnLayout {
 
         Label {
             Layout.alignment: Qt.AlignRight
-            text: Qt.formatDate(item.date)
+            text: Qt.formatDate(item.article.date)
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignRight
             verticalAlignment: Text.AlignVCenter

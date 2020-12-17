@@ -9,7 +9,7 @@
 
 namespace FeedCore {
 class Context;
-class StoredItem;
+class ArticleRef;
 }
 
 class ItemModel : public ManagedListModel
@@ -22,14 +22,7 @@ public:
     ~ItemModel();
 
     enum Roles {
-        Id = Qt::UserRole,
-        Headline,
-        Author,
-        Date,
-        Content,
-        Url,
-        IsUnread,
-        IsStarred
+        Ref = Qt::UserRole
     };
     Q_ENUM(Roles);
 
@@ -47,12 +40,6 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-protected slots:
-    void slotQueryFinished();
-    void slotQueryFinishedMerge();
-    void slotItemAdded(const FeedCore::StoredItem &item);
-    void slotItemChanged(const FeedCore::StoredItem &item);
-
 signals:
     void unreadFilterChanged();
     void statusChanged();
@@ -62,14 +49,18 @@ protected:
     virtual void setStatusFromUpstream();
     void setStatus(FeedCore::LoadStatus status);
     void refresh();
+    void onItemAdded(const FeedCore::ArticleRef &item);
 
 private:
     struct PrivData;
     std::unique_ptr<PrivData> priv;
 
     void removeRead();
-    void insertAndNotify(qint64 index, const FeedCore::StoredItem &item);
+    void insertAndNotify(qint64 index, const FeedCore::ArticleRef &item);
     void refreshMerge();
+    void reloadFromQuery(FeedCore::ItemQuery *query);
+    void mergeFromQuery(FeedCore::ItemQuery *query);
+    void onItemChanged(const FeedCore::ArticleRef &item);
 };
 
 #endif // UNREADITEMMODEL_H

@@ -1,11 +1,10 @@
-#ifndef FEEDREFWRAPPER_H
-#define FEEDREFWRAPPER_H
+#ifndef QMLFEEDREF_H
+#define QMLFEEDREF_H
 #include <QQmlEngine>
 #include "feedref.h"
 #include "feed.h"
-using namespace FeedCore;
 
-class QmlFeedRef : public FeedRef {
+class QmlFeedRef : public FeedCore::FeedRef {
     Q_GADGET
 public:
     inline QmlFeedRef() = default;
@@ -18,9 +17,9 @@ public:
         }
     };
 
-    Q_PROPERTY(Feed *feed READ get CONSTANT);
+    Q_PROPERTY(FeedCore::Feed *feed READ get CONSTANT);
 };
 
 Q_DECLARE_METATYPE(QmlFeedRef);
 
-#endif // FEEDREFWRAPPER_H
+#endif // QMLFEEDREF_H

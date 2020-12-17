@@ -1,12 +1,15 @@
 #include "itemmodel.h"
 
-#include "storeditem.h"
+#include "articleref.h"
 #include "context.h"
 #include "feed.h"
+#include "article.h"
+#include "qmlarticleref.h"
+
 using namespace FeedCore;
 
 struct ItemModel::PrivData {
-    QList<StoredItem> items;
+    QList<ArticleRef> items;
     bool unreadFilter = false;
     LoadStatus status = LoadStatus::Idle;
 };
@@ -52,15 +55,17 @@ void ItemModel::refresh()
 {
     assert(manager() != nullptr);
     setStatus(LoadStatus::Loading);
-    auto *q = startQuery();
-    QObject::connect(q, &FeedStorageOperation::finished, this, &ItemModel::slotQueryFinished);
+    ItemQuery *q = startQuery();
+    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
+        reloadFromQuery(q);
+    });
 }
 
 void ItemModel::markAllRead()
 {
     const auto &items = priv->items;
     for (const auto &item : items) {
-        manager()->setRead(item.id, true);
+        item->setRead(true);
     }
 }
 
@@ -69,72 +74,63 @@ ItemModel::~ItemModel() = default;
 QHash<int, QByteArray> ItemModel::roleNames() const
 {
     return {
-         {Roles::Id, "id"},
-         {Roles::Headline, "headline"},
-         {Roles::Author, "author"},
-         {Roles::Date, "date"},
-         {Roles::Content, "content"},
-         {Roles::Url, "url"},
-         {Roles::IsUnread, "isUnread"},
-         {Roles::IsStarred, "isStarred"}
+         {Roles::Ref, "ref"}
     };
 }
 
-void ItemModel::slotQueryFinished()
+void ItemModel::reloadFromQuery(ItemQuery *query)
 {
-    auto *q = static_cast<ItemQuery *>(QObject::sender());
     beginResetModel();
-    priv->items = QList<StoredItem>::fromVector(q->result());
+    priv->items = QList<ArticleRef>::fromVector(query->result());
     endResetModel();
     setStatusFromUpstream();
 }
 
-void ItemModel::slotQueryFinishedMerge()
+void ItemModel::mergeFromQuery(ItemQuery *query)
 {
-    auto *q = static_cast<ItemQuery *>(QObject::sender());
     auto &items = priv->items;
     int itemIndex = 0;
-    const auto &result = q->result();
+    const auto &result = query->result();
     for (const auto &resultItem : result) {
-        while ((itemIndex < items.size()) && (items[itemIndex].headers.date > resultItem.headers.date)) {
+        while ((itemIndex < items.size()) && (items[itemIndex]->date() > resultItem->date())) {
             itemIndex++;
         }
         if (itemIndex >= items.size()) {
             insertAndNotify(items.size(), resultItem);
             itemIndex++;
-        } else if (items[itemIndex].id != resultItem.id) {
+        } else if (items[itemIndex] != resultItem) {
             insertAndNotify(itemIndex, resultItem);
             itemIndex++;
         }
     }
 }
 
-inline qint64 indexForDate(const QList<StoredItem> &list, const QDateTime &dt)
+inline qint64 indexForDate(const QList<ArticleRef> &list, const QDateTime &dt)
 {
     for (int i=0; i<list.count(); i++) {
-        if (list.at(i).headers.date <= dt) {
+        if (list.at(i)->date() <= dt) {
             return i;
         }
     }
     return list.count();
 }
 
-void ItemModel::slotItemAdded(StoredItem const &item)
+void ItemModel::onItemAdded(ArticleRef const &item)
 {
-    if (!priv->unreadFilter || !item.status.isRead) {
-        const auto &idx = indexForDate(priv->items, item.headers.date);
+    if (!priv->unreadFilter || !item->isRead()) {
+        const auto &idx = indexForDate(priv->items, item->date());
         beginInsertRows(QModelIndex(), idx, idx);
         priv->items.insert(idx, item);
         endInsertRows();
     }
 }
 
-void ItemModel::slotItemChanged(StoredItem const &item)
+void ItemModel::onItemChanged(ArticleRef const &item)
 {
     const int size = priv->items.size();
     for(int i=0; i<size; i++) {
-        StoredItem &listItem = priv->items[i];
-        if (listItem.id == item.id) {
+        ArticleRef &listItem = priv->items[i];
+        if (listItem == item) {
             listItem = item;
             auto idx = index(i);
             emit dataChanged(idx, idx);
@@ -151,7 +147,7 @@ void ItemModel::setStatus(LoadStatus status)
     }
 }
 
-void ItemModel::insertAndNotify(qint64 index, const StoredItem &item)
+void ItemModel::insertAndNotify(qint64 index, const ArticleRef &item)
 {
     beginInsertRows(QModelIndex(), index, index);
     priv->items.insert(index, item);
@@ -161,7 +157,9 @@ void ItemModel::insertAndNotify(qint64 index, const StoredItem &item)
 void ItemModel::refreshMerge()
 {
     auto *q = startQuery();
-    QObject::connect(q, &FeedStorageOperation::finished, this, &ItemModel::slotQueryFinishedMerge);
+    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
+        mergeFromQuery(q);
+    });
 }
 
 int ItemModel::rowCount(const QModelIndex &parent) const
@@ -181,30 +179,8 @@ QVariant ItemModel::data(const QModelIndex &index, int role) const
 
     int indexRow = index.row() ;
 
-    switch(role){
-        case Roles::Id:
-            return priv->items[indexRow].id;
-
-        case Roles::Headline:
-            return priv->items[indexRow].headers.headline;
-
-        case Roles::Author:
-            return priv->items[indexRow].headers.author;
-
-        case Roles::Date:
-            return priv->items[indexRow].headers.date;
-
-        case Roles::Content:
-            return priv->items[indexRow].content;
-
-        case Roles::Url:
-            return priv->items[indexRow].headers.url;
-
-        case Roles::IsUnread:
-            return !priv->items[indexRow].status.isRead;
-
-        case Roles::IsStarred:
-            return priv->items[indexRow].status.isStarred;
+    if (role == Roles::Ref) {
+        return QVariant::fromValue(QmlArticleRef(priv->items[indexRow]));
     }
 
     return QVariant();

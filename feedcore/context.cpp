@@ -6,6 +6,7 @@
 #include "sqlitefeedstorage.h"
 #include "updatescheduler.h"
 #include "feedupdater.h"
+#include "feed.h"
 
 namespace FeedCore {
 
@@ -15,14 +16,15 @@ struct Context::PrivData {
     std::unique_ptr<UpdateScheduler> updateScheduler;
 
     PrivData(Context *parent);
-    void configureUpdater();
 };
 
 Context::Context(QObject *parent)
     : QObject(parent),
       priv(std::make_unique<PrivData>(this))
 {
-    priv->configureUpdater();
+    FeedQuery *queryFeeds { priv->storage->getFeeds() };
+    priv->updateScheduler->schedule(queryFeeds);
+    priv->updateScheduler->start();
 }
 
 
@@ -39,32 +41,10 @@ FeedQuery *Context::startFeedQuery()
     return priv->storage->getFeeds();
 }
 
-void Context::setRead(qint64 id, bool value)
-{
-    auto *q = priv->storage->updateItemRead(id, value);
-    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
-        for (const auto &item : q->result()) {
-            emit itemChanged(item);
-            emit itemReadChanged(item);
-        }
-    });
-}
-
-void Context::setStarred(qint64 id, bool value)
-{
-    auto *q = priv->storage->updateItemStarred(id, !value);
-    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
-        for (const auto &item : q->result()) {
-            emit itemChanged(item);
-            emit itemStarredChanged(item);
-        }
-    });
-}
-
 void Context::addFeed(const QUrl &url)
 {
     qDebug() << "addFeed called";
-    auto *q = priv->storage->storeFeed(url);
+    FeedQuery *q { priv->storage->storeFeed(url) };
     QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
         for (const auto &feed : q->result()) {
             emit feedAdded(feed);
@@ -73,14 +53,12 @@ void Context::addFeed(const QUrl &url)
     priv->updateScheduler->schedule(q);
 }
 
-ItemQuery *Context::startQuery(const FeedRef &feedFilter, bool unreadFilter)
+ItemQuery *Context::startQuery(bool unreadFilter)
 {
-    return priv->storage->startItemQuery(feedFilter, unreadFilter);
-}
-
-LoadStatus Context::getFeedStatus(const FeedRef &feed)
-{
-    return priv->updateScheduler->getStatus(feed);
+    if (unreadFilter) {
+        return priv->storage->getUnread();
+    }
+    return priv->storage->getAll();
 }
 
 void Context::requestUpdate()
@@ -96,32 +74,6 @@ void Context::requestUpdate(const FeedRef &feed)
 bool Context::updatesInProgress()
 {
     return priv->updateScheduler->updatesInProgress();
-}
-
-void Context::slotFeedLoaded(FeedUpdater *updater, const Syndication::FeedPtr &content)
-{
-    qDebug() << "Got Feed " << content->title() << "\n";
-    auto feed = updater->feed();
-    priv->storage->updateFeed(feed, content);
-
-    const auto &items = content->items();
-    for (const auto &item : items) {
-        const auto &feed = updater->feed();
-        auto *q = priv->storage->storeItem(feed, item);
-        QObject::connect(q, &FeedStorageOperation::finished, this, [this,q, feed]{
-            for (const auto &item : q->result()) {
-                emit feed->itemAdded(item);
-                emit itemAdded(item);
-            }
-        });
-    }
-}
-
-void Context::PrivData::configureUpdater() {
-    QObject::connect(updateScheduler.get(), &UpdateScheduler::feedLoaded, parent, &Context::slotFeedLoaded);
-    auto *queryFeeds = storage->getFeeds();
-    updateScheduler->schedule(queryFeeds);
-    updateScheduler->start();
 }
 
 }

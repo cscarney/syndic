@@ -13,7 +13,7 @@ UpdateScheduler::UpdateScheduler(QObject *parent) : QObject(parent)
 
 inline void insertIntoSchedule(QList<FeedUpdater *> &schedule, FeedUpdater *updater)
 {
-    int nextUpdate = updater->nextUpdate();
+    time_t nextUpdate { updater->nextUpdate() };
     for (int i=0; i<schedule.length(); i++) {
         if (schedule[i]->nextUpdate() > nextUpdate) {
             schedule.insert(i, updater);
@@ -26,11 +26,12 @@ inline void insertIntoSchedule(QList<FeedUpdater *> &schedule, FeedUpdater *upda
 void UpdateScheduler::schedule(const FeedRef &feed, time_t updateInterval, time_t lastUpdate, time_t timestamp)
 {
     unschedule(feed);     // there can only be one
-    auto *updater = new XMLFeedUpdater(feed, updateInterval, lastUpdate, this);
-    QObject::connect(updater, &FeedUpdater::feedLoaded, this, &UpdateScheduler::feedLoaded);
+    auto *const updater = new XMLFeedUpdater(feed, updateInterval, lastUpdate, this);
     m_updaters.insert(feed, updater);
-    updater->updateIfNecessary(timestamp);
+    QObject::connect(updater, &FeedUpdater::activeChanged, this,
+                     [this, updater]{ onUpdaterActiveChanged(updater); });
     insertIntoSchedule(m_schedule, updater);
+    updater->updateIfNecessary(timestamp);
 }
 
 void UpdateScheduler::schedule(const FeedRef &feed, time_t updateInterval, time_t lastUpdate)
@@ -78,7 +79,7 @@ void UpdateScheduler::stop()
 
 void UpdateScheduler::update(const FeedRef &feed)
 {
-    auto *entry = m_updaters[feed];
+    FeedUpdater *const entry = m_updaters[feed];
     if (entry == nullptr) {
         qDebug() << "called UpdateScheduler::update with a feed id that has no updater";
         return;
@@ -88,20 +89,27 @@ void UpdateScheduler::update(const FeedRef &feed)
     insertIntoSchedule(m_schedule, entry);
 }
 
+static void updateMany(time_t timestamp, const QList<FeedUpdater *> &toUpdate)
+{
+    for (auto *const entry : toUpdate)
+    {
+        entry->start(timestamp);
+    }
+}
+
 void UpdateScheduler::updateStale()
 {
     time_t timestamp;
     time(&timestamp);
-    if (m_schedule.isEmpty()) {
-        return;
-    }
-    while (auto *entry=m_schedule.constFirst()) {
-        if (!entry->updateIfNecessary(timestamp)) {
-            return;
+    QList<FeedUpdater *> toUpdate{};
+    const auto &schedule { m_schedule };
+    for (auto *const entry : schedule) {
+        if (!entry->needsUpdate(timestamp)) {
+            break;
         }
-        m_schedule.removeFirst();
-        insertIntoSchedule(m_schedule, entry);
+         toUpdate << entry;
     }
+    updateMany(timestamp, toUpdate);
 }
 
 void UpdateScheduler::updateAll()
@@ -110,24 +118,26 @@ void UpdateScheduler::updateAll()
     time(&timestamp);
     m_schedule.clear();
     const auto &updaters = m_updaters;
-    for (auto *entry : updaters) {
+    for (auto *const entry : updaters) {
         entry->start(timestamp);
         insertIntoSchedule(m_schedule, entry);
     }
 }
 
-LoadStatus UpdateScheduler::getStatus(const FeedRef &feed)
-{
-    auto *entry = m_updaters[feed];
-    if (entry == nullptr) {
-        return LoadStatus::Idle;
-    }
-    return entry->status();
-}
-
 bool UpdateScheduler::updatesInProgress()
 {
     return !m_active.isEmpty();
+}
+
+void UpdateScheduler::onUpdaterActiveChanged(FeedUpdater *sender)
+{
+    if (sender->active()) {
+        m_active.insert(sender->feed());
+        m_schedule.removeOne(sender);
+    } else {
+        m_active.remove(sender->feed());
+        insertIntoSchedule(m_schedule, sender);
+    }
 }
 
 }

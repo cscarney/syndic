@@ -20,6 +20,7 @@ class UpdateScheduler : public QObject
     Q_OBJECT
 public:
     explicit UpdateScheduler(QObject *parent = nullptr);
+
     void add(qint64 feedId, QUrl url);
     void schedule(const FeedRef &feed, time_t updateInterval, time_t lastUpdate, time_t timestamp);
     void schedule(const FeedRef &feed, time_t updateInterval, time_t lastUpdate);
@@ -30,17 +31,15 @@ public:
     void update(const FeedRef &feed);
     void updateStale();
     void updateAll();
-    LoadStatus getStatus(const FeedRef &feed);
     bool updatesInProgress();
-
-signals:
-    void feedLoaded(FeedCore::FeedUpdater *updater, const Syndication::FeedPtr &feed);
 
 private:
     QList<FeedUpdater *> m_schedule;
     QTimer m_timer;
     QSet<FeedRef>m_active;
     QHash<FeedRef, FeedUpdater *> m_updaters;
+
+    void onUpdaterActiveChanged(FeedUpdater *sender);
 };
 
 }

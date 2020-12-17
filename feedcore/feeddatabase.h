@@ -7,26 +7,28 @@
 
 #include <optional>
 
-#include "storeditem.h"
-#include "feed.h"
-
 namespace FeedCore {
+
+class SqliteFeedStorage;
 
 class FeedDatabase
 {
 public:
-    explicit FeedDatabase();
+    FeedDatabase();
+    ~FeedDatabase();
+    FeedDatabase(const FeedDatabase&) = delete;
+    FeedDatabase &operator=(const FeedDatabase&) = delete;
 
-    QVector<StoredItem> selectAllItems();
-    QVector<StoredItem> selectUnreadItems();
-    QVector<StoredItem> selectItemsByFeed(qint64 feedId);
-    QVector<StoredItem> selectUnreadItemsByFeed(qint64 feedId);
-    StoredItem selectItem(qint64 id);
-    StoredItem selectItem(qint64 feed, const QString &localId);
+    QSqlQuery selectAllItems();
+    QSqlQuery selectUnreadItems();
+    QSqlQuery selectItemsByFeed(qint64 feedId);
+    QSqlQuery selectUnreadItemsByFeed(qint64 feedId);
+    QSqlQuery selectItem(qint64 id);
+    QSqlQuery selectItem(qint64 feed, const QString &localId);
     std::optional<qint64> selectItemId(qint64 feedId, const QString &localId);
 
-    void insertItem(StoredItem &item);
-    void updateItemHeaders(qint64 id, FeedItemHeaders const &headers);
+    std::optional<qint64> insertItem(qint64 feedId, const QString &localId, const QString &title, const QString &author, const QDateTime &date, const QUrl &url, const QString &content);
+    void updateItemHeaders(qint64 id, const QString &title, const QDateTime &date, const QString &author, const QUrl &url);
     void updateItemContent(qint64 id, const QString &content);
     void updateItemRead(qint64 id, bool isRead);
     void updateItemStarred(qint64 id, bool isStarred);
@@ -37,8 +39,6 @@ public:
     std::optional<qint64> insertFeed(const QUrl& url);
     bool updateFeed(qint64 feedId, const QString &name);
 
-    // TODO get rid of this
-    static StoredItem makeStoredItem(const Syndication::ItemPtr &item, const FeedRef &feed);
 };
 
 }

@@ -6,29 +6,34 @@
 
 namespace FeedCore {
 
+class SqliteFeed;
+class SqliteArticle;
+
 class SqliteFeedStorage : public FeedStorage
 {
     Q_OBJECT
 public:
-    SqliteFeedStorage();
+    ItemQuery *getById(qint64 id);
+    ItemQuery *getByFeed(SqliteFeed *feedId);
+    ItemQuery *getUnreadByFeed(SqliteFeed *feedId);
+    ItemQuery *updateItemRead(SqliteArticle *article, bool isRead);
+    ItemQuery *storeItem(SqliteFeed *feed, const Syndication::ItemPtr &item);
+
+
+    // FeedStorage
+    ItemQuery *getAll() final;
+    ItemQuery *getUnread() final;
+    FeedQuery *getFeeds() final;
+    FeedQuery *storeFeed(const QUrl &url) final;
+    FeedQuery *updateFeed(FeedRef &storedFeed, const Syndication::FeedPtr &update) final;
+
+
 
 private:
     FeedDatabase m_db;
 
-    // FeedStorage interface
-public:
-    ItemQuery *getAll() override final;
-    ItemQuery *getUnread() override final;
-    ItemQuery *getById(qint64 id) override final;
-    ItemQuery *getByFeed(FeedRef feedId) override final;
-    ItemQuery *getUnreadByFeed(FeedRef feedId) override final;
-    ItemQuery *storeItem(FeedRef feedId, const Syndication::ItemPtr &item) override final;
-    ItemQuery *updateItemRead(qint64 itemId, bool isRead) override final;
-    ItemQuery *updateItemStarred(qint64 itemId, bool isStarred) override final;
-
-    FeedQuery *getFeeds() override final;
-    FeedQuery *storeFeed(const QUrl &url) override final;
-    FeedQuery *updateFeed(FeedRef &storedFeed, const Syndication::FeedPtr &update) override final;
+    void appendFeedResults(FeedQuery *op, QSqlQuery &q);
+    void appendItemResults(ItemQuery *op, QSqlQuery &q);
 };
 
 }

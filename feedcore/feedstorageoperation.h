@@ -8,7 +8,7 @@
 
 namespace FeedCore {
 
-class StoredItem;
+class ArticleRef;
 
 class FeedStorageOperation: public QObject {
     Q_OBJECT
@@ -30,7 +30,7 @@ private:
     QVector<T> m_result = {};
 };
 
-typedef FeedStorageQuery<StoredItem> ItemQuery;
+typedef FeedStorageQuery<ArticleRef> ItemQuery;
 typedef FeedStorageQuery<FeedRef> FeedQuery;
 
 }

@@ -11,17 +11,16 @@ class DataRetriever : public Syndication::DataRetriever
 public:
     DataRetriever();
 
-    void retrieveData(const QUrl &url) override final;
-    int errorCode() const override final;
-    void abort() override final;
+    void retrieveData(const QUrl &url) final;
+    int errorCode() const final;
+    void abort() final;
 
 private:
     QNetworkAccessManager m_nam;
     QNetworkReply *m_reply;
 
-private slots:
-    void slotRedirect(const QUrl &url);
-    void slotFinished();
+    void onRedirect(const QUrl &url);
+    void onFinished();
 };
 
 }

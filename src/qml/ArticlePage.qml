@@ -9,13 +9,17 @@ Kirigami.ScrollablePage {
     property var nextItem: function() {}
     property var previousItem: function() {}
 
+    Component.onCompleted: {
+        item.article.requestContent();
+    }
+
     topPadding: 0
     bottomPadding: 0
     leftPadding: 0
     rightPadding: 0
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Layout.fillWidth: true
-    title:  item.headline || ""
+    title:  item.article.title || ""
     // @disable-check M16
     titleDelegate: Kirigami.Heading {
         visible: !scroller.atYBeginning
@@ -26,14 +30,20 @@ Kirigami.ScrollablePage {
     }
 
     /* extract <img> tags from the text so that we can use them as cover images */
-    property var splitContent: {
-        var src = item ? item.content || "" : ""
-        var images = []
-        var text = src.replace(/<img .*src="([^"]*)".*>/ig, function(match, src){
-            images.push(src)
-            return "";
-        })
-        return {images: images, text:text}
+    property var firstImage: ""
+    property var textWithoutImages: ""
+    Connections {
+        target: item.article
+        onGotContent: {
+            var src = content || ""
+            var images = []
+            var text = src.replace(/<img .*src="([^"]*)".*>/ig, function(match, src){
+                images.push(src)
+                return "";
+            })
+            firstImage = images[0] || ""
+            textWithoutImages = text
+        }
     }
 
     /* Gets reparented to the overlay by ScrollablePage */
@@ -65,8 +75,8 @@ Kirigami.ScrollablePage {
         ArticleView {
             id: articleView
             width: scroller.contentWidth
-            firstImage: splitContent.images[0] || ""
-            textWithoutImages: splitContent.text
+            firstImage: articlePage.firstImage
+            textWithoutImages: articlePage.textWithoutImages
         }
 
         Behavior on contentY {
@@ -113,7 +123,8 @@ Kirigami.ScrollablePage {
             break;
 
         case Qt.Key_Return:
-            Qt.openUrlExternally(item.url);
+        case Qt.Key_Enter:
+            Qt.openUrlExternally(item.article.url);
             break;
 
         default:
@@ -128,7 +139,7 @@ Kirigami.ScrollablePage {
             iconName: "mail-mark-unread"
             checkable: true
             checked: false
-            onCheckedChanged: feedManager.setRead(item.id, !checked)
+            onCheckedChanged: item.article.isRead = !checked
             displayHint: Kirigami.Action.DisplayHint.KeepVisible
         }
 

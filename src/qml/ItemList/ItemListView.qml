@@ -14,11 +14,11 @@ ListView {
             right: parent.right
         }
 
-        text: headline
+        text: ref.article.headline
         padding: 10
         contentItem: ItemListEntry { }
         
-        property var data: model
+        property var data: ref
 
         highlighted: ListView.isCurrentItem
         onClicked: {

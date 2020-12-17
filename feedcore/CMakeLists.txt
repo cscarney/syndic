@@ -1,14 +1,13 @@
 set(feedcore_HEADERS
-    feedheaders.h
-    feeditemheaders.h
-    feeditemstatus.h
     feed.h
     feedref.h
-    storeditem.h
+    article.h
+    articleref.h
     feedstorage.h
     feeddatabase.h
     sqlitefeedstorage.h
     sqlitefeed.h
+    sqlitearticle.h
     feedstorageoperation.h
     context.h
     feedupdater.h
@@ -16,20 +15,23 @@ set(feedcore_HEADERS
     updatescheduler.h
     dataretriever.h
     enums.h
+    allitemsfeed.h
     )
     
 set(feedcore_SRCS
     ${feedcore_HEADERS}
     feed.cpp
+    article.cpp
     feeddatabase.cpp
     sqlitefeedstorage.cpp
     sqlitefeed.cpp
+    sqlitearticle.cpp
     context.cpp
     feedupdater.cpp
     xmlfeedupdater.cpp
     updatescheduler.cpp
     dataretriever.cpp
-
+    allitemsfeed.cpp
     )
     
 add_library(feedcore ${feedcore_SRCS})

@@ -23,7 +23,7 @@ Kirigami.ApplicationWindow {
         property real actualWidth: drawerOpen && !modal ? width : 0
         width: feedListProportion * mainWindow.width
         modal: true
-        onFeedSelected: currentItem.isSpecial ? pushAll() : pushFeed(currentItem.feedRef)
+        onFeedSelected: if (currentItem.feedRef.feed) pushFeed(currentItem.feedRef)
 
         actions: [
             Kirigami.Action {
@@ -51,11 +51,6 @@ Kirigami.ApplicationWindow {
         globalToolBar.showNavigationButtons: isFirstPage ? 0 : Kirigami.ApplicationHeaderStyle.ShowBackButton
         defaultColumnWidth: (itemListProportion * mainWindow.width) - (globalDrawer.actualWidth / 2)
         interactive: false
-    }
-
-    function pushAll() {
-        pageStack.clear()
-        pageStack.push("qrc:/qml/ItemList/AllItemListPage.qml", {pageRow: pageStack})
     }
 
     function pushFeed(feedRef) {

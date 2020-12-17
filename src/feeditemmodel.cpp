@@ -3,7 +3,7 @@
 #include <QDebug>
 
 #include "context.h"
-#include "storeditem.h"
+#include "article.h"
 using namespace FeedCore;
 
 FeedItemModel::FeedItemModel(QObject * parent):
@@ -29,10 +29,8 @@ void FeedItemModel::setFeed(const FeedRef &feed)
 }
 
 void FeedItemModel::initialize() {
-    auto *m = manager();
-    QObject::connect(m_feed.get(), &Feed::itemAdded, this, &FeedItemModel::slotItemAdded);
-    QObject::connect(m, &Context::itemChanged, this, &FeedItemModel::slotItemChanged);
-    QObject::connect(m_feed.get(), &Feed::statusChanged, this, &FeedItemModel::slotStatusChanged);
+    QObject::connect(m_feed.get(), &Feed::itemAdded, this, &FeedItemModel::onItemAdded);
+    QObject::connect(m_feed.get(), &Feed::statusChanged, this, &FeedItemModel::onStatusChanged);
     refresh();
 }
 
@@ -48,20 +46,17 @@ ItemQuery *FeedItemModel::startQuery()
         qDebug() << "starting query with no feed set!";
         return nullptr;
     }
-    return manager()->startQuery(m_feed, unreadFilter());
+    return m_feed->startItemQuery(unreadFilter());
 }
 
 void FeedItemModel::setStatusFromUpstream()
 {
-    auto *manager = this->manager();
-    if (manager == nullptr) {
-        setStatus(LoadStatus::Idle);
-        return;
-    }
-    setStatus( manager->getFeedStatus(m_feed));
+    setStatus(m_feed->status());
 }
 
-void FeedItemModel::slotStatusChanged()
+void FeedItemModel::onStatusChanged()
 {
-    setStatus(m_feed->status());
+    if (status() == Enums::Loading) {
+        setStatus(m_feed->status());
+    }
 }

@@ -1,14 +1,14 @@
-#ifndef STOREDFEED_H
-#define STOREDFEED_H
+#ifndef FEED_H
+#define FEED_H
 #include <QObject>
 #include <QUrl>
 #include <Syndication/Feed>
 
 #include "enums.h"
+#include "feedstorageoperation.h"
+#include "articleref.h"
 
 namespace FeedCore {
-
-class StoredItem;
 
 class Feed : public QObject {
     Q_OBJECT
@@ -29,18 +29,24 @@ public:
     void setStatus(LoadStatus status);
     Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
 
+    virtual ItemQuery *startItemQuery(bool unreadFilter)=0;
+    virtual void updateFromSource(const Syndication::FeedPtr &feed){ assert(false); };
+
+
 signals:
     void nameChanged();
     void urlChanged();
-    void unreadCountChanged();
+    void unreadCountChanged(int delta);
     void statusChanged();
-    void itemAdded(const FeedCore::StoredItem &item);
+    void itemAdded(const FeedCore::ArticleRef &item);
 
 protected:
-    Feed(QObject *parent = nullptr);
+    explicit Feed(QObject *parent = nullptr);
     void populateName(const QString &name);
     void populateUrl(const QUrl &url);
     void populateUnreadCount(int unreadCount);
+    void incrementUnreadCount(int delta=1);
+    inline void decrementUnreadCount() { incrementUnreadCount(-1); };
 
 private:
     QString m_name;
