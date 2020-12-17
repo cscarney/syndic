@@ -20,13 +20,14 @@ signals:
 template<typename T>
 class FeedStorageQuery : public FeedStorageOperation {
 public:
-    inline const QVector<T> &result(){ return m_result; }
-    inline void setResult(const QVector<T> &&result) { m_result = result; }
-    inline void setResult(const T &result ) { m_result = {result}; }
+    inline const QVector<T> &result(){ return m_result; };
+    inline void setResult(const QVector<T> &&result) { m_result = result; };
+    inline void setResult(const T &result ) { m_result = {result}; };
     inline void setResult() { m_result = {}; };
+    inline void appendResult(const T &result) { m_result << result; };
 
 private:
-    QVector<T> m_result;
+    QVector<T> m_result = {};
 };
 
 typedef FeedStorageQuery<StoredItem> ItemQuery;

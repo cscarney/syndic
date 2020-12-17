@@ -8,6 +8,7 @@ set(feedcore_HEADERS
     feedstorage.h
     feeddatabase.h
     sqlitefeedstorage.h
+    sqlitefeed.h
     feedstorageoperation.h
     context.h
     feedupdater.h
@@ -22,6 +23,7 @@ set(feedcore_SRCS
     feed.cpp
     feeddatabase.cpp
     sqlitefeedstorage.cpp
+    sqlitefeed.cpp
     context.cpp
     feedupdater.cpp
     xmlfeedupdater.cpp

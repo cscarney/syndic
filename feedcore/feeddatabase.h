@@ -3,6 +3,7 @@
 
 #include <QDateTime>
 #include <QUrl>
+#include <QSqlQuery>
 
 #include <optional>
 
@@ -18,11 +19,11 @@ public:
 
     QVector<StoredItem> selectAllItems();
     QVector<StoredItem> selectUnreadItems();
-    QVector<StoredItem> selectItemsByFeed(const FeedRef &feed);
-    QVector<StoredItem> selectUnreadItemsByFeed(const FeedRef &feed);
+    QVector<StoredItem> selectItemsByFeed(qint64 feedId);
+    QVector<StoredItem> selectUnreadItemsByFeed(qint64 feedId);
     StoredItem selectItem(qint64 id);
     StoredItem selectItem(qint64 feed, const QString &localId);
-    std::optional<qint64> selectItemId(const FeedRef &feed, const QString &localId);
+    std::optional<qint64> selectItemId(qint64 feedId, const QString &localId);
 
     void insertItem(StoredItem &item);
     void updateItemHeaders(qint64 id, FeedItemHeaders const &headers);
@@ -30,11 +31,11 @@ public:
     void updateItemRead(qint64 id, bool isRead);
     void updateItemStarred(qint64 id, bool isStarred);
 
-    QVector<FeedRef> selectAllFeeds();
-    void selectFeed(const FeedRef& feed);
+    QSqlQuery selectAllFeeds();
+    QSqlQuery selectFeed(qint64 feedId);
     std::optional<qint64> selectFeedId(qint64 source, const QString &localId);
-    FeedRef insertFeed(const QUrl& url);
-    void updateFeed(const FeedRef &feed);
+    std::optional<qint64> insertFeed(const QUrl& url);
+    bool updateFeed(qint64 feedId, const QString &name);
 
     // TODO get rid of this
     static StoredItem makeStoredItem(const Syndication::ItemPtr &item, const FeedRef &feed);

@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <Syndication/Person>
 
+#include "sqlitefeed.h"
+
 namespace FeedCore {
 
 SqliteFeedStorage::SqliteFeedStorage() = default;
@@ -19,6 +21,11 @@ static inline OperationType *doAsync(Callable call)
         delete op;
     });
     return op;
+}
+
+static inline qint64 feedId(const FeedRef &feed)
+{
+    return feed.staticCast<SqliteFeed>()->id();
 }
 
 ItemQuery *SqliteFeedStorage::getAll()
@@ -45,31 +52,30 @@ ItemQuery *SqliteFeedStorage::getById(qint64 id)
 ItemQuery *SqliteFeedStorage::getByFeed(FeedRef feed)
 {
     return doAsync<ItemQuery>([this, feed](auto *op){
-        op->setResult(  m_db.selectItemsByFeed(feed) );
+        op->setResult(  m_db.selectItemsByFeed(feedId(feed)) );
     });
 }
 
 ItemQuery *SqliteFeedStorage::getUnreadByFeed(FeedRef feed)
 {
     return doAsync<ItemQuery>([this, feed](auto *op){
-        op->setResult(  m_db.selectUnreadItemsByFeed(feed) );
+        op->setResult(  m_db.selectUnreadItemsByFeed(feedId(feed)) );
     });
 }
 
 static inline bool upsertItem(FeedDatabase &db, StoredItem &item)
 {
-    const auto &itemId = db.selectItemId(item.feedId, item.localId);
+    const auto &itemId = db.selectItemId(feedId(item.feedId), item.localId);
     if (!itemId) {
         db.insertItem(item);
         return true;
-    } else {
-        item.id = *itemId;
-        db.updateItemHeaders(item.id, item.headers);
-        if ((!item.content.isNull()) && (!item.content.isEmpty())) {
-            db.updateItemContent(item.id, item.content);
-        }
-        return false;
     }
+    item.id = *itemId;
+    db.updateItemHeaders(item.id, item.headers);
+    if ((!item.content.isNull()) && (!item.content.isEmpty())) {
+        db.updateItemContent(item.id, item.content);
+    }
+    return false;
 }
 
 ItemQuery *SqliteFeedStorage::storeItem(FeedRef feed, const Syndication::ItemPtr &item)
@@ -112,24 +118,38 @@ ItemQuery *SqliteFeedStorage::updateItemStarred(qint64 itemId, bool isStarred)
     });
 }
 
+static inline void appendFeedResults(FeedQuery *op, QSqlQuery &q)
+{
+    while (q.next()) {
+        op->appendResult(SqliteFeed::fromQuery(q));
+    }
+}
+
 FeedQuery *SqliteFeedStorage::getFeeds()
 {
     return doAsync<FeedQuery>([this](auto *op){
-        op->setResult(  m_db.selectAllFeeds() );
+        auto q =  m_db.selectAllFeeds();
+        appendFeedResults(op, q);
     });
 }
 
 FeedQuery *SqliteFeedStorage::storeFeed(const QUrl &url)
 {
     return doAsync<FeedQuery>([this, url](auto *op){
-        const auto &id = m_db.selectFeedId(0, url.toString());
-        if (id) {
+        const auto &existingId = m_db.selectFeedId(0, url.toString());
+        if (existingId) {
             qDebug() << "trying to insert feed for " << url << "which already exists";
             op->setResult();
-        } else {
-            auto result = m_db.insertFeed(url);
-            op->setResult( result );
+            return;
         }
+        const auto &insertId = m_db.insertFeed(url);
+        if (!insertId)
+        {
+            op->setResult();
+            return;
+        }
+        auto result = m_db.selectFeed(*insertId);
+        appendFeedResults(op, result);
     });
 }
 
@@ -139,7 +159,7 @@ FeedQuery *SqliteFeedStorage::updateFeed(FeedRef &storedFeed, const Syndication:
         const auto &newName = update->title();
         if (storedFeed->name() != newName) {
             storedFeed->setName(newName);
-            m_db.updateFeed(storedFeed);
+            m_db.updateFeed(feedId(storedFeed), newName);
             op->setResult( storedFeed );
         } else {
             op->setResult();
