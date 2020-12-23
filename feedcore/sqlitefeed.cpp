@@ -39,6 +39,7 @@ ItemQuery *SqliteFeed::startItemQuery(bool unreadFilter)
 
 void SqliteFeed::updateFromSource(const Syndication::FeedPtr &source)
 {
+    setName(source->title());
     const auto &items = source->items();
     for (const auto &item : items) {
         auto *q = m_storage->storeItem(this, item);
@@ -50,6 +51,13 @@ void SqliteFeed::updateFromSource(const Syndication::FeedPtr &source)
                 emit itemAdded(item);
             }
         });
+    }
+}
+
+void SqliteFeed::setName(const QString &name)
+{
+    if (populateName(name)) {
+        m_storage->updateFeedMetadata(this);
     }
 }
 

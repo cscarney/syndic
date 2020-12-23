@@ -19,7 +19,6 @@ public:
 
     virtual FeedQuery *getFeeds() = 0;
     virtual FeedQuery *storeFeed(const QUrl &url)=0;
-    virtual FeedQuery *updateFeed(FeedRef &storedFeed, const Syndication::FeedPtr &update)=0;
 };
 
 }

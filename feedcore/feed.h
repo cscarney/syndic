@@ -15,8 +15,8 @@ class Feed : public QObject {
 
 public:
     QString name() const;
-    void setName(const QString &s);
-    Q_PROPERTY(QString name READ name NOTIFY nameChanged);
+    virtual void setName(const QString &name) { populateName(name); }
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
 
     QUrl url() const;
     void setUrl(const QUrl &url);
@@ -32,7 +32,6 @@ public:
     virtual ItemQuery *startItemQuery(bool unreadFilter)=0;
     virtual void updateFromSource(const Syndication::FeedPtr &feed){ assert(false); };
 
-
 signals:
     void nameChanged();
     void urlChanged();
@@ -42,7 +41,7 @@ signals:
 
 protected:
     explicit Feed(QObject *parent = nullptr);
-    void populateName(const QString &name);
+    bool populateName(const QString &name);
     void populateUrl(const QUrl &url);
     void populateUnreadCount(int unreadCount);
     void incrementUnreadCount(int delta=1);

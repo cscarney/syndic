@@ -164,17 +164,12 @@ FeedQuery *SqliteFeedStorage::storeFeed(const QUrl &url)
     });
 }
 
-FeedQuery *SqliteFeedStorage::updateFeed(FeedRef &storedFeed, const Syndication::FeedPtr &update)
+void SqliteFeedStorage::updateFeedMetadata(SqliteFeed *storedFeed)
 {
-    return doAsync<FeedQuery>([this, storedFeed, update](auto *op){
-        const QString &newName { update->title() };
-        if (storedFeed->name() != newName) {
-            storedFeed->setName(newName);
-            m_db.updateFeed(feedId(storedFeed), newName);
-            op->setResult( storedFeed );
-        } else {
-            op->setResult();
-        }
+    const qint64 id = storedFeed->id();
+    const QString name = storedFeed->name();
+    QTimer::singleShot(0, [this, id, name]{
+        m_db.updateFeed(id, name);
     });
 }
 

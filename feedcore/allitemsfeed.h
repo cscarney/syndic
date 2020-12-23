@@ -17,9 +17,7 @@ public:
 
 private:
     Context *m_context;
-
     void addFeed(const FeedCore::FeedRef &feed);
-
     void onFeedQueryFinished(FeedQuery *sender);
     void onUnreadCountChanged(int delta);
     void onItemAdded(const FeedCore::ArticleRef &item);

@@ -22,11 +22,10 @@ ColumnLayout {
     * {
         line-height: 150%;
     }
-    .image-wrapper,img {
+    img {
         line-height: 100%
     }
     p {
-        text-indent: 10px;
         padding-bottom: 12px;
         font-family: serif;
     }

@@ -18,16 +18,13 @@ public:
     ItemQuery *getUnreadByFeed(SqliteFeed *feedId);
     ItemQuery *updateItemRead(SqliteArticle *article, bool isRead);
     ItemQuery *storeItem(SqliteFeed *feed, const Syndication::ItemPtr &item);
-
+    void updateFeedMetadata(SqliteFeed *feed);
 
     // FeedStorage
     ItemQuery *getAll() final;
     ItemQuery *getUnread() final;
     FeedQuery *getFeeds() final;
     FeedQuery *storeFeed(const QUrl &url) final;
-    FeedQuery *updateFeed(FeedRef &storedFeed, const Syndication::FeedPtr &update) final;
-
-
 
 private:
     FeedDatabase m_db;

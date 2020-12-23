@@ -24,6 +24,7 @@ public:
 
     ItemQuery *startItemQuery(bool unreadFilter) final;
     void updateFromSource(const Syndication::FeedPtr &source) final;
+    void setName(const QString &name) final;
 
 private:
     SqliteFeed(SqliteFeedStorage *storage, qint64 feedId);
