@@ -102,7 +102,7 @@ ColumnLayout {
         verticalAlignment: Text.AlignTop
         wrapMode: Text.Wrap
         readOnly: true
-        selectByMouse: true
+        selectByMouse: contentMouse.isRealMouse
         color: Kirigami.Theme.textColor
         selectedTextColor: Kirigami.Theme.highlightedTextColor
         selectionColor: Kirigami.Theme.highlightColor
@@ -114,20 +114,57 @@ ColumnLayout {
         MouseArea
         {
             id: contentMouse
+            property bool isRealMouse: false
             anchors.fill: parent
             cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
             onPressed: {
-                // HACK only select by mouse if we're using a mouse
-                contentTextEdit.selectByMouse = (mouse.source === Qt.MouseEventNotSynthesized)
+                isRealMouse = (mouse.source === Qt.MouseEventNotSynthesized)
                 mouse.accepted = false
             }
             onWheel: {
                     if (wheel.modifiers & Qt.ControlModifier) {
-                        parent.font.pointSize += (wheel.angleDelta.y/Math.abs(wheel.angleDelta.y))
+                        parent.font.pointSize += Math.sign(wheel.angleDelta.y)
                     } else {
                         wheel.accepted = false
                     }
             }
+        }
+
+        PinchArea {
+            id: contentPinch
+            anchors.fill: parent
+            property real startingSize
+            property int anchorPosition
+            readonly property real minFontSize: 6.0
+            readonly property real maxFontSize: 72.0
+
+            onPinchStarted: {
+                startingSize = parent.font.pointSize;
+                var startCenter = pinch.startCenter;
+                anchorPosition = parent.positionAt(startCenter.x, startCenter.y);
+            }
+
+            onPinchUpdated: {
+                parent.font.pointSize = clamp(startingSize * pinch.scale, minFontSize, maxFontSize);
+                positionAnchor(pinch.center.y);
+            }
+
+            onPinchFinished: {
+                scroller.returnToBounds();
+            }
+
+            function positionAnchor(targetY) {
+                var anchorRect = parent.positionToRectangle(anchorPosition);
+                var anchorY = anchorRect.y + anchorRect.height / 2.0;
+                var delta = anchorY - targetY;
+                scroller.contentY += delta;  // FIXME `scroller` is a non-local reference to ArticlePage.qml
+            }
+
+            function clamp(num, min, max) {
+              return num <= min ? min : num >= max ? max : num;
+            }
+
+            MouseArea { anchors.fill: parent }
         }
     }
 }
