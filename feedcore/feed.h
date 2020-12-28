@@ -10,6 +10,8 @@
 
 namespace FeedCore {
 
+class FeedUpdater;
+
 class Feed : public QObject {
     Q_OBJECT
 
@@ -28,6 +30,9 @@ public:
     LoadStatus status() const;
     void setStatus(LoadStatus status);
     Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
+
+    virtual FeedUpdater *updater() = 0;
+    Q_PROPERTY(FeedUpdater *updater READ updater CONSTANT);
 
     virtual ItemQuery *startItemQuery(bool unreadFilter)=0;
     virtual void updateFromSource(const Syndication::FeedPtr &feed){ assert(false); };

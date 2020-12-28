@@ -7,7 +7,7 @@
 namespace FeedCore {
 
 struct FeedUpdater::PrivData {
-    FeedRef feed;
+    Feed *feed;
     time_t updateInterval = 0;
     time_t lastUpdate = 0;
     QString errorMsg;
@@ -15,7 +15,8 @@ struct FeedUpdater::PrivData {
 };
 
 
-FeedUpdater::FeedUpdater(const FeedRef &feed, time_t updateInterval, time_t lastUpdate, QObject *parent) :
+FeedUpdater::FeedUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent) :
+    QObject(parent),
     priv(std::make_unique<PrivData>())
 {
     priv->feed = feed;
@@ -24,11 +25,6 @@ FeedUpdater::FeedUpdater(const FeedRef &feed, time_t updateInterval, time_t last
 }
 
 FeedUpdater::~FeedUpdater() = default;
-
-float FeedUpdater::progress()
-{
-    return (active()) ? 0.1f : 0;
-}
 
 void FeedUpdater::start()
 {
@@ -39,8 +35,7 @@ void FeedUpdater::start()
 
 void FeedUpdater::start(time_t timestamp)
 {
-    if (!active()) {
-        setActive(true);
+    if (priv->feed->status() != LoadStatus::Updating) {
         priv->feed->setStatus(LoadStatus::Updating);
         run();
     }
@@ -52,7 +47,7 @@ QString FeedUpdater::error()
     return priv->errorMsg;
 }
 
-FeedRef FeedUpdater::feed()
+Feed *FeedUpdater::feed()
 {
     return priv->feed;
 }
@@ -76,31 +71,15 @@ bool FeedUpdater::updateIfNecessary(time_t timestamp)
     return false;
 }
 
-bool FeedUpdater::active()
+void FeedUpdater::finish()
 {
-    return priv->active;
-}
-
-void FeedUpdater::finish(const Syndication::FeedPtr &content)
-{
-    priv->feed->updateFromSource(content);
     priv->feed->setStatus(LoadStatus::Idle);
-    setActive(false);
 }
 
 void FeedUpdater::setError(const QString &errorMsg)
 {
     priv->errorMsg = errorMsg;
     priv->feed->setStatus(LoadStatus::Error);
-    setActive(false);
-}
-
-void FeedUpdater::setActive(bool active)
-{
-    if (priv->active != active) {
-        priv->active = active;
-        emit activeChanged();
-    }
 }
 
 }

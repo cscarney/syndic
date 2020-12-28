@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-#include "context.h"
+#include "feedupdater.h"
 #include "article.h"
 using namespace FeedCore;
 
@@ -37,7 +37,7 @@ void FeedItemModel::initialize() {
 
 void FeedItemModel::requestUpdate()
 {
-    manager()->requestUpdate(feed());
+    feed()->updater()->start();
 }
 
 ItemQuery *FeedItemModel::startQuery()
@@ -56,7 +56,7 @@ void FeedItemModel::setStatusFromUpstream()
 
 void FeedItemModel::onStatusChanged()
 {
-    if (status() == Enums::Loading) {
+    if (status() != Enums::Loading) {
         setStatus(m_feed->status());
     }
 }

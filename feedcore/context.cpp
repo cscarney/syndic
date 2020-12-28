@@ -66,11 +66,6 @@ void Context::requestUpdate()
     priv->updateScheduler->updateAll();
 }
 
-void Context::requestUpdate(const FeedRef &feed)
-{
-    priv->updateScheduler->update(feed);
-}
-
 bool Context::updatesInProgress()
 {
     return priv->updateScheduler->updatesInProgress();

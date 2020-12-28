@@ -7,42 +7,35 @@
 #include <memory>
 
 #include "enums.h"
-#include "feedref.h"
 
 namespace FeedCore {
+
+class Feed;
 
 class FeedUpdater : public QObject
 {
     Q_OBJECT
 public:
-    explicit FeedUpdater(const FeedRef &feed, time_t updateInterval, time_t lastUpdate, QObject *parent = nullptr);
+    explicit FeedUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent);
     ~FeedUpdater();
 
-    virtual float progress();
     virtual void run() = 0;
-    virtual void cancel() {}
 
     void start();
     void start(time_t timestamp);
     QString error();
-    FeedRef feed();
+    Feed *feed();
     time_t nextUpdate();
     bool needsUpdate(time_t timestamp);
     bool updateIfNecessary(time_t timestamp);
-    bool active();
-
-signals:
-    void activeChanged();
 
 protected:
-    void finish(const Syndication::FeedPtr &content);
+    void finish();
     void setError(const QString &errorMsg);
 
 private:
     struct PrivData;
     std::unique_ptr<PrivData> priv;
-
-    void setActive(bool active);
 };
 
 }

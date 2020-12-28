@@ -9,6 +9,7 @@ namespace FeedCore {
 
 class SqliteFeedStorage;
 class SqliteArticle;
+class XMLFeedUpdater;
 
 class SqliteFeed : public Feed {
     Q_OBJECT
@@ -24,6 +25,7 @@ public:
 
     ItemQuery *startItemQuery(bool unreadFilter) final;
     void updateFromSource(const Syndication::FeedPtr &source) final;
+    FeedUpdater *updater() final;
     void setName(const QString &name) final;
 
 private:
@@ -31,6 +33,7 @@ private:
 
     SqliteFeedStorage *m_storage;
     qint64 m_id;
+    XMLFeedUpdater *m_updater;
 };
 
 }

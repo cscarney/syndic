@@ -14,9 +14,11 @@ class AllItemsFeed : public Feed
 public:
     AllItemsFeed(Context *context, const QString &name, QObject *parent=nullptr);
     ItemQuery *startItemQuery(bool unreadFilter) final;
+    FeedUpdater *updater() final;
 
 private:
     Context *m_context;
+    FeedUpdater *m_updater;
     void addFeed(const FeedCore::FeedRef &feed);
     void onFeedQueryFinished(FeedQuery *sender);
     void onUnreadCountChanged(int delta);

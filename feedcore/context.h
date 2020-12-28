@@ -28,7 +28,6 @@ public:
 
     ItemQuery *startQuery(bool unreadFilter);
     void requestUpdate();
-    void requestUpdate(const FeedRef &feed);
     bool updatesInProgress();
 
 signals:

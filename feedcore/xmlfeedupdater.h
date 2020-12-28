@@ -10,11 +10,11 @@ namespace FeedCore {
 class XMLFeedUpdater : public FeedUpdater
 {
 public:
-    XMLFeedUpdater(const FeedRef &feed, time_t updateInterval, time_t lastUpdate, QObject *parent = nullptr);
+    XMLFeedUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent);
     void run() final;
 
 private:
-    void loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &feed, Syndication::ErrorCode status);
+    void loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status);
 };
 
 }

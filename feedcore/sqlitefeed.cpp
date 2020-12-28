@@ -3,6 +3,7 @@
 #include <QVariant>
 #include <QSqlQuery>
 
+#include "xmlfeedupdater.h"
 #include "sqlitefeedstorage.h"
 #include "article.h"
 
@@ -10,7 +11,8 @@ namespace FeedCore {
 
 SqliteFeed::SqliteFeed::SqliteFeed(SqliteFeedStorage *storage, qint64 feedId):
     m_storage(storage),
-    m_id(feedId)
+    m_id(feedId),
+    m_updater(new XMLFeedUpdater(this, 3600, 0, this))
 {
 }
 
@@ -52,6 +54,11 @@ void SqliteFeed::updateFromSource(const Syndication::FeedPtr &source)
             }
         });
     }
+}
+
+FeedUpdater *SqliteFeed::updater()
+{
+    return m_updater;
 }
 
 void SqliteFeed::setName(const QString &name)

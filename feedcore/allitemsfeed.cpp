@@ -2,12 +2,32 @@
 
 #include "context.h"
 #include "articleref.h"
+#include "feedupdater.h"
 
 namespace FeedCore {
 
+namespace {
+    class Updater : public FeedUpdater {
+    public:
+        Updater(AllItemsFeed *feed, Context *context, QObject *parent):
+            FeedUpdater(feed, 0, 0, parent),
+            m_context(context)
+        {}
+
+        void run() final {
+            m_context->requestUpdate();
+            finish();
+        }
+
+    private:
+        Context *m_context;
+    };
+}
+
 AllItemsFeed::AllItemsFeed(Context *context, const QString &name, QObject *parent) :
     Feed(parent),
-    m_context(context)
+    m_context(context),
+    m_updater(new Updater(this, context, this))
 {
     FeedQuery *q { context->startFeedQuery() };
     populateName(name);
@@ -19,6 +39,11 @@ AllItemsFeed::AllItemsFeed(Context *context, const QString &name, QObject *paren
 ItemQuery *AllItemsFeed::startItemQuery(bool unreadFilter)
 {
     return m_context->startQuery(unreadFilter);
+}
+
+FeedUpdater *AllItemsFeed::updater()
+{
+    return m_updater;
 }
 
 void AllItemsFeed::addFeed(const FeedRef &feed)

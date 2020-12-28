@@ -21,25 +21,23 @@ class UpdateScheduler : public QObject
 public:
     explicit UpdateScheduler(QObject *parent = nullptr);
 
-    void add(qint64 feedId, QUrl url);
-    void schedule(const FeedRef &feed, time_t updateInterval, time_t lastUpdate, time_t timestamp);
-    void schedule(const FeedRef &feed, time_t updateInterval, time_t lastUpdate);
+    void schedule(const FeedRef &feedRef, time_t timestamp);
+    void schedule(const FeedRef &feedRef);
     void schedule(FeedQuery *q);
-    void unschedule(const FeedRef &feed);
+    void unschedule(const FeedRef &feedRef);
     void start(int resolution=60000);
     void stop();
-    void update(const FeedRef &feed);
     void updateStale();
     void updateAll();
     bool updatesInProgress();
 
 private:
-    QList<FeedUpdater *> m_schedule;
+    QSet<FeedRef> m_feeds;
+    QList<Feed *> m_schedule;
+    QSet<Feed *> m_active;
     QTimer m_timer;
-    QSet<FeedRef>m_active;
-    QHash<FeedRef, FeedUpdater *> m_updaters;
 
-    void onUpdaterActiveChanged(FeedUpdater *sender);
+    void onFeedStatusChanged(Feed *sender);
 };
 
 }

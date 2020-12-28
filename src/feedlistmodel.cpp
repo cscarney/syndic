@@ -51,7 +51,7 @@ void FeedListModel::PrivData::addItem(const FeedRef &feed)
 
 void FeedListModel::initialize()
 {
-    FeedQuery *const q { manager()->startFeedQuery() };
+    FeedQuery *q { manager()->startFeedQuery() };
     QObject::connect(q, &FeedStorageOperation::finished, this,
                      [this, q]{ onFeedQueryFinished(q); });
     QObject::connect(manager(), &Context::feedAdded, this, &FeedListModel::onFeedAdded);
