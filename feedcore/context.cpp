@@ -1,28 +1,25 @@
 #include "context.h"
-
 #include <QSortFilterProxyModel>
 #include <QDebug>
-
-#include "sqlitefeedstorage.h"
-#include "updatescheduler.h"
-#include "feedupdater.h"
-#include "feed.h"
+#include "storage.h"
+#include "scheduler.h"
+#include "feedref.h"
 
 namespace FeedCore {
 
 struct Context::PrivData {
     Context *parent;
-    std::unique_ptr<FeedStorage> storage;
-    std::unique_ptr<UpdateScheduler> updateScheduler;
+    Storage *storage;
+    Scheduler *updateScheduler;
 
-    PrivData(Context *parent);
+    PrivData(Storage *storage, Context *parent);
 };
 
-Context::Context(QObject *parent)
+Context::Context(Storage *storage, QObject *parent)
     : QObject(parent),
-      priv(std::make_unique<PrivData>(this))
+      priv(std::make_unique<PrivData>(storage, this))
 {
-    FeedQuery *queryFeeds { priv->storage->getFeeds() };
+    Future<FeedRef> *queryFeeds { priv->storage->getFeeds() };
     priv->updateScheduler->schedule(queryFeeds);
     priv->updateScheduler->start();
 }
@@ -30,13 +27,15 @@ Context::Context(QObject *parent)
 
 Context::~Context() = default;
 
-Context::PrivData::PrivData(Context *parent) :
+Context::PrivData::PrivData(Storage *storage, Context *parent) :
     parent(parent),
-    storage(std::make_unique<SqliteFeedStorage>()),
-    updateScheduler(std::make_unique<UpdateScheduler>())
-{ }
+    storage(storage),
+    updateScheduler(new Scheduler(parent))
+{
+    storage->setParent(parent);
+}
 
-FeedQuery *Context::startFeedQuery()
+Future<FeedRef> *Context::startFeedQuery()
 {
     return priv->storage->getFeeds();
 }
@@ -44,8 +43,8 @@ FeedQuery *Context::startFeedQuery()
 void Context::addFeed(const QUrl &url)
 {
     qDebug() << "addFeed called";
-    FeedQuery *q { priv->storage->storeFeed(url) };
-    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
+    Future<FeedRef> *q { priv->storage->storeFeed(url) };
+    QObject::connect(q, &BaseFuture::finished, this, [this, q]{
         for (const auto &feed : q->result()) {
             emit feedAdded(feed);
         }
@@ -53,7 +52,7 @@ void Context::addFeed(const QUrl &url)
     priv->updateScheduler->schedule(q);
 }
 
-ItemQuery *Context::startQuery(bool unreadFilter)
+Future<ArticleRef> *Context::startQuery(bool unreadFilter)
 {
     if (unreadFilter) {
         return priv->storage->getUnread();

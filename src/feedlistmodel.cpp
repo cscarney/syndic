@@ -1,13 +1,8 @@
 #include "feedlistmodel.h"
-
 #include <QString>
 #include <QVector>
-#include <QIcon>
-
 #include "context.h"
-#include "feed.h"
 #include "qmlfeedref.h"
-#include "article.h"
 #include "allitemsfeed.h"
 
 using namespace FeedCore;
@@ -51,8 +46,8 @@ void FeedListModel::PrivData::addItem(const FeedRef &feed)
 
 void FeedListModel::initialize()
 {
-    FeedQuery *q { manager()->startFeedQuery() };
-    QObject::connect(q, &FeedStorageOperation::finished, this,
+    Future<FeedRef> *q { manager()->startFeedQuery() };
+    QObject::connect(q, &BaseFuture::finished, this,
                      [this, q]{ onFeedQueryFinished(q); });
     QObject::connect(manager(), &Context::feedAdded, this, &FeedListModel::onFeedAdded);
 }
@@ -95,7 +90,7 @@ QHash<int, QByteArray> FeedListModel::roleNames() const
     };
 }
 
-void FeedListModel::onFeedQueryFinished(FeedQuery *sender)
+void FeedListModel::onFeedQueryFinished(Future<FeedRef> *sender)
 {
     beginResetModel();
     priv->feeds.clear();

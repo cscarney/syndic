@@ -1,33 +1,32 @@
-#include "sqlitearticle.h"
-
+#include "sqlite/articleimpl.h"
 #include <QSqlQuery>
 #include <QVariant>
-
-#include "sqlitefeedstorage.h"
-#include "sqlitefeed.h"
+#include "sqlite/storageimpl.h"
+#include "sqlite/feedimpl.h"
 
 using namespace FeedCore;
+using namespace Sqlite;
 
-SqliteArticle::SqliteArticle(const QSharedPointer<SqliteFeed> &feed, qint64 id):
+ArticleImpl::ArticleImpl(const QSharedPointer<FeedImpl> &feed, qint64 id):
     FeedCore::Article(FeedRef(feed)),
     m_id(id)
 {
 
 }
 
-QSharedPointer<SqliteArticle> SqliteArticle::forId(const QSharedPointer<SqliteFeed> &feed, qint64 id)
+QSharedPointer<ArticleImpl> ArticleImpl::forId(const QSharedPointer<FeedImpl> &feed, qint64 id)
 {
-    static QHash<qint64, QWeakPointer<SqliteArticle>> instances;
+    static QHash<qint64, QWeakPointer<ArticleImpl>> instances;
     auto &instance = instances[id];
     if (instance.isNull()) {
-        auto newArticle = QSharedPointer<SqliteArticle>(new SqliteArticle(feed, id));
+        auto newArticle = QSharedPointer<ArticleImpl>(new ArticleImpl(feed, id));
         instance = newArticle;
         return newArticle;
     }
     return instance.toStrongRef();
 }
 
-QSharedPointer<SqliteArticle> SqliteArticle::fromQuery(const QSharedPointer<SqliteFeed> &feed, const QSqlQuery &q)
+QSharedPointer<ArticleImpl> ArticleImpl::fromQuery(const QSharedPointer<FeedImpl> &feed, const QSqlQuery &q)
 {
     qint64 id = q.value(0).toLongLong();
     const auto &result = forId(feed, id);
@@ -35,18 +34,18 @@ QSharedPointer<SqliteArticle> SqliteArticle::fromQuery(const QSharedPointer<Sqli
     return result;
 }
 
-qint64 SqliteArticle::id() const
+qint64 ArticleImpl::id() const
 {
     return m_id;
 }
 
-SqliteFeed *SqliteArticle::feedImpl()
+FeedImpl *ArticleImpl::feedImpl()
 {
-    return feed().objectCast<SqliteFeed>().get();
+    return feed().objectCast<FeedImpl>().get();
 }
 
 // id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred
-void SqliteArticle::updateFromQuery(const QSqlQuery &q)
+void ArticleImpl::updateFromQuery(const QSqlQuery &q)
 {
     populateTitle(q.value(3).toString());
     populateAuthor(q.value(4).toString());
@@ -56,12 +55,12 @@ void SqliteArticle::updateFromQuery(const QSqlQuery &q)
     populateReadStatus(q.value(8).toBool());
 }
 
-void SqliteArticle::requestContent()
+void ArticleImpl::requestContent()
 {
     emit gotContent(m_content);
 }
 
-void SqliteArticle::setRead(bool isRead)
+void ArticleImpl::setRead(bool isRead)
 {
     feedImpl()->setItemRead(this, isRead);
 }

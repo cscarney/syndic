@@ -26,9 +26,10 @@ include(ECMInstallIcons)
  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror")
  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto")
  
- include_directories(feedcore src)
+ include_directories(${CMAKE_SOURCE_DIR} feedcore src)
 
  add_subdirectory(data)
  add_subdirectory(feedcore)
+ add_subdirectory(sqlite)
  add_subdirectory(src)
 

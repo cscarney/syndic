@@ -1,9 +1,5 @@
 #include "itemmodel.h"
-
 #include "articleref.h"
-#include "context.h"
-#include "feed.h"
-#include "article.h"
 #include "qmlarticleref.h"
 
 using namespace FeedCore;
@@ -55,8 +51,8 @@ void ItemModel::refresh()
 {
     assert(manager() != nullptr);
     setStatus(LoadStatus::Loading);
-    ItemQuery *q = startQuery();
-    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
+    Future<ArticleRef> *q = startQuery();
+    QObject::connect(q, &BaseFuture::finished, this, [this, q]{
         reloadFromQuery(q);
     });
 }
@@ -78,7 +74,7 @@ QHash<int, QByteArray> ItemModel::roleNames() const
     };
 }
 
-void ItemModel::reloadFromQuery(ItemQuery *query)
+void ItemModel::reloadFromQuery(Future<ArticleRef> *query)
 {
     beginResetModel();
     priv->items = QList<ArticleRef>::fromVector(query->result());
@@ -86,7 +82,7 @@ void ItemModel::reloadFromQuery(ItemQuery *query)
     setStatusFromUpstream();
 }
 
-void ItemModel::mergeFromQuery(ItemQuery *query)
+void ItemModel::mergeFromQuery(Future<ArticleRef> *query)
 {
     auto &items = priv->items;
     int itemIndex = 0;
@@ -157,7 +153,7 @@ void ItemModel::insertAndNotify(qint64 index, const ArticleRef &item)
 void ItemModel::refreshMerge()
 {
     auto *q = startQuery();
-    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q]{
+    QObject::connect(q, &BaseFuture::finished, this, [this, q]{
         mergeFromQuery(q);
     });
 }

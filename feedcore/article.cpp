@@ -1,5 +1,4 @@
 #include "article.h"
-#include "feed.h"
 
 namespace FeedCore {
 

@@ -1,6 +1,5 @@
 #ifndef QMLARTICLEREF_H
 #define QMLARTICLEREF_H
-
 #include <QQmlEngine>
 #include "articleref.h"
 #include "article.h"
@@ -17,10 +16,7 @@ public:
             QQmlEngine::setObjectOwnership(a,QQmlEngine::CppOwnership);
         }
     };
-
     Q_PROPERTY(FeedCore::Article *article READ get CONSTANT);
 };
-
 Q_DECLARE_METATYPE(QmlArticleRef);
-
 #endif // QMLARTICLEREF_H

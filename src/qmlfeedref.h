@@ -19,7 +19,5 @@ public:
 
     Q_PROPERTY(FeedCore::Feed *feed READ get CONSTANT);
 };
-
 Q_DECLARE_METATYPE(QmlFeedRef);
-
 #endif // QMLFEEDREF_H

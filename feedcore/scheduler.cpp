@@ -1,19 +1,20 @@
-#include "updatescheduler.h"
-
+#include "scheduler.h"
 #include <QDebug>
-
-#include "xmlfeedupdater.h"
+#include "updater.h"
 #include "feed.h"
+#include "feedref.h"
 
 namespace FeedCore {
 
-UpdateScheduler::UpdateScheduler(QObject *parent) : QObject(parent)
+Scheduler::Scheduler(QObject *parent) : QObject(parent)
 {
 }
 
+Scheduler::~Scheduler()=default;
+
 inline void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
 {
-    FeedUpdater *updater { feed->updater() };
+    Updater *updater { feed->updater() };
     time_t nextUpdate { updater->nextUpdate() };
     for (auto i=schedule.begin(); i!=schedule.end(); ++i) {
         if ((*i)->updater()->nextUpdate() > nextUpdate) {
@@ -24,7 +25,7 @@ inline void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
     schedule.append(feed);
 }
 
-void UpdateScheduler::schedule(const FeedRef &feedRef, time_t timestamp)
+void Scheduler::schedule(const FeedRef &feedRef, time_t timestamp)
 {
     unschedule(feedRef);     // there can only be one
     m_feeds.insert(feedRef);
@@ -35,16 +36,16 @@ void UpdateScheduler::schedule(const FeedRef &feedRef, time_t timestamp)
     feed->updater()->updateIfNecessary(timestamp);
 }
 
-void UpdateScheduler::schedule(const FeedRef &feed)
+void Scheduler::schedule(const FeedRef &feed)
 {
     time_t timestamp;
     time(&timestamp);
     schedule(feed, timestamp);
 }
 
-void UpdateScheduler::schedule(FeedQuery *q)
+void Scheduler::schedule(Future<FeedRef> *q)
 {
-    QObject::connect(q, &FeedStorageOperation::finished, this, [this, q] {
+    QObject::connect(q, &BaseFuture::finished, this, [this, q] {
         time_t timestamp;
         time(&timestamp);
         for (const auto &i : q->result()) {
@@ -53,7 +54,7 @@ void UpdateScheduler::schedule(FeedQuery *q)
     });
 }
 
-void UpdateScheduler::unschedule(const FeedRef &feed)
+void Scheduler::unschedule(const FeedRef &feed)
 {
     bool isScheduled { m_feeds.contains(feed) };
     if (!isScheduled) {
@@ -64,22 +65,22 @@ void UpdateScheduler::unschedule(const FeedRef &feed)
     m_feeds.remove(feed);
 }
 
-void UpdateScheduler::start(int resolution)
+void Scheduler::start(int resolution)
 {
     m_timer.setInterval(resolution);
-    m_timer.callOnTimeout(this, &UpdateScheduler::updateStale);
+    m_timer.callOnTimeout(this, &Scheduler::updateStale);
     m_timer.start();
 
     // also update immediately, in case anything was scheduled while we were stopped
-    QTimer::singleShot(0, this, &UpdateScheduler::updateStale);
+    QTimer::singleShot(0, this, &Scheduler::updateStale);
 }
 
-void UpdateScheduler::stop()
+void Scheduler::stop()
 {
     m_timer.stop();
 }
 
-static void updateMany(time_t timestamp, const QList<FeedUpdater *> &toUpdate)
+static void updateMany(time_t timestamp, const QList<Updater *> &toUpdate)
 {
     for (auto *entry : toUpdate)
     {
@@ -87,14 +88,14 @@ static void updateMany(time_t timestamp, const QList<FeedUpdater *> &toUpdate)
     }
 }
 
-void UpdateScheduler::updateStale()
+void Scheduler::updateStale()
 {
     time_t timestamp;
     time(&timestamp);
-    QList<FeedUpdater *> toUpdate{};
+    QList<Updater *> toUpdate{};
     const auto &schedule { m_schedule };
     for (Feed *entry : schedule) {
-        FeedUpdater *updater = entry->updater();
+        Updater *updater = entry->updater();
         if (!entry->updater()->needsUpdate(timestamp)) {
             break;
         }
@@ -103,7 +104,7 @@ void UpdateScheduler::updateStale()
     updateMany(timestamp, toUpdate);
 }
 
-void UpdateScheduler::updateAll()
+void Scheduler::updateAll()
 {
     time_t timestamp;
     time(&timestamp);
@@ -114,12 +115,12 @@ void UpdateScheduler::updateAll()
     }
 }
 
-bool UpdateScheduler::updatesInProgress()
+bool Scheduler::updatesInProgress()
 {
     return !m_active.isEmpty();
 }
 
-void UpdateScheduler::onFeedStatusChanged(Feed *sender)
+void Scheduler::onFeedStatusChanged(Feed *sender)
 {
     if (sender->status() == LoadStatus::Updating) {
         m_active.insert(sender);

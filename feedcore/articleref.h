@@ -3,7 +3,6 @@
 #include <QSharedPointer>
 
 namespace FeedCore {
-
 class Article;
 
 class ArticleRef : public QSharedPointer<Article> {
@@ -11,7 +10,5 @@ class ArticleRef : public QSharedPointer<Article> {
 public:
     using QSharedPointer<Article>::QSharedPointer;
 };
-
 }
-
 #endif // ARTICLEREF_H

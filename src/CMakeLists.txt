@@ -29,6 +29,7 @@ target_link_libraries(feedkeeper
     KF5::QuickAddons
     KF5::Syndication
     feedcore
+    sqlite
     )
 
 install(TARGETS feedkeeper DESTINATION bin)

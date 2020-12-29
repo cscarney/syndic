@@ -1,43 +1,31 @@
 ﻿#ifndef FEEDMANAGER_H
 #define FEEDMANAGER_H
-
 #include <memory>
-
 #include <QObject>
 #include <QUrl>
 #include <Syndication/Feed>
-
-#include "enums.h"
-#include "feedref.h"
-#include "feedstorageoperation.h"
+#include "future.h"
 
 namespace FeedCore {
-
-class FeedUpdater;
+class Storage;
+class FeedRef;
 
 class Context : public QObject
 {
     Q_OBJECT
 public:
-    explicit Context(QObject *parent = nullptr);
+    explicit Context(Storage *storage, QObject *parent = nullptr);
     ~Context();
-
-    FeedQuery *startFeedQuery();
-
+    Future<FeedRef> *startFeedQuery();
     Q_INVOKABLE void addFeed(const QUrl &url);
-
-    ItemQuery *startQuery(bool unreadFilter);
+    Future<ArticleRef> *startQuery(bool unreadFilter);
     void requestUpdate();
     bool updatesInProgress();
-
 signals:
     void feedAdded(const FeedCore::FeedRef &feed);
-
 private:
     struct PrivData;
     std::unique_ptr<PrivData> priv;
 };
-
 }
-
 #endif // FEEDMANAGER_H

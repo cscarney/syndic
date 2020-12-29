@@ -10,7 +10,5 @@ class FeedRef : public QSharedPointer<Feed> {
 public:
     using QSharedPointer<Feed>::QSharedPointer;
 };
-
 }
-
 #endif // FEEDREF_H

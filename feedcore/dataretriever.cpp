@@ -1,11 +1,8 @@
 #include "dataretriever.h"
-
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
 namespace FeedCore {
-
-DataRetriever::DataRetriever() = default;
 
 void DataRetriever::retrieveData(const QUrl &url)
 {

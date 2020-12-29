@@ -1,16 +1,15 @@
 #include "allitemsfeed.h"
-
 #include "context.h"
-#include "articleref.h"
-#include "feedupdater.h"
+#include "feedref.h"
+#include "updater.h"
 
 namespace FeedCore {
 
 namespace {
-    class Updater : public FeedUpdater {
+    class AllUpdater : public FeedCore::Updater {
     public:
-        Updater(AllItemsFeed *feed, Context *context, QObject *parent):
-            FeedUpdater(feed, 0, 0, parent),
+        AllUpdater(AllItemsFeed *feed, Context *context, QObject *parent):
+            FeedCore::Updater(feed, 0, 0, parent),
             m_context(context)
         {}
 
@@ -27,21 +26,21 @@ namespace {
 AllItemsFeed::AllItemsFeed(Context *context, const QString &name, QObject *parent) :
     Feed(parent),
     m_context(context),
-    m_updater(new Updater(this, context, this))
+    m_updater(new AllUpdater(this, context, this))
 {
-    FeedQuery *q { context->startFeedQuery() };
+    Future<FeedRef> *q { context->startFeedQuery() };
     populateName(name);
-    QObject::connect(q, &FeedStorageOperation::finished, this,
+    QObject::connect(q, &BaseFuture::finished, this,
                      [this, q]{ onFeedQueryFinished(q); });
     QObject::connect(context, &Context::feedAdded, this, &AllItemsFeed::addFeed);
 }
 
-ItemQuery *AllItemsFeed::startItemQuery(bool unreadFilter)
+Future<ArticleRef> *AllItemsFeed::startItemQuery(bool unreadFilter)
 {
     return m_context->startQuery(unreadFilter);
 }
 
-FeedUpdater *AllItemsFeed::updater()
+Updater *AllItemsFeed::updater()
 {
     return m_updater;
 }
@@ -53,7 +52,7 @@ void AllItemsFeed::addFeed(const FeedRef &feed)
     QObject::connect(feed.get(), &Feed::unreadCountChanged, this, &AllItemsFeed::incrementUnreadCount);
 }
 
-void AllItemsFeed::onFeedQueryFinished(FeedQuery *sender)
+void AllItemsFeed::onFeedQueryFinished(Future<FeedRef> *sender)
 {
     for (const auto &feed : sender->result()){
         addFeed(feed);

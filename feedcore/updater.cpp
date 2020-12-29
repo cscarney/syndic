@@ -1,12 +1,10 @@
-#include "feedupdater.h"
-
+#include "updater.h"
 #include <QTimer>
-
 #include "feed.h"
 
 namespace FeedCore {
 
-struct FeedUpdater::PrivData {
+struct Updater::PrivData {
     Feed *feed;
     time_t updateInterval = 0;
     time_t lastUpdate = 0;
@@ -15,7 +13,7 @@ struct FeedUpdater::PrivData {
 };
 
 
-FeedUpdater::FeedUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent) :
+Updater::Updater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent) :
     QObject(parent),
     priv(std::make_unique<PrivData>())
 {
@@ -24,16 +22,16 @@ FeedUpdater::FeedUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, Q
     priv->lastUpdate = lastUpdate;
 }
 
-FeedUpdater::~FeedUpdater() = default;
+Updater::~Updater() = default;
 
-void FeedUpdater::start()
+void Updater::start()
 {
     time_t t;
     time(&t);
     start(t);
 }
 
-void FeedUpdater::start(time_t timestamp)
+void Updater::start(time_t timestamp)
 {
     if (priv->feed->status() != LoadStatus::Updating) {
         priv->feed->setStatus(LoadStatus::Updating);
@@ -42,27 +40,27 @@ void FeedUpdater::start(time_t timestamp)
     priv->lastUpdate = timestamp;
 }
 
-QString FeedUpdater::error()
+QString Updater::error()
 {
     return priv->errorMsg;
 }
 
-Feed *FeedUpdater::feed()
+Feed *Updater::feed()
 {
     return priv->feed;
 }
 
-time_t FeedUpdater::nextUpdate()
+time_t Updater::nextUpdate()
 {
     return priv->lastUpdate + priv->updateInterval;
 }
 
-bool FeedUpdater::needsUpdate(time_t timestamp)
+bool Updater::needsUpdate(time_t timestamp)
 {
     return (nextUpdate() <= timestamp);
 }
 
-bool FeedUpdater::updateIfNecessary(time_t timestamp)
+bool Updater::updateIfNecessary(time_t timestamp)
 {
     if (needsUpdate(timestamp)) {
         start(timestamp);
@@ -71,12 +69,12 @@ bool FeedUpdater::updateIfNecessary(time_t timestamp)
     return false;
 }
 
-void FeedUpdater::finish()
+void Updater::finish()
 {
     priv->feed->setStatus(LoadStatus::Idle);
 }
 
-void FeedUpdater::setError(const QString &errorMsg)
+void Updater::setError(const QString &errorMsg)
 {
     priv->errorMsg = errorMsg;
     priv->feed->setStatus(LoadStatus::Error);

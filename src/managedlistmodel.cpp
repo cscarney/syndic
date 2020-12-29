@@ -1,5 +1,4 @@
 #include "managedlistmodel.h"
-
 #include <QTimer>
 
 using namespace FeedCore;
@@ -37,5 +36,5 @@ void ManagedListModel::classBegin()
 void ManagedListModel::componentComplete()
 {
     // make sure we don't activate until the settings item is complete
-    QTimer::singleShot(0,this, &ManagedListModel::activate);
+    QTimer::singleShot(0,this,&ManagedListModel::activate);
 }

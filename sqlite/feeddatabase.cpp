@@ -1,5 +1,4 @@
 #include "feeddatabase.h"
-
 #include <QDir>
 #include <QStandardPaths>
 #include <QSqlDatabase>
@@ -8,7 +7,7 @@
 #include <QDebug>
 
 
-namespace FeedCore {
+namespace Sqlite {
 
 static const QString feed_fields =
         QStringLiteral("Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.url, COUNT(Item.id)");

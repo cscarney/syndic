@@ -1,25 +1,23 @@
-#include "xmlfeedupdater.h"
-
+#include "xmlupdater.h"
 #include <Syndication/Loader>
-
 #include "dataretriever.h"
 
 namespace FeedCore {
 
-XMLFeedUpdater::XMLFeedUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent):
-    FeedUpdater(feed, updateInterval, lastUpdate, parent)
+XMLUpdater::XMLUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent):
+    Updater(feed, updateInterval, lastUpdate, parent)
 {
 
 }
 
-void XMLFeedUpdater::run()
+void XMLUpdater::run()
 {
     Syndication::Loader *loader { Syndication::Loader::create() };
-    QObject::connect(loader, &Syndication::Loader::loadingComplete, this, &XMLFeedUpdater::loadingComplete);
+    QObject::connect(loader, &Syndication::Loader::loadingComplete, this, &XMLUpdater::loadingComplete);
     loader->loadFrom(feed()->url(), new DataRetriever);
 }
 
-void XMLFeedUpdater::loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status)
+void XMLUpdater::loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status)
 {
     Feed *feed { this->feed() };
     QString errorMessage;

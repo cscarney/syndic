@@ -2,13 +2,13 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QQmlContext>
-
 #include <KDeclarative/KDeclarative>
-
 #include "context.h"
 #include "feeditemmodel.h"
 #include "feedlistmodel.h"
 #include "qmlarticleref.h"
+#include "qmlfeedref.h"
+#include "sqlite/storageimpl.h"
 using namespace FeedCore;
 
 int main(int argc, char *argv[])
@@ -23,10 +23,9 @@ int main(int argc, char *argv[])
     QQuickStyle::setStyle("org.kde.desktop");
     KDeclarative::KDeclarative::setupEngine(&engine);
 
-    auto *fm = new FeedCore::Context(&app);
     qmlRegisterType<FeedListModel>("FeedListModel", 1, 0, "FeedListModel");
     qmlRegisterType<FeedItemModel>("FeedItemModel", 1, 0, "FeedItemModel");
-    qmlRegisterType<Context>("FeedManager", 1, 0, "FeedManager");
+    qmlRegisterUncreatableType<Context>("FeedManager", 1, 0, "FeedManager", "global object");
     qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
     qmlRegisterUncreatableType<FeedRef>("FeedRef", 1,0,"FeedRef", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlFeedRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
@@ -35,6 +34,7 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<QmlArticleRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
     QMetaType::registerConverter<QmlFeedRef, FeedRef>();
     QMetaType::registerConverter<QmlArticleRef, ArticleRef>();
+    auto *fm = new FeedCore::Context(new Sqlite::StorageImpl, &app);
     engine.rootContext()->setContextProperty("feedManager", fm);
     engine.load(QUrl("qrc:/qml/main.qml"));
     int result = QApplication::exec();

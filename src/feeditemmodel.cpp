@@ -1,9 +1,7 @@
 #include "feeditemmodel.h"
-
 #include <QDebug>
-
-#include "feedupdater.h"
-#include "article.h"
+#include "updater.h"
+#include "feed.h"
 using namespace FeedCore;
 
 FeedItemModel::FeedItemModel(QObject * parent):
@@ -40,7 +38,7 @@ void FeedItemModel::requestUpdate()
     feed()->updater()->start();
 }
 
-ItemQuery *FeedItemModel::startQuery()
+Future<ArticleRef> *FeedItemModel::startQuery()
 {
     if (m_feed.isNull()) {
         qDebug() << "starting query with no feed set!";
