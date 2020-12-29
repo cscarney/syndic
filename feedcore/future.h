@@ -34,7 +34,7 @@ public:
         return op;
     }
 private:
-    QVector<T> m_result = {};
+    QVector<T> m_result;
 };
 }
 #endif // FEEDSTORAGEOPERATION_H

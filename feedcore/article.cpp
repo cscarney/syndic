@@ -1,10 +1,8 @@
 #include "article.h"
+using namespace FeedCore;
 
-namespace FeedCore {
-
-Article::Article(const FeedRef &feed, QObject *parent) :
-    QObject(parent),
-    m_feed(feed)
+Article::Article(QObject *parent) :
+    QObject(parent)
 {
 
 }
@@ -49,27 +47,22 @@ void Article::populateReadStatus(bool isRead)
     }
 }
 
-FeedCore::FeedRef FeedCore::Article::feed()
-{
-    return m_feed;
-}
-
-QString Article::title()
+const QString &Article::title() const
 {
     return m_title;
 }
 
-QString Article::author()
+const QString &Article::author() const
 {
     return m_author;
 }
 
-QDateTime Article::date()
+const QDateTime &Article::date() const
 {
     return m_date;
 }
 
-QUrl Article::url()
+const QUrl &Article::url() const
 {
     return m_url;
 }
@@ -77,6 +70,4 @@ QUrl Article::url()
 bool Article::isRead() const
 {
     return m_readStatus;
-}
-
 }

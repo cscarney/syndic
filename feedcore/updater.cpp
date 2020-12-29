@@ -6,16 +6,16 @@ namespace FeedCore {
 
 struct Updater::PrivData {
     Feed *feed;
-    time_t updateInterval = 0;
-    time_t lastUpdate = 0;
+    time_t updateInterval { 0 };
+    time_t lastUpdate { 0 };
     QString errorMsg;
-    bool active = false;
+    bool active { false };
 };
 
 
 Updater::Updater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent) :
     QObject(parent),
-    priv(std::make_unique<PrivData>())
+    priv{ std::make_unique<PrivData>() }
 {
     priv->feed = feed;
     priv->updateInterval = updateInterval;

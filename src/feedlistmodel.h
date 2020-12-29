@@ -26,7 +26,7 @@ public:
 private:
     class PrivData;
     std::unique_ptr<PrivData> priv;
-    void onFeedQueryFinished(FeedCore::Future<FeedCore::FeedRef> *sender);
+    void onGetFeedsFinished(FeedCore::Future<FeedCore::FeedRef> *sender);
     void onFeedAdded(const FeedCore::FeedRef &feed);
 };
 #endif // FEEDLISTMODEL_H

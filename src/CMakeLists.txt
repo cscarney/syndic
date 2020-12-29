@@ -1,7 +1,6 @@
 set(feedkeeper_HEADERS
     feedlistmodel.h
-    itemmodel.h
-    feeditemmodel.h
+    articlelistmodel.h
     managedlistmodel.h
     qmlfeedref.h
     qmlarticleref.h
@@ -10,8 +9,7 @@ set(feedkeeper_HEADERS
 set(feedkeeper_SRCS
     ${feedkeeper_HEADERS}
     feedlistmodel.cpp
-    itemmodel.cpp
-    feeditemmodel.cpp
+    articlelistmodel.cpp
     managedlistmodel.cpp
     main.cpp
     resources.qrc

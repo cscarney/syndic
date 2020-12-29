@@ -5,22 +5,23 @@
 #include "sqlite/storageimpl.h"
 #include "article.h"
 #include "articleref.h"
+#include "sqlite/feedquery.h"
 using namespace FeedCore;
 using namespace Sqlite;
 
 
-FeedImpl::FeedImpl::FeedImpl(StorageImpl *storage, qint64 feedId):
-    m_storage(storage),
-    m_id(feedId),
-    m_updater(new XMLUpdater(this, 3600, 0, this))
+FeedImpl::FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage):
+    m_id{feedId},
+    m_storage{storage},
+    m_updater{new XMLUpdater(this, 3600, 0, this)}
 {
 }
 
-void FeedImpl::updateFromQuery(const QSqlQuery &query)
+void FeedImpl::updateFromQuery(const FeedQuery &query)
 {
-    populateName(query.value(3).toString());
-    populateUrl(query.value(4).toString());
-    populateUnreadCount(query.value(5).toInt());
+    populateName(query.displayName());
+    populateUrl(query.url());
+    populateUnreadCount(query.unreadCount());
 }
 
 void FeedImpl::populateNew(const QUrl &url, const QString &name)
@@ -30,7 +31,7 @@ void FeedImpl::populateNew(const QUrl &url, const QString &name)
     populateUnreadCount(0);
 }
 
-Future<ArticleRef> *FeedImpl::startItemQuery(bool unreadFilter)
+Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)
 {
     if (unreadFilter) {
         return m_storage->getUnreadByFeed(this);
@@ -44,13 +45,13 @@ void FeedImpl::updateFromSource(const Syndication::FeedPtr &source)
     setName(source->title());
     const auto &items = source->items();
     for (const auto &item : items) {
-        auto *q = m_storage->storeItem(this, item);
+        auto *q = m_storage->storeArticle(this, item);
         QObject::connect(q, &BaseFuture::finished, this, [this, q]{
             for (const auto &item : q->result()) {
                 if (!item->isRead()){
                     incrementUnreadCount();
                 }
-                emit itemAdded(item);
+                emit articleAdded(item);
             }
         });
     }
@@ -68,9 +69,9 @@ void FeedImpl::setName(const QString &name)
     }
 }
 
-void FeedImpl::setItemRead(ArticleImpl *item, bool isRead)
+void FeedImpl::setRead(ArticleImpl *article, bool isRead)
 {
-    auto *q = m_storage->updateItemRead(item, isRead);
+    auto *q = m_storage->updateArticleRead(article, isRead);
     QObject::connect(q, &BaseFuture::finished, this, [this, q]{
         const auto &changedItems = q->result();
         for (const auto &changedItem : changedItems) {
@@ -81,26 +82,6 @@ void FeedImpl::setItemRead(ArticleImpl *item, bool isRead)
             }
         }
     });
-}
-
-QSharedPointer<FeedImpl> FeedImpl::forId(StorageImpl *storage, qint64 feedId)
-{
-    static QHash<qint64, QWeakPointer<FeedImpl>> instances;
-    auto &instance = instances[feedId];
-    if (instance.isNull()) {
-        auto newFeed = QSharedPointer<FeedImpl>(new FeedImpl(storage, feedId));
-        instance = newFeed;
-        return newFeed;
-    }
-    return instance.toStrongRef();
-}
-
-QSharedPointer<FeedImpl> FeedImpl::fromQuery(StorageImpl *storage, const QSqlQuery &q)
-{
-    qint64 id = q.value(0).toLongLong();
-    const auto &result = forId(storage, id);
-    result->updateFromQuery(q);
-    return result;
 }
 
 qint64 FeedImpl::id() const

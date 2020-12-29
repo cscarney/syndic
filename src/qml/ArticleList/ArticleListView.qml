@@ -16,7 +16,7 @@ ListView {
 
         text: ref.article.headline
         padding: 10
-        contentItem: ItemListEntry { }
+        contentItem: ArticleListEntry { }
         
         property var data: ref
 

@@ -17,10 +17,10 @@ struct Context::PrivData {
 
 Context::Context(Storage *storage, QObject *parent)
     : QObject(parent),
-      priv(std::make_unique<PrivData>(storage, this))
+      priv{ std::make_unique<PrivData>(storage, this) }
 {
-    Future<FeedRef> *queryFeeds { priv->storage->getFeeds() };
-    priv->updateScheduler->schedule(queryFeeds);
+    Future<FeedRef> *getFeeds { priv->storage->getFeeds() };
+    priv->updateScheduler->schedule(getFeeds);
     priv->updateScheduler->start();
 }
 
@@ -35,7 +35,7 @@ Context::PrivData::PrivData(Storage *storage, Context *parent) :
     storage->setParent(parent);
 }
 
-Future<FeedRef> *Context::startFeedQuery()
+Future<FeedRef> *Context::getFeeds()
 {
     return priv->storage->getFeeds();
 }
@@ -52,7 +52,7 @@ void Context::addFeed(const QUrl &url)
     priv->updateScheduler->schedule(q);
 }
 
-Future<ArticleRef> *Context::startQuery(bool unreadFilter)
+Future<ArticleRef> *Context::getArticles(bool unreadFilter)
 {
     if (unreadFilter) {
         return priv->storage->getUnread();

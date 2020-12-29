@@ -12,7 +12,7 @@ public:
     void abort() final;
 private:
     QNetworkAccessManager m_nam;
-    QNetworkReply *m_reply;
+    QNetworkReply *m_reply { nullptr };
     void onRedirect(const QUrl &url);
     void onFinished();
 };

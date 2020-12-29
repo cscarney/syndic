@@ -4,7 +4,7 @@
 #include <QQmlContext>
 #include <KDeclarative/KDeclarative>
 #include "context.h"
-#include "feeditemmodel.h"
+#include "articlelistmodel.h"
 #include "feedlistmodel.h"
 #include "qmlarticleref.h"
 #include "qmlfeedref.h"
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     KDeclarative::KDeclarative::setupEngine(&engine);
 
     qmlRegisterType<FeedListModel>("FeedListModel", 1, 0, "FeedListModel");
-    qmlRegisterType<FeedItemModel>("FeedItemModel", 1, 0, "FeedItemModel");
+    qmlRegisterType<ArticleListModel>("ArticleListModel", 1, 0, "ArticleListModel");
     qmlRegisterUncreatableType<Context>("FeedManager", 1, 0, "FeedManager", "global object");
     qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
     qmlRegisterUncreatableType<FeedRef>("FeedRef", 1,0,"FeedRef", "obtained from cpp model");

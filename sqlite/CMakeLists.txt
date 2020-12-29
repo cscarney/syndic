@@ -1,4 +1,6 @@
 set(sqlite_HEADERS
+    feedquery.h
+    itemquery.h
     articleimpl.h
     feeddatabase.h
     feedimpl.h

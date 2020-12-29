@@ -9,36 +9,37 @@
 using namespace FeedCore;
 using namespace Sqlite;
 
-void StorageImpl::appendItemResults(Future<ArticleRef> *op, QSqlQuery &q)
+void StorageImpl::appendArticleResults(Future<ArticleRef> *op, ItemQuery &q)
 {
     while (q.next()) {
-        const qint64 feedId = q.value(1).toLongLong();
-        const auto &feed = FeedImpl::forId(this, feedId);
-        op->appendResult(ArticleImpl::fromQuery(feed, q));
+        const auto &feed = m_feedFactory.getInstance(q.feed(), this);
+        const auto &item = m_articleFactory.getInstance(q.id(), feed);
+        item->updateFromQuery(q);
+        op->appendResult(item);
     }
 }
 
 Future<ArticleRef> *StorageImpl::getAll()
 {
     return Future<ArticleRef>::yield(this, [this](auto *op){
-        QSqlQuery q { m_db.selectAllItems() };
-        appendItemResults(op, q);
+        ItemQuery q { m_db.selectAllItems() };
+        appendArticleResults(op, q);
     });
 }
 
 Future<ArticleRef> *StorageImpl::getUnread()
 {
     return Future<ArticleRef>::yield(this, [this](auto *op){
-        QSqlQuery q { m_db.selectUnreadItems() };
-        appendItemResults(op, q);
+        ItemQuery q { m_db.selectUnreadItems() };
+        appendArticleResults(op, q);
     });
 }
 
 Future<ArticleRef> *StorageImpl::getById(qint64 id)
 {
     return Future<ArticleRef>::yield(this, [this, id](auto *op){
-        QSqlQuery q { m_db.selectItem(id) };
-        appendItemResults(op, q);
+        ItemQuery q { m_db.selectItem(id) };
+        appendArticleResults(op, q);
     });
 }
 
@@ -46,8 +47,8 @@ Future<ArticleRef> *StorageImpl::getByFeed(FeedImpl *feed)
 {
     const qint64 feedId { feed->id() };
     return Future<ArticleRef>::yield(this, [this, feedId](auto *op){
-        QSqlQuery q = m_db.selectItemsByFeed(feedId);
-        appendItemResults(op, q);
+        ItemQuery q = m_db.selectItemsByFeed(feedId);
+        appendArticleResults(op, q);
     });
 }
 
@@ -55,12 +56,12 @@ Future<ArticleRef> *StorageImpl::getUnreadByFeed(FeedImpl *feed)
 {
     const qint64 feedId = feed->id();
     return Future<ArticleRef>::yield(this, [this, feedId](auto *op){
-        QSqlQuery q { m_db.selectUnreadItemsByFeed(feedId) };
-        appendItemResults(op, q);
+        ItemQuery q { m_db.selectUnreadItemsByFeed(feedId) };
+        appendArticleResults(op, q);
     });
 }
 
-Future<ArticleRef> *StorageImpl::storeItem(FeedImpl *feed, const Syndication::ItemPtr &item)
+Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication::ItemPtr &item)
 {
     const qint64 feedId { feed->id() };
     return Future<ArticleRef>::yield(this, [this, item, feedId](auto *op){
@@ -91,12 +92,12 @@ Future<ArticleRef> *StorageImpl::storeItem(FeedImpl *feed, const Syndication::It
             op->setResult();
             return;
         }
-        QSqlQuery result = m_db.selectItem(*newId);
-        appendItemResults(op, result);
+        ItemQuery result { m_db.selectItem(*newId) };
+        appendArticleResults(op, result);
     });
 }
 
-Future<ArticleRef> *StorageImpl::updateItemRead(ArticleImpl *article, bool isRead)
+Future<ArticleRef> *StorageImpl::updateArticleRead(ArticleImpl *article, bool isRead)
 {
     const qint64 itemId { article->id() };
     const bool oldValue { article->isRead() };
@@ -105,23 +106,25 @@ Future<ArticleRef> *StorageImpl::updateItemRead(ArticleImpl *article, bool isRea
             op->setResult() ;
         } else {
             m_db.updateItemRead(itemId, isRead);
-            QSqlQuery result { m_db.selectItem(itemId) };
-            appendItemResults(op, result);
+            ItemQuery result { m_db.selectItem(itemId) };
+            appendArticleResults(op, result);
         }
     });
 }
 
-void StorageImpl::appendFeedResults(Future<FeedRef> *op, QSqlQuery &q)
+void StorageImpl::appendFeedResults(Future<FeedRef> *op, FeedQuery &q)
 {
     while (q.next()) {
-        op->appendResult(FeedImpl::fromQuery(this, q));
+        auto ref = m_feedFactory.getInstance(q.id(), this);
+        ref->updateFromQuery(q);
+        op->appendResult(ref);
     }
 }
 
 Future<FeedRef> *StorageImpl::getFeeds()
 {
     return Future<FeedRef>::yield(this, [this](auto *op){
-        QSqlQuery q { m_db.selectAllFeeds() };
+        FeedQuery q { m_db.selectAllFeeds() };
         appendFeedResults(op, q);
     });
 }
@@ -141,7 +144,7 @@ Future<FeedRef> *StorageImpl::storeFeed(const QUrl &url)
             op->setResult();
             return;
         }
-        QSqlQuery result { m_db.selectFeed(*insertId) };
+        FeedQuery result { m_db.selectFeed(*insertId) };
         appendFeedResults(op, result);
     });
 }

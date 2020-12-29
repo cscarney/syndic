@@ -11,15 +11,15 @@ class AllItemsFeed : public Feed
     Q_OBJECT
 public:
     AllItemsFeed(Context *context, const QString &name, QObject *parent=nullptr);
-    Future<ArticleRef> *startItemQuery(bool unreadFilter) final;
+    Future<ArticleRef> *getArticles(bool unreadFilter) final;
     Updater *updater() final;
 private:
-    Context *m_context;
-    Updater *m_updater;
+    Context *m_context { nullptr };
+    Updater *m_updater { nullptr };
     void addFeed(const FeedRef &feed);
-    void onFeedQueryFinished(Future<FeedRef> *sender);
+    void onGetFeedsFinished(Future<FeedRef> *sender);
     void onUnreadCountChanged(int delta);
-    void onItemAdded(const ArticleRef &item);
+    void onArticleAdded(const ArticleRef &article);
 };
 }
 

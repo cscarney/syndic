@@ -6,6 +6,7 @@
 
 class QmlFeedRef : public FeedCore::FeedRef {
     Q_GADGET
+    Q_PROPERTY(FeedCore::Feed *feed READ get CONSTANT);
 public:
     inline QmlFeedRef() = default;
     inline QmlFeedRef(const FeedCore::FeedRef &ref) :
@@ -16,8 +17,6 @@ public:
             QQmlEngine::setObjectOwnership(f,QQmlEngine::CppOwnership);
         }
     };
-
-    Q_PROPERTY(FeedCore::Feed *feed READ get CONSTANT);
 };
 Q_DECLARE_METATYPE(QmlFeedRef);
 #endif // QMLFEEDREF_H

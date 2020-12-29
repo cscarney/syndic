@@ -9,11 +9,6 @@
 
 namespace Sqlite {
 
-static const QString feed_fields =
-        QStringLiteral("Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.url, COUNT(Item.id)");
-static const QString feed_join =
-        QStringLiteral("Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false");
-
 static inline QString filePath(QString const &fileName)
 {
     QDir appDataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
@@ -115,40 +110,29 @@ FeedDatabase::~FeedDatabase()
     db().close();
 }
 
-static const QString item_fields =
-        QStringLiteral("id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred");
-
-
 static const QString select_sort = QStringLiteral("ORDER BY date DESC");
 
-QSqlQuery FeedDatabase::selectAllItems()
+ItemQuery FeedDatabase::selectAllItems()
 {
-    QSqlQuery q(db());
-    q.prepare("SELECT "+item_fields+" FROM Item "+select_sort);
+    ItemQuery q(db(), "1 "+select_sort);
     if (!q.exec()) {
         qDebug() << "SQL Error in selectAllItems: " + q.lastError().text();
     }
     return q;
 }
 
-QSqlQuery FeedDatabase::selectUnreadItems()
+ItemQuery FeedDatabase::selectUnreadItems()
 {
-    QSqlQuery q(db());
-    q.prepare(
-        "SELECT "+item_fields+" FROM Item "
-        "WHERE isRead=0 " + select_sort);
+    ItemQuery q(db(), "isRead=0 "+select_sort);
     if (!q.exec()) {
         qDebug() << "SQL Error in selectUnreadItems: " + q.lastError().text();
     }
     return q;
 }
 
-QSqlQuery FeedDatabase::selectItemsByFeed(qint64 feedId)
+ItemQuery FeedDatabase::selectItemsByFeed(qint64 feedId)
 {
-    QSqlQuery q(db());
-    q.prepare(
-        "SELECT "+item_fields+" FROM Item "
-        "WHERE feed=:feed "+select_sort);
+    ItemQuery q(db(), "feed=:feed "+select_sort);
     q.bindValue(":feed", feedId);
     if (!q.exec()) {
         qDebug() << "SQL Error in selectItemsByFeed: " + q.lastError().text();
@@ -156,12 +140,9 @@ QSqlQuery FeedDatabase::selectItemsByFeed(qint64 feedId)
     return q;
 }
 
-QSqlQuery FeedDatabase::selectUnreadItemsByFeed(qint64 feedId)
+ItemQuery FeedDatabase::selectUnreadItemsByFeed(qint64 feedId)
 {
-    QSqlQuery q(db());
-    q.prepare(
-        "SELECT "+item_fields+" FROM Item "
-        "WHERE feed=:feed AND isRead=0 "+select_sort);
+    ItemQuery q(db(), "feed=:feed AND isRead=0 "+select_sort);
     q.bindValue(":feed", feedId);
     if (!q.exec()) {
         qDebug() << "SQL Error in selectUnreadItemsByFeed: " + q.lastError().text();
@@ -169,12 +150,9 @@ QSqlQuery FeedDatabase::selectUnreadItemsByFeed(qint64 feedId)
     return q;
 }
 
-QSqlQuery FeedDatabase::selectItem(qint64 id)
+ItemQuery FeedDatabase::selectItem(qint64 id)
 {
-    QSqlQuery q(db());
-    q.prepare(
-                "SELECT "+item_fields+" FROM Item "
-                "WHERE id=:id;");
+    ItemQuery q(db(), "id=:id");
     q.bindValue(":id", id);
     if (!q.exec()) {
         qDebug() << "SQL Error in selectItem: " + q.lastError().text();
@@ -182,12 +160,9 @@ QSqlQuery FeedDatabase::selectItem(qint64 id)
     return q;
 }
 
-QSqlQuery FeedDatabase::selectItem(qint64 feed, const QString &localId)
+ItemQuery FeedDatabase::selectItem(qint64 feed, const QString &localId)
 {
-    QSqlQuery q(db());
-    q.prepare(
-                "SELECT "+item_fields+" FROM Item "
-                "WHERE feed=:feed AND localId=:localId;");
+    ItemQuery q(db(), "feed=:feed AND localId=:localId");
     q.bindValue(":feed", feed);
     q.bindValue(":localId", localId);
     if (!q.exec()) {
@@ -300,23 +275,18 @@ void FeedDatabase::updateItemStarred(qint64 id, bool isStarred)
     }
 }
 
-QSqlQuery FeedDatabase::selectAllFeeds()
+FeedQuery FeedDatabase::selectAllFeeds()
 {
-    QSqlQuery q(db());
-    q.prepare(
-                "SELECT "+feed_fields+" FROM "+feed_join+
-                " GROUP BY Feed.id");
+    FeedQuery q(db(), "1");
     if (!q.exec()) {
         qDebug() << "SQL Error: " + q.lastError().text();
     }
     return q;
 }
 
-QSqlQuery FeedDatabase::selectFeed(qint64 feedId)
+FeedQuery FeedDatabase::selectFeed(qint64 feedId)
 {
-    QSqlQuery q(db());
-    q.prepare("SELECT "+feed_fields+" FROM "+feed_join+
-              " WHERE Feed.id=:id");
+    FeedQuery q(db(), "Feed.id=:id");
     q.bindValue(":id", feedId);
     if (!q.exec()) {
         qDebug() << "SQL Error in selectFeed: " + q.lastError().text();

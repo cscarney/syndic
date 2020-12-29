@@ -3,14 +3,17 @@ import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
 import Enums 1.0
+import ArticleListModel 1.0
 
 Kirigami.ScrollablePage {
     id: root
     topPadding: 0
     bottomPadding: 0
     leftPadding: 0
-    rightPadding: 0
-    title: qsTr("All Items")
+    rightPadding: 0 
+    property var feedRef
+    property var feed: feedRef.feed
+    title: feed.name
 
     Settings {
         id: settings
@@ -58,21 +61,24 @@ Kirigami.ScrollablePage {
     function nextItem () { articleList.currentIndex++ }
     function previousItem () { articleList.currentIndex-- }
 
-    ItemListView {
+    ArticleListView {
        id: articleList
        anchors.fill: parent
        currentIndex: -1
        onCurrentItemChanged: openChild()
 
-       Connections {
-           target: articleList.model
-           onStatusChanged: {
-               if (articleList.currentItem) return;
-               if ((model.status === Enums.Idle) && (model.rowCount() > 0))
-                   articleList.currentIndex = 0;
-               else openChild();
-           }
-       }
+       model: ArticleListModel {
+          id: feedItemModel
+          manager: feedManager
+          feed: root.feedRef
+          unreadFilter: root.unreadFilter
+          onStatusChanged: {
+              if (articleList.currentItem) return;
+              if ((model.status === Enums.Idle) && (model.rowCount() > 0))
+                  articleList.currentIndex = 0;
+              else openChild();
+          }
+      }
 
        EmptyFeedOverlay {
            id: emptyOverlay

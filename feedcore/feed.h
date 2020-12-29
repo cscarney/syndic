@@ -11,6 +11,11 @@ class Updater;
 
 class Feed : public QObject {
     Q_OBJECT
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
+    Q_PROPERTY(QUrl url READ url NOTIFY urlChanged);
+    Q_PROPERTY(int unreadCount READ unreadCount NOTIFY unreadCountChanged);
+    Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
+    Q_PROPERTY(Updater *updater READ updater CONSTANT);
 public:
     QString name() const;
     virtual void setName(const QString &name) { populateName(name); }
@@ -20,19 +25,14 @@ public:
     LoadStatus status() const;
     void setStatus(LoadStatus status);
     virtual Updater *updater() = 0;
-    virtual Future<ArticleRef> *startItemQuery(bool unreadFilter)=0;
+    virtual Future<ArticleRef> *getArticles(bool unreadFilter)=0;
     virtual void updateFromSource(const Syndication::FeedPtr &feed){ assert(false); };
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
-    Q_PROPERTY(QUrl url READ url NOTIFY urlChanged);
-    Q_PROPERTY(int unreadCount READ unreadCount NOTIFY unreadCountChanged);
-    Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
-    Q_PROPERTY(Updater *updater READ updater CONSTANT);
 signals:
     void nameChanged();
     void urlChanged();
     void unreadCountChanged(int delta);
     void statusChanged();
-    void itemAdded(const FeedCore::ArticleRef &item);
+    void articleAdded(const FeedCore::ArticleRef &article);
 protected:
     explicit Feed(QObject *parent = nullptr);
     bool populateName(const QString &name);
@@ -43,8 +43,8 @@ protected:
 private:
     QString m_name;
     QUrl m_url;
-    int m_unreadCount = 0;
-    LoadStatus m_status = LoadStatus::Idle;
+    int m_unreadCount { 0 };
+    LoadStatus m_status { LoadStatus::Idle };
 };
 }
 #endif // STOREDFEED_H

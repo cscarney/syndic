@@ -16,9 +16,9 @@ class Context : public QObject
 public:
     explicit Context(Storage *storage, QObject *parent = nullptr);
     ~Context();
-    Future<FeedRef> *startFeedQuery();
+    Future<FeedRef> *getFeeds();
     Q_INVOKABLE void addFeed(const QUrl &url);
-    Future<ArticleRef> *startQuery(bool unreadFilter);
+    Future<ArticleRef> *getArticles(bool unreadFilter);
     void requestUpdate();
     bool updatesInProgress();
 signals:

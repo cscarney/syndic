@@ -11,6 +11,7 @@ class ManagedListModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
+    Q_PROPERTY(FeedCore::Context *manager READ manager WRITE setManager NOTIFY managerChanged);
 public:
     ManagedListModel(QObject *parent=nullptr);
     FeedCore::Context *manager() const;
@@ -19,14 +20,13 @@ public:
     void activate();
     void classBegin() override;
     void componentComplete() override;
-    Q_PROPERTY(FeedCore::Context *manager READ manager WRITE setManager NOTIFY managerChanged);
 signals:
     void managerChanged();
 protected:
     virtual void initialize() {};
 private:
-    FeedCore::Context *m_manager=nullptr;
-    bool m_active = false;
+    FeedCore::Context *m_manager { nullptr };
+    bool m_active { false };
 };
 
 #endif // MANAGEDLISTMODEL_H

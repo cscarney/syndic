@@ -19,7 +19,7 @@ public:
     QVector<FeedListEntry> feeds;
 
     PrivData(FeedListModel *parent) :
-        parent(parent)
+        parent{ parent }
     {}
 
     void addItem(const FeedRef &feed);
@@ -27,7 +27,7 @@ public:
 
 FeedListModel::FeedListModel(QObject *parent)
     : ManagedListModel(parent),
-      priv(std::make_unique<PrivData>(this))
+      priv{ std::make_unique<PrivData>(this) }
 {
 
 }
@@ -46,9 +46,9 @@ void FeedListModel::PrivData::addItem(const FeedRef &feed)
 
 void FeedListModel::initialize()
 {
-    Future<FeedRef> *q { manager()->startFeedQuery() };
+    Future<FeedRef> *q { manager()->getFeeds() };
     QObject::connect(q, &BaseFuture::finished, this,
-                     [this, q]{ onFeedQueryFinished(q); });
+                     [this, q]{ onGetFeedsFinished(q); });
     QObject::connect(manager(), &Context::feedAdded, this, &FeedListModel::onFeedAdded);
 }
 
@@ -90,7 +90,7 @@ QHash<int, QByteArray> FeedListModel::roleNames() const
     };
 }
 
-void FeedListModel::onFeedQueryFinished(Future<FeedRef> *sender)
+void FeedListModel::onGetFeedsFinished(Future<FeedRef> *sender)
 {
     beginResetModel();
     priv->feeds.clear();

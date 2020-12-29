@@ -6,6 +6,7 @@
 
 class QmlArticleRef : public FeedCore::ArticleRef {
     Q_GADGET
+    Q_PROPERTY(FeedCore::Article *article READ get CONSTANT);
 public:
     inline QmlArticleRef() = default;
     inline QmlArticleRef(const FeedCore::ArticleRef &ref) :
@@ -16,7 +17,6 @@ public:
             QQmlEngine::setObjectOwnership(a,QQmlEngine::CppOwnership);
         }
     };
-    Q_PROPERTY(FeedCore::Article *article READ get CONSTANT);
 };
 Q_DECLARE_METATYPE(QmlArticleRef);
 #endif // QMLARTICLEREF_H

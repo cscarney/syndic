@@ -2,6 +2,7 @@
 #define SQLITEFEEDSTORAGE_H
 #include "storage.h"
 #include "feeddatabase.h"
+#include "uniquefactory.h"
 namespace FeedCore {
     class FeedRef;
 }
@@ -17,8 +18,8 @@ public:
     FeedCore::Future<FeedCore::ArticleRef> *getById(qint64 id);
     FeedCore::Future<FeedCore::ArticleRef> *getByFeed(FeedImpl *feedId);
     FeedCore::Future<FeedCore::ArticleRef> *getUnreadByFeed(FeedImpl *feedId);
-    FeedCore::Future<FeedCore::ArticleRef> *updateItemRead(ArticleImpl *article, bool isRead);
-    FeedCore::Future<FeedCore::ArticleRef> *storeItem(FeedImpl *feed, const Syndication::ItemPtr &item);
+    FeedCore::Future<FeedCore::ArticleRef> *updateArticleRead(ArticleImpl *article, bool isRead);
+    FeedCore::Future<FeedCore::ArticleRef> *storeArticle(FeedImpl *feed, const Syndication::ItemPtr &item);
     void updateFeedMetadata(FeedImpl *feed);
     FeedCore::Future<FeedCore::ArticleRef> *getAll() final;
     FeedCore::Future<FeedCore::ArticleRef> *getUnread() final;
@@ -26,8 +27,10 @@ public:
     FeedCore::Future<FeedCore::FeedRef> *storeFeed(const QUrl &url) final;
 private:
     FeedDatabase m_db;
-    void appendFeedResults(FeedCore::Future<FeedCore::FeedRef> *op, QSqlQuery &q);
-    void appendItemResults(FeedCore::Future<FeedCore::ArticleRef> *op, QSqlQuery &q);
+    FeedCore::UniqueFactory<qint64, FeedImpl> m_feedFactory;
+    FeedCore::UniqueFactory<qint64, ArticleImpl> m_articleFactory;
+    void appendFeedResults(FeedCore::Future<FeedCore::FeedRef> *op, FeedQuery &q);
+    void appendArticleResults(FeedCore::Future<FeedCore::ArticleRef> *op, ItemQuery &q);
 };
 }
 #endif // SQLITEFEEDSTORAGE_H

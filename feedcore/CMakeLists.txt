@@ -12,6 +12,7 @@ set(feedcore_HEADERS
     dataretriever.h
     enums.h
     allitemsfeed.h
+    uniquefactory.h
     )
     
 set(feedcore_SRCS
