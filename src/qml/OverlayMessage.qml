@@ -12,16 +12,21 @@ RowLayout {
 
     Label {
         id: messageLabel
+        property real inset: -Kirigami.Units.largeSpacing
+
         text: ""
         visible: (text) && (text!=="")
         color: Kirigami.Theme.textColor
         elide: Text.ElideRight
-
-        property real inset: -Kirigami.Units.largeSpacing
         topInset: inset
         bottomInset: inset
         leftInset: inset
         rightInset: inset
+
+        Layout.maximumWidth: parent.width + inset * 4
+        Layout.preferredWidth: implicitWidth
+        Layout.alignment: Qt.AlignHCenter
+        Layout.bottomMargin: - inset * 2.0
 
         background: Rectangle {
             color: Kirigami.Theme.backgroundColor
@@ -30,10 +35,5 @@ RowLayout {
             property color borderBase: Kirigami.Theme.textColor
             border.color: Qt.rgba(borderBase.r, borderBase.g, borderBase.b, 0.25);
         }
-
-        Layout.maximumWidth: parent.width + inset * 4
-        Layout.preferredWidth: implicitWidth
-        Layout.alignment: Qt.AlignHCenter
-        Layout.bottomMargin: - inset * 2.0
     }
 }

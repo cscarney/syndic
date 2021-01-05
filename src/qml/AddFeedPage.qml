@@ -5,8 +5,9 @@ import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.Page {
     id: root
-    title: qsTr("Add Content")
     property Item pageRow;
+
+    title: qsTr("Add Content")
 
     ColumnLayout {
         anchors.fill: parent

@@ -7,10 +7,9 @@ import Enums 1.0
 
 ScrollView {
     id: root
-
+    property alias currentItem: feedList.currentItem
     signal itemClicked
     signal feedSelected
-    property alias currentItem: feedList.currentItem
 
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
@@ -102,8 +101,6 @@ ScrollView {
                 itemClicked()
             }
         }
-        onCurrentItemChanged: {
-            feedSelected();
-        }
+        onCurrentItemChanged: feedSelected();
     }
 }

@@ -4,16 +4,70 @@ import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
 import Enums 1.0
 import ArticleListModel 1.0
+import Feed 1.0
 
 Kirigami.ScrollablePage {
     id: root
+
+    property var feedRef
+    property Feed feed: feedRef.feed
+    property var pageRow: null
+    property alias model: articleList.model;
+    property alias unreadFilter: settings.unreadFilter
+
     topPadding: 0
     bottomPadding: 0
     leftPadding: 0
     rightPadding: 0 
-    property var feedRef
-    property var feed: feedRef.feed
     title: feed.name
+    Kirigami.Theme.colorSet: Kirigami.Theme.View
+    Kirigami.Theme.backgroundColor: Kirigami.Theme.alternateBackgroundColor
+
+    actions {
+        main: Kirigami.Action {
+            text: qsTr("Mark All Read")
+            iconName: "mail-read"
+            enabled: articleList.count > 0
+            onTriggered: {
+                model.markAllRead();
+            }
+            displayHint: Kirigami.Action.DisplayHint.KeepVisible
+        }
+         left: Kirigami.Action {
+             id: unreadFilterAction
+             text: qsTr("Unread Only")
+             iconName: "view-filter"
+             checkable: true
+             checked: true
+             displayHint: Kirigami.Action.DisplayHint.KeepVisible
+         }
+    }
+
+    EmptyFeedOverlay {
+        id: emptyOverlay
+        anchors.fill: parent
+        visible: articleList.count == 0
+    }
+
+    ArticleListView {
+       id: articleList
+       anchors.fill: parent
+       currentIndex: -1
+       onCurrentItemChanged: openChild()
+
+       model: ArticleListModel {
+          id: feedItemModel
+          manager: feedManager
+          feed: root.feedRef
+          unreadFilter: root.unreadFilter
+          onStatusChanged: {
+              if (articleList.currentItem) return;
+              if ((model.status === Enums.Idle) && (model.rowCount() > 0))
+                  articleList.currentIndex = 0;
+              else openChild();
+          }
+      }
+   } /* ArticleList */
 
     Settings {
         id: settings
@@ -21,13 +75,6 @@ Kirigami.ScrollablePage {
         category: "ArticleList"
         property alias unreadFilter: unreadFilterAction.checked
     }
-
-    property var pageRow: null
-    property alias model: articleList.model;
-    property alias unreadFilter: settings.unreadFilter
-
-    Kirigami.Theme.colorSet: Kirigami.Theme.View
-    Kirigami.Theme.backgroundColor: Kirigami.Theme.alternateBackgroundColor
 
     function pushPlaceholder() {
         switch(model.status) {
@@ -60,50 +107,4 @@ Kirigami.ScrollablePage {
 
     function nextItem () { articleList.currentIndex++ }
     function previousItem () { articleList.currentIndex-- }
-
-    ArticleListView {
-       id: articleList
-       anchors.fill: parent
-       currentIndex: -1
-       onCurrentItemChanged: openChild()
-
-       model: ArticleListModel {
-          id: feedItemModel
-          manager: feedManager
-          feed: root.feedRef
-          unreadFilter: root.unreadFilter
-          onStatusChanged: {
-              if (articleList.currentItem) return;
-              if ((model.status === Enums.Idle) && (model.rowCount() > 0))
-                  articleList.currentIndex = 0;
-              else openChild();
-          }
-      }
-
-       EmptyFeedOverlay {
-           id: emptyOverlay
-           anchors.fill: parent
-           visible: articleList.count == 0
-       }
-   } /* ArticleList */
-
-    actions {
-        main: Kirigami.Action {
-            text: qsTr("Mark All Read")
-            iconName: "mail-read"
-            enabled: articleList.count > 0
-            onTriggered: {
-                model.markAllRead();
-            }
-            displayHint: Kirigami.Action.DisplayHint.KeepVisible
-        }
-         left: Kirigami.Action {
-             id: unreadFilterAction
-             text: qsTr("Unread Only")
-             iconName: "view-filter"
-             checkable: true
-             checked: true
-             displayHint: Kirigami.Action.DisplayHint.KeepVisible
-         }
-    }
 }

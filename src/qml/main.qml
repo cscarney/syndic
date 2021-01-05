@@ -1,29 +1,47 @@
 import QtQuick 2.12
-import Qt.labs.settings 1.1
 import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
+import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.ApplicationWindow {
-    id: mainWindow
+    id: root
+    title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + qsTr("FeedKeeper")
 
-    Settings {
-        category: "Window"
-        property alias width: mainWindow.width
-        property alias height: mainWindow.height
+    pageStack {
+        globalToolBar.showNavigationButtons: priv.isFirstPage ? 0 : Kirigami.ApplicationHeaderStyle.ShowBackButton
+        defaultColumnWidth: (priv.itemListProportion * root.width) - (globalDrawer.actualWidth / 2)
+        interactive: false
     }
 
-    property real itemListProportion:  0.38
-    property real feedListProportion: 0.23
-
-    property bool isFirstPage: pageStack.firstVisibleItem === pageStack.items[0]
-    property string pageTitle: pageStack.firstVisibleItem ? pageStack.firstVisibleItem.title : ""
-    title: (pageTitle.length>0 ? pageTitle+" - " : "") + qsTr("FeedKeeper")
-
-    globalDrawer: FeedListDrawer {
+    globalDrawer: Kirigami.GlobalDrawer {
+        id: drawer
         property real actualWidth: drawerOpen && !modal ? width : 0
-        width: feedListProportion * mainWindow.width
+
+        width: priv.feedListProportion * root.width
         modal: true
-        onFeedSelected: if (currentItem.feedRef.feed) pushFeed(currentItem.feedRef)
+        handleVisible: modal && priv.isFirstPage
+        Kirigami.Theme.colorSet: Kirigami.Theme.View
+
+        topContent: ColumnLayout {
+            spacing: 0
+            Layout.fillWidth: true
+
+            FeedList {
+                id: feedList
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.preferredHeight: drawer.height
+                onFeedSelected: if (currentItem.feedRef.feed) pushFeed(currentItem.feedRef)
+                onItemClicked: drawer.drawerOpen = !drawer.modal
+            }
+
+            Kirigami.Separator {
+                Layout.fillWidth: true
+                Layout.leftMargin: -drawer.leftPadding
+                Layout.rightMargin: -drawer.rightPadding
+            }
+        }
 
         actions: [
             Kirigami.Action {
@@ -47,10 +65,57 @@ Kirigami.ApplicationWindow {
         ]
     }
 
-    pageStack {
-        globalToolBar.showNavigationButtons: isFirstPage ? 0 : Kirigami.ApplicationHeaderStyle.ShowBackButton
-        defaultColumnWidth: (itemListProportion * mainWindow.width) - (globalDrawer.actualWidth / 2)
-        interactive: false
+    Settings {
+        // @disable-check M16
+        category: "Window"
+        property alias width: root.width
+        property alias height: root.height
+    }
+
+    StateGroup {
+        states: [
+            State {
+                name: "portrait"
+                when: width < height
+                PropertyChanges {
+                    target: priv
+                    itemListProportion: 1
+                    feedListProportion: 0.23
+                }
+                PropertyChanges {
+                    target: globalDrawer
+                    drawerOpen: false
+                    modal: true
+                }
+            },
+
+            State {
+                name: "widescreen"
+                when: width > (height *1.6)
+                PropertyChanges {
+                    target: priv
+                    itemListProportion: 0.38
+                    feedListProportion: 0.15
+                }
+                PropertyChanges {
+                    /* separated to avoid stacking errors */
+                    target: globalDrawer
+                    drawerOpen: true
+                }
+                PropertyChanges {
+                    target: globalDrawer
+                    modal: false
+                }
+            }
+        ]
+    }
+
+    QtObject {
+        id: priv
+        property real itemListProportion:  0.38
+        property real feedListProportion: 0.23
+        property bool isFirstPage: pageStack.firstVisibleItem === pageStack.items[0]
+        property string pageTitle: pageStack.firstVisibleItem ? pageStack.firstVisibleItem.title : ""
     }
 
     function pushFeed(feedRef) {
@@ -65,56 +130,15 @@ Kirigami.ApplicationWindow {
         if (dialogComponent.status === Component.Error) {
             console.log("failed to load page for dialog: "+dialogComponent.errorString());
         } else {
-            var size = Math.min(mainWindow.width, mainWindow.height) * 0.62
+            var size = Math.min(root.width, root.height) * 0.62
             var properties = {
                 pageSource: pageUrl,
                 pageProps: pageProps || {},
                 height: size,
                 width: size
             }
-
-            var dialog = dialogComponent.createObject(mainWindow, properties);
+            var dialog = dialogComponent.createObject(root, properties);
             dialog.show()
         }
-    }
-
-    property list<State> states: [
-        State {
-            name: "portrait"
-            when: width < height
-            PropertyChanges {
-                target: mainWindow
-                itemListProportion: 1
-                feedListProportion: 0.23
-            }
-            PropertyChanges {
-                target: globalDrawer
-                drawerOpen: false
-                modal: true
-            }
-        },
-
-        State {
-            name: "widescreen"
-            when: width > (height *1.6)
-            PropertyChanges {
-                target: mainWindow
-                itemListProportion: 0.38
-                feedListProportion: 0.15
-            }
-            PropertyChanges {
-                /* separated to avoid stacking errors */
-                target: globalDrawer
-                drawerOpen: true
-            }
-            PropertyChanges {
-                target: globalDrawer
-                modal: false
-            }
-        }
-    ]
-
-    StateGroup {
-        states: mainWindow.states
     }
 }

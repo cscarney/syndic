@@ -4,14 +4,10 @@ import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.ScrollablePage {
-    id: articlePage
+    id: root
     property alias item: articleView.item
     property var nextItem: function() {}
     property var previousItem: function() {}
-
-    Component.onCompleted: {
-        item.article.requestContent();
-    }
 
     topPadding: 0
     bottomPadding: 0
@@ -24,14 +20,29 @@ Kirigami.ScrollablePage {
     titleDelegate: Kirigami.Heading {
         visible: !scroller.atYBeginning
         elide: Text.ElideRight
-         text: articlePage.title
+         text: root.title
          maximumLineCount: 1
-         Layout.maximumWidth: 0.66 * articlePage.width
+         Layout.maximumWidth: 0.66 * root.width
+    }
+
+    actions {
+        main: Kirigami.Action {
+            text: qsTr("Keep Unread")
+            iconName: "mail-mark-unread"
+            checkable: true
+            checked: false
+            onCheckedChanged: item.article.isRead = !checked
+            displayHint: Kirigami.Action.DisplayHint.KeepVisible
+        }
     }
 
     /* extract <img> tags from the text so that we can use them as cover images */
-    property var firstImage: ""
-    property var textWithoutImages: ""
+    QtObject {
+        id: priv
+        property var firstImage: ""
+        property var textWithoutImages: ""
+    }
+
     Connections {
         target: item.article
         onGotContent: {
@@ -41,8 +52,8 @@ Kirigami.ScrollablePage {
                 images.push(src)
                 return "";
             })
-            firstImage = images[0] || ""
-            textWithoutImages = text
+            priv.firstImage = images[0] || ""
+            priv.textWithoutImages = text
         }
     }
 
@@ -63,7 +74,7 @@ Kirigami.ScrollablePage {
         /* setting the content width based on the page width, rather
           than the flickable width to avoid a binding loop:
           content height -> scrollbar visibility -> content width -> content height */
-        contentWidth: articlePage.width - leftMargin - rightMargin
+        contentWidth: root.width - leftMargin - rightMargin
 
         contentHeight: articleView.height + bottomMargin + topMargin
         clip: true
@@ -75,8 +86,8 @@ Kirigami.ScrollablePage {
         ArticleView {
             id: articleView
             width: scroller.contentWidth
-            firstImage: articlePage.firstImage
-            textWithoutImages: articlePage.textWithoutImages
+            firstImage: priv.firstImage
+            textWithoutImages: priv.textWithoutImages
         }
 
         Behavior on contentY {
@@ -88,12 +99,6 @@ Kirigami.ScrollablePage {
                 onRunningChanged: if (!running) scroller.returnToBounds()
             }
         }
-    }
-
-    function pageUpDown(increment) {
-        animateScroll.enabled = true
-        scroller.contentY = scroller.contentY + (increment * scroller.height)
-        animateScroll.enabled = false
     }
 
     Keys.onPressed: {
@@ -133,29 +138,13 @@ Kirigami.ScrollablePage {
         event.accepted = true
     }
 
-    actions {
-        main: Kirigami.Action {
-            text: qsTr("Keep Unread")
-            iconName: "mail-mark-unread"
-            checkable: true
-            checked: false
-            onCheckedChanged: item.article.isRead = !checked
-            displayHint: Kirigami.Action.DisplayHint.KeepVisible
-        }
+    Component.onCompleted: {
+        item.article.requestContent();
+    }
 
-        /*
-        left: Kirigami.Action {
-            text: qsTr("Star")
-            iconName: checked ? "starred-symbolic" : "non-starred-symbolic"
-            checkable: true
-            checked: item.isStarred ? true : false
-            onCheckedChanged: feedManager.setStarred(item.id, checked)
-            displayHint: Kirigami.Action.DisplayHint.KeepVisible
-        } */
-
-        /* right: Kirigami.Action {
-            text: qsTr("Share...")
-            iconName: "document-share"
-        } */
+    function pageUpDown(increment) {
+        animateScroll.enabled = true
+        scroller.contentY = scroller.contentY + (increment * scroller.height)
+        animateScroll.enabled = false
     }
 }

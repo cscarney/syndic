@@ -27,10 +27,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<ArticleListModel>("ArticleListModel", 1, 0, "ArticleListModel");
     qmlRegisterUncreatableType<Context>("FeedManager", 1, 0, "FeedManager", "global object");
     qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
+    qmlRegisterUncreatableType<Feed>("Feed", 1,0, "Feed", "obtained from cpp model");
     qmlRegisterUncreatableType<FeedRef>("FeedRef", 1,0,"FeedRef", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlFeedRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
     qmlRegisterUncreatableType<Article>("Article", 1, 0, "Article", "obtained from cpp model");
-    qmlRegisterUncreatableType<ArticleRef>("FeedRef", 1,0,"FeedRef", "obtained from cpp model");
+    qmlRegisterUncreatableType<ArticleRef>("ArticleRef", 1,0,"ArticleRef", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlArticleRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
     QMetaType::registerConverter<QmlFeedRef, FeedRef>();
     QMetaType::registerConverter<QmlArticleRef, ArticleRef>();

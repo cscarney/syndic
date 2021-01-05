@@ -5,7 +5,7 @@ import org.kde.kirigami 2.9 as Kirigami
 import Enums 1.0
 
 ListView {
-    id: articleList
+    id: root
     clip: true
 
     delegate: Kirigami.AbstractListItem {
@@ -22,7 +22,7 @@ ListView {
 
         highlighted: ListView.isCurrentItem
         onClicked: {
-            articleList.currentIndex = model.index
+            root.currentIndex = model.index
         }
     }
 
@@ -49,7 +49,7 @@ ListView {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: articleList.currentIndex = -1
+            onClicked: root.currentIndex = -1
         }
     }
 }

@@ -5,9 +5,9 @@ import org.kde.kirigami 2.7 as Kirigami
 
 ColumnLayout {
     id: root
-    spacing: 5
     property color textColor: parent.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor;
 
+    spacing: 5
     implicitHeight: headlineText.height + details.height + spacing
 
     Label {

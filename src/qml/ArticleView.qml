@@ -6,17 +6,11 @@ import org.kde.kirigami 2.7 as Kirigami
 import Article 1.0
 
 ColumnLayout {
-    id: mainLayout
-
-    Settings {
-        category: "ArticlePage"
-        property alias fontSize: contentTextEdit.font.pointSize
-    }
-
+    id: root
     property var item
-    property var firstImage: ""
-    property var textWithoutImages: ""
-    property var hoveredLink: titleMouse.containsMouse ? item.article.url : contentTextEdit.hoveredLink
+    property string firstImage: ""
+    property string textWithoutImages: ""
+    property string hoveredLink: titleMouse.containsMouse ? item.article.url : contentTextEdit.hoveredLink
 
     readonly property string textStyle: "<style>
     * {
@@ -30,6 +24,12 @@ ColumnLayout {
         font-family: serif;
     }
     </style>"
+
+    Settings {
+        // @disable-check M16
+        category: "ArticlePage"
+        property alias fontSize: contentTextEdit.font.pointSize
+    }
 
     Kirigami.Heading {
         level: 1
