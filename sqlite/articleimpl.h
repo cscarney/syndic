@@ -1,5 +1,5 @@
-#ifndef SQLITEARTICLE_H
-#define SQLITEARTICLE_H
+#ifndef SQLITE_ARTICLEIMPL_H
+#define SQLITE_ARTICLEIMPL_H
 #include "article.h"
 #include "uniquefactory.h"
 class QSqlQuery;
@@ -24,4 +24,4 @@ private:
     friend FeedCore::UniqueFactory<qint64, ArticleImpl>;
 };
 }
-#endif // SQLITEARTICLE_H
+#endif // SQLITE_ARTICLEIMPL_H

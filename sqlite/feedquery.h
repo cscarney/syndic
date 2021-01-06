@@ -1,5 +1,5 @@
-#ifndef FEEDQUERY_H
-#define FEEDQUERY_H
+#ifndef SQLITE_FEEDQUERY_H
+#define SQLITE_FEEDQUERY_H
 #include <QSqlQuery>
 #include <QVariant>
 #include <QUrl>
@@ -23,4 +23,4 @@ public:
     inline int unreadCount() const { return value(5).toInt(); }
 };
 }
-#endif // FEEDQUERY_H
+#endif // SQLITE_FEEDQUERY_H

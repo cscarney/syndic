@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<FeedListModel>("FeedListModel", 1, 0, "FeedListModel");
     qmlRegisterType<ArticleListModel>("ArticleListModel", 1, 0, "ArticleListModel");
-    qmlRegisterUncreatableType<Context>("FeedManager", 1, 0, "FeedManager", "global object");
+    qmlRegisterUncreatableType<Context>("FeedContext", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
     qmlRegisterUncreatableType<Feed>("Feed", 1,0, "Feed", "obtained from cpp model");
     qmlRegisterUncreatableType<FeedRef>("FeedRef", 1,0,"FeedRef", "obtained from cpp model");
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     QMetaType::registerConverter<QmlFeedRef, FeedRef>();
     QMetaType::registerConverter<QmlArticleRef, ArticleRef>();
     auto *fm = new FeedCore::Context(new Sqlite::StorageImpl, &app);
-    engine.rootContext()->setContextProperty("feedManager", fm);
+    engine.rootContext()->setContextProperty("feedContext", fm);
     engine.load(QUrl("qrc:/qml/main.qml"));
     int result = QApplication::exec();
     return result;

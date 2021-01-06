@@ -10,12 +10,13 @@ using namespace FeedCore;
 struct ArticleListModel::PrivData {
     FeedRef feed;
     QList<ArticleRef> items;
-    bool unreadFilter = false;
-    LoadStatus status = LoadStatus::Idle;
+    bool unreadFilter { false };
+    LoadStatus status { LoadStatus::Idle };
+    bool active { false };
 };
 
 ArticleListModel::ArticleListModel(QObject *parent) :
-    ManagedListModel(parent),
+    QAbstractListModel(parent),
     priv{ std::make_unique<PrivData>() }
 {
 
@@ -30,7 +31,7 @@ void ArticleListModel::setUnreadFilter(bool unreadFilter)
 {
     if (priv->unreadFilter != unreadFilter) {
         priv->unreadFilter = unreadFilter;
-        if (active()) {
+        if (priv->active) {
             if (unreadFilter) {
                 refresh();
             } else {
@@ -48,7 +49,6 @@ LoadStatus ArticleListModel::status()
 
 void ArticleListModel::refresh()
 {
-    assert(manager() != nullptr);
     setStatus(LoadStatus::Loading);
     auto *q = getItems();
     QObject::connect(q, &BaseFuture::finished, this, [this, q]{
@@ -71,6 +71,21 @@ QHash<int, QByteArray> ArticleListModel::roleNames() const
     return {
          {Qt::UserRole, "ref"}
     };
+}
+
+void ArticleListModel::classBegin()
+{
+
+}
+
+void ArticleListModel::componentComplete()
+{
+    QTimer::singleShot(0, this, [this]{
+        priv->active = true;
+        QObject::connect(priv->feed.get(), &Feed::articleAdded, this, &ArticleListModel::onItemAdded);
+        QObject::connect(priv->feed.get(), &Feed::statusChanged, this, &ArticleListModel::onStatusChanged);
+        refresh();
+    });
 }
 
 void ArticleListModel::onRefreshFinished(Future<ArticleRef> *sender)
@@ -190,19 +205,12 @@ void ArticleListModel::setFeed(const FeedRef &feed)
 {
     if (priv->feed != feed) {
         priv->feed = feed;
-        if (active()) {
+        if (priv->active) {
             qDebug() << "set feed after initialization!!";
         }
         emit feedChanged();
     }
 }
-
-void ArticleListModel::initialize() {
-    QObject::connect(priv->feed.get(), &Feed::articleAdded, this, &ArticleListModel::onItemAdded);
-    QObject::connect(priv->feed.get(), &Feed::statusChanged, this, &ArticleListModel::onStatusChanged);
-    refresh();
-}
-
 
 void ArticleListModel::requestUpdate() const
 {

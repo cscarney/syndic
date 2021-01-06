@@ -1,5 +1,5 @@
-#ifndef LOADSTATUS_H
-#define LOADSTATUS_H
+#ifndef ENUMS_H
+#define ENUMS_H
 #include <QObject>
 
 namespace FeedCore {
@@ -17,4 +17,4 @@ public:
 };
 typedef Enums::LoadStatus LoadStatus;
 }
-#endif // LOADSTATUS_H
+#endif // ENUMS_H

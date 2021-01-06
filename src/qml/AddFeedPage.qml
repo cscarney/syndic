@@ -24,7 +24,7 @@ Kirigami.Page {
             action: Kirigami.Action {
                 text: qsTr("OK")
                 onTriggered: {
-                    feedManager.addFeed(urlField.text)
+                    feedContext.addFeed(urlField.text)
                     pageRow && pageRow.clear()
                 }
             }

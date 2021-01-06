@@ -1,5 +1,5 @@
-#ifndef XMLFEEDUPDATER_H
-#define XMLFEEDUPDATER_H
+#ifndef XMLUPDATER_H
+#define XMLUPDATER_H
 #include "updater.h"
 #include <QUrl>
 #include <Syndication/Loader>
@@ -14,4 +14,4 @@ private:
     void loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status);
 };
 }
-#endif // XMLFEEDUPDATER_H
+#endif // XMLUPDATER_H

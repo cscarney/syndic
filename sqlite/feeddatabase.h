@@ -1,5 +1,5 @@
-#ifndef FEEDDATABASE_H
-#define FEEDDATABASE_H
+#ifndef SQLITE_FEEDDATABASE_H
+#define SQLITE_FEEDDATABASE_H
 #include <QDateTime>
 #include <QUrl>
 #include <QSqlQuery>
@@ -36,4 +36,4 @@ public:
 
 }
 
-#endif // FEEDDATABASE_H
+#endif // SQLITE_FEEDDATABASE_H

@@ -1,5 +1,5 @@
-#ifndef FEEDSTORAGE_H
-#define FEEDSTORAGE_H
+#ifndef STORAGE_H
+#define STORAGE_H
 #include <QObject>
 #include <Syndication/Item>
 #include <Syndication/Feed>
@@ -18,4 +18,4 @@ public:
     virtual Future<FeedRef> *storeFeed(const QUrl &url)=0;
 };
 }
-#endif // FEEDSTORAGE_H
+#endif //STORAGE_H

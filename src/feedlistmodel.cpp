@@ -16,6 +16,7 @@ struct FeedListEntry {
 class FeedListModel::PrivData {
 public:
     FeedListModel *parent;
+    Context *context = nullptr;
     QVector<FeedListEntry> feeds;
 
     PrivData(FeedListModel *parent) :
@@ -26,7 +27,7 @@ public:
 };
 
 FeedListModel::FeedListModel(QObject *parent)
-    : ManagedListModel(parent),
+    : QAbstractListModel(parent),
       priv{ std::make_unique<PrivData>(this) }
 {
 
@@ -44,12 +45,15 @@ void FeedListModel::PrivData::addItem(const FeedRef &feed)
     feeds << item;
 }
 
-void FeedListModel::initialize()
+Context *FeedListModel::context() const
 {
-    Future<FeedRef> *q { manager()->getFeeds() };
-    QObject::connect(q, &BaseFuture::finished, this,
-                     [this, q]{ onGetFeedsFinished(q); });
-    QObject::connect(manager(), &Context::feedAdded, this, &FeedListModel::onFeedAdded);
+    return priv->context;
+}
+
+void FeedListModel::setContext(FeedCore::Context *context)
+{
+    priv->context = context;
+    emit contextChanged();
 }
 
 int FeedListModel::rowCount(const QModelIndex &parent) const
@@ -90,11 +94,26 @@ QHash<int, QByteArray> FeedListModel::roleNames() const
     };
 }
 
+void FeedListModel::classBegin()
+{
+
+}
+
+void FeedListModel::componentComplete()
+{
+    QTimer::singleShot(0, this, [this]{
+        Future<FeedRef> *q { priv->context->getFeeds() };
+        QObject::connect(q, &BaseFuture::finished, this,
+                         [this, q]{ onGetFeedsFinished(q); });
+        QObject::connect(priv->context, &Context::feedAdded, this, &FeedListModel::onFeedAdded);
+    });
+}
+
 void FeedListModel::onGetFeedsFinished(Future<FeedRef> *sender)
 {
     beginResetModel();
     priv->feeds.clear();
-    auto ref = FeedRef(new AllItemsFeed(manager(), tr("All Items", "special feed name")));
+    auto ref = FeedRef(new AllItemsFeed(priv->context, tr("All Items", "special feed name")));
     priv->addItem(ref);
     for (const auto &item : sender->result()){
         priv->addItem(item);

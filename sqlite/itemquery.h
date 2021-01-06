@@ -1,5 +1,5 @@
-#ifndef ITEMQUERY_H
-#define ITEMQUERY_H
+#ifndef SQLITE_ITEMQUERY_H
+#define SQLITE_ITEMQUERY_H
 #include <QSqlQuery>
 #include <QVariant>
 #include <QDateTime>
@@ -27,4 +27,4 @@ public:
     inline bool isStarred() const { return value(9).toBool(); }
 };
 }
-#endif // ITEMQUERY_H
+#endif // SQLITE_ITEMQUERY_H

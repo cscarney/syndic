@@ -1,5 +1,5 @@
-#ifndef SQLITEFEED_H
-#define SQLITEFEED_H
+#ifndef SQLITE_FEEDIMPL_H
+#define SQLITE_FEEDIMPL_H
 #include "feed.h"
 #include "uniquefactory.h"
 class QSqlQuery;
@@ -31,4 +31,4 @@ private:
     friend FeedCore::UniqueFactory<qint64, FeedImpl>;
 };
 }
-#endif // SQLITEFEED_H
+#endif // SQLITE_FEEDIMPL_H

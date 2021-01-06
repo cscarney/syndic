@@ -1,5 +1,5 @@
-#ifndef FEEDUPDATER_H
-#define FEEDUPDATER_H
+#ifndef UPDATER_H
+#define UPDATER_H
 #include <Syndication/Feed>
 #include <QObject>
 #include <time.h>
@@ -30,4 +30,4 @@ private:
     std::unique_ptr<PrivData> priv;
 };
 }
-#endif // FEEDUPDATER_H
+#endif // UPDATER_H

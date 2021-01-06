@@ -1,5 +1,5 @@
-#ifndef UPDATESCHEDULER_H
-#define UPDATESCHEDULER_H
+#ifndef SCHEDULER_H
+#define SCHEDULER_H
 #include <QObject>
 #include <QTimer>
 #include <QUrl>
@@ -37,4 +37,4 @@ private:
     void onFeedStatusChanged(Feed *sender);
 };
 }
-#endif // UPDATESCHEDULER_H
+#endif // SCHEDULER_H

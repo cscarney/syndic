@@ -1,7 +1,8 @@
 #ifndef UNREADITEMMODEL_H
 #define UNREADITEMMODEL_H
+#include <QModelIndex>
+#include <QQmlParserStatus>
 #include <memory>
-#include "managedlistmodel.h"
 #include "enums.h"
 #include "future.h"
 #include "feedref.h"
@@ -10,9 +11,10 @@ class Context;
 class ArticleRef;
 }
 
-class ArticleListModel : public ManagedListModel
+class ArticleListModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(bool unreadFilter READ unreadFilter WRITE setUnreadFilter NOTIFY unreadFilterChanged);
     Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
     Q_PROPERTY(FeedCore::FeedRef feed READ feed WRITE setFeed NOTIFY feedChanged);
@@ -26,10 +28,11 @@ public:
     FeedCore::LoadStatus status();
     Q_INVOKABLE void requestUpdate() const;
     Q_INVOKABLE void markAllRead();
-    void initialize() final;
     int rowCount(const QModelIndex &parent = QModelIndex()) const final;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const final;
     QHash<int, QByteArray> roleNames() const override;
+    void classBegin() override;
+    void componentComplete() override;
 signals:
     void feedChanged();
     void unreadFilterChanged();

@@ -1,5 +1,5 @@
-﻿#ifndef SQLITEFEEDSTORAGE_H
-#define SQLITEFEEDSTORAGE_H
+﻿#ifndef SQLITE_STORAGEIMPL_H
+#define SQLITE_STORAGEIMPL_H
 #include "storage.h"
 #include "feeddatabase.h"
 #include "uniquefactory.h"
@@ -33,4 +33,4 @@ private:
     void appendArticleResults(FeedCore::Future<FeedCore::ArticleRef> *op, ItemQuery &q);
 };
 }
-#endif // SQLITEFEEDSTORAGE_H
+#endif // SQLITE_STORAGEIMPL_H

@@ -1,5 +1,5 @@
-﻿#ifndef FEEDMANAGER_H
-#define FEEDMANAGER_H
+﻿#ifndef CONTEXT_H
+#define CONTEXT_H
 #include <memory>
 #include <QObject>
 #include <QUrl>
@@ -28,4 +28,4 @@ private:
     std::unique_ptr<PrivData> priv;
 };
 }
-#endif // FEEDMANAGER_H
+#endif // CONTEXT_H

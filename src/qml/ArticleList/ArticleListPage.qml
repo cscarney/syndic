@@ -57,7 +57,6 @@ Kirigami.ScrollablePage {
 
        model: ArticleListModel {
           id: feedItemModel
-          manager: feedManager
           feed: root.feedRef
           unreadFilter: root.unreadFilter
           onStatusChanged: {

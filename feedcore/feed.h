@@ -47,4 +47,4 @@ private:
     LoadStatus m_status { LoadStatus::Idle };
 };
 }
-#endif // STOREDFEED_H
+#endif // FEED_H

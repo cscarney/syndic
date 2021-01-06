@@ -1,5 +1,5 @@
-#ifndef FEEDSTORAGEOPERATION_H
-#define FEEDSTORAGEOPERATION_H
+#ifndef FUTURE_H
+#define FUTURE_H
 #include <QObject>
 #include <QVector>
 #include <QTimer>
@@ -37,4 +37,4 @@ private:
     QVector<T> m_result;
 };
 }
-#endif // FEEDSTORAGEOPERATION_H
+#endif // FUTURE_H

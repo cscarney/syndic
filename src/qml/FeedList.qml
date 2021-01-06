@@ -22,7 +22,7 @@ ScrollView {
         }
 
         currentIndex: 0
-        model: FeedListModel{ manager: feedManager }
+        model: FeedListModel{ context: feedContext }
         clip: true
 
         delegate: Kirigami.AbstractListItem {
