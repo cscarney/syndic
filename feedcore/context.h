@@ -20,7 +20,6 @@ public:
     Q_INVOKABLE void addFeed(const QUrl &url);
     Future<ArticleRef> *getArticles(bool unreadFilter);
     void requestUpdate();
-    bool updatesInProgress();
 signals:
     void feedAdded(const FeedCore::FeedRef &feed);
 private:

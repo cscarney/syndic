@@ -65,9 +65,4 @@ void Context::requestUpdate()
     priv->updateScheduler->updateAll();
 }
 
-bool Context::updatesInProgress()
-{
-    return priv->updateScheduler->updatesInProgress();
-}
-
 }

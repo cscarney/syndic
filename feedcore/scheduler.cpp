@@ -60,7 +60,6 @@ void Scheduler::unschedule(const FeedRef &feed)
     if (!isScheduled) {
         return;
     }
-    m_active.remove(feed.get());
     m_schedule.removeOne(feed.get());
     m_feeds.remove(feed);
 }
@@ -115,18 +114,11 @@ void Scheduler::updateAll()
     }
 }
 
-bool Scheduler::updatesInProgress()
-{
-    return !m_active.isEmpty();
-}
-
 void Scheduler::onFeedStatusChanged(Feed *sender)
 {
     if (sender->status() == LoadStatus::Updating) {
-        m_active.insert(sender);
         m_schedule.removeOne(sender);
     } else {
-        m_active.remove(sender);
         insertIntoSchedule(m_schedule, sender);
     }
 }

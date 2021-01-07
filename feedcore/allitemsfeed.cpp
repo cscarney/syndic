@@ -47,9 +47,13 @@ Updater *AllItemsFeed::updater()
 
 void AllItemsFeed::addFeed(const FeedRef &feed)
 {
-    incrementUnreadCount(feed->unreadCount());
-    QObject::connect(feed.get(), &Feed::articleAdded, this, &AllItemsFeed::onArticleAdded);
-    QObject::connect(feed.get(), &Feed::unreadCountChanged, this, &AllItemsFeed::incrementUnreadCount);
+    m_feeds.insert(feed);
+    Feed *fp = feed.get();
+    incrementUnreadCount(fp->unreadCount());
+    syncFeedStatus(fp);
+    QObject::connect(fp, &Feed::articleAdded, this, &AllItemsFeed::onArticleAdded);
+    QObject::connect(fp, &Feed::unreadCountChanged, this, &AllItemsFeed::incrementUnreadCount);
+    QObject::connect(fp, &Feed::statusChanged, this, [this, fp]{ syncFeedStatus(fp); });
 }
 
 void AllItemsFeed::onGetFeedsFinished(Future<FeedRef> *sender)
@@ -62,6 +66,16 @@ void AllItemsFeed::onGetFeedsFinished(Future<FeedRef> *sender)
 void AllItemsFeed::onArticleAdded(const ArticleRef &article)
 {
     emit articleAdded(article);
+}
+
+void AllItemsFeed::syncFeedStatus(Feed *sender)
+{
+    if (sender->status() == LoadStatus::Updating) {
+        m_active.insert(sender);
+    } else {
+        m_active.remove(sender);
+    }
+    setStatus(m_active.isEmpty() ? LoadStatus::Idle : LoadStatus::Updating);
 }
 
 }

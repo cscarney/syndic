@@ -28,11 +28,9 @@ public:
     void stop();
     void updateStale();
     void updateAll();
-    bool updatesInProgress();
 private:
     QSet<FeedRef> m_feeds;
     QList<Feed *> m_schedule;
-    QSet<Feed *> m_active;
     QTimer m_timer;
     void onFeedStatusChanged(Feed *sender);
 };
