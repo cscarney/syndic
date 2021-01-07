@@ -110,25 +110,6 @@ ColumnLayout {
             Qt.openUrlExternally(link)
         }
 
-        MouseArea
-        {
-            id: contentMouse
-            property bool isRealMouse: false
-            anchors.fill: parent
-            cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
-            onPressed: {
-                isRealMouse = (mouse.source === Qt.MouseEventNotSynthesized)
-                mouse.accepted = false
-            }
-            onWheel: {
-                    if (wheel.modifiers & Qt.ControlModifier) {
-                        parent.font.pointSize += Math.sign(wheel.angleDelta.y)
-                    } else {
-                        wheel.accepted = false
-                    }
-            }
-        }
-
         PinchArea {
             id: contentPinch
             anchors.fill: parent
@@ -163,7 +144,24 @@ ColumnLayout {
               return num <= min ? min : num >= max ? max : num;
             }
 
-            MouseArea { anchors.fill: parent }
+            MouseArea
+            {
+                id: contentMouse
+                property bool isRealMouse: false
+                anchors.fill: parent
+                cursorShape: contentTextEdit.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
+                onPressed: {
+                    isRealMouse = (mouse.source === Qt.MouseEventNotSynthesized)
+                    mouse.accepted = false
+                }
+                onWheel: {
+                        if (wheel.modifiers & Qt.ControlModifier) {
+                            contentTextEdit.font.pointSize += Math.sign(wheel.angleDelta.y)
+                        } else {
+                            wheel.accepted = false
+                        }
+                }
+            }
         }
     }
 }
