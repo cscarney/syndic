@@ -12,13 +12,25 @@ XMLUpdater::XMLUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, QOb
 
 void XMLUpdater::run()
 {
-    Syndication::Loader *loader { Syndication::Loader::create() };
-    QObject::connect(loader, &Syndication::Loader::loadingComplete, this, &XMLUpdater::loadingComplete);
-    loader->loadFrom(feed()->url(), new DataRetriever);
+    if (!feed()->url().isValid()) {
+        setError(tr("Invalid URL", "error message"));
+        return;
+    }
+    m_loader = Syndication::Loader::create();
+    QObject::connect(m_loader, &Syndication::Loader::loadingComplete, this, &XMLUpdater::loadingComplete);
+    m_loader->loadFrom(feed()->url(), new DataRetriever);
+}
+
+void XMLUpdater::abort()
+{
+    if (m_loader){
+        m_loader->abort();
+    }
 }
 
 void XMLUpdater::loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status)
 {
+    m_loader = nullptr;
     Feed *feed { this->feed() };
     QString errorMessage;
     switch (status) {
@@ -28,6 +40,7 @@ void XMLUpdater::loadingComplete(Syndication::Loader *loader, const Syndication:
         return;
     case Syndication::Aborted:
         qDebug() << "load aborted for " << feed->url();
+        finish();
         return;
     case Syndication::Timeout:
         errorMessage = tr("Timeout", "error message");

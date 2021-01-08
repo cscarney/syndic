@@ -10,7 +10,9 @@ class XMLUpdater : public Updater
 public:
     XMLUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent);
     void run() final;
+    void abort() final;
 private:
+    Syndication::Loader *m_loader { nullptr };
     void loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status);
 };
 }

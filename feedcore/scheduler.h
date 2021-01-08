@@ -27,6 +27,7 @@ public:
     void stop();
     void updateStale();
     void updateAll();
+    void abortAll();
 private:
     QSet<FeedRef> m_feeds;
     QList<Feed *> m_schedule;

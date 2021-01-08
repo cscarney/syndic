@@ -17,12 +17,12 @@ class ArticleListModel : public QAbstractListModel, public QQmlParserStatus
     Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(bool unreadFilter READ unreadFilter WRITE setUnreadFilter NOTIFY unreadFilterChanged);
     Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
-    Q_PROPERTY(QmlFeedRef feed READ feed WRITE setFeed NOTIFY feedChanged);
+    Q_PROPERTY(FeedCore::Feed *feed READ feed WRITE setFeed NOTIFY feedChanged);
 public:
     explicit ArticleListModel(QObject *parent=nullptr);
     ~ArticleListModel();
-    QmlFeedRef feed() const;
-    void setFeed(const QmlFeedRef &feedId);
+    FeedCore::Feed *feed() const;
+    void setFeed(FeedCore::Feed *feed);
     bool unreadFilter() const;
     void setUnreadFilter(bool unreadFilter);
     FeedCore::LoadStatus status();

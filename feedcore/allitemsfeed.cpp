@@ -18,6 +18,10 @@ namespace {
             finish();
         }
 
+        void abort() final {
+            m_context->abortUpdates();
+        }
+
     private:
         Context *m_context;
     };

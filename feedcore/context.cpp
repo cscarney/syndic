@@ -40,10 +40,10 @@ Future<FeedRef> *Context::getFeeds()
     return priv->storage->getFeeds();
 }
 
-void Context::addFeed(const QUrl &url)
+void Context::addFeed(ProvisionalFeed *feed)
 {
     qDebug() << "addFeed called";
-    Future<FeedRef> *q { priv->storage->storeFeed(url) };
+    Future<FeedRef> *q { priv->storage->storeFeed(feed) };
     QObject::connect(q, &BaseFuture::finished, this, [this, q]{
         for (const auto &feed : q->result()) {
             emit feedAdded(feed);
@@ -63,6 +63,11 @@ Future<ArticleRef> *Context::getArticles(bool unreadFilter)
 void Context::requestUpdate()
 {
     priv->updateScheduler->updateAll();
+}
+
+void Context::abortUpdates()
+{
+    priv->updateScheduler->abortAll();
 }
 
 }

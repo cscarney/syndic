@@ -21,7 +21,8 @@ int DataRetriever::errorCode() const
 
 void DataRetriever::abort()
 {
-    // TODO implement this
+    m_reply->abort();
+    m_reply->deleteLater();
 }
 
 void DataRetriever::onFinished()

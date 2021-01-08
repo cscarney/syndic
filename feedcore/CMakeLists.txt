@@ -13,6 +13,8 @@ set(feedcore_HEADERS
     enums.h
     allitemsfeed.h
     uniquefactory.h
+    preview/articleimpl.h
+    provisionalfeed.h
     )
     
 set(feedcore_SRCS
@@ -25,6 +27,8 @@ set(feedcore_SRCS
     scheduler.cpp
     dataretriever.cpp
     allitemsfeed.cpp
+    preview/articleimpl.cpp
+    provisionalfeed.cpp
     )
     
 add_library(feedcore ${feedcore_SRCS})

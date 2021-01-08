@@ -2,38 +2,47 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.7 as Kirigami
+import Feed 1.0
 import FeedListModel 1.0
 import Enums 1.0
 
 ScrollView {
     id: root
-    property alias currentItem: feedList.currentItem
+    property Feed currentlySelectedFeed
+    property alias currentIndex: feedList.currentIndex
     signal itemClicked
-    signal feedSelected
 
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
     ListView {
         id: feedList
+
         anchors {
             fill: parent
             rightMargin: root.ScrollBar.vertical.visible ? root.ScrollBar.vertical.width : 0
         }
 
         currentIndex: 0
-        model: FeedListModel{ context: feedContext }
+        model: FeedListModel{
+            context: feedContext
+            onRowsInserted: {
+                feedList.currentIndex = -1;
+                currentlySelectedFeed = data(index(first,0), FeedListModel.Feed);
+            }
+        }
         clip: true
 
         delegate: Kirigami.AbstractListItem {
             property color fgColor: highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+            property var feed: model.feed
 
             separatorVisible: false
             width: parent.width
             topPadding: Kirigami.Units.largeSpacing
             bottomPadding: Kirigami.Units.largeSpacing
             contentItem: RowLayout {
-                property var feed: model.feedRef.feed
+                property var feed: model.feed
                 property var status: feed ? feed.status : Enums.Idle
                 property var unreadCount: feed ? feed.unreadCount : 0
                 property var name: feed ? feed.name : qsTr("All Items")
@@ -95,12 +104,14 @@ ScrollView {
                 }
             }
 
-            property var feedRef: model.feedRef
             onClicked: {
-                feedList.currentIndex = index
-                itemClicked()
+                feedList.currentIndex = index;
+                itemClicked();
             }
         }
-        onCurrentItemChanged: feedSelected();
+        onCurrentItemChanged: {
+            if (currentItem)
+                root.currentlySelectedFeed = currentItem.feed;
+        }
     }
 }

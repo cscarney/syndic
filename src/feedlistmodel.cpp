@@ -8,7 +8,7 @@
 using namespace FeedCore;
 
 struct FeedListEntry {
-    FeedRef feed;
+    QmlFeedRef feed;
     QString icon;
     int unreadCount;
 };
@@ -38,7 +38,7 @@ FeedListModel::~FeedListModel()=default;
 void FeedListModel::PrivData::addItem(const FeedRef &feed)
 {
     FeedListEntry item = {
-        .feed=feed,
+        .feed=QmlFeedRef(feed),
         .icon="feed-subscribe",
         .unreadCount=feed->unreadCount()
     };
@@ -75,8 +75,8 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
     const FeedListEntry &entry { priv->feeds[indexRow] };
 
     switch(role){
-        case Roles::Ref:
-            return QVariant::fromValue(QmlFeedRef(entry.feed));
+        case Roles::Feed:
+            return QVariant::fromValue(entry.feed.get());
 
         case Roles::Icon:
             return entry.icon;
@@ -89,7 +89,7 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
 QHash<int, QByteArray> FeedListModel::roleNames() const
 {
     return {
-        {Roles::Ref, "feedRef"},
+        {Roles::Feed, "feed"},
         {Roles::Icon, "icon"},
     };
 }

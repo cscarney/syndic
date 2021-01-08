@@ -12,10 +12,10 @@ class Updater;
 class Feed : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
-    Q_PROPERTY(QUrl url READ url NOTIFY urlChanged);
+    Q_PROPERTY(QUrl url READ url WRITE setUrl NOTIFY urlChanged);
     Q_PROPERTY(int unreadCount READ unreadCount NOTIFY unreadCountChanged);
     Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
-    Q_PROPERTY(Updater *updater READ updater CONSTANT);
+    Q_PROPERTY(FeedCore::Updater *updater READ updater CONSTANT);
 public:
     const QString &name() const { return m_name; }
     const QUrl &url() const { return m_url; }
@@ -32,6 +32,7 @@ signals:
     void unreadCountChanged(int delta);
     void statusChanged();
     void articleAdded(const FeedCore::ArticleRef &article);
+    void reset();
 protected:
     explicit Feed(QObject *parent = nullptr);
     virtual bool setName(const QString &name);

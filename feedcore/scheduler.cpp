@@ -114,6 +114,14 @@ void Scheduler::updateAll()
     }
 }
 
+void Scheduler::abortAll()
+{
+    const auto &feeds = m_feeds;
+    for(const FeedRef &entry : feeds) {
+        entry->updater()->abort();
+    }
+}
+
 void Scheduler::onFeedStatusChanged(Feed *sender)
 {
     if (sender->status() == LoadStatus::Updating) {

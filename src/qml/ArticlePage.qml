@@ -69,7 +69,6 @@ Kirigami.ScrollablePage {
     Flickable {
         id: scroller
         anchors.fill: parent
-        // focus: true
 
         /* setting the content width based on the page width, rather
           than the flickable width to avoid a binding loop:

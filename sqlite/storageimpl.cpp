@@ -6,6 +6,7 @@
 #include "sqlite/feedimpl.h"
 #include "sqlite/articleimpl.h"
 #include "articleref.h"
+#include "provisionalfeed.h"
 using namespace FeedCore;
 using namespace Sqlite;
 
@@ -129,8 +130,9 @@ Future<FeedRef> *StorageImpl::getFeeds()
     });
 }
 
-Future<FeedRef> *StorageImpl::storeFeed(const QUrl &url)
+Future<FeedRef> *StorageImpl::storeFeed(ProvisionalFeed *feed)
 {
+    const QUrl &url = feed->url();
     return Future<FeedRef>::yield(this, [this, url](auto *op){
         const auto &existingId = m_db.selectFeedId(0, url.toString());
         if (existingId) {

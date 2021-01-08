@@ -9,6 +9,7 @@
 
 namespace FeedCore {
 class Storage;
+class ProvisionalFeed;
 
 class Context : public QObject
 {
@@ -17,9 +18,10 @@ public:
     explicit Context(Storage *storage, QObject *parent = nullptr);
     ~Context();
     Future<FeedRef> *getFeeds();
-    Q_INVOKABLE void addFeed(const QUrl &url);
+    Q_INVOKABLE void addFeed(ProvisionalFeed *feed);
     Future<ArticleRef> *getArticles(bool unreadFilter);
     void requestUpdate();
+    void abortUpdates();
 signals:
     void feedAdded(const FeedCore::FeedRef &feed);
 private:

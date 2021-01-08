@@ -15,7 +15,8 @@ public:
     Updater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent);
     ~Updater();
     virtual void run() = 0;
-    void start();
+    virtual void abort() = 0;
+    Q_INVOKABLE void start();
     void start(time_t timestamp);
     QString error();
     Feed *feed();

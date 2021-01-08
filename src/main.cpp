@@ -9,6 +9,8 @@
 #include "qmlarticleref.h"
 #include "qmlfeedref.h"
 #include "sqlite/storageimpl.h"
+#include "provisionalfeed.h"
+#include "updater.h"
 using namespace FeedCore;
 
 int main(int argc, char *argv[])
@@ -25,6 +27,8 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<FeedListModel>("FeedListModel", 1, 0, "FeedListModel");
     qmlRegisterType<ArticleListModel>("ArticleListModel", 1, 0, "ArticleListModel");
+    qmlRegisterType<ProvisionalFeed>("ProvisionalFeed", 1, 0, "ProvisionalFeed");
+    qmlRegisterUncreatableType<Updater>("Updater", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<Context>("FeedContext", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
     qmlRegisterUncreatableType<Feed>("Feed", 1,0, "Feed", "obtained from cpp model");

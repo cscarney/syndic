@@ -12,6 +12,7 @@ Kirigami.ApplicationWindow {
         globalToolBar.showNavigationButtons: priv.isFirstPage ? 0 : Kirigami.ApplicationHeaderStyle.ShowBackButton
         defaultColumnWidth: (priv.itemListProportion * root.width) - (globalDrawer.actualWidth / 2)
         interactive: false
+        columnView.scrollDuration: animationSuspendTimer.running ? 0 : Kirigami.Units.longDuration
     }
 
     globalDrawer: Kirigami.GlobalDrawer {
@@ -32,7 +33,8 @@ Kirigami.ApplicationWindow {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.preferredHeight: drawer.height
-                onFeedSelected: if (currentItem.feedRef.feed) pushFeed(currentItem.feedRef)
+                onCurrentlySelectedFeedChanged:
+                    if (currentlySelectedFeed) pushFeed(currentlySelectedFeed)
                 onItemClicked: drawer.drawerOpen = !drawer.modal
             }
 
@@ -48,7 +50,7 @@ Kirigami.ApplicationWindow {
                 text: "Add Content..."
                 iconName: "list-add"
                 onTriggered: {
-                    openDialog("qrc:/qml/AddFeedPage.qml")
+                    pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
                 }
             },
             Kirigami.Action {
@@ -59,7 +61,7 @@ Kirigami.ApplicationWindow {
                 text: "About FeedKeeper"
                 iconName: "help-about"
                 onTriggered: {
-                    openDialog("qrc:/qml/AboutPage.qml")
+                    pushUtilityPage("qrc:/qml/AboutPage.qml")
                 }
             }
         ]
@@ -118,27 +120,41 @@ Kirigami.ApplicationWindow {
         property string pageTitle: pageStack.firstVisibleItem ? pageStack.firstVisibleItem.title : ""
     }
 
-    function pushFeed(feedRef) {
+    Timer {
+        id: animationSuspendTimer
+        interval: Kirigami.Units.longDuration
+    }
+
+    Connections {
+        target: pageStack.currentItem
+        ignoreUnknownSignals: true
+        onBackRequested: {
+            // go back to the first non-visible page (rather than the
+            // default back behavior, which just moves the focus
+            // one column to the left)
+            var index = pageStack.firstVisibleItem.Kirigami.ColumnView.index;
+            if (index > 0) {
+                pageStack.currentIndex = index-1
+                event.accepted = true
+            }
+        }
+        onSuspendAnimations: {
+            // emitted by pages to temporarily suspend the page transition animation
+            animationSuspendTimer.start()
+        }
+    }
+
+    function pushFeed(feed) {
         pageStack.clear()
         pageStack.push("qrc:/qml/ArticleList/ArticleListPage.qml",
                        {pageRow: pageStack,
-                           feedRef: feedRef})
+                           feed: feed})
     }
 
-    function openDialog(pageUrl, pageProps) {
-        var dialogComponent = Qt.createComponent("qrc:/qml/PageDisplayDialog.qml");
-        if (dialogComponent.status === Component.Error) {
-            console.log("failed to load page for dialog: "+dialogComponent.errorString());
-        } else {
-            var size = Math.min(root.width, root.height) * 0.62
-            var properties = {
-                pageSource: pageUrl,
-                pageProps: pageProps || {},
-                height: size,
-                width: size
-            }
-            var dialog = dialogComponent.createObject(root, properties);
-            dialog.show()
-        }
+    function pushUtilityPage(pageUrl, pageProps) {
+        feedList.currentIndex = -1
+        feedList.currentlySelectedFeed = null
+        pageStack.clear()
+        pageStack.push(pageUrl, pageProps)
     }
 }

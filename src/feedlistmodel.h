@@ -19,7 +19,7 @@ public:
     explicit FeedListModel(QObject *parent = nullptr);
     ~FeedListModel();
     enum Roles {
-        Ref = Qt::UserRole,
+        Feed = Qt::UserRole,
         Icon,
     };
     Q_ENUM(Roles);

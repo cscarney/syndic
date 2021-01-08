@@ -9,7 +9,7 @@
 using namespace FeedCore;
 
 struct ArticleListModel::PrivData {
-    QmlFeedRef feed;
+    Feed *feed;
     QList<QmlArticleRef> items;
     bool unreadFilter { false };
     LoadStatus status { LoadStatus::Idle };
@@ -84,8 +84,9 @@ void ArticleListModel::componentComplete()
     QTimer::singleShot(0, this, [this]{
         qDebug() << "article list model complete";
         priv->active = true;
-        QObject::connect(priv->feed.get(), &Feed::articleAdded, this, &ArticleListModel::onItemAdded);
-        QObject::connect(priv->feed.get(), &Feed::statusChanged, this, &ArticleListModel::onStatusChanged);
+        QObject::connect(priv->feed, &Feed::articleAdded, this, &ArticleListModel::onItemAdded);
+        QObject::connect(priv->feed, &Feed::statusChanged, this, &ArticleListModel::onStatusChanged);
+        QObject::connect(priv->feed, &Feed::reset, this, &ArticleListModel::refresh);
         refresh();
     });
 }
@@ -187,14 +188,14 @@ QVariant ArticleListModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QmlFeedRef ArticleListModel::feed() const
+Feed *ArticleListModel::feed() const
 {
     return priv->feed;
 }
 
-void ArticleListModel::setFeed(const QmlFeedRef &feed)
+void ArticleListModel::setFeed(Feed *feed)
 {
-    if (priv->feed.get() != feed.get()) {
+    if (priv->feed != feed) {
         priv->feed = feed;
         if (priv->active) {
             qDebug() << "set feed after initialization!!";
@@ -210,7 +211,7 @@ void ArticleListModel::requestUpdate() const
 
 Future<ArticleRef> *ArticleListModel::getItems()
 {
-    if (priv->feed.isNull()) {
+    if (priv->feed == nullptr) {
         qDebug() << "starting query with no feed set!";
         return nullptr;
     }

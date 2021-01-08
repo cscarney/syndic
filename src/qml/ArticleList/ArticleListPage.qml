@@ -9,11 +9,11 @@ import Feed 1.0
 Kirigami.ScrollablePage {
     id: root
 
-    property var feedRef
-    property Feed feed: feedRef.feed
+    property var feed
     property var pageRow: null
     property alias model: articleList.model;
     property alias unreadFilter: settings.unreadFilter
+    signal suspendAnimations
 
     topPadding: 0
     bottomPadding: 0
@@ -57,7 +57,7 @@ Kirigami.ScrollablePage {
 
        model: ArticleListModel {
           id: feedItemModel
-          feed: root.feedRef
+          feed: root.feed
           unreadFilter: root.unreadFilter
           onStatusChanged: {
               if (articleList.currentItem) return;
@@ -92,9 +92,11 @@ Kirigami.ScrollablePage {
     }
 
     function openChild() {
-        if (!pageRow) return
-        while (pageRow.depth > Kirigami.ColumnView.index + 1)
-            pageRow.pop()
+        if (!pageRow) return;
+        pageRow.currentIndex = Kirigami.ColumnView.index
+        if (pageRow.wideMode) {
+            suspendAnimations();
+        }
         if (articleList.currentItem) {
             var data = articleList.currentItem.data
             root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data, nextItem: nextItem, previousItem: previousItem})
