@@ -9,7 +9,7 @@
 
 namespace Sqlite {
 
-static inline QString filePath(QString const &fileName)
+static QString filePath(QString const &fileName)
 {
     QDir appDataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
     if (!appDataDir.mkpath(".")) {
@@ -27,7 +27,7 @@ static inline QSqlDatabase db()
     return QSqlDatabase::database(db_name);
 }
 
-static inline int getVersion(QSqlDatabase &db)
+static int getVersion(QSqlDatabase &db)
 {
     QSqlQuery q("PRAGMA user_version", db);
     if (!q.next()) {
@@ -38,7 +38,7 @@ static inline int getVersion(QSqlDatabase &db)
     return q.value(0).toInt();
 }
 
-static inline bool exec(QSqlDatabase &db, const QString& queryString)
+static bool exec(QSqlDatabase &db, const QString& queryString)
 {
     QSqlQuery q(db);
     if (!q.exec(queryString)) {
@@ -48,7 +48,7 @@ static inline bool exec(QSqlDatabase &db, const QString& queryString)
     return true;
 }
 
-static inline bool exec(QSqlDatabase &db, const QVector<QString> &queries)
+static bool exec(QSqlDatabase &db, const QVector<QString> &queries)
 {
     for(const auto &q : queries) {
         if (!exec(db, q)) {

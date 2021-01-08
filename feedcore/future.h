@@ -3,10 +3,9 @@
 #include <QObject>
 #include <QVector>
 #include <QTimer>
+#include "articleref.h"
 
 namespace FeedCore {
-class ArticleRef;
-
 class BaseFuture: public QObject {
     Q_OBJECT
 signals:
@@ -16,14 +15,14 @@ signals:
 template<typename T>
 class Future : public BaseFuture {
 public:
-    inline const QVector<T> &result(){ return m_result; };
-    inline void setResult(const QVector<T> &&result) { m_result = result; };
-    inline void setResult(const T &result ) { m_result = {result}; };
-    inline void setResult() { m_result = {}; };
-    inline void appendResult(const T &result) { m_result << result; };
+    const QVector<T> &result(){ return m_result; };
+    void setResult(const QVector<T> &&result) { m_result = result; };
+    void setResult(const T &result ) { m_result = {result}; };
+    void setResult() { m_result = {}; };
+    void appendResult(const T &result) { m_result << result; };
 
     template<typename Callable>
-    static inline Future<T> *yield(QObject *context, Callable call)
+    static Future<T> *yield(QObject *context, Callable call)
     {
         auto *op = new Future<T>;
         QTimer::singleShot(0, context, [op, call]{

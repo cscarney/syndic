@@ -4,11 +4,6 @@
 
 namespace FeedCore {
 class Article;
-
-class ArticleRef : public QSharedPointer<Article> {
-    Q_GADGET
-public:
-    using QSharedPointer<Article>::QSharedPointer;
-};
+typedef QSharedPointer<Article> ArticleRef;
 }
 #endif // ARTICLEREF_H

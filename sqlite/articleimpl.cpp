@@ -20,12 +20,12 @@ qint64 ArticleImpl::id() const
 // id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred
 void ArticleImpl::updateFromQuery(const ItemQuery &q)
 {
-    populateTitle(q.headline());
-    populateAuthor(q.author());
-    populateDate(q.date());
-    populateUrl(q.url());
+    Article::setTitle(q.headline());
+    Article::setAuthor(q.author());
+    Article::setDate(q.date());
+    Article::setUrl(q.url());
     m_content = q.content();
-    populateReadStatus(q.isRead());
+    Article::setRead(q.isRead());
 }
 
 void ArticleImpl::requestContent()

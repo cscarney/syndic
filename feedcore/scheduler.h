@@ -8,11 +8,10 @@
 #include <time.h>
 #include "enums.h"
 #include "future.h"
+#include "feedref.h"
 
 namespace FeedCore {
-class Feed;
 class Updater;
-class FeedRef;
 
 class Scheduler : public QObject
 {

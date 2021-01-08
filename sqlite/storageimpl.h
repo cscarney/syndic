@@ -3,9 +3,7 @@
 #include "storage.h"
 #include "feeddatabase.h"
 #include "uniquefactory.h"
-namespace FeedCore {
-    class FeedRef;
-}
+#include "feedref.h"
 
 namespace Sqlite {
 class FeedImpl;

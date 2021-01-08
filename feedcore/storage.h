@@ -4,10 +4,9 @@
 #include <Syndication/Item>
 #include <Syndication/Feed>
 #include "future.h"
+#include "feedref.h"
 
 namespace FeedCore {
-class FeedRef;
-
 class Storage : public QObject {
     Q_OBJECT
 public:

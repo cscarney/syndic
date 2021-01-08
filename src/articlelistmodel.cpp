@@ -3,13 +3,14 @@
 #include "feed.h"
 #include "updater.h"
 #include "articleref.h"
+#include "qmlfeedref.h"
 #include "qmlarticleref.h"
 
 using namespace FeedCore;
 
 struct ArticleListModel::PrivData {
-    FeedRef feed;
-    QList<ArticleRef> items;
+    QmlFeedRef feed;
+    QList<QmlArticleRef> items;
     bool unreadFilter { false };
     LoadStatus status { LoadStatus::Idle };
     bool active { false };
@@ -81,6 +82,7 @@ void ArticleListModel::classBegin()
 void ArticleListModel::componentComplete()
 {
     QTimer::singleShot(0, this, [this]{
+        qDebug() << "article list model complete";
         priv->active = true;
         QObject::connect(priv->feed.get(), &Feed::articleAdded, this, &ArticleListModel::onItemAdded);
         QObject::connect(priv->feed.get(), &Feed::statusChanged, this, &ArticleListModel::onStatusChanged);
@@ -91,7 +93,10 @@ void ArticleListModel::componentComplete()
 void ArticleListModel::onRefreshFinished(Future<ArticleRef> *sender)
 {
     beginResetModel();
-    priv->items = QList<ArticleRef>::fromVector(sender->result());
+    priv->items = {};
+    for (const ArticleRef &i : sender->result()) {
+        priv->items.append(QmlArticleRef(i));
+    }
     endResetModel();
     setStatusFromUpstream();
 }
@@ -108,14 +113,14 @@ void ArticleListModel::onMergeFinished(Future<ArticleRef> *sender)
         if (itemIndex >= items.size()) {
             insertAndNotify(items.size(), resultItem);
             itemIndex++;
-        } else if (items[itemIndex] != resultItem) {
+        } else if (items[itemIndex].get() != resultItem.get()) {
             insertAndNotify(itemIndex, resultItem);
             itemIndex++;
         }
     }
 }
 
-inline qint64 indexForDate(const QList<ArticleRef> &list, const QDateTime &dt)
+static qint64 indexForDate(const QList<QmlArticleRef> &list, const QDateTime &dt)
 {
     for (int i=0; i<list.count(); i++) {
         if (list.at(i)->date() <= dt) {
@@ -130,22 +135,8 @@ void ArticleListModel::onItemAdded(ArticleRef const &item)
     if (!priv->unreadFilter || !item->isRead()) {
         const auto &idx = indexForDate(priv->items, item->date());
         beginInsertRows(QModelIndex(), idx, idx);
-        priv->items.insert(idx, item);
+        priv->items.insert(idx, QmlArticleRef(item));
         endInsertRows();
-    }
-}
-
-void ArticleListModel::onItemChanged(ArticleRef const &item)
-{
-    const int size = priv->items.size();
-    for(int i=0; i<size; i++) {
-        ArticleRef &listItem = priv->items[i];
-        if (listItem == item) {
-            listItem = item;
-            auto idx = index(i);
-            emit dataChanged(idx, idx);
-            break;
-        }
     }
 }
 
@@ -160,7 +151,7 @@ void ArticleListModel::setStatus(LoadStatus status)
 void ArticleListModel::insertAndNotify(qint64 index, const ArticleRef &item)
 {
     beginInsertRows(QModelIndex(), index, index);
-    priv->items.insert(index, item);
+    priv->items.insert(index, QmlArticleRef(item));
     endInsertRows();
 }
 
@@ -196,14 +187,14 @@ QVariant ArticleListModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-FeedRef ArticleListModel::feed() const
+QmlFeedRef ArticleListModel::feed() const
 {
     return priv->feed;
 }
 
-void ArticleListModel::setFeed(const FeedRef &feed)
+void ArticleListModel::setFeed(const QmlFeedRef &feed)
 {
-    if (priv->feed != feed) {
+    if (priv->feed.get() != feed.get()) {
         priv->feed = feed;
         if (priv->active) {
             qDebug() << "set feed after initialization!!";

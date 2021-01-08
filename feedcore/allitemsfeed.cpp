@@ -2,7 +2,7 @@
 #include "context.h"
 #include "feedref.h"
 #include "updater.h"
-
+#include "article.h"
 namespace FeedCore {
 
 namespace {
@@ -29,7 +29,7 @@ AllItemsFeed::AllItemsFeed(Context *context, const QString &name, QObject *paren
     m_updater{ new AllUpdater(this, context, this) }
 {
     Future<FeedRef> *q { context->getFeeds() };
-    populateName(name);
+    setName(name);
     QObject::connect(q, &BaseFuture::finished, this,
                      [this, q]{ onGetFeedsFinished(q); });
     QObject::connect(context, &Context::feedAdded, this, &AllItemsFeed::addFeed);

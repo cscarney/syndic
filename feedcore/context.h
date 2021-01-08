@@ -5,10 +5,10 @@
 #include <QUrl>
 #include <Syndication/Feed>
 #include "future.h"
+#include "feedref.h"
 
 namespace FeedCore {
 class Storage;
-class FeedRef;
 
 class Context : public QObject
 {

@@ -19,16 +19,9 @@ FeedImpl::FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage):
 
 void FeedImpl::updateFromQuery(const FeedQuery &query)
 {
-    populateName(query.displayName());
-    populateUrl(query.url());
-    populateUnreadCount(query.unreadCount());
-}
-
-void FeedImpl::populateNew(const QUrl &url, const QString &name)
-{
-    populateName(name);
-    populateUrl(url);
-    populateUnreadCount(0);
+    Feed::setName(query.displayName());
+    Feed::setUrl(query.url());
+    Feed::setUnreadCount(query.unreadCount());
 }
 
 Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)
@@ -62,11 +55,13 @@ Updater *FeedImpl::updater()
     return m_updater;
 }
 
-void FeedImpl::setName(const QString &name)
+bool FeedImpl::setName(const QString &name)
 {
-    if (populateName(name)) {
+    const bool changed { Feed::setName(name) };
+    if (changed) {
         m_storage->updateFeedMetadata(this);
     }
+    return changed;
 }
 
 void FeedImpl::setRead(ArticleImpl *article, bool isRead)

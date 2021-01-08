@@ -15,12 +15,12 @@ public:
                 "FROM Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false "
                 "WHERE "+whereClause+" GROUP BY Feed.id");
     }
-    inline qint64 id() const { return value(0).toLongLong(); }
-    inline qint64 source() const { return value(1).toLongLong(); }
-    inline QString localId() const { return value(2).toString(); }
-    inline QString displayName() const { return value(3).toString(); }
-    inline QUrl url() const { return value(4).toUrl(); }
-    inline int unreadCount() const { return value(5).toInt(); }
+    qint64 id() const { return value(0).toLongLong(); }
+    qint64 source() const { return value(1).toLongLong(); }
+    QString localId() const { return value(2).toString(); }
+    QString displayName() const { return value(3).toString(); }
+    QUrl url() const { return value(4).toUrl(); }
+    int unreadCount() const { return value(5).toInt(); }
 };
 }
 #endif // SQLITE_FEEDQUERY_H

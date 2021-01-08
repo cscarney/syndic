@@ -1,22 +1,12 @@
 #ifndef QMLARTICLEREF_H
 #define QMLARTICLEREF_H
-#include <QQmlEngine>
-#include "articleref.h"
+#include "qmlref.h"
 #include "article.h"
 
-class QmlArticleRef : public FeedCore::ArticleRef {
+class QmlArticleRef : public QmlRef<FeedCore::Article> {
     Q_GADGET
     Q_PROPERTY(FeedCore::Article *article READ get CONSTANT);
-public:
-    inline QmlArticleRef() = default;
-    inline QmlArticleRef(const FeedCore::ArticleRef &ref) :
-        ArticleRef(ref)
-    {
-        auto *a = get();
-        if (a) {
-            QQmlEngine::setObjectOwnership(a,QQmlEngine::CppOwnership);
-        }
-    };
+    using QmlRef::QmlRef;
 };
 Q_DECLARE_METATYPE(QmlArticleRef);
 #endif // QMLARTICLEREF_H

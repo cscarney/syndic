@@ -5,24 +5,24 @@
 #include <memory>
 #include "enums.h"
 #include "future.h"
+#include "qmlfeedref.h"
 #include "feedref.h"
+#include "articleref.h"
 namespace FeedCore {
 class Context;
-class ArticleRef;
 }
-
 class ArticleListModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(bool unreadFilter READ unreadFilter WRITE setUnreadFilter NOTIFY unreadFilterChanged);
     Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
-    Q_PROPERTY(FeedCore::FeedRef feed READ feed WRITE setFeed NOTIFY feedChanged);
+    Q_PROPERTY(QmlFeedRef feed READ feed WRITE setFeed NOTIFY feedChanged);
 public:
     explicit ArticleListModel(QObject *parent=nullptr);
     ~ArticleListModel();
-    FeedCore::FeedRef feed() const;
-    void setFeed(const FeedCore::FeedRef &feedId);
+    QmlFeedRef feed() const;
+    void setFeed(const QmlFeedRef &feedId);
     bool unreadFilter() const;
     void setUnreadFilter(bool unreadFilter);
     FeedCore::LoadStatus status();
@@ -50,7 +50,6 @@ private:
     void refreshMerge();
     void onRefreshFinished(FeedCore::Future<FeedCore::ArticleRef> *sender);
     void onMergeFinished(FeedCore::Future<FeedCore::ArticleRef> *sender);
-    void onItemChanged(const FeedCore::ArticleRef &item);
     void onStatusChanged();
 };
 #endif // UNREADITEMMODEL_H

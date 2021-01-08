@@ -4,10 +4,10 @@
 #include <QQmlParserStatus>
 #include <memory>
 #include "future.h"
+#include "feedref.h"
+#include "articleref.h"
 namespace FeedCore {
 class Context;
-class ArticleRef;
-class FeedRef;
 }
 
 class FeedListModel : public QAbstractListModel, public QQmlParserStatus
@@ -24,7 +24,7 @@ public:
     };
     Q_ENUM(Roles);
     FeedCore::Context *context() const;
-    void setContext(FeedCore::Context *manager);
+    void setContext(FeedCore::Context *context);
     int rowCount(const QModelIndex &parent = QModelIndex()) const final;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const final;
     QHash<int, QByteArray> roleNames() const final;

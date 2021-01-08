@@ -17,12 +17,11 @@ class FeedImpl : public FeedCore::Feed {
 public:
     qint64 id() const;
     void updateFromQuery(const FeedQuery &query);
-    void populateNew(const QUrl &url, const QString &name);
     void setRead(ArticleImpl *article, bool isRead);
     FeedCore::Future<FeedCore::ArticleRef> *getArticles(bool unreadFilter) final;
     void updateFromSource(const Syndication::FeedPtr &source) final;
     FeedCore::Updater *updater() final;
-    void setName(const QString &name) final;
+    bool setName(const QString &name) final;
 private:
     FeedImpl(qint64 feedId, StorageImpl *storage);
     qint64 m_id { 0 };

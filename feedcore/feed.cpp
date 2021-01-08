@@ -8,7 +8,7 @@ Feed::Feed(QObject *parent):
 
 }
 
-bool Feed::populateName(const QString &name)
+bool Feed::setName(const QString &name)
 {
     if (m_name != name) {
         m_name = name;
@@ -18,12 +18,7 @@ bool Feed::populateName(const QString &name)
     return false;
 }
 
-void Feed::populateUrl(const QUrl &url)
-{
-    setUrl(url);
-}
-
-void Feed::populateUnreadCount(int unreadCount)
+void Feed::setUnreadCount(int unreadCount)
 {
     if (m_unreadCount != unreadCount) {
         int delta = unreadCount - m_unreadCount;
@@ -36,16 +31,6 @@ void Feed::incrementUnreadCount(int delta)
 {
     m_unreadCount += delta;
     emit unreadCountChanged(delta);
-}
-
-QString Feed::name() const
-{
-    return m_name;
-}
-
-QUrl Feed::url() const
-{
-    return m_url;
 }
 
 void Feed::setUrl(const QUrl &url)

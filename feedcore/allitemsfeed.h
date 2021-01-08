@@ -2,10 +2,10 @@
 #define ALLITEMSFEED_H
 #include <QSet>
 #include "feed.h"
+#include "feedref.h"
 
 namespace FeedCore {
 class Context;
-class FeedRef;
 
 class AllItemsFeed : public Feed
 {
