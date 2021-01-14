@@ -11,7 +11,7 @@ void ProvisionalFeed::onUrlChanged() {
 
 ProvisionalFeed::ProvisionalFeed(QObject *parent) :
     Feed(parent),
-    m_updater(new XMLUpdater(this, 0, 0, this))
+    m_updater(new XMLUpdater(this, this))
 {
     QObject::connect(this, &Feed::urlChanged, m_updater, &Updater::abort);
 }

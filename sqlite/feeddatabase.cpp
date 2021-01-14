@@ -70,6 +70,8 @@ static void initDatabase(QSqlDatabase &db)
                          "localId TEXT NOT NULL,"
                          "displayName TEXT,"
                          "url TEXT NOT NULL,"
+                         "updateInterval INTEGER,"
+                         "lastUpdate INTEGER,"
                          "UNIQUE(source,localId));",
 
                          "CREATE TABLE Item("
@@ -332,7 +334,7 @@ std::optional<qint64> FeedDatabase::insertFeed(const QUrl& url)
     return q.lastInsertId().toLongLong();
 }
 
-bool FeedDatabase::updateFeed(qint64 feedId, const QString &newName)
+void FeedDatabase::updateFeedName(qint64 feedId, const QString &newName)
 {
     QSqlQuery q(db());
     q.prepare("UPDATE Feed SET "
@@ -342,9 +344,37 @@ bool FeedDatabase::updateFeed(qint64 feedId, const QString &newName)
     q.bindValue(":id", feedId);
     if (!q.exec()){
         qDebug() << "SQL Error in updateFeed: " << q.lastError().text();
-        return false;
     }
-    return true;
+}
+
+void FeedDatabase::updateFeedUpdateInterval(qint64 feedId, qint64 updateInterval)
+{
+    QSqlQuery q(db());
+    q.prepare("UPDATE Feed SET "
+              "updateInterval=:updateInterval "
+              "WHERE id=:id");
+    q.bindValue(":updateInterval", updateInterval);
+    q.bindValue(":id", feedId);
+    if (!q.exec()){
+        qDebug() << "SQL Error in updateFeed: " << q.lastError().text();
+    }
+}
+
+void FeedDatabase::updateFeedLastUpdate(qint64 feedId, QDateTime lastUpdate)
+{
+    QSqlQuery q(db());
+    q.prepare("UPDATE Feed SET "
+              "lastUpdate=:lastUpdate "
+              "WHERE id=:id");
+    if (lastUpdate.isValid()) {
+        q.bindValue(":lastUpdate", lastUpdate.toSecsSinceEpoch());
+    } else {
+        q.bindValue(":lastUpdate", QVariant(QVariant::LongLong));
+    }
+    q.bindValue(":id", feedId);
+    if (!q.exec()){
+        qDebug() << "SQL Error in updateFeed: " << q.lastError().text();
+    }
 }
 
 }

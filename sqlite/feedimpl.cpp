@@ -13,8 +13,20 @@ using namespace Sqlite;
 FeedImpl::FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage):
     m_id{feedId},
     m_storage{storage},
-    m_updater{new XMLUpdater(this, 3600, 0, this)}
+    m_updater{new XMLUpdater(this, this)}
 {
+    storage->listenForChanges(this);
+}
+
+static void unpackUpdateInterval(Updater *updater, qint64 updateInterval)
+{
+    if (updateInterval == 0) {
+        updater->setUpdateMode(Updater::DefaultUpdateMode);
+    } else if (updateInterval < 0) {
+        updater->setUpdateMode(Updater::MaunualUpdateMode);
+    } else {
+        updater->setUpdateInterval(updateInterval);
+    }
 }
 
 void FeedImpl::updateFromQuery(const FeedQuery &query)
@@ -22,6 +34,9 @@ void FeedImpl::updateFromQuery(const FeedQuery &query)
     Feed::setName(query.displayName());
     Feed::setUrl(query.url());
     Feed::setUnreadCount(query.unreadCount());
+
+    m_updater->setLastUpdate(query.lastUpdate());
+    unpackUpdateInterval(m_updater, query.updateInterval());
 }
 
 Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)

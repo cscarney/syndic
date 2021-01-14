@@ -1,6 +1,7 @@
 #ifndef SQLITE_FEEDQUERY_H
 #define SQLITE_FEEDQUERY_H
 #include <QSqlQuery>
+#include <QDateTime>
 #include <QVariant>
 #include <QUrl>
 
@@ -11,7 +12,7 @@ public:
         QSqlQuery(db)
     {
 
-        prepare("SELECT Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.url, COUNT(Item.id) "
+        prepare("SELECT Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.url, COUNT(Item.id), updateInterval, lastUpdate "
                 "FROM Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false "
                 "WHERE "+whereClause+" GROUP BY Feed.id");
     }
@@ -21,6 +22,8 @@ public:
     QString displayName() const { return value(3).toString(); }
     QUrl url() const { return value(4).toUrl(); }
     int unreadCount() const { return value(5).toInt(); }
+    qint64 updateInterval() const { return value(6).toLongLong(); }
+    QDateTime lastUpdate() const { return QDateTime::fromSecsSinceEpoch(value(7).toLongLong()); }
 };
 }
 #endif // SQLITE_FEEDQUERY_H

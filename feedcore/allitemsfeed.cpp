@@ -9,7 +9,7 @@ namespace {
     class AllUpdater : public FeedCore::Updater {
     public:
         AllUpdater(AllItemsFeed *feed, Context *context, QObject *parent):
-            FeedCore::Updater(feed, 0, 0, parent),
+            FeedCore::Updater(feed, parent),
             m_context { context }
         {}
 

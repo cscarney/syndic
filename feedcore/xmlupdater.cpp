@@ -4,8 +4,8 @@
 
 namespace FeedCore {
 
-XMLUpdater::XMLUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent):
-    Updater(feed, updateInterval, lastUpdate, parent)
+XMLUpdater::XMLUpdater(Feed *feed, QObject *parent):
+    Updater(feed, parent)
 {
 
 }

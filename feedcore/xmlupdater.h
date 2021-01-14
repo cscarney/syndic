@@ -8,7 +8,7 @@ namespace FeedCore {
 class XMLUpdater : public Updater
 {
 public:
-    XMLUpdater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent);
+    XMLUpdater(Feed *feed, QObject *parent);
     void run() final;
     void abort() final;
 private:

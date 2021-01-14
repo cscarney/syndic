@@ -4,8 +4,8 @@
 #include <QTimer>
 #include <QUrl>
 #include <QSet>
+#include <QDateTime>
 #include <Syndication/Feed>
-#include <time.h>
 #include "enums.h"
 #include "future.h"
 #include "feedref.h"
@@ -19,7 +19,7 @@ class Scheduler : public QObject
 public:
     explicit Scheduler(QObject *parent = nullptr);
     ~Scheduler();
-    void schedule(const FeedRef &feedRef, time_t timestamp);
+    void schedule(const FeedRef &feedRef, const QDateTime &timestamp=QDateTime::currentDateTime());
     void schedule(const FeedRef &feedRef);
     void schedule(Future<FeedRef> *q);
     void unschedule(const FeedRef &feedRef);
@@ -32,6 +32,8 @@ private:
     QSet<FeedRef> m_feeds;
     QList<Feed *> m_schedule;
     QTimer m_timer;
+    void reschedule(Feed *feed, const QDateTime &timestamp=QDateTime::currentDateTime());
+    void onUpdateModeChanged(Feed *feed);
     void onFeedStatusChanged(Feed *sender);
 };
 }

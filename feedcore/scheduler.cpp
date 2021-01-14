@@ -15,7 +15,10 @@ Scheduler::~Scheduler()=default;
 void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
 {
     Updater *updater { feed->updater() };
-    time_t nextUpdate { updater->nextUpdate() };
+    if (updater->updateMode() == Updater::MaunualUpdateMode) {
+        return;
+    }
+    const QDateTime &nextUpdate { updater->nextUpdate() };
     for (auto i=schedule.begin(); i!=schedule.end(); ++i) {
         if ((*i)->updater()->nextUpdate() > nextUpdate) {
             schedule.insert(i, feed);
@@ -25,29 +28,26 @@ void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
     schedule.append(feed);
 }
 
-void Scheduler::schedule(const FeedRef &feedRef, time_t timestamp)
+static constexpr const qint64 defaultUpdateInterval = 3600;
+void Scheduler::schedule(const FeedRef &feedRef, const QDateTime &timestamp)
 {
-    unschedule(feedRef);     // there can only be one
     m_feeds.insert(feedRef);
     Feed *feed { feedRef.get() };
+    Updater *updater { feed->updater() };
+    updater->setDefaultUpdateInterval(defaultUpdateInterval);
     QObject::connect(feed, &Feed::statusChanged, this,
                      [this, feed]{ onFeedStatusChanged(feed); });
-    insertIntoSchedule(m_schedule, feed);
-    feed->updater()->updateIfNecessary(timestamp);
-}
-
-void Scheduler::schedule(const FeedRef &feed)
-{
-    time_t timestamp;
-    time(&timestamp);
-    schedule(feed, timestamp);
+    QObject::connect(updater, &Updater::updateIntervalChanged, this,
+                     [this, feed]{ reschedule(feed); });
+    QObject::connect(updater, &Updater::updateModeChanged, this,
+                     [this, feed]{ onUpdateModeChanged(feed); });
+    reschedule(feed, timestamp);
 }
 
 void Scheduler::schedule(Future<FeedRef> *q)
 {
     QObject::connect(q, &BaseFuture::finished, this, [this, q] {
-        time_t timestamp;
-        time(&timestamp);
+        const auto &timestamp = QDateTime::currentDateTime();
         for (const auto &i : q->result()) {
             schedule(i, timestamp);
         }
@@ -79,7 +79,7 @@ void Scheduler::stop()
     m_timer.stop();
 }
 
-static void updateMany(time_t timestamp, const QList<Updater *> &toUpdate)
+static void updateMany(const QDateTime &timestamp, const QList<Updater *> &toUpdate)
 {
     for (auto *entry : toUpdate)
     {
@@ -89,8 +89,7 @@ static void updateMany(time_t timestamp, const QList<Updater *> &toUpdate)
 
 void Scheduler::updateStale()
 {
-    time_t timestamp;
-    time(&timestamp);
+    const auto &timestamp = QDateTime::currentDateTime();
     QList<Updater *> toUpdate{};
     const auto &schedule { m_schedule };
     for (Feed *entry : schedule) {
@@ -105,8 +104,7 @@ void Scheduler::updateStale()
 
 void Scheduler::updateAll()
 {
-    time_t timestamp;
-    time(&timestamp);
+    const auto &timestamp = QDateTime::currentDateTime();
     m_schedule.clear();
     const auto &feeds = m_feeds;
     for (const FeedRef &entry : feeds) {
@@ -119,6 +117,32 @@ void Scheduler::abortAll()
     const auto &feeds = m_feeds;
     for(const FeedRef &entry : feeds) {
         entry->updater()->abort();
+    }
+}
+
+void Scheduler::reschedule(Feed *feed, const QDateTime &timestamp)
+{
+    Updater *updater { feed->updater() };
+    m_schedule.removeOne(feed);
+    insertIntoSchedule(m_schedule, feed);
+    updater->updateIfNecessary(timestamp);
+}
+
+void Scheduler::onUpdateModeChanged(Feed *feed)
+{
+    Updater *updater { feed->updater() };
+    switch (updater->updateMode()) {
+    case Updater::DefaultUpdateMode:
+        updater->setDefaultUpdateInterval(defaultUpdateInterval);
+        break;
+
+    case Updater::CustomUpdateMode:
+        reschedule(feed);
+        break;
+
+    case Updater::MaunualUpdateMode:
+        m_schedule.removeOne(feed);
+        break;
     }
 }
 

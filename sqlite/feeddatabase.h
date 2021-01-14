@@ -31,7 +31,9 @@ public:
     FeedQuery selectFeed(qint64 feedId);
     std::optional<qint64> selectFeedId(qint64 source, const QString &localId);
     std::optional<qint64> insertFeed(const QUrl& url);
-    bool updateFeed(qint64 feedId, const QString &name);
+    void updateFeedName(qint64 feedId, const QString &name);
+    void updateFeedUpdateInterval(qint64 feedId, qint64 updateInterval);
+    void updateFeedLastUpdate(qint64 feedId, QDateTime lastUpdated);
 };
 
 }

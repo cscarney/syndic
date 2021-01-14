@@ -7,6 +7,7 @@
 #include "sqlite/articleimpl.h"
 #include "articleref.h"
 #include "provisionalfeed.h"
+#include "updater.h"
 using namespace FeedCore;
 using namespace Sqlite;
 
@@ -151,11 +152,50 @@ Future<FeedRef> *StorageImpl::storeFeed(ProvisionalFeed *feed)
     });
 }
 
+static void onUpdateModeChanged(FeedDatabase &db, Updater *updater, qint64 feedId) {
+    switch (updater->updateMode()) {
+    case Updater::DefaultUpdateMode:
+        db.updateFeedUpdateInterval(feedId, 0);
+        break;
+
+    case Updater::MaunualUpdateMode:
+        db.updateFeedUpdateInterval(feedId, -1);
+        break;
+
+    case Updater::CustomUpdateMode:
+        db.updateFeedUpdateInterval(feedId, updater->updateInterval());
+        break;
+    }
+}
+
+static void onUpdateIntervalChanged(FeedDatabase &db, Updater *updater, qint64 feedId)
+{
+    if (updater->updateMode() != Updater::CustomUpdateMode) {
+        return;
+    }
+    db.updateFeedUpdateInterval(feedId, updater->updateInterval());
+}
+
+void StorageImpl::listenForChanges(FeedImpl *feed)
+{
+    Updater *updater { feed->updater() };
+    qint64 feedId = feed->id();
+    QObject::connect(updater, &Updater::lastUpdateChanged, this, [this, updater, feedId]{
+        m_db.updateFeedLastUpdate(feedId, updater->lastUpdate());
+    });
+    QObject::connect(updater, &Updater::updateIntervalChanged, this, [this, updater, feedId]{
+        onUpdateIntervalChanged(m_db, updater, feedId);
+    });
+    QObject::connect(updater, &Updater::updateModeChanged, this, [this, updater, feedId]{
+        onUpdateModeChanged(m_db, updater, feedId);
+    });
+}
+
 void StorageImpl::updateFeedMetadata(FeedImpl *storedFeed)
 {
     const qint64 id = storedFeed->id();
     const QString name = storedFeed->name();
     QTimer::singleShot(0, this, [this, id, name]{
-        m_db.updateFeed(id, name);
+        m_db.updateFeedName(id, name);
     });
 }

@@ -6,38 +6,30 @@ namespace FeedCore {
 
 struct Updater::PrivData {
     Feed *feed;
+    UpdateMode updateMode { DefaultUpdateMode };
     time_t updateInterval { 0 };
-    time_t lastUpdate { 0 };
+    QDateTime lastUpdate;
+    QDateTime nextUpdate;
     QString errorMsg;
     bool active { false };
 };
 
-
-Updater::Updater(Feed *feed, time_t updateInterval, time_t lastUpdate, QObject *parent) :
+Updater::Updater(Feed *feed, QObject *parent) :
     QObject(parent),
     priv{ std::make_unique<PrivData>() }
 {
     priv->feed = feed;
-    priv->updateInterval = updateInterval;
-    priv->lastUpdate = lastUpdate;
 }
 
 Updater::~Updater() = default;
 
-void Updater::start()
-{
-    time_t t;
-    time(&t);
-    start(t);
-}
-
-void Updater::start(time_t timestamp)
+void Updater::start(const QDateTime &timestamp)
 {
     if (priv->feed->status() != LoadStatus::Updating) {
         priv->feed->setStatus(LoadStatus::Updating);
         run();
     }
-    priv->lastUpdate = timestamp;
+    setLastUpdate(timestamp);
 }
 
 QString Updater::error()
@@ -50,23 +42,69 @@ Feed *Updater::feed()
     return priv->feed;
 }
 
-time_t Updater::nextUpdate()
+QDateTime Updater::nextUpdate()
 {
-    return priv->lastUpdate + priv->updateInterval;
+    return priv->lastUpdate.addSecs(priv->updateInterval);
 }
 
-bool Updater::needsUpdate(time_t timestamp)
+bool Updater::needsUpdate(const QDateTime &timestamp)
 {
     return (nextUpdate() <= timestamp);
 }
 
-bool Updater::updateIfNecessary(time_t timestamp)
+bool Updater::updateIfNecessary(const QDateTime &timestamp)
 {
     if (needsUpdate(timestamp)) {
         start(timestamp);
         return true;
     }
     return false;
+}
+
+const QDateTime &Updater::lastUpdate()
+{
+    return priv->lastUpdate;
+}
+
+void Updater::setLastUpdate(const QDateTime &lastUpdate)
+{
+    if (priv->lastUpdate != lastUpdate) {
+        priv->lastUpdate = lastUpdate;
+        emit lastUpdateChanged();
+    }
+}
+
+Updater::UpdateMode Updater::updateMode()
+{
+    return priv->updateMode;
+}
+
+void Updater::setUpdateMode(Updater::UpdateMode updateMode)
+{
+    if (updateMode != priv->updateMode) {
+        priv->updateMode = updateMode;
+        emit updateModeChanged();
+    }
+}
+
+qint64 Updater::updateInterval()
+{
+    return priv->updateInterval;
+}
+
+void Updater::setUpdateInterval(qint64 updateInterval)
+{
+    if (updateInterval != priv->updateInterval) {
+        priv->updateInterval = updateInterval;
+        emit updateIntervalChanged();
+    }
+}
+
+void Updater::setDefaultUpdateInterval(qint64 updateInterval)
+{
+    if (priv->updateMode == DefaultUpdateMode) {
+        setUpdateInterval(updateInterval);
+    }
 }
 
 void Updater::finish()
