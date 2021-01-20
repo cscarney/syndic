@@ -42,7 +42,6 @@ Future<FeedRef> *Context::getFeeds()
 
 void Context::addFeed(Feed *feed)
 {
-    qDebug() << "addFeed called";
     Future<FeedRef> *q { priv->storage->storeFeed(feed) };
     QObject::connect(q, &BaseFuture::finished, this, [this, q]{
         for (const auto &feed : q->result()) {

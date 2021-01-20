@@ -149,8 +149,9 @@ static qint64 packFeedUpdateInterval(Updater *updater)
 Future<FeedRef> *StorageImpl::storeFeed(Feed *feed)
 {
     const QUrl &url = feed->url();
+    const QString &name = feed->name();
     const qint64 updateInterval = packFeedUpdateInterval(feed->updater());
-    return Future<FeedRef>::yield(this, [this, url, updateInterval](auto *op){
+    return Future<FeedRef>::yield(this, [this, url, name, updateInterval](auto *op){
         const auto &existingId = m_db.selectFeedId(0, url.toString());
         if (existingId) {
             qDebug() << "trying to insert feed for " << url << "which already exists";
@@ -164,6 +165,7 @@ Future<FeedRef> *StorageImpl::storeFeed(Feed *feed)
             return;
         }
         m_db.updateFeedUpdateInterval(*insertId, updateInterval);
+        m_db.updateFeedName(*insertId, name);
         FeedQuery result { m_db.selectFeed(*insertId) };
         appendFeedResults(op, result);
     });

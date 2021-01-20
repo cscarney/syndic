@@ -23,8 +23,9 @@ void XMLUpdater::run()
 
 void XMLUpdater::abort()
 {
-    if (m_loader){
-        m_loader->abort();
+    Syndication::Loader *loader = m_loader;
+    if (loader){
+        loader->abort();
     }
 }
 

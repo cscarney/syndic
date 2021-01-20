@@ -13,7 +13,7 @@ ProvisionalFeed::ProvisionalFeed(QObject *parent) :
     Feed(parent),
     m_updater(new XMLUpdater(this, this))
 {
-    QObject::connect(this, &Feed::urlChanged, m_updater, &Updater::abort);
+    QObject::connect(this, &Feed::urlChanged, this, &ProvisionalFeed::onUrlChanged);
 }
 
 FeedCore::Updater *ProvisionalFeed::updater()
@@ -35,7 +35,9 @@ Future<ArticleRef> *ProvisionalFeed::getArticles(bool unreadFilter)
 
 void ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed)
 {
-    setName(feed->title());
+    if (name().isEmpty()) {
+        setName(feed->title());
+    }
     setUnreadCount(feed->items().size());
     m_feed = feed;
     emit reset();

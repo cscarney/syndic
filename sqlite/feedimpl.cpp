@@ -50,7 +50,9 @@ Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)
 
 void FeedImpl::updateFromSource(const Syndication::FeedPtr &source)
 {
-    setName(source->title());
+    if (name().isEmpty()) {
+        setName(source->title());
+    }
     const auto &items = source->items();
     for (const auto &item : items) {
         auto *q = m_storage->storeArticle(this, item);

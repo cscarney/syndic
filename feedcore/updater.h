@@ -25,7 +25,7 @@ public:
         /* indicates that we should never be scheduled */
         MaunualUpdateMode,
     };
-    Q_ENUM(FeedCore::Updater::UpdateMode);
+    Q_ENUM(UpdateMode)
     Updater(Feed *feed, QObject *parent);
     ~Updater();
     virtual void run() = 0;
@@ -55,4 +55,5 @@ private:
     std::unique_ptr<PrivData> priv;
 };
 }
+
 #endif // UPDATER_H

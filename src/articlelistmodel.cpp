@@ -82,7 +82,6 @@ void ArticleListModel::classBegin()
 void ArticleListModel::componentComplete()
 {
     QTimer::singleShot(0, this, [this]{
-        qDebug() << "article list model complete";
         priv->active = true;
         QObject::connect(priv->feed, &Feed::articleAdded, this, &ArticleListModel::onItemAdded);
         QObject::connect(priv->feed, &Feed::statusChanged, this, &ArticleListModel::onStatusChanged);
@@ -198,7 +197,10 @@ void ArticleListModel::setFeed(Feed *feed)
     if (priv->feed != feed) {
         priv->feed = feed;
         if (priv->active) {
-            qDebug() << "set feed after initialization!!";
+            beginResetModel();
+            priv->items = {};
+            endResetModel();
+            refresh();
         }
         emit feedChanged();
     }
@@ -212,15 +214,15 @@ void ArticleListModel::requestUpdate() const
 Future<ArticleRef> *ArticleListModel::getItems()
 {
     if (priv->feed == nullptr) {
-        qDebug() << "starting query with no feed set!";
-        return nullptr;
+        return Future<ArticleRef>::yield(this, [](auto){});
     }
     return priv->feed->getArticles(unreadFilter());
 }
 
 void ArticleListModel::setStatusFromUpstream()
 {
-    setStatus(priv->feed->status());
+    auto *feed = priv->feed;
+    setStatus(feed ? feed->status() : Enums::Error);
 }
 
 void ArticleListModel::onStatusChanged()

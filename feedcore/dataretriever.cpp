@@ -21,6 +21,7 @@ int DataRetriever::errorCode() const
 
 void DataRetriever::abort()
 {
+    m_reply->disconnect(this);
     m_reply->abort();
     m_reply->deleteLater();
 }
