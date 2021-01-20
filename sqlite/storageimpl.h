@@ -22,7 +22,7 @@ public:
     FeedCore::Future<FeedCore::ArticleRef> *getAll() final;
     FeedCore::Future<FeedCore::ArticleRef> *getUnread() final;
     FeedCore::Future<FeedCore::FeedRef> *getFeeds() final;
-    FeedCore::Future<FeedCore::FeedRef> *storeFeed(FeedCore::ProvisionalFeed *feed) final;
+    FeedCore::Future<FeedCore::FeedRef> *storeFeed(FeedCore::Feed *feed) final;
     void listenForChanges(FeedImpl *feed);
 private:
     FeedDatabase m_db;

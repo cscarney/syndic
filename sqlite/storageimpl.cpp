@@ -131,10 +131,26 @@ Future<FeedRef> *StorageImpl::getFeeds()
     });
 }
 
-Future<FeedRef> *StorageImpl::storeFeed(ProvisionalFeed *feed)
+static qint64 packFeedUpdateInterval(Updater *updater)
+{
+    switch (updater->updateMode()) {
+    case Updater::DefaultUpdateMode:
+    default:
+        return 0;
+
+    case Updater::MaunualUpdateMode:
+        return -1;
+
+    case Updater::CustomUpdateMode:
+        return updater->updateInterval();
+    }
+}
+
+Future<FeedRef> *StorageImpl::storeFeed(Feed *feed)
 {
     const QUrl &url = feed->url();
-    return Future<FeedRef>::yield(this, [this, url](auto *op){
+    const qint64 updateInterval = packFeedUpdateInterval(feed->updater());
+    return Future<FeedRef>::yield(this, [this, url, updateInterval](auto *op){
         const auto &existingId = m_db.selectFeedId(0, url.toString());
         if (existingId) {
             qDebug() << "trying to insert feed for " << url << "which already exists";
@@ -147,25 +163,15 @@ Future<FeedRef> *StorageImpl::storeFeed(ProvisionalFeed *feed)
             op->setResult();
             return;
         }
+        m_db.updateFeedUpdateInterval(*insertId, updateInterval);
         FeedQuery result { m_db.selectFeed(*insertId) };
         appendFeedResults(op, result);
     });
 }
 
 static void onUpdateModeChanged(FeedDatabase &db, Updater *updater, qint64 feedId) {
-    switch (updater->updateMode()) {
-    case Updater::DefaultUpdateMode:
-        db.updateFeedUpdateInterval(feedId, 0);
-        break;
-
-    case Updater::MaunualUpdateMode:
-        db.updateFeedUpdateInterval(feedId, -1);
-        break;
-
-    case Updater::CustomUpdateMode:
-        db.updateFeedUpdateInterval(feedId, updater->updateInterval());
-        break;
-    }
+    qint64 updateInterval = packFeedUpdateInterval(updater);
+    db.updateFeedUpdateInterval(feedId, updateInterval);
 }
 
 static void onUpdateIntervalChanged(FeedDatabase &db, Updater *updater, qint64 feedId)

@@ -34,6 +34,9 @@ public:
     void updateFeedName(qint64 feedId, const QString &name);
     void updateFeedUpdateInterval(qint64 feedId, qint64 updateInterval);
     void updateFeedLastUpdate(qint64 feedId, QDateTime lastUpdated);
+private:
+    QSqlDatabase db();
+    QString m_dbName;
 };
 
 }

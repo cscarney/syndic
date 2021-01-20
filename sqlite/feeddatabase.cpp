@@ -20,11 +20,11 @@ static QString filePath(QString const &fileName)
 }
 
 
-static const QString db_name = QStringLiteral("FeedDatabase");
+static const QString db_name_fmt = QStringLiteral("Sqlite_FeedDatabase_%1");
 
-static inline QSqlDatabase db()
+QSqlDatabase FeedDatabase::db()
 {
-    return QSqlDatabase::database(db_name);
+    return QSqlDatabase::database(m_dbName);
 }
 
 static int getVersion(QSqlDatabase &db)
@@ -98,7 +98,9 @@ static void initDatabase(QSqlDatabase &db)
 
 FeedDatabase::FeedDatabase()
 {
-    auto db = QSqlDatabase::addDatabase("QSQLITE", db_name);
+    static int dbCount {0};
+    m_dbName = db_name_fmt.arg(++dbCount);
+    auto db = QSqlDatabase::addDatabase("QSQLITE", m_dbName);
     db.setDatabaseName(filePath("feeds.db"));
     if (!db.open()) {
         qDebug("Failed to open database!");

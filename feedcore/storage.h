@@ -15,7 +15,7 @@ public:
     virtual Future<ArticleRef> *getAll() = 0;
     virtual Future<ArticleRef> *getUnread() = 0;
     virtual Future<FeedRef> *getFeeds() = 0;
-    virtual Future<FeedRef> *storeFeed(ProvisionalFeed *feed)=0;
+    virtual Future<FeedRef> *storeFeed(Feed *feed)=0;
 };
 }
 #endif //STORAGE_H

@@ -18,7 +18,7 @@ public:
     explicit Context(Storage *storage, QObject *parent = nullptr);
     ~Context();
     Future<FeedRef> *getFeeds();
-    Q_INVOKABLE void addFeed(ProvisionalFeed *feed);
+    Q_INVOKABLE void addFeed(FeedCore::Feed *feed);
     Future<ArticleRef> *getArticles(bool unreadFilter);
     void requestUpdate();
     void abortUpdates();

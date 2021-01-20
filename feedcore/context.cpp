@@ -40,7 +40,7 @@ Future<FeedRef> *Context::getFeeds()
     return priv->storage->getFeeds();
 }
 
-void Context::addFeed(ProvisionalFeed *feed)
+void Context::addFeed(Feed *feed)
 {
     qDebug() << "addFeed called";
     Future<FeedRef> *q { priv->storage->storeFeed(feed) };

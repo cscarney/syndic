@@ -18,7 +18,7 @@ Kirigami.ScrollablePage {
             onTriggered: {
                 var feed = provisionalFeed
                 pageRow.clear()
-                feedContext.addFeed(provisionalFeed.url)
+                feedContext.addFeed(provisionalFeed)
             }
         }
     }
