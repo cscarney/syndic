@@ -37,6 +37,12 @@ Future<ArticleRef> *StorageImpl::getUnread()
     });
 }
 
+StorageImpl::StorageImpl(QString filePath) :
+    m_db(filePath)
+{
+
+}
+
 Future<ArticleRef> *StorageImpl::getById(qint64 id)
 {
     return Future<ArticleRef>::yield(this, [this, id](auto *op){

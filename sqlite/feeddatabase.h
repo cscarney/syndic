@@ -11,7 +11,7 @@ namespace Sqlite {
 class FeedDatabase
 {
 public:
-    FeedDatabase();
+    explicit FeedDatabase(QString filePath);
     ~FeedDatabase();
     FeedDatabase(const FeedDatabase&) = delete;
     FeedDatabase &operator=(const FeedDatabase&) = delete;

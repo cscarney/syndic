@@ -2,6 +2,8 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QQmlContext>
+#include <QDir>
+#include <QStandardPaths>
 #include <KDeclarative/KDeclarative>
 #include "context.h"
 #include "articlelistmodel.h"
@@ -12,6 +14,22 @@
 #include "provisionalfeed.h"
 #include "updater.h"
 using namespace FeedCore;
+
+static QString filePath(QString const &fileName)
+{
+    QDir appDataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    if (!appDataDir.mkpath(".")) {
+        qDebug("failed to create data dir");
+        appDataDir = QDir(".");
+    }
+    return appDataDir.filePath(fileName);
+}
+
+FeedCore::Context *createContext(QObject *parent = nullptr) {
+    QString dbPath = filePath("feeds.db");
+    auto *fm = new Sqlite::StorageImpl(dbPath);  // ownership passes to context
+    return new FeedCore::Context(fm, parent);
+}
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +53,7 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<QmlFeedRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
     qmlRegisterUncreatableType<Article>("Article", 1, 0, "Article", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlArticleRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
-    auto *fm = new FeedCore::Context(new Sqlite::StorageImpl, &app);
+    auto *fm = createContext(&app);
     engine.rootContext()->setContextProperty("feedContext", fm);
     engine.load(QUrl("qrc:/qml/main.qml"));
     int result = QApplication::exec();

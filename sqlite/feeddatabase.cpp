@@ -9,17 +9,6 @@
 
 namespace Sqlite {
 
-static QString filePath(QString const &fileName)
-{
-    QDir appDataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
-    if (!appDataDir.mkpath(".")) {
-        qDebug("failed to create data dir");
-        appDataDir = QDir(".");
-    }
-    return appDataDir.filePath(fileName);
-}
-
-
 static const QString db_name_fmt = QStringLiteral("Sqlite_FeedDatabase_%1");
 
 QSqlDatabase FeedDatabase::db()
@@ -96,12 +85,12 @@ static void initDatabase(QSqlDatabase &db)
     }
 }
 
-FeedDatabase::FeedDatabase()
+FeedDatabase::FeedDatabase(QString filePath)
 {
     static int dbCount {0};
     m_dbName = db_name_fmt.arg(++dbCount);
     auto db = QSqlDatabase::addDatabase("QSQLITE", m_dbName);
-    db.setDatabaseName(filePath("feeds.db"));
+    db.setDatabaseName(filePath);
     if (!db.open()) {
         qDebug("Failed to open database!");
     } else {

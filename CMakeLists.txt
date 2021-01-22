@@ -32,4 +32,5 @@ include(ECMInstallIcons)
  add_subdirectory(feedcore)
  add_subdirectory(sqlite)
  add_subdirectory(src)
+ add_subdirectory(test)
 
