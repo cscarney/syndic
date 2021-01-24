@@ -72,15 +72,6 @@ Updater *FeedImpl::updater()
     return m_updater;
 }
 
-bool FeedImpl::setName(const QString &name)
-{
-    const bool changed { Feed::setName(name) };
-    if (changed) {
-        m_storage->updateFeedMetadata(this);
-    }
-    return changed;
-}
-
 void FeedImpl::setRead(ArticleImpl *article, bool isRead)
 {
     auto *q = m_storage->updateArticleRead(article, isRead);

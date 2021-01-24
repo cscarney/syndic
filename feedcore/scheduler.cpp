@@ -10,8 +10,6 @@ Scheduler::Scheduler(QObject *parent) : QObject(parent)
 {
 }
 
-Scheduler::~Scheduler()=default;
-
 void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
 {
     Updater *updater { feed->updater() };

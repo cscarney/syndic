@@ -18,8 +18,8 @@ class Feed : public QObject {
     Q_PROPERTY(FeedCore::Updater *updater READ updater CONSTANT);
 public:
     const QString &name() const { return m_name; }
+    void setName(const QString &name);
     const QUrl &url() const { return m_url; }
-    virtual bool setName(const QString &name);
     void setUrl(const QUrl &url);
     int unreadCount() const;
     LoadStatus status() const;

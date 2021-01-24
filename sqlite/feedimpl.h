@@ -21,7 +21,6 @@ public:
     FeedCore::Future<FeedCore::ArticleRef> *getArticles(bool unreadFilter) final;
     void updateFromSource(const Syndication::FeedPtr &source) final;
     FeedCore::Updater *updater() final;
-    bool setName(const QString &name) final;
 private:
     FeedImpl(qint64 feedId, StorageImpl *storage);
     qint64 m_id { 0 };

@@ -203,6 +203,7 @@ void StorageImpl::listenForChanges(FeedImpl *feed)
     QObject::connect(updater, &Updater::updateModeChanged, this, [this, updater, feedId]{
         onUpdateModeChanged(m_db, updater, feedId);
     });
+    QObject::connect(feed, &Feed::nameChanged, this, [this, feed]{ updateFeedMetadata(feed); });
 }
 
 void StorageImpl::updateFeedMetadata(FeedImpl *storedFeed)

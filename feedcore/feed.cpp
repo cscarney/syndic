@@ -8,14 +8,12 @@ Feed::Feed(QObject *parent):
 
 }
 
-bool Feed::setName(const QString &name)
+void Feed::setName(const QString &name)
 {
     if (m_name != name) {
         m_name = name;
         emit nameChanged();
-        return true;
     }
-    return false;
 }
 
 void Feed::setUnreadCount(int unreadCount)

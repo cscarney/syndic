@@ -18,7 +18,6 @@ class Scheduler : public QObject
     Q_OBJECT
 public:
     explicit Scheduler(QObject *parent = nullptr);
-    ~Scheduler();
     void schedule(const FeedRef &feedRef, const QDateTime &timestamp=QDateTime::currentDateTime());
     void schedule(const FeedRef &feedRef);
     void schedule(Future<FeedRef> *q);
