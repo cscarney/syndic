@@ -8,6 +8,7 @@ Kirigami.ScrollablePage {
     property alias item: articleView.item
     property var nextItem: function() {}
     property var previousItem: function() {}
+    signal suspendAnimations;
 
     topPadding: 0
     bottomPadding: 0
@@ -106,15 +107,18 @@ Kirigami.ScrollablePage {
             if (!scroller.atYEnd) {
                 pageUpDown(0.9);
             } else {
+                suspendAnimations();
                 nextItem();
             }
             break;
 
         case Qt.Key_Left:
+            suspendAnimations();
             previousItem();
             break;
 
         case Qt.Key_Right:
+            suspendAnimations();
             nextItem();
             break;
 
