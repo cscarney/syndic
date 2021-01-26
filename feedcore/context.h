@@ -14,6 +14,7 @@ class ProvisionalFeed;
 class Context : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(qint64 defaultUpdateInterval READ defaultUpdateInterval WRITE setDefaultUpdateInterval NOTIFY defaultUpdateIntervalChanged)
 public:
     explicit Context(Storage *storage, QObject *parent = nullptr);
     ~Context();
@@ -22,7 +23,10 @@ public:
     Future<ArticleRef> *getArticles(bool unreadFilter);
     void requestUpdate();
     void abortUpdates();
+    qint64 defaultUpdateInterval();
+    void setDefaultUpdateInterval(qint64 defaultUpdateInterval);
 signals:
+    void defaultUpdateIntervalChanged();
     void feedAdded(const FeedCore::FeedRef &feed);
 private:
     struct PrivData;

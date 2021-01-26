@@ -18,5 +18,6 @@
         <file>qml/OverlayMessage.qml</file>
         <file>qml/ArticleList/AbstractArticleListPage.qml</file>
         <file>qml/ArticleList/FeedPreviewPage.qml</file>
+        <file>qml/SettingsPage.qml</file>
     </qresource>
 </RCC>

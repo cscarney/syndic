@@ -47,9 +47,15 @@ QDateTime Updater::nextUpdate()
     return priv->lastUpdate.addSecs(priv->updateInterval);
 }
 
+bool Updater::hasNextUpdate()
+{
+    return (priv->updateMode != MaunualUpdateMode
+            && priv->updateInterval > 0);
+}
+
 bool Updater::needsUpdate(const QDateTime &timestamp)
 {
-    return (nextUpdate() <= timestamp);
+    return hasNextUpdate() && nextUpdate() <= timestamp;
 }
 
 bool Updater::updateIfNecessary(const QDateTime &timestamp)

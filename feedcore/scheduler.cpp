@@ -6,14 +6,14 @@
 
 namespace FeedCore {
 
-Scheduler::Scheduler(QObject *parent) : QObject(parent)
-{
+Scheduler::Scheduler(QObject *parent) :
+    QObject(parent){
 }
 
 void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
 {
     Updater *updater { feed->updater() };
-    if (updater->updateMode() == Updater::MaunualUpdateMode) {
+    if (!updater->hasNextUpdate()) {
         return;
     }
     const QDateTime &nextUpdate { updater->nextUpdate() };
@@ -26,13 +26,12 @@ void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
     schedule.append(feed);
 }
 
-static constexpr const qint64 defaultUpdateInterval = 3600;
 void Scheduler::schedule(const FeedRef &feedRef, const QDateTime &timestamp)
 {
     m_feeds.insert(feedRef);
     Feed *feed { feedRef.get() };
     Updater *updater { feed->updater() };
-    updater->setDefaultUpdateInterval(defaultUpdateInterval);
+    updater->setDefaultUpdateInterval(m_updateInterval);
     QObject::connect(feed, &Feed::statusChanged, this,
                      [this, feed]{ onFeedStatusChanged(feed); });
     QObject::connect(updater, &Updater::updateIntervalChanged, this,
@@ -118,12 +117,28 @@ void Scheduler::abortAll()
     }
 }
 
+qint64 Scheduler::updateInterval()
+{
+    return m_updateInterval;
+}
+
+void Scheduler::setUpdateInterval(qint64 newval){
+    m_updateInterval = newval;
+    const auto &feeds = m_feeds;
+    for (const auto &feedRef : feeds) {
+        feedRef->updater()->setDefaultUpdateInterval(newval);
+    }
+}
+
 void Scheduler::reschedule(Feed *feed, const QDateTime &timestamp)
 {
     Updater *updater { feed->updater() };
     m_schedule.removeOne(feed);
-    insertIntoSchedule(m_schedule, feed);
-    updater->updateIfNecessary(timestamp);
+    if (updater->needsUpdate(timestamp)) {
+        updater->start();
+    } else {
+        insertIntoSchedule(m_schedule, feed);
+    }
 }
 
 void Scheduler::onUpdateModeChanged(Feed *feed)
@@ -131,7 +146,7 @@ void Scheduler::onUpdateModeChanged(Feed *feed)
     Updater *updater { feed->updater() };
     switch (updater->updateMode()) {
     case Updater::DefaultUpdateMode:
-        updater->setDefaultUpdateInterval(defaultUpdateInterval);
+        updater->setDefaultUpdateInterval(m_updateInterval);
         break;
 
     case Updater::CustomUpdateMode:

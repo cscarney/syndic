@@ -34,6 +34,7 @@ public:
     QString error();
     Feed *feed();
     QDateTime nextUpdate();
+    bool hasNextUpdate();
     bool needsUpdate(const QDateTime &timestamp);
     bool updateIfNecessary(const QDateTime &timestamp);
     const QDateTime &lastUpdate();

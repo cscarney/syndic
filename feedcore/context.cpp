@@ -69,4 +69,18 @@ void Context::abortUpdates()
     priv->updateScheduler->abortAll();
 }
 
+qint64 Context::defaultUpdateInterval()
+{
+    return priv->updateScheduler->updateInterval();
+}
+
+void Context::setDefaultUpdateInterval(qint64 defaultUpdateInterval)
+{
+    if (this->defaultUpdateInterval() == defaultUpdateInterval) {
+        return;
+    }
+    priv->updateScheduler->setUpdateInterval(defaultUpdateInterval);
+    emit defaultUpdateIntervalChanged();
+}
+
 }

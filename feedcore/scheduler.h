@@ -27,10 +27,13 @@ public:
     void updateStale();
     void updateAll();
     void abortAll();
+    qint64 updateInterval();
+    void setUpdateInterval(qint64 newval);
 private:
     QSet<FeedRef> m_feeds;
     QList<Feed *> m_schedule;
     QTimer m_timer;
+    qint64 m_updateInterval{ 0 };
     void reschedule(Feed *feed, const QDateTime &timestamp=QDateTime::currentDateTime());
     void onUpdateModeChanged(Feed *feed);
     void onFeedStatusChanged(Feed *sender);

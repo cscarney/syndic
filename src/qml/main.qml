@@ -47,18 +47,21 @@ Kirigami.ApplicationWindow {
 
         actions: [
             Kirigami.Action {
-                text: "Add Content..."
+                text: qsTr("Add Content")
                 iconName: "list-add"
                 onTriggered: {
                     pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
                 }
             },
             Kirigami.Action {
-                text: "Preferences"
+                text: qsTr("Settings")
                 iconName: "settings-configure"
+                onTriggered: {
+                    pushUtilityPage("qrc:/qml/SettingsPage.qml", {globalSettings: globalSettings})
+                }
             },
             Kirigami.Action {
-                text: "About FeedKeeper"
+                text: qsTr("About FeedKeeper")
                 iconName: "help-about"
                 onTriggered: {
                     pushUtilityPage("qrc:/qml/AboutPage.qml")
@@ -72,6 +75,20 @@ Kirigami.ApplicationWindow {
         category: "Window"
         property alias width: root.width
         property alias height: root.height
+    }
+
+    Settings {
+        id: globalSettings
+        // @disable-check M16
+        category: "Global"
+        property bool automaticUpdates: true
+        property int updateInterval: 3600
+    }
+
+    Binding {
+        target: feedContext
+        property: "defaultUpdateInterval"
+        value: globalSettings.automaticUpdates ? globalSettings.updateInterval : 0
     }
 
     StateGroup {
