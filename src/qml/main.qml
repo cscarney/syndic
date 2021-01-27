@@ -2,11 +2,12 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
+import Qt.labs.platform 1.1 as Platform
 import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.ApplicationWindow {
     id: root
-    title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + qsTr("FeedKeeper")
+    title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + Qt.application.name
 
     pageStack {
         globalToolBar.showNavigationButtons: priv.isFirstPage ? 0 : Kirigami.ApplicationHeaderStyle.ShowBackButton
@@ -61,7 +62,7 @@ Kirigami.ApplicationWindow {
                 }
             },
             Kirigami.Action {
-                text: qsTr("About FeedKeeper")
+                text: qsTr("About %1").arg(Qt.application.name)
                 iconName: "help-about"
                 onTriggered: {
                     pushUtilityPage("qrc:/qml/AboutPage.qml")
@@ -83,6 +84,7 @@ Kirigami.ApplicationWindow {
         category: "Global"
         property bool automaticUpdates: true
         property int updateInterval: 3600
+        property bool runInBackground: true
     }
 
     Binding {
@@ -142,6 +144,28 @@ Kirigami.ApplicationWindow {
         interval: Kirigami.Units.longDuration
     }
 
+    Platform.SystemTrayIcon {
+        id: trayIcon
+        visible: root.visible == false
+        icon.name: "feed-subscribe"
+        menu: Platform.Menu {
+            Platform.MenuItem {
+                text: qsTr("Quit");
+                iconName: "application-exit"
+                onTriggered: {
+                    Qt.quit()
+                }
+            }
+        }
+        onActivated: {
+            if (reason === Platform.SystemTrayIcon.Context) {
+                menu.open(trayIcon)
+            } else {
+                root.visible = true
+            }
+        }
+    }
+
     Connections {
         target: pageStack.currentItem
         ignoreUnknownSignals: true
@@ -158,6 +182,15 @@ Kirigami.ApplicationWindow {
         onSuspendAnimations: {
             // emitted by pages to temporarily suspend the page transition animation
             animationSuspendTimer.start()
+        }
+    }
+
+    onClosing: {
+        if (globalSettings.runInBackground) {
+            close.accepted = false
+            root.visible = false
+        } else {
+            Qt.quit()
         }
     }
 

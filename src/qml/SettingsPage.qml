@@ -54,6 +54,17 @@ Kirigami.ScrollablePage {
                     }
                 }
             }
+
+            CheckBox {
+                id: runInBackground
+                text: qsTr("Run in background")
+                checked: globalSettings.runInBackground
+                Binding {
+                    target: globalSettings
+                    property: "runInBackground"
+                    value: runInBackground.checked
+                }
+            }
         }
     }
 }
