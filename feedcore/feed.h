@@ -16,6 +16,7 @@ class Feed : public QObject {
     Q_PROPERTY(int unreadCount READ unreadCount NOTIFY unreadCountChanged);
     Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
     Q_PROPERTY(FeedCore::Updater *updater READ updater CONSTANT);
+    Q_PROPERTY(bool editable READ editable CONSTANT);
 public:
     const QString &name() const { return m_name; }
     void setName(const QString &name);
@@ -24,8 +25,10 @@ public:
     int unreadCount() const;
     LoadStatus status() const;
     void setStatus(LoadStatus status);
+    void updateParams(Feed *other);
     virtual Updater *updater() = 0;
     virtual Future<ArticleRef> *getArticles(bool unreadFilter)=0;
+    virtual bool editable() { return false; }
     virtual void updateFromSource(const Syndication::FeedPtr &feed){ assert(false); };
 signals:
     void nameChanged();

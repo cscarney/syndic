@@ -19,6 +19,7 @@ public:
     void updateFromQuery(const FeedQuery &query);
     void setRead(ArticleImpl *article, bool isRead);
     FeedCore::Future<FeedCore::ArticleRef> *getArticles(bool unreadFilter) final;
+    bool editable() final { return true; }
     void updateFromSource(const Syndication::FeedPtr &source) final;
     FeedCore::Updater *updater() final;
 private:

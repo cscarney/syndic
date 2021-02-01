@@ -13,7 +13,7 @@ class Updater : public QObject
     Q_OBJECT
     Q_PROPERTY(QDateTime lastUpdate READ lastUpdate NOTIFY lastUpdateChanged)
     Q_PROPERTY(FeedCore::Updater::UpdateMode updateMode READ updateMode WRITE setUpdateMode NOTIFY updateModeChanged)
-    Q_PROPERTY(qint64 updateInterval READ updateInterval WRITE setUpdateInterval NOTIFY updateIntervalChanged)
+    Q_PROPERTY(int updateInterval READ updateInterval WRITE setUpdateInterval NOTIFY updateIntervalChanged)
 public:
     enum UpdateMode {
         /* requests the scheduler to set the update interval to its global value */
@@ -44,6 +44,7 @@ public:
     qint64 updateInterval();
     void setUpdateInterval(qint64 updateInterval);
     void setDefaultUpdateInterval(qint64 updateInterval);
+    void updateParams(Updater *other);
 signals:
     void lastUpdateChanged();
     void updateModeChanged();

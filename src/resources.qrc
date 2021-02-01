@@ -7,7 +7,7 @@
         <file>qml/ArticleList/ArticleListView.qml</file>
         <file>qml/Placeholders/AbstractPlaceholderPage.qml</file>
         <file>qml/AboutPage.qml</file>
-        <file>qml/AddFeedPage.qml</file>
+        <file>qml/AbstractFeedEditorPage.qml</file>
         <file>qml/ArticlePage.qml</file>
         <file>qml/ArticleView.qml</file>
         <file>qml/ArticlePage.qml</file>
@@ -19,5 +19,7 @@
         <file>qml/ArticleList/AbstractArticleListPage.qml</file>
         <file>qml/ArticleList/FeedPreviewPage.qml</file>
         <file>qml/SettingsPage.qml</file>
+        <file>qml/AddFeedPage.qml</file>
+        <file>qml/EditFeedPage.qml</file>
     </qresource>
 </RCC>

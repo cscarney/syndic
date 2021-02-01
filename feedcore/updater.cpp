@@ -113,6 +113,12 @@ void Updater::setDefaultUpdateInterval(qint64 updateInterval)
     }
 }
 
+void Updater::updateParams(Updater *other)
+{
+    setUpdateInterval(other->updateInterval());
+    setUpdateMode(other->updateMode());
+}
+
 void Updater::finish()
 {
     priv->feed->setStatus(LoadStatus::Idle);

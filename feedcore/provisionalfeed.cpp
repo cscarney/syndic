@@ -14,6 +14,8 @@ ProvisionalFeed::ProvisionalFeed(QObject *parent) :
     m_updater(new XMLUpdater(this, this))
 {
     QObject::connect(this, &Feed::urlChanged, this, &ProvisionalFeed::onUrlChanged);
+    QObject::connect(this, &ProvisionalFeed::targetFeedChanged, this,
+                     [this]{ updateParams(m_targetFeed); });
 }
 
 FeedCore::Updater *ProvisionalFeed::updater()
@@ -41,4 +43,10 @@ void ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed)
     setUnreadCount(feed->items().size());
     m_feed = feed;
     emit reset();
+}
+
+void ProvisionalFeed::save()
+{
+    if (!m_targetFeed) return;
+    m_targetFeed->updateParams(this);
 }

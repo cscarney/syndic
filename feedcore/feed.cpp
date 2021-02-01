@@ -1,4 +1,5 @@
 #include "feed.h"
+#include "updater.h"
 
 namespace FeedCore{
 
@@ -55,6 +56,14 @@ void Feed::setStatus(LoadStatus status)
         m_status = status;
         emit statusChanged();
     }
+}
+
+void Feed::updateParams(Feed *other)
+{
+    if (!other) return;
+    setName(other->name());
+    setUrl(other->url());
+    this->updater()->updateParams(other->updater());
 }
 
 }
