@@ -9,7 +9,6 @@
 #include "articlelistmodel.h"
 #include "feedlistmodel.h"
 #include "qmlarticleref.h"
-#include "qmlfeedref.h"
 #include "sqlite/storageimpl.h"
 #include "provisionalfeed.h"
 #include "updater.h"
@@ -50,7 +49,6 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<Context>("FeedContext", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
     qmlRegisterUncreatableType<Feed>("Feed", 1,0, "Feed", "obtained from cpp model");
-    qmlRegisterUncreatableType<QmlFeedRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
     qmlRegisterUncreatableType<Article>("Article", 1, 0, "Article", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlArticleRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
     auto *fm = createContext(&app);

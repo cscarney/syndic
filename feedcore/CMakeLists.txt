@@ -1,6 +1,5 @@
 set(feedcore_HEADERS
     feed.h
-    feedref.h
     article.h
     articleref.h
     storage.h
@@ -12,7 +11,7 @@ set(feedcore_HEADERS
     dataretriever.h
     enums.h
     allitemsfeed.h
-    uniquefactory.h
+    factory.h
     preview/articleimpl.h
     provisionalfeed.h
     )

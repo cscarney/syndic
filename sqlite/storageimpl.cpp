@@ -15,10 +15,19 @@ void StorageImpl::appendArticleResults(Future<ArticleRef> *op, ItemQuery &q)
 {
     while (q.next()) {
         const auto &feed = m_feedFactory.getInstance(q.feed(), this);
-        const auto &item = m_articleFactory.getInstance(q.id(), feed);
+        const auto &item = m_articleFactory.getInstance(q.id(), this, feed, q);
         item->updateFromQuery(q);
         op->appendResult(item);
     }
+}
+
+void StorageImpl::onFeedRequestDelete(FeedImpl *feed)
+{
+    feed->updater()->abort();
+    qint64 feedId { feed->id() };
+    m_db.deleteItemsForFeed(feedId);
+    m_db.deleteFeed(feedId);
+    feed->deleteLater();
 }
 
 Future<ArticleRef> *StorageImpl::getAll()
@@ -105,22 +114,14 @@ Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication:
     });
 }
 
-Future<ArticleRef> *StorageImpl::updateArticleRead(ArticleImpl *article, bool isRead)
+void StorageImpl::onArticleReadChanged(ArticleImpl *article)
 {
     const qint64 itemId { article->id() };
-    const bool oldValue { article->isRead() };
-    return Future<ArticleRef>::yield(this, [this, itemId, isRead, oldValue](auto *op){
-        if (oldValue == isRead) {
-            op->setResult() ;
-        } else {
-            m_db.updateItemRead(itemId, isRead);
-            ItemQuery result { m_db.selectItem(itemId) };
-            appendArticleResults(op, result);
-        }
-    });
+    const bool isRead { article->isRead() };
+    m_db.updateItemRead(itemId, isRead);
 }
 
-void StorageImpl::appendFeedResults(Future<FeedRef> *op, FeedQuery &q)
+void StorageImpl::appendFeedResults(Future<Feed*> *op, FeedQuery &q)
 {
     while (q.next()) {
         auto ref = m_feedFactory.getInstance(q.id(), this);
@@ -129,9 +130,9 @@ void StorageImpl::appendFeedResults(Future<FeedRef> *op, FeedQuery &q)
     }
 }
 
-Future<FeedRef> *StorageImpl::getFeeds()
+Future<Feed*> *StorageImpl::getFeeds()
 {
-    return Future<FeedRef>::yield(this, [this](auto *op){
+    return Future<Feed*>::yield(this, [this](auto *op){
         FeedQuery q { m_db.selectAllFeeds() };
         appendFeedResults(op, q);
     });
@@ -152,12 +153,12 @@ static qint64 packFeedUpdateInterval(Updater *updater)
     }
 }
 
-Future<FeedRef> *StorageImpl::storeFeed(Feed *feed)
+Future<Feed*> *StorageImpl::storeFeed(Feed *feed)
 {
     const QUrl &url = feed->url();
     const QString &name = feed->name();
     const qint64 updateInterval = packFeedUpdateInterval(feed->updater());
-    return Future<FeedRef>::yield(this, [this, url, name, updateInterval](auto *op){
+    return Future<Feed*>::yield(this, [this, url, name, updateInterval](auto *op){
         const auto &existingId = m_db.selectFeedId(0, url.toString());
         if (existingId) {
             qDebug() << "trying to insert feed for " << url << "which already exists";
@@ -203,7 +204,12 @@ void StorageImpl::listenForChanges(FeedImpl *feed)
     QObject::connect(updater, &Updater::updateModeChanged, this, [this, updater, feedId]{
         onUpdateModeChanged(m_db, updater, feedId);
     });
-    QObject::connect(feed, &Feed::nameChanged, this, [this, feed]{ updateFeedMetadata(feed); });
+    QObject::connect(feed, &Feed::nameChanged, this, [this, feed]{
+        updateFeedMetadata(feed);
+    });
+    QObject::connect(feed, &Feed::deleteRequested, this, [this, feed]{
+        onFeedRequestDelete(feed);
+    });
 }
 
 void StorageImpl::updateFeedMetadata(FeedImpl *storedFeed)

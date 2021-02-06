@@ -9,6 +9,12 @@ Feed::Feed(QObject *parent):
 
 }
 
+Feed::~Feed()
+{
+    setStatus(Enums::Idle);
+    setUnreadCount(0);
+}
+
 void Feed::setName(const QString &name)
 {
     if (m_name != name) {

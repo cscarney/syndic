@@ -5,10 +5,10 @@
 #include <QUrl>
 #include <Syndication/Feed>
 #include "future.h"
-#include "feedref.h"
 
 namespace FeedCore {
 class Storage;
+class Feed;
 class ProvisionalFeed;
 
 class Context : public QObject
@@ -18,7 +18,7 @@ class Context : public QObject
 public:
     explicit Context(Storage *storage, QObject *parent = nullptr);
     ~Context();
-    Future<FeedRef> *getFeeds();
+    Future<Feed*> *getFeeds();
     Q_INVOKABLE void addFeed(FeedCore::Feed *feed);
     Future<ArticleRef> *getArticles(bool unreadFilter);
     void requestUpdate();
@@ -27,7 +27,7 @@ public:
     void setDefaultUpdateInterval(qint64 defaultUpdateInterval);
 signals:
     void defaultUpdateIntervalChanged();
-    void feedAdded(const FeedCore::FeedRef &feed);
+    void feedAdded(FeedCore::Feed *feed);
 private:
     struct PrivData;
     std::unique_ptr<PrivData> priv;

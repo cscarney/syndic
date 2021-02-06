@@ -5,12 +5,14 @@
 #include "sqlite/storageimpl.h"
 #include "article.h"
 #include "articleref.h"
+#include "articleimpl.h"
 #include "sqlite/feedquery.h"
 using namespace FeedCore;
 using namespace Sqlite;
 
 
 FeedImpl::FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage):
+    Feed(storage),
     m_id{feedId},
     m_storage{storage},
     m_updater{new XMLUpdater(this, this)}
@@ -72,19 +74,9 @@ Updater *FeedImpl::updater()
     return m_updater;
 }
 
-void FeedImpl::setRead(ArticleImpl *article, bool isRead)
+void FeedImpl::onArticleReadChanged(ArticleImpl *article)
 {
-    auto *q = m_storage->updateArticleRead(article, isRead);
-    QObject::connect(q, &BaseFuture::finished, this, [this, q]{
-        const auto &changedItems = q->result();
-        for (const auto &changedItem : changedItems) {
-            if (changedItem->isRead()) {
-                decrementUnreadCount();
-            } else {
-                incrementUnreadCount();
-            }
-        }
-    });
+    incrementUnreadCount(article->isRead() ? -1 : 1);
 }
 
 qint64 FeedImpl::id() const

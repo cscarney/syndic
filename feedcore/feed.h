@@ -18,6 +18,7 @@ class Feed : public QObject {
     Q_PROPERTY(FeedCore::Updater *updater READ updater CONSTANT);
     Q_PROPERTY(bool editable READ editable CONSTANT);
 public:
+    ~Feed();
     const QString &name() const { return m_name; }
     void setName(const QString &name);
     const QUrl &url() const { return m_url; }
@@ -30,6 +31,7 @@ public:
     virtual Future<ArticleRef> *getArticles(bool unreadFilter)=0;
     virtual bool editable() { return false; }
     virtual void updateFromSource(const Syndication::FeedPtr &feed){ assert(false); };
+    Q_INVOKABLE virtual void requestDelete(){ emit deleteRequested(); }
 signals:
     void nameChanged();
     void urlChanged();
@@ -37,6 +39,7 @@ signals:
     void statusChanged();
     void articleAdded(const FeedCore::ArticleRef &article);
     void reset();
+    void deleteRequested();
 protected:
     explicit Feed(QObject *parent = nullptr);
     void setUnreadCount(int unreadCount);

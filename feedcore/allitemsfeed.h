@@ -2,7 +2,6 @@
 #define ALLITEMSFEED_H
 #include <QSet>
 #include "feed.h"
-#include "feedref.h"
 
 namespace FeedCore {
 class Context;
@@ -17,10 +16,9 @@ public:
 private:
     Context *m_context { nullptr };
     Updater *m_updater { nullptr };
-    QSet<FeedRef> m_feeds;
     QSet<Feed *> m_active;
-    void addFeed(const FeedRef &feed);
-    void onGetFeedsFinished(Future<FeedRef> *sender);
+    void addFeed(Feed *feed);
+    void onGetFeedsFinished(Future<Feed*> *sender);
     void onUnreadCountChanged(int delta);
     void onArticleAdded(const ArticleRef &article);
     void syncFeedStatus(FeedCore::Feed *sender);

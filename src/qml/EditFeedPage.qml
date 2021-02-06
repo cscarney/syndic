@@ -14,5 +14,11 @@ AbstractFeedEditorPage {
             iconName: "document-save"
             onTriggered: provisionalFeed.save();
         }
+
+        left: Kirigami.Action {
+            text: qsTr("Delete")
+            iconName: "delete"
+            onTriggered: targetFeed.requestDelete();
+        }
     }
 }

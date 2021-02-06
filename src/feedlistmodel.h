@@ -4,10 +4,10 @@
 #include <QQmlParserStatus>
 #include <memory>
 #include "future.h"
-#include "feedref.h"
 #include "articleref.h"
 namespace FeedCore {
 class Context;
+class Feed;
 }
 
 class FeedListModel : public QAbstractListModel, public QQmlParserStatus
@@ -35,7 +35,7 @@ signals:
 private:
     class PrivData;
     std::unique_ptr<PrivData> priv;
-    void onGetFeedsFinished(FeedCore::Future<FeedCore::FeedRef> *sender);
-    void onFeedAdded(const FeedCore::FeedRef &feed);
+    void onGetFeedsFinished(FeedCore::Future<FeedCore::Feed*> *sender);
+    void onFeedAdded(FeedCore::Feed *feed);
 };
 #endif // FEEDLISTMODEL_H

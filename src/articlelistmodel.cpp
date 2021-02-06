@@ -3,7 +3,6 @@
 #include "feed.h"
 #include "updater.h"
 #include "articleref.h"
-#include "qmlfeedref.h"
 #include "qmlarticleref.h"
 
 using namespace FeedCore;

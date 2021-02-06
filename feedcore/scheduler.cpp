@@ -2,7 +2,6 @@
 #include <QDebug>
 #include "updater.h"
 #include "feed.h"
-#include "feedref.h"
 
 namespace FeedCore {
 
@@ -26,10 +25,9 @@ void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
     schedule.append(feed);
 }
 
-void Scheduler::schedule(const FeedRef &feedRef, const QDateTime &timestamp)
+void Scheduler::schedule(Feed *feed, const QDateTime &timestamp)
 {
-    m_feeds.insert(feedRef);
-    Feed *feed { feedRef.get() };
+    m_feeds.insert(feed);
     Updater *updater { feed->updater() };
     updater->setDefaultUpdateInterval(m_updateInterval);
     QObject::connect(feed, &Feed::statusChanged, this,
@@ -38,10 +36,12 @@ void Scheduler::schedule(const FeedRef &feedRef, const QDateTime &timestamp)
                      [this, feed]{ reschedule(feed); });
     QObject::connect(updater, &Updater::updateModeChanged, this,
                      [this, feed]{ onUpdateModeChanged(feed); });
+    QObject::connect(feed, &QObject::destroyed, this,
+                     [this, feed]{ unschedule(feed); });
     reschedule(feed, timestamp);
 }
 
-void Scheduler::schedule(Future<FeedRef> *q)
+void Scheduler::schedule(Future<Feed*> *q)
 {
     QObject::connect(q, &BaseFuture::finished, this, [this, q] {
         const auto &timestamp = QDateTime::currentDateTime();
@@ -51,13 +51,13 @@ void Scheduler::schedule(Future<FeedRef> *q)
     });
 }
 
-void Scheduler::unschedule(const FeedRef &feed)
+void Scheduler::unschedule(Feed *feed)
 {
     bool isScheduled { m_feeds.contains(feed) };
     if (!isScheduled) {
         return;
     }
-    m_schedule.removeOne(feed.get());
+    m_schedule.removeOne(feed);
     m_feeds.remove(feed);
 }
 
@@ -104,7 +104,7 @@ void Scheduler::updateAll()
     const auto &timestamp = QDateTime::currentDateTime();
     m_schedule.clear();
     const auto &feeds = m_feeds;
-    for (const FeedRef &entry : feeds) {
+    for (Feed *const entry : feeds) {
         entry->updater()->start(timestamp);
     }
 }
@@ -112,7 +112,7 @@ void Scheduler::updateAll()
 void Scheduler::abortAll()
 {
     const auto &feeds = m_feeds;
-    for(const FeedRef &entry : feeds) {
+    for(Feed *const entry : feeds) {
         entry->updater()->abort();
     }
 }

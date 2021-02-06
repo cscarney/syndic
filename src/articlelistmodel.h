@@ -5,11 +5,10 @@
 #include <memory>
 #include "enums.h"
 #include "future.h"
-#include "qmlfeedref.h"
-#include "feedref.h"
 #include "articleref.h"
 namespace FeedCore {
 class Context;
+class Feed;
 }
 class ArticleListModel : public QAbstractListModel, public QQmlParserStatus
 {

@@ -3,7 +3,6 @@
 #include <QObject>
 #include <QDateTime>
 #include <QUrl>
-#include "feedref.h"
 
 namespace FeedCore {
 class Article : public QObject

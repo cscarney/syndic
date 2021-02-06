@@ -27,6 +27,8 @@ public:
     void updateItemContent(qint64 id, const QString &content);
     void updateItemRead(qint64 id, bool isRead);
     void updateItemStarred(qint64 id, bool isStarred);
+    void deleteItemsForFeed(qint64 feedId);
+
     FeedQuery selectAllFeeds();
     FeedQuery selectFeed(qint64 feedId);
     std::optional<qint64> selectFeedId(qint64 source, const QString &localId);
@@ -34,6 +36,7 @@ public:
     void updateFeedName(qint64 feedId, const QString &name);
     void updateFeedUpdateInterval(qint64 feedId, qint64 updateInterval);
     void updateFeedLastUpdate(qint64 feedId, QDateTime lastUpdated);
+    void deleteFeed(qint64 feedId);
 private:
     QSqlDatabase db();
     QString m_dbName;

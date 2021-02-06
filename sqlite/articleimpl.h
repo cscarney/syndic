@@ -1,11 +1,12 @@
 #ifndef SQLITE_ARTICLEIMPL_H
 #define SQLITE_ARTICLEIMPL_H
 #include "article.h"
-#include "uniquefactory.h"
+#include "factory.h"
 class QSqlQuery;
 
 namespace Sqlite {
 class FeedImpl;
+class StorageImpl;
 class ItemQuery;
 
 class ArticleImpl : public FeedCore::Article
@@ -15,13 +16,11 @@ public:
     qint64 id() const;
     void updateFromQuery(const ItemQuery &q);
     void requestContent() final;
-    void setRead(bool isRead) final;
 private:
-    ArticleImpl(qint64 id, const QSharedPointer<FeedImpl> &feed);
+    ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const ItemQuery &q);
     qint64 m_id;
-    QSharedPointer<FeedImpl> m_feed;
     QString m_content;
-    friend FeedCore::UniqueFactory<qint64, ArticleImpl>;
+    friend FeedCore::SharedFactory<qint64, ArticleImpl>;
 };
 }
 #endif // SQLITE_ARTICLEIMPL_H

@@ -8,9 +8,9 @@
 #include <Syndication/Feed>
 #include "enums.h"
 #include "future.h"
-#include "feedref.h"
 
 namespace FeedCore {
+class Feed;
 class Updater;
 
 class Scheduler : public QObject
@@ -18,10 +18,10 @@ class Scheduler : public QObject
     Q_OBJECT
 public:
     explicit Scheduler(QObject *parent = nullptr);
-    void schedule(const FeedRef &feedRef, const QDateTime &timestamp=QDateTime::currentDateTime());
-    void schedule(const FeedRef &feedRef);
-    void schedule(Future<FeedRef> *q);
-    void unschedule(const FeedRef &feedRef);
+    void schedule(Feed *feed, const QDateTime &timestamp=QDateTime::currentDateTime());
+    void schedule(Feed *feedRef);
+    void schedule(Future<Feed*> *q);
+    void unschedule(Feed *feedRef);
     void start(int resolution=60000);
     void stop();
     void updateStale();
@@ -30,7 +30,7 @@ public:
     qint64 updateInterval();
     void setUpdateInterval(qint64 newval);
 private:
-    QSet<FeedRef> m_feeds;
+    QSet<Feed*> m_feeds;
     QList<Feed *> m_schedule;
     QTimer m_timer;
     qint64 m_updateInterval{ 0 };

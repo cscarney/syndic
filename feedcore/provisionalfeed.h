@@ -2,7 +2,7 @@
 #define PROVISIONALFEED_H
 #include <Syndication/Feed>
 #include "future.h"
-#include "uniquefactory.h"
+#include "factory.h"
 #include "feed.h"
 namespace FeedCore {
 class XMLUpdater;
@@ -25,7 +25,7 @@ private:
     Feed *m_targetFeed { nullptr };
     XMLUpdater *m_updater { nullptr };
     Syndication::FeedPtr m_feed;
-    UniqueFactory<Syndication::ItemPtr, Preview::ArticleImpl> m_articles;
+    SharedFactory<Syndication::ItemPtr, Preview::ArticleImpl> m_articles;
     void onUrlChanged();
 };
 }

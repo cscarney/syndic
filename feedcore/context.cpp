@@ -3,7 +3,7 @@
 #include <QDebug>
 #include "storage.h"
 #include "scheduler.h"
-#include "feedref.h"
+#include "feed.h"
 
 namespace FeedCore {
 
@@ -19,7 +19,7 @@ Context::Context(Storage *storage, QObject *parent)
     : QObject(parent),
       priv{ std::make_unique<PrivData>(storage, this) }
 {
-    Future<FeedRef> *getFeeds { priv->storage->getFeeds() };
+    Future<Feed*> *getFeeds { priv->storage->getFeeds() };
     priv->updateScheduler->schedule(getFeeds);
     priv->updateScheduler->start();
 }
@@ -35,14 +35,14 @@ Context::PrivData::PrivData(Storage *storage, Context *parent) :
     storage->setParent(parent);
 }
 
-Future<FeedRef> *Context::getFeeds()
+Future<Feed*> *Context::getFeeds()
 {
     return priv->storage->getFeeds();
 }
 
 void Context::addFeed(Feed *feed)
 {
-    Future<FeedRef> *q { priv->storage->storeFeed(feed) };
+    Future<Feed*> *q { priv->storage->storeFeed(feed) };
     QObject::connect(q, &BaseFuture::finished, this, [this, q]{
         for (const auto &feed : q->result()) {
             emit feedAdded(feed);

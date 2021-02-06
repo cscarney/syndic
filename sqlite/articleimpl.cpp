@@ -7,10 +7,18 @@
 using namespace FeedCore;
 using namespace Sqlite;
 
-ArticleImpl::ArticleImpl(qint64 id, const QSharedPointer<FeedImpl> &feed):
-    m_id{ id },
-    m_feed{ feed }
-{}
+ArticleImpl::ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const ItemQuery &q):
+    Article(nullptr),
+    m_id{ id }
+{
+    updateFromQuery(q);
+    QObject::connect(this, &Article::readStatusChanged, storage, [this, storage]{
+        storage->onArticleReadChanged(this);
+    });
+    QObject::connect(this, &Article::readStatusChanged, feed, [this, feed]{
+        feed->onArticleReadChanged(this);
+    });
+}
 
 qint64 ArticleImpl::id() const
 {
@@ -31,9 +39,4 @@ void ArticleImpl::updateFromQuery(const ItemQuery &q)
 void ArticleImpl::requestContent()
 {
     emit gotContent(m_content);
-}
-
-void ArticleImpl::setRead(bool isRead)
-{
-    m_feed->setRead(this, isRead);
 }

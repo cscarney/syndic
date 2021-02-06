@@ -26,7 +26,7 @@ AbstractArticleListPage {
                 text: qsTr("Edit...")
                 iconName: "document-edit"
                 displayHint: Kirigami.Action.AlwaysHide
-                visible: feed.editable
+                visible: feed && feed.editable
                 onTriggered: {
                     pageRow.pop(root)
                     pageRow.push("qrc:/qml/EditFeedPage.qml", {targetFeed: feed});

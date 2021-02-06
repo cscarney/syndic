@@ -1,6 +1,5 @@
 #include "allitemsfeed.h"
 #include "context.h"
-#include "feedref.h"
 #include "updater.h"
 #include "article.h"
 namespace FeedCore {
@@ -32,7 +31,7 @@ AllItemsFeed::AllItemsFeed(Context *context, const QString &name, QObject *paren
     m_context{ context },
     m_updater{ new AllUpdater(this, context, this) }
 {
-    Future<FeedRef> *q { context->getFeeds() };
+    Future<Feed*> *q { context->getFeeds() };
     setName(name);
     QObject::connect(q, &BaseFuture::finished, this,
                      [this, q]{ onGetFeedsFinished(q); });
@@ -49,18 +48,16 @@ Updater *AllItemsFeed::updater()
     return m_updater;
 }
 
-void AllItemsFeed::addFeed(const FeedRef &feed)
+void AllItemsFeed::addFeed(Feed *feed)
 {
-    m_feeds.insert(feed);
-    Feed *fp = feed.get();
-    incrementUnreadCount(fp->unreadCount());
-    syncFeedStatus(fp);
-    QObject::connect(fp, &Feed::articleAdded, this, &AllItemsFeed::onArticleAdded);
-    QObject::connect(fp, &Feed::unreadCountChanged, this, &AllItemsFeed::incrementUnreadCount);
-    QObject::connect(fp, &Feed::statusChanged, this, [this, fp]{ syncFeedStatus(fp); });
+    incrementUnreadCount(feed->unreadCount());
+    syncFeedStatus(feed);
+    QObject::connect(feed, &Feed::articleAdded, this, &AllItemsFeed::onArticleAdded);
+    QObject::connect(feed, &Feed::unreadCountChanged, this, &AllItemsFeed::incrementUnreadCount);
+    QObject::connect(feed, &Feed::statusChanged, this, [this, feed]{ syncFeedStatus(feed); });
 }
 
-void AllItemsFeed::onGetFeedsFinished(Future<FeedRef> *sender)
+void AllItemsFeed::onGetFeedsFinished(Future<Feed*> *sender)
 {
     for (const auto &feed : sender->result()){
         addFeed(feed);

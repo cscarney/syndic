@@ -30,6 +30,10 @@ ScrollView {
                 feedList.currentIndex = -1;
                 currentlySelectedFeed = data(index(first,0), FeedListModel.Feed);
             }
+            onRowsRemoved: {
+                feedList.currentIndex = 0;
+                currentlySelectedFeed = data(index(0,0), FeedListModel.Feed);
+            }
         }
         clip: true
 

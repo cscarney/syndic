@@ -268,6 +268,17 @@ void FeedDatabase::updateItemStarred(qint64 id, bool isStarred)
     }
 }
 
+void FeedDatabase::deleteItemsForFeed(qint64 feedId)
+{
+    QSqlQuery q(db());
+    q.prepare(
+                "DELETE FROM Item WHERE feed=:feed");
+    q.bindValue(":feed", feedId);
+    if (!q.exec()) {
+        qDebug() << "SQL Error in deleteItemsForFeed: " << q.lastError().text();
+    }
+}
+
 FeedQuery FeedDatabase::selectAllFeeds()
 {
     FeedQuery q(db(), "1");
@@ -365,6 +376,17 @@ void FeedDatabase::updateFeedLastUpdate(qint64 feedId, QDateTime lastUpdate)
     q.bindValue(":id", feedId);
     if (!q.exec()){
         qDebug() << "SQL Error in updateFeed: " << q.lastError().text();
+    }
+}
+
+void FeedDatabase::deleteFeed(qint64 feedId)
+{
+    QSqlQuery q(db());
+    q.prepare(
+                "DELETE FROM Feed WHERE id=:id");
+    q.bindValue(":id", feedId);
+    if (!q.exec()) {
+        qDebug() << "SQL Error in deleteFeed: " << q.lastError().text();
     }
 }
 

@@ -2,7 +2,6 @@ set(feedkeeper_HEADERS
     feedlistmodel.h
     articlelistmodel.h
     qmlref.h
-    qmlfeedref.h
     qmlarticleref.h
     )
 

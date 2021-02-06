@@ -1,14 +1,14 @@
 #include "feedlistmodel.h"
 #include <QString>
 #include <QVector>
+#include <QPointer>
 #include "context.h"
-#include "qmlfeedref.h"
 #include "allitemsfeed.h"
 
 using namespace FeedCore;
 
 struct FeedListEntry {
-    QmlFeedRef feed;
+    Feed *feed;
     QString icon;
     int unreadCount;
 };
@@ -23,7 +23,8 @@ public:
         parent{ parent }
     {}
 
-    void addItem(const FeedRef &feed);
+    void addItem(FeedCore::Feed *feed);
+    void removeItem(FeedCore::Feed *feed);
 };
 
 FeedListModel::FeedListModel(QObject *parent)
@@ -35,14 +36,33 @@ FeedListModel::FeedListModel(QObject *parent)
 
 FeedListModel::~FeedListModel()=default;
 
-void FeedListModel::PrivData::addItem(const FeedRef &feed)
+void FeedListModel::PrivData::addItem(FeedCore::Feed *feed)
 {
     FeedListEntry item = {
-        .feed=QmlFeedRef(feed),
+        .feed=feed,
         .icon="feed-subscribe",
         .unreadCount=feed->unreadCount()
     };
     feeds << item;
+    QObject::connect(feed, &QObject::destroyed, parent, [this, feed]{
+        removeItem(feed);
+    });
+}
+
+void FeedListModel::PrivData::removeItem(FeedCore::Feed *feed)
+{
+    int i = 0;
+    while (i < feeds.length()) {
+        const FeedListEntry &entry { feeds[i] };
+        FeedCore::Feed *const candidate { entry.feed };
+        if (candidate==feed) {
+            parent->beginRemoveRows(QModelIndex(), i, i);
+            feeds.remove(i);
+            parent->endRemoveRows();
+        } else {
+            ++i;
+        }
+    }
 }
 
 Context *FeedListModel::context() const
@@ -76,7 +96,7 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
 
     switch(role){
         case Roles::Feed:
-            return QVariant::fromValue(entry.feed.get());
+            return QVariant::fromValue(entry.feed);
 
         case Roles::Icon:
             return entry.icon;
@@ -102,19 +122,19 @@ void FeedListModel::classBegin()
 void FeedListModel::componentComplete()
 {
     QTimer::singleShot(0, this, [this]{
-        Future<FeedRef> *q { priv->context->getFeeds() };
+        Future<FeedCore::Feed*> *q { priv->context->getFeeds() };
         QObject::connect(q, &BaseFuture::finished, this,
                          [this, q]{ onGetFeedsFinished(q); });
         QObject::connect(priv->context, &Context::feedAdded, this, &FeedListModel::onFeedAdded);
     });
 }
 
-void FeedListModel::onGetFeedsFinished(Future<FeedRef> *sender)
+void FeedListModel::onGetFeedsFinished(Future<FeedCore::Feed*> *sender)
 {
     beginResetModel();
     priv->feeds.clear();
-    auto ref = FeedRef(new AllItemsFeed(priv->context, tr("All Items", "special feed name")));
-    priv->addItem(ref);
+    auto *allItems = new AllItemsFeed(priv->context, tr("All Items", "special feed name"), this);
+    priv->addItem(allItems);
     for (const auto &item : sender->result()){
         priv->addItem(item);
         priv->feeds[0].unreadCount  += item->unreadCount();
@@ -122,7 +142,7 @@ void FeedListModel::onGetFeedsFinished(Future<FeedRef> *sender)
     endResetModel();
 }
 
-void FeedListModel::onFeedAdded(const FeedRef &feed)
+void FeedListModel::onFeedAdded(FeedCore::Feed *feed)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     priv->addItem(feed);
