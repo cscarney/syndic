@@ -44,8 +44,12 @@ Kirigami.ScrollablePage {
                     id: updateIntervalValue
                     enabled: updateIntervalEnabled.checked
                     value: globalSettings.updateInterval / 60
+                    from: 1
                     textFromValue: function(value, locale) {
-                        return qsTr("%n minutes", "", value)
+                        return qsTr("%n minute(s)", "", value)
+                    }
+                    valueFromText: function(text, locale) {
+                        return +text.replace(/[^\d]/g, "")
                     }
                     Binding {
                         target: globalSettings

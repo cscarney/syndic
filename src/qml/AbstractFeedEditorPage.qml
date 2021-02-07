@@ -94,10 +94,14 @@ Kirigami.ScrollablePage {
                         }
                         KeyNavigation.backtab: updateIntervalCustom
                         enabled: parent.checked
+                        value: provisionalFeed.updater.updateInterval / 60
+                        from: 1
                         textFromValue: function(value, locale) {
                             return qsTr("%n minute(s)", "", value)
                         }
-                        value: provisionalFeed.updater.updateInterval / 60
+                        valueFromText: function(text, locale) {
+                            return +text.replace(/[^\d]/g, "")
+                        }
                         onValueModified: provisionalFeed.updater.updateInterval = value * 60
                     }
                     onToggled: {
