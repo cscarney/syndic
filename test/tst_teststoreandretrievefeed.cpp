@@ -24,12 +24,12 @@ private slots:
         auto *storeFuture = storage.storeFeed(&testFeed);
         FeedCore::Feed *feed { nullptr };
         QObject::connect(storeFuture, &FeedCore::BaseFuture::finished, this, [&feed, storeFuture] {
-            assert(storeFuture->result().count() == 1);
+            QVERIFY(storeFuture->result().count() == 1);
             feed = storeFuture->result()[0];
         });
         QSignalSpy waitForInitialFeed(storeFuture, &FeedCore::BaseFuture::finished);
         waitForInitialFeed.wait();
-        assert(!ref.isNull());
+        QVERIFY(feed!=nullptr);
     }
 
     void cleanup()

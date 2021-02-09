@@ -24,24 +24,13 @@ static QString filePath(QString const &fileName)
     return appDataDir.filePath(fileName);
 }
 
-FeedCore::Context *createContext(QObject *parent = nullptr) {
+static FeedCore::Context *createContext(QObject *parent = nullptr) {
     QString dbPath = filePath("feeds.db");
     auto *fm = new Sqlite::StorageImpl(dbPath);  // ownership passes to context
     return new FeedCore::Context(fm, parent);
 }
 
-int main(int argc, char *argv[])
-{
-    QApplication app(argc, argv);
-    QApplication::setOrganizationName("feedkeeper");
-    QApplication::setOrganizationDomain("rocksandpaper.com");
-    QApplication::setApplicationName("FeedKeeper");
-
-    QQmlApplicationEngine engine;
-
-    QQuickStyle::setStyle("org.kde.desktop");
-    KDeclarative::KDeclarative::setupEngine(&engine);
-
+static void registerQmlTypes() {
     qmlRegisterType<FeedListModel>("FeedListModel", 1, 0, "FeedListModel");
     qmlRegisterType<ArticleListModel>("ArticleListModel", 1, 0, "ArticleListModel");
     qmlRegisterType<ProvisionalFeed>("ProvisionalFeed", 1, 0, "ProvisionalFeed");
@@ -51,6 +40,18 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<Feed>("Feed", 1,0, "Feed", "obtained from cpp model");
     qmlRegisterUncreatableType<Article>("Article", 1, 0, "Article", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlArticleRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
+}
+
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+    QApplication::setOrganizationName("feedkeeper");
+    QApplication::setOrganizationDomain("rocksandpaper.com");
+    QApplication::setApplicationName("FeedKeeper");
+    QQmlApplicationEngine engine;
+    QQuickStyle::setStyle("org.kde.desktop");
+    KDeclarative::KDeclarative::setupEngine(&engine);
+    registerQmlTypes();
     auto *fm = createContext(&app);
     engine.rootContext()->setContextProperty("feedContext", fm);
     engine.load(QUrl("qrc:/qml/main.qml"));
