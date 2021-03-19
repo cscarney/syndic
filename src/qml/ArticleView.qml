@@ -26,7 +26,6 @@ ColumnLayout {
     </style>"
 
     Settings {
-        // @disable-check M16
         category: "ArticlePage"
         property alias fontSize: contentTextEdit.font.pointSize
     }

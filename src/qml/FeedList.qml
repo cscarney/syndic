@@ -42,7 +42,7 @@ ScrollView {
             property var feed: model.feed
 
             separatorVisible: false
-            width: parent.width
+            width: feedList.width
             topPadding: Kirigami.Units.largeSpacing
             bottomPadding: Kirigami.Units.largeSpacing
             contentItem: RowLayout {
@@ -53,8 +53,8 @@ ScrollView {
 
                 Kirigami.Icon {
                     source: model.icon
-                    Layout.minimumHeight: feedNameLabel.height
-                    Layout.minimumWidth: feedNameLabel.height
+                    Layout.maximumHeight: feedNameLabel.implicitHeight
+                    Layout.maximumWidth: feedNameLabel.implicitHeight
                 }
 
                 Label {

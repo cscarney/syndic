@@ -72,7 +72,6 @@ Kirigami.ApplicationWindow {
     }
 
     Settings {
-        // @disable-check M16
         category: "Window"
         property alias width: root.width
         property alias height: root.height
@@ -80,7 +79,6 @@ Kirigami.ApplicationWindow {
 
     Settings {
         id: globalSettings
-        // @disable-check M16
         category: "Global"
         property bool automaticUpdates: true
         property int updateInterval: 3600
@@ -169,7 +167,7 @@ Kirigami.ApplicationWindow {
     Connections {
         target: pageStack.currentItem
         ignoreUnknownSignals: true
-        onBackRequested: {
+        function onBackRequested() {
             // go back to the first non-visible page (rather than the
             // default back behavior, which just moves the focus
             // one column to the left)
@@ -179,7 +177,8 @@ Kirigami.ApplicationWindow {
                 event.accepted = true
             }
         }
-        onSuspendAnimations: {
+
+        function onSuspendAnimations() {
             // emitted by pages to temporarily suspend the page transition animation
             animationSuspendTimer.start()
         }

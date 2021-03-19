@@ -52,7 +52,6 @@ Kirigami.ScrollablePage {
 
     Settings {
         id: settings
-        // @disable-check M16
         category: "ArticleList"
         property alias unreadFilter: root.unreadFilter
     }

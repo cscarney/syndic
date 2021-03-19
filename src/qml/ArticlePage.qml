@@ -17,7 +17,6 @@ Kirigami.ScrollablePage {
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Layout.fillWidth: true
     title:  item.article.title || ""
-    // @disable-check M16
     titleDelegate: Kirigami.Heading {
         visible: !scroller.atYBeginning
         elide: Text.ElideRight
@@ -46,7 +45,7 @@ Kirigami.ScrollablePage {
 
     Connections {
         target: item.article
-        onGotContent: {
+        function onGotContent(content) {
             var src = content || ""
             var images = []
             var text = src.replace(/<img .*src="([^"]*)".*>/ig, function(match, src){

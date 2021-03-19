@@ -9,11 +9,7 @@ ListView {
     clip: true
 
     delegate: Kirigami.AbstractListItem {
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
-
+        width: root.width
         text: ref.article.headline
         padding: 10
         contentItem: ArticleListEntry { }
