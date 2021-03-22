@@ -99,12 +99,12 @@ Kirigami.ApplicationWindow {
                 PropertyChanges {
                     target: priv
                     itemListProportion: 1
-                    feedListProportion: 0.23
                 }
                 PropertyChanges {
-                    target: globalDrawer
+                    target: drawer
                     drawerOpen: false
                     modal: true
+                    width: drawer.implicitWidth
                 }
             },
 
@@ -113,16 +113,15 @@ Kirigami.ApplicationWindow {
                 when: width > (height *1.6)
                 PropertyChanges {
                     target: priv
-                    itemListProportion: 0.38
                     feedListProportion: 0.15
                 }
                 PropertyChanges {
                     /* separated to avoid stacking errors */
-                    target: globalDrawer
+                    target: drawer
                     drawerOpen: true
                 }
                 PropertyChanges {
-                    target: globalDrawer
+                    target: drawer
                     modal: false
                 }
             }
@@ -167,7 +166,7 @@ Kirigami.ApplicationWindow {
     Connections {
         target: pageStack.currentItem
         ignoreUnknownSignals: true
-        function onBackRequested() {
+        function onBackRequested(event) {
             // go back to the first non-visible page (rather than the
             // default back behavior, which just moves the focus
             // one column to the left)
