@@ -6,7 +6,7 @@ namespace FeedCore::Preview {
 class ArticleImpl : public Article {
     Q_OBJECT
 public:
-    explicit ArticleImpl(Syndication::ItemPtr item, QObject *parent=nullptr);
+    explicit ArticleImpl(Syndication::ItemPtr item, Feed *feed, QObject *parent=nullptr);
     void requestContent() final;
     void setRead(bool isRead) final {};
 private:

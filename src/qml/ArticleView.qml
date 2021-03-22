@@ -33,7 +33,7 @@ ColumnLayout {
     Kirigami.Heading {
         level: 1
         Layout.fillWidth: true
-        text: item.article.title || "(no title)"
+        text: item.article.title
         elide: Text.ElideRight
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
@@ -53,7 +53,7 @@ ColumnLayout {
     RowLayout {
         Label {
             Layout.fillWidth: true
-            text: item.article.author || "(no author)"
+            text: item.article.author + ", " + item.article.feed.name
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter

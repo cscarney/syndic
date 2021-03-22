@@ -8,7 +8,7 @@ using namespace FeedCore;
 using namespace Sqlite;
 
 ArticleImpl::ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const ItemQuery &q):
-    Article(nullptr),
+    Article(feed, nullptr),
     m_id{ id }
 {
     updateFromQuery(q);

@@ -8,8 +8,8 @@ void ArticleImpl::requestContent()
     emit gotContent(content.isEmpty() ? content : m_item->description() );
 }
 
-FeedCore::Preview::ArticleImpl::ArticleImpl(Syndication::ItemPtr item, QObject *parent):
-    Article(parent),
+FeedCore::Preview::ArticleImpl::ArticleImpl(Syndication::ItemPtr item, Feed *feed, QObject *parent):
+    Article(feed, parent),
     m_item(item)
 {
     setTitle(item->title());

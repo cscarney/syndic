@@ -1,10 +1,11 @@
 #include "article.h"
+#include "feed.h"
 using namespace FeedCore;
 
-Article::Article(QObject *parent) :
-    QObject(parent)
+Article::Article(Feed *feed, QObject *parent) :
+    QObject(parent),
+    m_feed(feed)
 {
-
 }
 
 void Article::setTitle(const QString &title)
@@ -37,6 +38,11 @@ void Article::setUrl(const QUrl &url)
         m_url = url;
         emit urlChanged();
     }
+}
+
+Feed *Article::feed() const
+{
+    return m_feed;
 }
 
 void Article::setRead(bool isRead)

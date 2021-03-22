@@ -30,7 +30,7 @@ Future<ArticleRef> *ProvisionalFeed::getArticles(bool unreadFilter)
             return;
         }
         for(const auto &item : m_feed->items()) {
-            op->appendResult(m_articles.getInstance(item));
+            op->appendResult(m_articles.getInstance(item, this));
         }
     });
 }
