@@ -25,7 +25,7 @@ static void unpackUpdateInterval(Updater *updater, qint64 updateInterval)
     if (updateInterval == 0) {
         updater->setUpdateMode(Updater::DefaultUpdateMode);
     } else if (updateInterval < 0) {
-        updater->setUpdateMode(Updater::MaunualUpdateMode);
+        updater->setUpdateMode(Updater::ManualUpdateMode);
     } else {
         updater->setUpdateInterval(updateInterval);
     }

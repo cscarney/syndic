@@ -1,5 +1,7 @@
 #include "updater.h"
 #include <QTimer>
+#include <QNetworkConfigurationManager>
+#include <QDebug>
 #include "feed.h"
 
 namespace FeedCore {
@@ -9,7 +11,7 @@ struct Updater::PrivData {
     UpdateMode updateMode { DefaultUpdateMode };
     time_t updateInterval { 0 };
     QDateTime lastUpdate;
-    QDateTime nextUpdate;
+    QDateTime updateStartTime;
     QString errorMsg;
     bool active { false };
 };
@@ -29,7 +31,7 @@ void Updater::start(const QDateTime &timestamp)
         priv->feed->setStatus(LoadStatus::Updating);
         run();
     }
-    setLastUpdate(timestamp);
+    priv->updateStartTime = timestamp;
 }
 
 QString Updater::error()
@@ -44,12 +46,12 @@ Feed *Updater::feed()
 
 QDateTime Updater::nextUpdate()
 {
-    return priv->lastUpdate.addSecs(priv->updateInterval);
+    return priv->updateStartTime.addSecs(priv->updateInterval);
 }
 
 bool Updater::hasNextUpdate()
 {
-    return (priv->updateMode != MaunualUpdateMode
+    return (priv->updateMode != ManualUpdateMode
             && priv->updateInterval > 0);
 }
 
@@ -75,7 +77,7 @@ const QDateTime &Updater::lastUpdate()
 void Updater::setLastUpdate(const QDateTime &lastUpdate)
 {
     if (priv->lastUpdate != lastUpdate) {
-        priv->lastUpdate = lastUpdate;
+        priv->lastUpdate = priv->updateStartTime = lastUpdate;
         emit lastUpdateChanged();
     }
 }
@@ -121,11 +123,13 @@ void Updater::updateParams(Updater *other)
 
 void Updater::finish()
 {
+    setLastUpdate(priv->updateStartTime);
     priv->feed->setStatus(LoadStatus::Idle);
 }
 
 void Updater::setError(const QString &errorMsg)
 {
+    qDebug() << errorMsg;
     priv->errorMsg = errorMsg;
     priv->feed->setStatus(LoadStatus::Error);
 }

@@ -145,7 +145,7 @@ static qint64 packFeedUpdateInterval(Updater *updater)
     default:
         return 0;
 
-    case Updater::MaunualUpdateMode:
+    case Updater::ManualUpdateMode:
         return -1;
 
     case Updater::CustomUpdateMode:

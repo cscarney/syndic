@@ -71,13 +71,13 @@ Kirigami.ScrollablePage {
 
                 RadioButton {
                     id: updateIntervalDisable
-                    property int updateMode: Updater.MaunualUpdateMode
+                    property int updateMode: Updater.ManualUpdateMode
                     ButtonGroup.group: updateIntervalGroup
                     text: qsTr("Disable Automatic Updates")
-                    checked: provisionalFeed.updater.updateMode === Updater.MaunualUpdateMode
+                    checked: provisionalFeed.updater.updateMode === Updater.ManualUpdateMode
                     onToggled: {
                         if (checked) {
-                            provisionalFeed.updater.updateMode = Updater.MaunualUpdateMode
+                            provisionalFeed.updater.updateMode = Updater.ManualUpdateMode
                         }
                     }
                 }

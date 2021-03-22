@@ -1,6 +1,7 @@
 #include "xmlupdater.h"
 #include <Syndication/Loader>
 #include "dataretriever.h"
+#include "qnetworkreply.h"
 
 namespace FeedCore {
 

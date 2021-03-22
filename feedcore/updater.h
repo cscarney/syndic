@@ -23,7 +23,7 @@ public:
         CustomUpdateMode,
 
         /* indicates that we should never be scheduled */
-        MaunualUpdateMode,
+        ManualUpdateMode,
     };
     Q_ENUM(UpdateMode)
     Updater(Feed *feed, QObject *parent);
