@@ -5,69 +5,60 @@ import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.ScrollablePage {
     id: root
+    property bool keepDrawerOpen: true
     property var globalSettings;
 
     title: qsTr("Settings")
 
-    Flickable {
-        contentWidth: Math.max(width, mainForm.implicitWidth)
-        contentHeight: mainForm.implicitHeight
-        Kirigami.FormLayout {
-            id: mainForm
+    Kirigami.FormLayout {
+        id: mainForm
 
-            anchors {
-                top: parent.top
-                bottom: parent.bottom
-                horizontalCenter: parent.horizontalCenter
-            }
+        CheckBox {
+            id: updateOnStart
+            Kirigami.FormData.label: qsTr("Fetch updates:")
+            enabled: false
+            checked: false
+            text: qsTr("On application start")
+        }
 
+        RowLayout {
             CheckBox {
-                id: updateOnStart
-                Kirigami.FormData.label: qsTr("Fetch updates:")
-                enabled: false
-                checked: false
-                text: qsTr("On application start")
-            }
-
-            RowLayout {
-                CheckBox {
-                    id: updateIntervalEnabled
-                    checked: globalSettings.automaticUpdates
-                    text: qsTr("Automatically every:")
-                    Binding {
-                        target: globalSettings
-                        property: "automaticUpdates"
-                        value: updateIntervalEnabled.checked
-                    }
-                }
-                SpinBox {
-                    id: updateIntervalValue
-                    enabled: updateIntervalEnabled.checked
-                    value: globalSettings.updateInterval / 60
-                    from: 1
-                    textFromValue: function(value, locale) {
-                        return qsTr("%n minute(s)", "", value)
-                    }
-                    valueFromText: function(text, locale) {
-                        return +text.replace(/[^\d]/g, "")
-                    }
-                    Binding {
-                        target: globalSettings
-                        property: "updateInterval"
-                        value: updateIntervalValue.value * 60
-                    }
-                }
-            }
-
-            CheckBox {
-                id: runInBackground
-                text: qsTr("Run in background")
-                checked: globalSettings.runInBackground
+                id: updateIntervalEnabled
+                checked: globalSettings.automaticUpdates
+                text: qsTr("Automatically every:")
                 Binding {
                     target: globalSettings
-                    property: "runInBackground"
-                    value: runInBackground.checked
+                    property: "automaticUpdates"
+                    value: updateIntervalEnabled.checked
                 }
+            }
+            SpinBox {
+                id: updateIntervalValue
+                enabled: updateIntervalEnabled.checked
+                value: globalSettings.updateInterval / 60
+                from: 1
+                textFromValue: function(value, locale) {
+                    return qsTr("%n minute(s)", "", value)
+                }
+                valueFromText: function(text, locale) {
+                    return +text.replace(/[^\d]/g, "")
+                }
+                Binding {
+                    target: globalSettings
+                    property: "updateInterval"
+                    value: updateIntervalValue.value * 60
+                }
+            }
+        }
+
+        CheckBox {
+            id: runInBackground
+            text: qsTr("Run in background")
+            checked: globalSettings.runInBackground
+            Binding {
+                target: globalSettings
+                property: "runInBackground"
+                value: runInBackground.checked
             }
         }
     }

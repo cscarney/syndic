@@ -21,9 +21,12 @@ Kirigami.ApplicationWindow {
         property real actualWidth: drawerOpen && !modal ? width : 0
 
         width: priv.feedListProportion * root.width
-        modal: true
         handleVisible: modal && priv.isFirstPage
         Kirigami.Theme.colorSet: Kirigami.Theme.View
+
+        // Drawer is modal unless a the current page requests to keep it open (e.g. settings)
+        modal: !(pageStack.depth===1 && pageStack.items[0].keepDrawerOpen)
+        onModalChanged: drawerOpen=!modal
 
         topContent: ColumnLayout {
             spacing: 0
@@ -36,7 +39,8 @@ Kirigami.ApplicationWindow {
                 Layout.preferredHeight: drawer.height
                 onCurrentlySelectedFeedChanged:
                     if (currentlySelectedFeed) pushFeed(currentlySelectedFeed)
-                onItemClicked: drawer.drawerOpen = !drawer.modal
+                onItemClicked:
+                    drawer.drawerOpen = !drawer.modal
             }
 
             Kirigami.Separator {
@@ -102,7 +106,6 @@ Kirigami.ApplicationWindow {
                 }
                 PropertyChanges {
                     target: drawer
-                    drawerOpen: false
                     modal: true
                     width: drawer.implicitWidth
                 }
@@ -114,11 +117,6 @@ Kirigami.ApplicationWindow {
                 PropertyChanges {
                     target: priv
                     feedListProportion: 0.15
-                }
-                PropertyChanges {
-                    /* separated to avoid stacking errors */
-                    target: drawer
-                    drawerOpen: true
                 }
                 PropertyChanges {
                     target: drawer

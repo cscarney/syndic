@@ -2,6 +2,7 @@ import QtQuick 2.0
 import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.AboutPage {
+    property bool keepDrawerOpen: true
     aboutData: ({
         displayName: "FeedKeeper",
         productName: "feedkeeper",

@@ -2,6 +2,7 @@ import QtQuick 2.0
 import org.kde.kirigami 2.7 as Kirigami
 
 AbstractFeedEditorPage {
+    property bool keepDrawerOpen: true
     title: qsTr("Add Content")
 
     actions {
