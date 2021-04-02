@@ -10,7 +10,6 @@ using namespace FeedCore;
 struct FeedListEntry {
     Feed *feed;
     QString icon;
-    int unreadCount;
 };
 
 class FeedListModel::PrivData {
@@ -41,7 +40,6 @@ void FeedListModel::PrivData::addItem(FeedCore::Feed *feed)
     FeedListEntry item = {
         .feed=feed,
         .icon="feed-subscribe",
-        .unreadCount=feed->unreadCount()
     };
     feeds << item;
     QObject::connect(feed, &QObject::destroyed, parent, [this, feed]{
@@ -137,7 +135,6 @@ void FeedListModel::onGetFeedsFinished(Future<FeedCore::Feed*> *sender)
     priv->addItem(allItems);
     for (const auto &item : sender->result()){
         priv->addItem(item);
-        priv->feeds[0].unreadCount  += item->unreadCount();
     }
     endResetModel();
 }
