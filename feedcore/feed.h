@@ -13,6 +13,7 @@ class Feed : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
     Q_PROPERTY(QUrl url READ url WRITE setUrl NOTIFY urlChanged);
+    Q_PROPERTY(QUrl link READ link WRITE setLink NOTIFY linkChanged);
     Q_PROPERTY(int unreadCount READ unreadCount NOTIFY unreadCountChanged);
     Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
     Q_PROPERTY(FeedCore::Updater *updater READ updater CONSTANT);
@@ -23,6 +24,8 @@ public:
     void setName(const QString &name);
     const QUrl &url() const { return m_url; }
     void setUrl(const QUrl &url);
+    const QUrl &link() { return m_link; }
+    void setLink(const QUrl &link);
     int unreadCount() const;
     LoadStatus status() const;
     void setStatus(LoadStatus status);
@@ -35,6 +38,7 @@ public:
 signals:
     void nameChanged();
     void urlChanged();
+    void linkChanged();
     void unreadCountChanged(int delta);
     void statusChanged();
     void articleAdded(const FeedCore::ArticleRef &article);
@@ -48,6 +52,7 @@ protected:
 private:
     QString m_name;
     QUrl m_url;
+    QUrl m_link;
     int m_unreadCount { 0 };
     LoadStatus m_status { LoadStatus::Idle };
 };

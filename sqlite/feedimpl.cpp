@@ -7,6 +7,7 @@
 #include "articleref.h"
 #include "articleimpl.h"
 #include "sqlite/feedquery.h"
+
 using namespace FeedCore;
 using namespace Sqlite;
 
@@ -35,6 +36,7 @@ void FeedImpl::updateFromQuery(const FeedQuery &query)
 {
     Feed::setName(query.displayName());
     Feed::setUrl(query.url());
+    Feed::setLink(query.link());
     Feed::setUnreadCount(query.unreadCount());
 
     m_updater->setLastUpdate(query.lastUpdate());
@@ -55,6 +57,7 @@ void FeedImpl::updateFromSource(const Syndication::FeedPtr &source)
     if (name().isEmpty()) {
         setName(source->title());
     }
+    setLink(source->link());
     const auto &items = source->items();
     for (const auto &item : items) {
         auto *q = m_storage->storeArticle(this, item);

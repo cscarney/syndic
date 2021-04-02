@@ -40,6 +40,7 @@ void ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed)
     if (name().isEmpty()) {
         setName(feed->title());
     }
+    setLink(feed->link());
     setUnreadCount(feed->items().size());
     m_feed = feed;
     emit reset();

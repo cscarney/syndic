@@ -205,18 +205,12 @@ void StorageImpl::listenForChanges(FeedImpl *feed)
         onUpdateModeChanged(m_db, updater, feedId);
     });
     QObject::connect(feed, &Feed::nameChanged, this, [this, feed]{
-        updateFeedMetadata(feed);
+        m_db.updateFeedName(feed->id(), feed->name());
+    });
+    QObject::connect(feed, &Feed::linkChanged, this, [this, feed]{
+        m_db.updateFeedLink(feed->id(), feed->link().toString());
     });
     QObject::connect(feed, &Feed::deleteRequested, this, [this, feed]{
         onFeedRequestDelete(feed);
-    });
-}
-
-void StorageImpl::updateFeedMetadata(FeedImpl *storedFeed)
-{
-    const qint64 id = storedFeed->id();
-    const QString name = storedFeed->name();
-    QTimer::singleShot(0, this, [this, id, name]{
-        m_db.updateFeedName(id, name);
     });
 }

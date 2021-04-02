@@ -46,6 +46,14 @@ void Feed::setUrl(const QUrl &url)
     }
 }
 
+void Feed::setLink(const QUrl &link)
+{
+    if (m_link != link) {
+        m_link = link;
+        emit linkChanged();
+    }
+}
+
 int Feed::unreadCount() const
 {
     return m_unreadCount;
