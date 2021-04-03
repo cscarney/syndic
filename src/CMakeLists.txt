@@ -3,12 +3,14 @@ set(feedkeeper_HEADERS
     articlelistmodel.h
     qmlref.h
     qmlarticleref.h
+    iconprovider.h
     )
 
 set(feedkeeper_SRCS
     ${feedkeeper_HEADERS}
     feedlistmodel.cpp
     articlelistmodel.cpp
+    iconprovider.cpp
     main.cpp
     resources.qrc
     )

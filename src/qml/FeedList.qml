@@ -50,9 +50,11 @@ ScrollView {
                 property var status: feed ? feed.status : Enums.Idle
                 property var unreadCount: feed ? feed.unreadCount : 0
                 property var name: feed ? feed.name : qsTr("All Items")
+                property var icon: feed.icon.toString()
 
                 Kirigami.Icon {
-                    source: model.icon
+                    source: parent.icon.length ? "image://feedicons/"+parent.icon : "feed-subscribe"
+                    fallback: "feed-subscribe"
                     Layout.maximumHeight: feedNameLabel.implicitHeight
                     Layout.maximumWidth: feedNameLabel.implicitHeight
                 }

@@ -54,6 +54,15 @@ void Feed::setLink(const QUrl &link)
     }
 }
 
+void Feed::setIcon(const QUrl &icon)
+{
+    if (!icon.isValid()) return;
+    if (m_icon != icon){
+        m_icon = icon;
+        emit iconChanged();
+    }
+}
+
 int Feed::unreadCount() const
 {
     return m_unreadCount;

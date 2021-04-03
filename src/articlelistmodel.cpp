@@ -1,5 +1,4 @@
 #include "articlelistmodel.h"
-#include <QDebug>
 #include "feed.h"
 #include "updater.h"
 #include "articleref.h"

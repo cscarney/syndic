@@ -1,6 +1,7 @@
 #include "sqlite/feedimpl.h"
 #include <QVariant>
 #include <QSqlQuery>
+#include <Syndication/Image>
 #include "xmlupdater.h"
 #include "sqlite/storageimpl.h"
 #include "article.h"
@@ -37,6 +38,7 @@ void FeedImpl::updateFromQuery(const FeedQuery &query)
     Feed::setName(query.displayName());
     Feed::setUrl(query.url());
     Feed::setLink(query.link());
+    Feed::setIcon(query.icon());
     Feed::setUnreadCount(query.unreadCount());
 
     m_updater->setLastUpdate(query.lastUpdate());
@@ -58,6 +60,7 @@ void FeedImpl::updateFromSource(const Syndication::FeedPtr &source)
         setName(source->title());
     }
     setLink(source->link());
+    setIcon(source->icon()->url());
     const auto &items = source->items();
     for (const auto &item : items) {
         auto *q = m_storage->storeArticle(this, item);

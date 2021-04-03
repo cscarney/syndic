@@ -12,6 +12,7 @@
 #include "sqlite/storageimpl.h"
 #include "provisionalfeed.h"
 #include "updater.h"
+#include "iconprovider.h"
 using namespace FeedCore;
 
 static QString filePath(QString const &fileName)
@@ -54,6 +55,7 @@ int main(int argc, char *argv[])
     registerQmlTypes();
     auto *fm = createContext(&app);
     engine.rootContext()->setContextProperty("feedContext", fm);
+    engine.addImageProvider("feedicons", new IconProvider(fm));
     engine.load(QUrl("qrc:/qml/main.qml"));
     int result = QApplication::exec();
     return result;

@@ -210,6 +210,9 @@ void StorageImpl::listenForChanges(FeedImpl *feed)
     QObject::connect(feed, &Feed::linkChanged, this, [this, feed]{
         m_db.updateFeedLink(feed->id(), feed->link().toString());
     });
+    QObject::connect(feed, &Feed::iconChanged, this, [this, feed]{
+        m_db.updateFeedIcon(feed->id(), feed->icon().toString());
+    });
     QObject::connect(feed, &Feed::deleteRequested, this, [this, feed]{
         onFeedRequestDelete(feed);
     });

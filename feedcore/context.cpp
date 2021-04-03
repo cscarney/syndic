@@ -1,9 +1,8 @@
 #include "context.h"
-#include <QSortFilterProxyModel>
-#include <QDebug>
 #include "storage.h"
 #include "scheduler.h"
 #include "feed.h"
+#include "cachednetworkaccessmanager.h"
 
 namespace FeedCore {
 
@@ -11,6 +10,7 @@ struct Context::PrivData {
     Context *parent;
     Storage *storage;
     Scheduler *updateScheduler;
+    CachedNetworkAccessManager nam;
 
     PrivData(Storage *storage, Context *parent);
 };
@@ -81,6 +81,11 @@ void Context::setDefaultUpdateInterval(qint64 defaultUpdateInterval)
     }
     priv->updateScheduler->setUpdateInterval(defaultUpdateInterval);
     emit defaultUpdateIntervalChanged();
+}
+
+QNetworkAccessManager *Context::networkAccessManager()
+{
+    return &priv->nam;
 }
 
 }

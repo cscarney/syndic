@@ -4,6 +4,7 @@
 #include <QPointer>
 #include "context.h"
 #include "allitemsfeed.h"
+#include "iconprovider.h"
 
 using namespace FeedCore;
 
@@ -30,7 +31,6 @@ FeedListModel::FeedListModel(QObject *parent)
     : QAbstractListModel(parent),
       priv{ std::make_unique<PrivData>(this) }
 {
-
 }
 
 FeedListModel::~FeedListModel()=default;
@@ -42,6 +42,9 @@ void FeedListModel::PrivData::addItem(FeedCore::Feed *feed)
         .icon="feed-subscribe",
     };
     feeds << item;
+    if (feed->icon().isEmpty()) {
+        IconProvider::discoverIcon(context->networkAccessManager(), feed);
+    }
     QObject::connect(feed, &QObject::destroyed, parent, [this, feed]{
         removeItem(feed);
     });

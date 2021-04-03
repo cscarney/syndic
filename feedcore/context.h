@@ -6,6 +6,7 @@
 #include <Syndication/Feed>
 #include "future.h"
 
+class QNetworkAccessManager;
 namespace FeedCore {
 class Storage;
 class Feed;
@@ -25,6 +26,7 @@ public:
     void abortUpdates();
     qint64 defaultUpdateInterval();
     void setDefaultUpdateInterval(qint64 defaultUpdateInterval);
+    QNetworkAccessManager *networkAccessManager() const;
 signals:
     void defaultUpdateIntervalChanged();
     void feedAdded(FeedCore::Feed *feed);

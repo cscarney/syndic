@@ -1,3 +1,4 @@
+#include <Syndication/Image>
 #include "provisionalfeed.h"
 #include "xmlupdater.h"
 #include "preview/articleimpl.h"
@@ -41,6 +42,7 @@ void ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed)
         setName(feed->title());
     }
     setLink(feed->link());
+    setIcon(feed->icon()->url());
     setUnreadCount(feed->items().size());
     m_feed = feed;
     emit reset();
