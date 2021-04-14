@@ -11,6 +11,7 @@ struct Scheduler::PrivData {
     QList<Feed *> schedule;
     QTimer timer;
     qint64 updateInterval{ 0 };
+    qint64 expireAge { 0 };
     QNetworkConfigurationManager ncm;
 };
 
@@ -57,6 +58,7 @@ void Scheduler::schedule(Feed *feed, const QDateTime &timestamp)
     priv->feeds.insert(feed);
     Updater *updater { feed->updater() };
     updater->setDefaultUpdateInterval(priv->updateInterval);
+    updater->setExpireAge(priv->expireAge);
     QObject::connect(feed, &Feed::statusChanged, this,
                      [this, feed]{ onFeedStatusChanged(feed); });
     QObject::connect(updater, &Updater::updateIntervalChanged, this,
@@ -154,6 +156,20 @@ void Scheduler::setUpdateInterval(qint64 newval){
     const auto &feeds = priv->feeds;
     for (const auto &feedRef : feeds) {
         feedRef->updater()->setDefaultUpdateInterval(newval);
+    }
+}
+
+qint64 Scheduler::expireAge()
+{
+    return priv->expireAge;
+}
+
+void Scheduler::setExpireAge(qint64 newval)
+{
+    priv->expireAge = newval;
+    const auto &feeds = priv->feeds;
+    for (const auto &feedRef : feeds) {
+        feedRef->updater()->setExpireAge(newval);
     }
 }
 

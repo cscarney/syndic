@@ -16,6 +16,7 @@ class Context : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(qint64 defaultUpdateInterval READ defaultUpdateInterval WRITE setDefaultUpdateInterval NOTIFY defaultUpdateIntervalChanged)
+    Q_PROPERTY(qint64 expireAge READ expireAge WRITE setExpireAge NOTIFY expireAgeChanged)
 public:
     explicit Context(Storage *storage, QObject *parent = nullptr);
     ~Context();
@@ -27,9 +28,12 @@ public:
     void abortUpdates();
     qint64 defaultUpdateInterval();
     void setDefaultUpdateInterval(qint64 defaultUpdateInterval);
+    qint64 expireAge();
+    void setExpireAge(qint64 expireAge);
     QNetworkAccessManager *networkAccessManager() const;
 signals:
     void defaultUpdateIntervalChanged();
+    void expireAgeChanged();
     void feedAdded(FeedCore::Feed *feed);
 private:
     struct PrivData;

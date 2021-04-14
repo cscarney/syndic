@@ -10,6 +10,7 @@ struct Updater::PrivData {
     Feed *feed;
     UpdateMode updateMode { DefaultUpdateMode };
     time_t updateInterval { 0 };
+    qint64 expireAge { 0 };
     QDateTime lastUpdate;
     QDateTime updateStartTime;
     QString errorMsg;
@@ -29,6 +30,9 @@ void Updater::start(const QDateTime &timestamp)
 {
     if (priv->feed->status() != LoadStatus::Updating) {
         priv->feed->setStatus(LoadStatus::Updating);
+        if (priv->expireAge > 0) {
+            expire(timestamp.addSecs(-priv->expireAge));
+        }
         run();
     }
     priv->updateStartTime = timestamp;
@@ -113,6 +117,11 @@ void Updater::setDefaultUpdateInterval(qint64 updateInterval)
     if (priv->updateMode == DefaultUpdateMode) {
         setUpdateInterval(updateInterval);
     }
+}
+
+void Updater::setExpireAge(qint64 expireAge)
+{
+    priv->expireAge = expireAge;
 }
 
 void Updater::updateParams(Updater *other)

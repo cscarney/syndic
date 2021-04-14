@@ -29,6 +29,7 @@ public:
     void updateItemRead(qint64 id, bool isRead);
     void updateItemStarred(qint64 id, bool isStarred);
     void deleteItemsForFeed(qint64 feedId);
+    void deleteItemsOlderThan(qint64 feedId, QDateTime olderThan);
 
     FeedQuery selectAllFeeds();
     FeedQuery selectFeed(qint64 feedId);

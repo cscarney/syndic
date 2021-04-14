@@ -219,6 +219,9 @@ void StorageImpl::listenForChanges(FeedImpl *feed)
     QObject::connect(updater, &Updater::updateModeChanged, this, [this, updater, feedId]{
         onUpdateModeChanged(m_db, updater, feedId);
     });
+    QObject::connect(updater, &Updater::expire, this, [this, feedId](auto olderThan){
+        m_db.deleteItemsOlderThan(feedId, olderThan);
+    });
     QObject::connect(feed, &Feed::nameChanged, this, [this, feed]{
         m_db.updateFeedName(feed->id(), feed->name());
     });

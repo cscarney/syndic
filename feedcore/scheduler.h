@@ -27,6 +27,8 @@ public:
     void abortAll();
     qint64 updateInterval();
     void setUpdateInterval(qint64 newval);
+    qint64 expireAge();
+    void setExpireAge(qint64 newval);
 private:
     struct PrivData;
     std::unique_ptr<PrivData> priv;

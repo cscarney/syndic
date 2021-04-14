@@ -88,6 +88,20 @@ void Context::setDefaultUpdateInterval(qint64 defaultUpdateInterval)
     emit defaultUpdateIntervalChanged();
 }
 
+qint64 Context::expireAge()
+{
+    return priv->updateScheduler->expireAge();
+}
+
+void Context::setExpireAge(qint64 expireAge)
+{
+    if (this->expireAge() == expireAge) {
+        return;
+    }
+    priv->updateScheduler->setExpireAge(expireAge);
+    emit expireAgeChanged();
+}
+
 QNetworkAccessManager *Context::networkAccessManager() const
 {
     return &priv->nam;

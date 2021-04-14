@@ -44,11 +44,13 @@ public:
     qint64 updateInterval();
     void setUpdateInterval(qint64 updateInterval);
     void setDefaultUpdateInterval(qint64 updateInterval);
+    void setExpireAge(qint64 expireAge);
     void updateParams(Updater *other);
 signals:
     void lastUpdateChanged();
     void updateModeChanged();
     void updateIntervalChanged();
+    void expire(const QDateTime &olderThan);
 protected:
     void finish();
     void setError(const QString &errorMsg);

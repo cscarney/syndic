@@ -290,6 +290,18 @@ void FeedDatabase::deleteItemsForFeed(qint64 feedId)
     }
 }
 
+void FeedDatabase::deleteItemsOlderThan(qint64 feedId, QDateTime olderThan)
+{
+    QSqlQuery q(db());
+    q.prepare(
+                "DELETE FROM Item WHERE feed=:feed AND isStarred!=1 AND date<:olderThan");
+    q.bindValue(":feed", feedId);
+    q.bindValue(":olderThan", olderThan.toSecsSinceEpoch());
+    if (!q.exec()) {
+        qDebug() << "SQL Error in deleteItemsForFeed: " << q.lastError().text();
+    }
+}
+
 FeedQuery FeedDatabase::selectAllFeeds()
 {
     FeedQuery q(db(), "1");

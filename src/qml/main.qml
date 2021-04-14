@@ -87,12 +87,20 @@ Kirigami.ApplicationWindow {
         property bool automaticUpdates: true
         property int updateInterval: 3600
         property bool runInBackground: true
+        property bool expireItems: false
+        property int expireAge: 2592000
     }
 
     Binding {
         target: feedContext
         property: "defaultUpdateInterval"
         value: globalSettings.automaticUpdates ? globalSettings.updateInterval : 0
+    }
+
+    Binding {
+        target: feedContext
+        property: "expireAge"
+        value: globalSettings.expireItems ? globalSettings.expireAge : 0;
     }
 
     StateGroup {
