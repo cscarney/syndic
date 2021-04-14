@@ -4,6 +4,7 @@
 #include <QPointer>
 #include "context.h"
 #include "allitemsfeed.h"
+#include "starreditemsfeed.h"
 #include "iconprovider.h"
 
 using namespace FeedCore;
@@ -136,6 +137,8 @@ void FeedListModel::onGetFeedsFinished(Future<FeedCore::Feed*> *sender)
     priv->feeds.clear();
     auto *allItems = new AllItemsFeed(priv->context, tr("All Items", "special feed name"), this);
     priv->addItem(allItems);
+    auto *starredItems = new StarredItemsFeed(priv->context, tr("Starred", "special feed name"), this);
+    priv->addItem(starredItems);
     for (const auto &item : sender->result()){
         priv->addItem(item);
     }

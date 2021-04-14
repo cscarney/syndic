@@ -18,9 +18,11 @@ public:
     FeedCore::Future<FeedCore::ArticleRef> *getUnreadByFeed(FeedImpl *feedId);
     FeedCore::Future<FeedCore::ArticleRef> *storeArticle(FeedImpl *feed, const Syndication::ItemPtr &item);
     void onArticleReadChanged(ArticleImpl *article);
+    void onArticleStarredChanged(ArticleImpl *article);
 
     FeedCore::Future<FeedCore::ArticleRef> *getAll() final;
     FeedCore::Future<FeedCore::ArticleRef> *getUnread() final;
+    FeedCore::Future<FeedCore::ArticleRef> *getStarred() final;
     FeedCore::Future<FeedCore::Feed*> *getFeeds() final;
     FeedCore::Future<FeedCore::Feed*> *storeFeed(FeedCore::Feed *feed) final;
     void listenForChanges(FeedImpl *feed);

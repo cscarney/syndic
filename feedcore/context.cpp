@@ -59,6 +59,11 @@ Future<ArticleRef> *Context::getArticles(bool unreadFilter)
     return priv->storage->getAll();
 }
 
+Future<ArticleRef> *Context::getStarred()
+{
+    return priv->storage->getStarred();
+}
+
 void Context::requestUpdate()
 {
     priv->updateScheduler->updateAll();
@@ -83,7 +88,7 @@ void Context::setDefaultUpdateInterval(qint64 defaultUpdateInterval)
     emit defaultUpdateIntervalChanged();
 }
 
-QNetworkAccessManager *Context::networkAccessManager()
+QNetworkAccessManager *Context::networkAccessManager() const
 {
     return &priv->nam;
 }

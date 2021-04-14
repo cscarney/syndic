@@ -34,6 +34,13 @@ Kirigami.ScrollablePage {
             onCheckedChanged: item.article.isRead = !checked
             displayHint: Kirigami.Action.DisplayHint.KeepVisible
         }
+        left: Kirigami.Action {
+            text: qsTr("Starred")
+            checkable: true
+            checked: item.article.isStarred
+            onCheckedChanged: item.article.isStarred = checked
+            iconName: checked ? "starred-symbolic" : "non-starred-symbolic"
+        }
     }
 
     /* extract <img> tags from the text so that we can use them as cover images */

@@ -9,6 +9,7 @@ public:
     explicit ArticleImpl(Syndication::ItemPtr item, Feed *feed, QObject *parent=nullptr);
     void requestContent() final;
     void setRead(bool isRead) final {};
+    void setStarred(bool isStarred) final {};
 private:
     Syndication::ItemPtr m_item;
 };

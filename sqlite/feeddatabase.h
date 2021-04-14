@@ -17,6 +17,7 @@ public:
     FeedDatabase &operator=(const FeedDatabase&) = delete;
     ItemQuery selectAllItems();
     ItemQuery selectUnreadItems();
+    ItemQuery selectStarredItems();
     ItemQuery selectItemsByFeed(qint64 feedId);
     ItemQuery selectUnreadItemsByFeed(qint64 feedId);
     ItemQuery selectItem(qint64 id);

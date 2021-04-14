@@ -125,6 +125,15 @@ ItemQuery FeedDatabase::selectUnreadItems()
     return q;
 }
 
+ItemQuery FeedDatabase::selectStarredItems()
+{
+    ItemQuery q(db(), "isStarred=1 "+select_sort);
+    if (!q.exec()) {
+        qDebug() << "SQL Error in selectStarredItems: " + q.lastError().text();
+    }
+    return q;
+}
+
 ItemQuery FeedDatabase::selectItemsByFeed(qint64 feedId)
 {
     ItemQuery q(db(), "feed=:feed "+select_sort);

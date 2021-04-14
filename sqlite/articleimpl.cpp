@@ -18,6 +18,9 @@ ArticleImpl::ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const 
     QObject::connect(this, &Article::readStatusChanged, feed, [this, feed]{
         feed->onArticleReadChanged(this);
     });
+    QObject::connect(this, &Article::starredChanged, storage, [this, storage]{
+        storage->onArticleStarredChanged(this);
+    });
 }
 
 qint64 ArticleImpl::id() const
@@ -25,7 +28,6 @@ qint64 ArticleImpl::id() const
     return m_id;
 }
 
-// id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred
 void ArticleImpl::updateFromQuery(const ItemQuery &q)
 {
     Article::setTitle(q.headline());
@@ -34,6 +36,7 @@ void ArticleImpl::updateFromQuery(const ItemQuery &q)
     Article::setUrl(q.url());
     m_content = q.content();
     Article::setRead(q.isRead());
+    Article::setStarred(q.isStarred());
 }
 
 void ArticleImpl::requestContent()

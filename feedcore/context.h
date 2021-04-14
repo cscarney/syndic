@@ -22,6 +22,7 @@ public:
     Future<Feed*> *getFeeds();
     Q_INVOKABLE void addFeed(FeedCore::Feed *feed);
     Future<ArticleRef> *getArticles(bool unreadFilter);
+    Future<ArticleRef> *getStarred();
     void requestUpdate();
     void abortUpdates();
     qint64 defaultUpdateInterval();

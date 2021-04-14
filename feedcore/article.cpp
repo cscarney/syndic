@@ -52,3 +52,11 @@ void Article::setRead(bool isRead)
         emit readStatusChanged();
     }
 }
+
+void Article::setStarred(bool isStarred)
+{
+    if (m_starred != isStarred) {
+        m_starred = isStarred;
+        emit starredChanged();
+    }
+}

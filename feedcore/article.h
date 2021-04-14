@@ -12,6 +12,7 @@ class Article : public QObject
     Q_OBJECT
     Q_PROPERTY(FeedCore::Feed *feed READ feed CONSTANT)
     Q_PROPERTY(bool isRead READ isRead WRITE setRead NOTIFY readStatusChanged);
+    Q_PROPERTY(bool isStarred READ isStarred WRITE setStarred NOTIFY starredChanged);
     Q_PROPERTY(QString title READ title NOTIFY titleChanged);
     Q_PROPERTY(QString author READ author NOTIFY authorChanged);
     Q_PROPERTY(QDateTime date READ date NOTIFY dateChanged);
@@ -24,6 +25,8 @@ public:
     const QUrl &url() const { return m_url; }
     bool isRead() const { return m_readStatus; }
     virtual void setRead(bool isRead);
+    bool isStarred() const { return m_starred; }
+    virtual void setStarred(bool isStarred);
     Q_INVOKABLE virtual void requestContent() = 0;
 signals:
     void titleChanged();
@@ -31,6 +34,7 @@ signals:
     void dateChanged();
     void urlChanged();
     void readStatusChanged();
+    void starredChanged();
     void gotContent(const QString &content);
 protected:
     explicit Article(Feed *feed, QObject *parent = nullptr);
@@ -45,6 +49,7 @@ private:
     QDateTime m_date;
     QUrl m_url;
     bool m_readStatus { false };
+    bool m_starred { false };
 };
 }
 

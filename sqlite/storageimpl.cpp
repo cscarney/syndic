@@ -46,6 +46,14 @@ Future<ArticleRef> *StorageImpl::getUnread()
     });
 }
 
+FeedCore::Future<ArticleRef> *StorageImpl::getStarred()
+{
+    return Future<ArticleRef>::yield(this, [this](auto *op){
+        ItemQuery q { m_db.selectStarredItems() };
+        appendArticleResults(op, q);
+    });
+}
+
 StorageImpl::StorageImpl(QString filePath) :
     m_db(filePath)
 {
@@ -119,6 +127,13 @@ void StorageImpl::onArticleReadChanged(ArticleImpl *article)
     const qint64 itemId { article->id() };
     const bool isRead { article->isRead() };
     m_db.updateItemRead(itemId, isRead);
+}
+
+void StorageImpl::onArticleStarredChanged(ArticleImpl *article)
+{
+    const qint64 itemId { article->id() };
+    const bool isStarred { article->isStarred() };
+    m_db.updateItemStarred(itemId, isStarred);
 }
 
 void StorageImpl::appendFeedResults(Future<Feed*> *op, FeedQuery &q)

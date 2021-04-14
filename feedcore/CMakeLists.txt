@@ -15,6 +15,7 @@ set(feedcore_HEADERS
     preview/articleimpl.h
     provisionalfeed.h
     cachednetworkaccessmanager.h
+    starreditemsfeed.h
     )
     
 set(feedcore_SRCS
@@ -30,6 +31,7 @@ set(feedcore_SRCS
     preview/articleimpl.cpp
     provisionalfeed.cpp
     cachednetworkaccessmanager.cpp
+    starreditemsfeed.cpp
     )
     
 add_library(feedcore ${feedcore_SRCS})
