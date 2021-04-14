@@ -55,8 +55,8 @@ Kirigami.ScrollablePage {
         function onGotContent(content) {
             var src = content || ""
             var images = []
-            var text = src.replace(/<img .*src="([^"]*)".*>/ig, function(match, src){
-                images.push(src)
+            var text = src.replace(/<img .*?src="(.*?)".*?>/ig, function(match, src){
+                images.push(src);
                 return "";
             })
             priv.firstImage = images[0] || ""
