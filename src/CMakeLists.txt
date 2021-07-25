@@ -4,6 +4,9 @@ set(feedkeeper_HEADERS
     qmlref.h
     qmlarticleref.h
     iconprovider.h
+    gumbovisitor.h
+    htmlsplitter.h
+    contentmodel.h
     )
 
 set(feedkeeper_SRCS
@@ -11,6 +14,9 @@ set(feedkeeper_SRCS
     feedlistmodel.cpp
     articlelistmodel.cpp
     iconprovider.cpp
+    gumbovisitor.cpp
+    htmlsplitter.cpp
+    contentmodel.cpp
     main.cpp
     resources.qrc
     )
@@ -28,6 +34,7 @@ target_link_libraries(feedkeeper
     KF5::Syndication
     feedcore
     sqlite
+    gumbo
     )
 
 install(TARGETS feedkeeper DESTINATION bin)

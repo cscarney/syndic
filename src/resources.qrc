@@ -21,5 +21,6 @@
         <file>qml/SettingsPage.qml</file>
         <file>qml/AddFeedPage.qml</file>
         <file>qml/EditFeedPage.qml</file>
+        <file>qml/ContentPage.qml</file>
     </qresource>
 </RCC>

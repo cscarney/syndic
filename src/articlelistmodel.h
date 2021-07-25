@@ -1,4 +1,4 @@
-#ifndef UNREADITEMMODEL_H
+ #ifndef UNREADITEMMODEL_H
 #define UNREADITEMMODEL_H
 #include <QModelIndex>
 #include <QQmlParserStatus>

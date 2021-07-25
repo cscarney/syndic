@@ -13,6 +13,7 @@
 #include "provisionalfeed.h"
 #include "updater.h"
 #include "iconprovider.h"
+#include "contentmodel.h"
 using namespace FeedCore;
 
 static QString filePath(QString const &fileName)
@@ -35,12 +36,16 @@ static void registerQmlTypes() {
     qmlRegisterType<FeedListModel>("FeedListModel", 1, 0, "FeedListModel");
     qmlRegisterType<ArticleListModel>("ArticleListModel", 1, 0, "ArticleListModel");
     qmlRegisterType<ProvisionalFeed>("ProvisionalFeed", 1, 0, "ProvisionalFeed");
+    qmlRegisterType<ContentModel>("ContentModel", 1, 0, "ContentModel");
     qmlRegisterUncreatableType<Updater>("Updater", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<Context>("FeedContext", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
     qmlRegisterUncreatableType<Feed>("Feed", 1,0, "Feed", "obtained from cpp model");
     qmlRegisterUncreatableType<Article>("Article", 1, 0, "Article", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlArticleRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
+    qmlRegisterUncreatableType<ContentBlock>("ContentModel", 1, 0, "ContentBlock", "content model");
+    qmlRegisterUncreatableType<TextBlock>("ContentModel", 1, 0, "TextBlock", "content model");
+    qmlRegisterUncreatableType<ImageBlock>("ContentModel", 1, 0, "ImageBlock", "content model");
 }
 
 int main(int argc, char *argv[])
