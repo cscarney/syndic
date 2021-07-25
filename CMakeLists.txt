@@ -22,6 +22,7 @@ include(ECMInstallIcons)
 
  find_package(KF5Declarative REQUIRED)
  find_package(KF5Syndication REQUIRED)
+ find_package(KF5Notifications REQUIRED)
 
  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -Wno-error=deprecated-declarations")
  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto")

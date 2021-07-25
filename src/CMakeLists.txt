@@ -7,6 +7,7 @@ set(feedkeeper_HEADERS
     gumbovisitor.h
     htmlsplitter.h
     contentmodel.h
+    newitemnotifier.h
     )
 
 set(feedkeeper_SRCS
@@ -17,6 +18,7 @@ set(feedkeeper_SRCS
     gumbovisitor.cpp
     htmlsplitter.cpp
     contentmodel.cpp
+    newitemnotifier.cpp
     main.cpp
     resources.qrc
     )
@@ -32,6 +34,7 @@ target_link_libraries(feedkeeper
     KF5::Declarative
     KF5::QuickAddons
     KF5::Syndication
+    KF5::Notifications
     feedcore
     sqlite
     gumbo

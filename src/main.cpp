@@ -14,6 +14,7 @@
 #include "updater.h"
 #include "iconprovider.h"
 #include "contentmodel.h"
+#include "newitemnotifier.h"
 using namespace FeedCore;
 
 static QString filePath(QString const &fileName)
@@ -37,6 +38,7 @@ static void registerQmlTypes() {
     qmlRegisterType<ArticleListModel>("ArticleListModel", 1, 0, "ArticleListModel");
     qmlRegisterType<ProvisionalFeed>("ProvisionalFeed", 1, 0, "ProvisionalFeed");
     qmlRegisterType<ContentModel>("ContentModel", 1, 0, "ContentModel");
+    qmlRegisterType<NewItemNotifier>("NewItemNotifier", 1, 0, "NewItemNotifier");
     qmlRegisterUncreatableType<Updater>("Updater", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<Context>("FeedContext", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");

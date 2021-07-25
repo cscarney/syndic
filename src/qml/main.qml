@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import Qt.labs.platform 1.1 as Platform
 import org.kde.kirigami 2.7 as Kirigami
+import NewItemNotifier 1.0
 
 Kirigami.ApplicationWindow {
     id: root
@@ -187,6 +188,11 @@ Kirigami.ApplicationWindow {
             // emitted by pages to temporarily suspend the page transition animation
             animationSuspendTimer.start()
         }
+    }
+
+    NewItemNotifier {
+        context: feedContext
+        enabled: root.visible == false
     }
 
     onClosing: {
