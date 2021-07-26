@@ -85,6 +85,7 @@ Kirigami.ApplicationWindow {
     Settings {
         id: globalSettings
         category: "Global"
+        property bool updateOnStart: false
         property bool automaticUpdates: true
         property int updateInterval: 3600
         property bool runInBackground: true
@@ -146,6 +147,17 @@ Kirigami.ApplicationWindow {
     Timer {
         id: animationSuspendTimer
         interval: Kirigami.Units.longDuration
+    }
+
+    Timer {
+        id: updateOnStartTimer
+        interval: 1
+        running: true
+        onTriggered: {
+            if (globalSettings.updateOnStart) {
+                feedContext.requestUpdate()
+            }
+        }
     }
 
     Platform.SystemTrayIcon {

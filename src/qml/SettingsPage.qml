@@ -16,9 +16,13 @@ Kirigami.ScrollablePage {
         CheckBox {
             id: updateOnStart
             Kirigami.FormData.label: qsTr("Fetch updates:")
-            enabled: false
-            checked: false
+            checked: globalSettings.updateOnStart
             text: qsTr("On application start")
+            Binding {
+                target: globalSettings
+                property: "updateOnStart"
+                value: updateOnStart.checked
+            }
         }
 
         RowLayout {
