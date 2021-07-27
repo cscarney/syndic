@@ -8,6 +8,14 @@
 namespace FeedCore {
 class Feed;
 
+/**
+ * Abstract class for updating feeds.
+ *
+ * The base class contains code for tracking update times and determining when
+ * updates are due; derived classes are responsible for performing the actual update.
+ *
+ * The XMLUpdater class provides an implementation using the KSyndication library.
+ */
 class Updater : public QObject
 {
     Q_OBJECT
@@ -16,35 +24,108 @@ class Updater : public QObject
     Q_PROPERTY(int updateInterval READ updateInterval WRITE setUpdateInterval NOTIFY updateIntervalChanged)
 public:
     enum UpdateMode {
-        /* requests the scheduler to set the update interval to its global value */
-        DefaultUpdateMode,
-
-        /* indicates that the scheduler should use the update interval already set */
-        CustomUpdateMode,
-
-        /* indicates that we should never be scheduled */
-        ManualUpdateMode,
+        DefaultUpdateMode, /** < Use the default update interval */
+        CustomUpdateMode, /** < Use the update interval provided by the updateInterval property */
+        ManualUpdateMode, /** < Do not perform scheduled updates */
     };
     Q_ENUM(UpdateMode)
+
     Updater(Feed *feed, QObject *parent);
     ~Updater();
-    virtual void run() = 0;
+
+    /**
+     * Implemented by derived classes to abort the update.
+     */
     virtual void abort() = 0;
+
+    /**
+     * Begin an update.
+     *
+     * If the update succeeds, timestamp is recorded as the time of the update
+     */
     Q_INVOKABLE void start(const QDateTime &timestamp=QDateTime::currentDateTime());
+
+    /**
+     * The last error reported by the implementation.
+     *
+     * This should not be used to determine whether an error has occured; use feed()->status() for that.
+     */
     QString error();
+
+    /**
+     * The feed that this updater belongs to
+     */
     Feed *feed();
+
+    /**
+     * The timestamp when the next update should occur.
+     */
     QDateTime nextUpdate();
+
     bool hasNextUpdate();
+
+    /**
+     * Whether an update is due as of /timestamp/
+     */
     bool needsUpdate(const QDateTime &timestamp);
+
+    /**
+     * Start an update if an update is due
+     *
+     * Timestamp is used as the current time for determining
+     * whether to perform the update.  It will also be recorded
+     * as the time of the update if it succeeds.
+     */
     bool updateIfNecessary(const QDateTime &timestamp);
+
+    /**
+     * The time of the last update
+     */
     const QDateTime &lastUpdate();
+
+    /**
+     * Set the timestamp of the last update.
+     */
     void setLastUpdate(const QDateTime &lastUpdate);
+
+    /**
+     * The update scheduling mode
+     */
     UpdateMode updateMode();
+
+    /**
+     * Set the update scheduling mode.
+     */
     void setUpdateMode(UpdateMode updateMode);
+
+    /**
+     * How often to update the feed.
+     */
     qint64 updateInterval();
+
+    /**
+     * Set the update interval.
+     *
+     * This value is used to determine when an update is due.
+     */
     void setUpdateInterval(qint64 updateInterval);
+
+    /**
+     * Sets the update interval that will be used when using DefaultupdateMode
+     */
     void setDefaultUpdateInterval(qint64 updateInterval);
+
+    /**
+     * Set the age when article are considered stale.
+     *
+     * A value of 0 disables stale item expiration.
+     * Stale items will not be removed until the next update.
+     */
     void setExpireAge(qint64 expireAge);
+
+    /**
+     * Set this Updater's parameters to match /other/
+     */
     void updateParams(Updater *other);
 signals:
     void lastUpdateChanged();
@@ -57,6 +138,11 @@ protected:
 private:
     struct PrivData;
     std::unique_ptr<PrivData> priv;
+
+    /**
+     * Implemented by derived classes to perform the update
+     */
+    virtual void run() = 0;
 };
 }
 

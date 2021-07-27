@@ -14,7 +14,6 @@ class ProvisionalFeed;
 
 /**
  * A Context object represents an entire collection of feeds.
- *
  */
 class Context : public QObject
 {
@@ -107,7 +106,7 @@ public:
      *
      * Changing this value does not remove any stale articles; stale articles
      * will be deleted as part of the next update.  Setting this value to 0
-     * disable item expiration.
+     * disables item expiration.
      */
     void setExpireAge(qint64 expireAge);
 

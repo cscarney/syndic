@@ -7,6 +7,10 @@
 
 namespace FeedCore {
 class Feed;
+
+/**
+ * Abstract class for stored articles.
+ */
 class Article : public QObject
 {
     Q_OBJECT
@@ -18,15 +22,60 @@ class Article : public QObject
     Q_PROPERTY(QDateTime date READ date NOTIFY dateChanged);
     Q_PROPERTY(QUrl url READ url NOTIFY urlChanged);
 public:
+    /**
+     * The feed that this article belongs to
+     */
     Feed *feed() const;
+
+    /**
+     * The title/headline of the article
+     */
     const QString &title() const { return m_title; }
+
+    /**
+     * The name of the author.
+     */
     const QString &author() const { return m_author; }
+
+    /**
+     * The date the article was last updated.
+     */
     const QDateTime &date() const { return m_date; }
+
+    /**
+     * Link to a web page containing the full article.
+     */
     const QUrl &url() const { return m_url; }
+
+    /**
+     * True if the article has been read.
+     */
     bool isRead() const { return m_readStatus; }
+
+    /**
+     * Set whether the article has been read.
+     *
+     * Derived classes that override this method must call the base class implementation.
+     */
     virtual void setRead(bool isRead);
+
+    /**
+     * True if the article has been marked as starred.
+     */
     bool isStarred() const { return m_starred; }
+
+    /**
+     * Set whether the article has been marked as starred.
+     *
+     * Derived classes that override this method must call the base class implementation.
+     */
     virtual void setStarred(bool isStarred);
+
+    /**
+     * Request the content of the article.
+     *
+     * The gotContent signal will be emitted with the requested content, possibly asyncronously.
+     */
     Q_INVOKABLE virtual void requestContent() = 0;
 signals:
     void titleChanged();

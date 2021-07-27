@@ -3,6 +3,11 @@
 #include "feed.h"
 namespace FeedCore {
 class Context;
+
+/**
+ * A Feed implementation which combines only the starred items from
+ * all feeds in a context.
+ */
 class StarredItemsFeed : public Feed
 {
 public:

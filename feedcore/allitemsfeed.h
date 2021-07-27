@@ -6,6 +6,9 @@
 namespace FeedCore {
 class Context;
 
+/**
+ * A Feed implementation that combines all articles from a context.
+ */
 class AllItemsFeed : public Feed
 {
     Q_OBJECT

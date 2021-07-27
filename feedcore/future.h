@@ -12,6 +12,12 @@ signals:
     void finished();
 };
 
+
+/**
+ * A quick-and-dirty single-thread async class.
+ *
+ * This should probably be replaced with QPromise/QFuture at some point.
+ */
 template<typename T>
 class Future : public BaseFuture {
 public:
