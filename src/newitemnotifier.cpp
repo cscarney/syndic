@@ -45,7 +45,7 @@ bool NewItemNotifier::enabled() const
 
 void NewItemNotifier::onStatusChanged()
 {
-    if (m_counter > 0) {
+    if (m_enabled && (m_counter > 0)) {
         postNotification();
     }
     m_counter = 0;
