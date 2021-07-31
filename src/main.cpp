@@ -1,10 +1,15 @@
+#include "cmake-config.h"
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QQmlContext>
 #include <QDir>
 #include <QStandardPaths>
+
+#ifdef KF5Declarative_FOUND
 #include <KDeclarative/KDeclarative>
+#endif
+
 #include "context.h"
 #include "articlelistmodel.h"
 #include "feedlistmodel.h"
@@ -57,8 +62,17 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationDomain("rocksandpaper.com");
     QApplication::setApplicationName("FeedKeeper");
     QQmlApplicationEngine engine;
+
+#ifdef ANDROID
+    QQuickStyle::setStyle("Material");
+#else
     QQuickStyle::setStyle("org.kde.desktop");
+#endif
+
+#ifdef KF5Declarative_FOUND
     KDeclarative::KDeclarative::setupEngine(&engine);
+#endif
+
     registerQmlTypes();
     auto *fm = createContext(&app);
     engine.rootContext()->setContextProperty("feedContext", fm);

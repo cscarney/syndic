@@ -11,6 +11,7 @@ Kirigami.ApplicationWindow {
     title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + Qt.application.name
 
     pageStack {
+        globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
         globalToolBar.showNavigationButtons: priv.isFirstPage ? 0 : Kirigami.ApplicationHeaderStyle.ShowBackButton
         defaultColumnWidth: (priv.itemListProportion * root.width) - (globalDrawer.actualWidth / 2)
         interactive: false
@@ -123,7 +124,7 @@ Kirigami.ApplicationWindow {
 
             State {
                 name: "widescreen"
-                when: width > (height *1.6)
+                when: (!Kirigami.Settings.isMobile) && (width > (height *1.6))
                 PropertyChanges {
                     target: priv
                     feedListProportion: 0.15

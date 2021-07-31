@@ -1,7 +1,7 @@
 #ifndef GUMBOVISITOR_H
 #define GUMBOVISITOR_H
 #include <QString>
-#include <gumbo.h>
+#include "htmlparser/gumbo.h"
 
 class GumboVisitor
 {

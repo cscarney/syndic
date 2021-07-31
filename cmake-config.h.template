@@ -1,0 +1,3 @@
+
+#cmakedefine KF5Declarative_FOUND
+#cmakedefine KF5Notifications_FOUND

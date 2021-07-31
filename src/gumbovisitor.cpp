@@ -75,5 +75,5 @@ void GumboVisitor::moveNext()
 
 GumboVisitor::~GumboVisitor()
 {
-    gumbo_destroy_output(&kGumboDefaultOptions, m_gumbo);
+    gumbo_destroy_output(m_gumbo);
 }

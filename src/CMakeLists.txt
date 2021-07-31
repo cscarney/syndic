@@ -15,10 +15,10 @@ set(feedkeeper_SRCS
     feedlistmodel.cpp
     articlelistmodel.cpp
     iconprovider.cpp
-    gumbovisitor.cpp
     htmlsplitter.cpp
     contentmodel.cpp
     newitemnotifier.cpp
+    gumbovisitor.cpp
     main.cpp
     resources.qrc
     )
@@ -31,14 +31,53 @@ target_link_libraries(feedkeeper
     Qt5::Qml
     Qt5::Quick
     Qt5::QuickControls2
-    KF5::Declarative
-    KF5::QuickAddons
     KF5::Syndication
-    KF5::Notifications
     feedcore
     sqlite
-    gumbo
+    htmlparser
     )
+    
+if (KF5Notifications_FOUND)
+    target_link_libraries(feedkeeper
+        KF5::Notifications
+        )
+endif()
+
+if (KF5Declarative_FOUND)
+    target_link_libraries(feedkeeper
+        KF5::Declarative
+        KF5::QuickAddons
+        )
+endif()
+
+if (ANDROID)
+    target_link_libraries(feedkeeper
+        KF5::Kirigami2
+        OpenSSL::SSL
+        Qt5::Svg
+        )
+
+    kirigami_package_breeze_icons(
+        ICONS
+        list-add
+        settings-configure
+        help-about
+        feed-subscribe
+        content-loading-symbolic
+        dialog-error-symbolic
+        document-save
+        delete
+        mail-mark-unread
+        starred-symbolic
+        non-starred-symbolic
+        document-preview
+        view-refresh
+        mail-read-symbolic
+        mail-read
+        view-filter
+        document-edit
+        )
+endif()
 
 install(TARGETS feedkeeper DESTINATION bin)
 

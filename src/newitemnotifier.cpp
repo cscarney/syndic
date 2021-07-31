@@ -1,8 +1,13 @@
+#include "cmake-config.h"
 #include "newitemnotifier.h"
 #include "article.h"
 #include "context.h"
 #include "allitemsfeed.h"
+
+#ifdef KF5Notifications_FOUND
 #include "knotification.h"
+#endif
+
 #include <QDebug>
 using namespace FeedCore;
 
@@ -61,5 +66,7 @@ void NewItemNotifier::postNotification()
 {
     QString notificationText { tr("%1 New Item(s)", "Notification Text", m_counter).arg(m_counter) };
     qDebug() << "Notification: " << notificationText;
-    KNotification::event(KNotification::Notification, notificationText);
+#ifdef KF5Notifications_FOUND
+    KNotification::event(KNotification::Notification, notificationText); 
+#endif
 }
