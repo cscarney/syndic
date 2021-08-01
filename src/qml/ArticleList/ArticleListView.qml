@@ -18,7 +18,11 @@ ListView {
 
         highlighted: ListView.isCurrentItem
         onClicked: {
-            root.currentIndex = model.index
+            if (root.currentIndex !== model.index) {
+                root.currentIndex = model.index
+            } else {
+                currentItemChanged()
+            }
         }
     }
 

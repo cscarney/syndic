@@ -14,7 +14,7 @@ Kirigami.ScrollablePage {
     property alias model: articleList.model
     property alias count: articleList.count
     property bool unreadFilter: true
-    property bool automaticOpen: true
+    property bool automaticOpen: pageRow && (pageRow.defaultColumnWidth < pageRow.width)
     signal suspendAnimations
 
     topPadding: 0
@@ -54,6 +54,14 @@ Kirigami.ScrollablePage {
         id: settings
         category: "ArticleList"
         property alias unreadFilter: root.unreadFilter
+    }
+
+    onAutomaticOpenChanged: {
+        if (automaticOpen) {
+            openChild()
+        } else if (articleList.currentIndex < 0) {
+            pageRow.pop()
+        }
     }
 
     function pushPlaceholder() {
