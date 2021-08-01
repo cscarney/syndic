@@ -161,6 +161,11 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    NewItemNotifier {
+        context: feedContext
+        enabled: root.visible == false
+    }
+
     Platform.SystemTrayIcon {
         id: trayIcon
         visible: root.visible == false
@@ -178,7 +183,8 @@ Kirigami.ApplicationWindow {
             if (reason === Platform.SystemTrayIcon.Context) {
                 menu.open(trayIcon)
             } else {
-                root.visible = true
+                root.show()
+                root.requestActivate()
             }
         }
     }
@@ -201,11 +207,6 @@ Kirigami.ApplicationWindow {
             // emitted by pages to temporarily suspend the page transition animation
             animationSuspendTimer.start()
         }
-    }
-
-    NewItemNotifier {
-        context: feedContext
-        enabled: root.visible == false
     }
 
     onClosing: {
