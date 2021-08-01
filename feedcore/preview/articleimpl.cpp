@@ -5,7 +5,7 @@ using namespace FeedCore::Preview;
 void ArticleImpl::requestContent()
 {
     QString content { m_item->content() };
-    emit gotContent(content.isEmpty() ? content : m_item->description() );
+    emit gotContent(content.isEmpty() ? m_item->description() : content);
 }
 
 FeedCore::Preview::ArticleImpl::ArticleImpl(Syndication::ItemPtr item, Feed *feed, QObject *parent):
