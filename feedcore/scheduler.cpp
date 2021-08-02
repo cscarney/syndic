@@ -32,7 +32,8 @@ Scheduler::Scheduler(QObject *parent) :
     QObject(parent),
     priv(std::make_unique<PrivData>())
 {
-    QObject::connect(&priv->ncm, &QNetworkConfigurationManager::onlineStateChanged, this, &Scheduler::onNetworkStateChanged);
+    QObject::connect(&priv->ncm, &QNetworkConfigurationManager::configurationAdded, this, &Scheduler::onNetworkStateChanged);
+    QObject::connect(&priv->ncm, &QNetworkConfigurationManager::configurationChanged, this, &Scheduler::onNetworkStateChanged);
 }
 
 Scheduler::~Scheduler()=default;
