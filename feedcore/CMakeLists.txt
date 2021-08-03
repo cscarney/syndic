@@ -34,7 +34,7 @@ set(feedcore_SRCS
     starreditemsfeed.cpp
     )
     
-add_library(feedcore ${feedcore_SRCS})
+add_library(feedcore STATIC ${feedcore_SRCS})
 
 target_link_libraries(feedcore
     Qt5::Core

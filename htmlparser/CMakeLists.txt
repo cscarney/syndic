@@ -37,5 +37,5 @@ set(htmlparser_SRCS
     util.c 
     vector.c)
     
-add_library(htmlparser ${htmlparser_SRCS})
+add_library(htmlparser STATIC ${htmlparser_SRCS})
 target_link_libraries(htmlparser)

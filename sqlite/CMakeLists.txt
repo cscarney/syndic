@@ -15,7 +15,7 @@ set(sqlite_SRCS
     storageimpl.cpp
     )
     
-add_library(sqlite ${sqlite_SRCS})
+add_library(sqlite STATIC ${sqlite_SRCS})
 
 target_link_libraries(sqlite
     feedcore
