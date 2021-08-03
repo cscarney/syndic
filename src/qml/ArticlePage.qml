@@ -3,7 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.7 as Kirigami
 
-Kirigami.ScrollablePage {
+Kirigami.Page {
     id: root
     property alias item: articleView.item
     property var nextItem: function() {}
@@ -73,36 +73,79 @@ Kirigami.ScrollablePage {
         anchors.right: parent.right
     }
 
-    Flickable {
-        id: scroller
-        anchors.fill: parent
-
-        /* setting the content width based on the page width, rather
-          than the flickable width to avoid a binding loop:
-          content height -> scrollbar visibility -> content width -> content height */
-        contentWidth: root.width - leftMargin - rightMargin
-
-        contentHeight: articleView.height + bottomMargin + topMargin
+    /* HACK this SwipeView contains sentinel items that will result in the current
+      page being unloaded.  It would be better to bind to the ArticleListModel
+      to a single instance of ArticlePage and sync the SwipeView with the article
+      list. */
+    SwipeView {
+        id: swipeView
         clip: true
-        flickableDirection: Flickable.AutoFlickIfNeeded
-        topMargin: 20
-        bottomMargin: 20
-        leftMargin: 35
-        rightMargin: 35
-        ArticleView {
-            id: articleView
-            width: scroller.contentWidth
-            firstImage: priv.firstImage
-            textWithoutImages: priv.textWithoutImages
+        anchors.fill: parent
+        currentIndex: 1
+        interactive: Kirigami.Settings.hasTransientTouchInput
+
+        Item {
+            id: previousItemSentinel
+            Connections {
+                target: swipeView.contentItem
+                function onMovementEnded() {
+                    if (previousItemSentinel.SwipeView.isCurrentItem) {
+                        suspendAnimations();
+                        previousItem();
+                    }
+                }
+            }
         }
 
-        Behavior on contentY {
-            id: animateScroll
-            enabled: false
-            NumberAnimation {
-                duration: Kirigami.Units.longDuration
-                easing.type: Easing.OutExpo
-                onRunningChanged: if (!running) scroller.returnToBounds()
+
+        ScrollView {
+            clip: true
+
+            Flickable {
+                id: scroller
+                anchors.fill: parent
+
+                /* setting the content width based on the page width, rather
+                  than the flickable width to avoid a binding loop:
+                  content height -> scrollbar visibility -> content width -> content height */
+                contentWidth: root.width - leftMargin - rightMargin
+
+                contentHeight: articleView.height + bottomMargin + topMargin
+                clip: true
+                flickableDirection: Flickable.AutoFlickIfNeeded
+                topMargin: 20
+                bottomMargin: 20
+                leftMargin: 35
+                rightMargin: 35
+                ArticleView {
+                    id: articleView
+                    width: scroller.contentWidth
+                    firstImage: priv.firstImage
+                    textWithoutImages: priv.textWithoutImages
+                }
+
+                Behavior on contentY {
+                    id: animateScroll
+                    enabled: false
+                    NumberAnimation {
+                        duration: Kirigami.Units.longDuration
+                        easing.type: Easing.OutExpo
+                        onRunningChanged: if (!running) scroller.returnToBounds()
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: nextItemSentinel
+            Connections {
+                target: swipeView.contentItem
+                function onMovementEnded() {
+                    if (nextItemSentinel.SwipeView.isCurrentItem) {
+                        suspendAnimations();
+                        nextItem();
+                    }
+                }
             }
         }
     }
