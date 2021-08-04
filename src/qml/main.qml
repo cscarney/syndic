@@ -200,12 +200,9 @@ Kirigami.ApplicationWindow {
             if (index > 0) {
                 pageStack.currentIndex = index-1;
                 event.accepted = true;
-            } else if (!feedList.currentlySelectedFeed) {
+            } else if (feedList.currentIndex != 0) {
                 feedList.currentIndex = 0;
                 event.accepted = true
-            } else if (!globalDrawer.drawerOpen) {
-                globalDrawer.drawerOpen = true;
-                event.accepted = true;
             }
         }
 
