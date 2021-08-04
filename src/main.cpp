@@ -4,6 +4,8 @@
 #include <QQuickStyle>
 #include <QQmlContext>
 #include <QDir>
+#include <QDirIterator>
+#include <QFontDatabase>
 #include <QStandardPaths>
 
 #ifdef KF5Declarative_FOUND
@@ -55,6 +57,25 @@ static void registerQmlTypes() {
     qmlRegisterUncreatableType<ImageBlock>("ContentModel", 1, 0, "ImageBlock", "content model");
 }
 
+#ifdef ANDROID
+// https://bugreports.qt.io/browse/QTBUG-69494
+static void loadEmbeddedFonts(const QGuiApplication &app) {
+    qDebug() << "searching for fonts";
+    QDirIterator it("/system/fonts", QDir::NoFilter, QDirIterator::Subdirectories);
+    while(it.hasNext()) {
+        it.next();
+        QString path { it.filePath() };
+        if (path.endsWith("_subset.ttf")) {
+            continue;
+        }
+        qDebug() << "Loaded application font: " << path;
+        QFontDatabase::addApplicationFont(path);
+    }
+    QFont::insertSubstitution("sans", "Roboto");
+    QFont::insertSubstitution("serif", "Noto Serif");
+}
+#endif
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -65,6 +86,7 @@ int main(int argc, char *argv[])
 
 #ifdef ANDROID
     QQuickStyle::setStyle("Material");
+    loadEmbeddedFonts(app);
 #else
     QQuickStyle::setStyle("org.kde.desktop");
 #endif
