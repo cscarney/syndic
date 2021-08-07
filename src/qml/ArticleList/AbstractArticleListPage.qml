@@ -13,8 +13,11 @@ Kirigami.ScrollablePage {
     property var pageRow: null
     property alias model: articleList.model
     property alias count: articleList.count
+    property bool isUpdating: model.status === Enums.Updating
     property bool unreadFilter: true
     property bool automaticOpen: pageRow && (pageRow.defaultColumnWidth < pageRow.width)
+    supportsRefreshing: true
+    refreshing: isUpdating
     signal suspendAnimations
 
     topPadding: 0
@@ -31,29 +34,56 @@ Kirigami.ScrollablePage {
         visible: articleList.count == 0
     }
 
-    ArticleListView {
-       id: articleList
-       anchors.fill: parent
-       currentIndex: -1
-       onCurrentItemChanged: openChild()
+    ListView {
+        id: articleList
+        clip: true
+        anchors.fill: parent
+        currentIndex: -1
 
-       model: ArticleListModel {
-          id: feedItemModel
-          feed: root.feed
-          unreadFilter: root.unreadFilter
-          onStatusChanged: {
-              if (articleList.currentItem || !automaticOpen) return;
-              if ((model.status === Enums.Idle) && (model.rowCount() > 0))
-                  articleList.currentIndex = 0;
-              else openChild();
-          }
-      }
-   } /* ArticleList */
+        model: ArticleListModel {
+           id: feedItemModel
+           feed: root.feed
+           unreadFilter: root.unreadFilter
+           onStatusChanged: {
+               if (articleList.currentItem || !automaticOpen) return;
+               if ((model.status === Enums.Idle) && (model.rowCount() > 0))
+                   articleList.currentIndex = 0;
+               else openChild();
+           }
+       } /* model */
+
+        delegate: Kirigami.AbstractListItem {
+            width: root.width
+            text: ref.article.headline
+            padding: 10
+            contentItem: ArticleListEntry { }
+
+            property var data: ref
+
+            highlighted: ListView.isCurrentItem
+            onClicked: {
+                if (articleList.currentIndex !== model.index) {
+                    articleList.currentIndex = model.index
+                } else {
+                    currentItemChanged()
+                }
+            }
+        } /*  delegate */
+
+        onCurrentItemChanged: openChild()
+    } /* articleList */
 
     Settings {
         id: settings
         category: "ArticleList"
         property alias unreadFilter: root.unreadFilter
+    }
+
+    onRefreshingChanged: {
+        if (refreshing && (model.status === Enums.Idle)) {
+            model.requestUpdate();
+            refreshing = Qt.binding(function(){ return isUpdating; });
+        }
     }
 
     onAutomaticOpenChanged: {

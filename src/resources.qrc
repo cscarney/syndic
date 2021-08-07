@@ -5,7 +5,6 @@
         <file>qml/ArticleList/ArticleListPage.qml</file>
         <file>qml/ArticleList/EmptyFeedOverlay.qml</file>
         <file>qml/ArticleList/ArticleListEntry.qml</file>
-        <file>qml/ArticleList/ArticleListView.qml</file>
         <file>qml/Placeholders/AbstractPlaceholderPage.qml</file>
         <file>qml/AboutPage.qml</file>
         <file>qml/AbstractFeedEditorPage.qml</file>
