@@ -53,7 +53,7 @@ Kirigami.ScrollablePage {
        } /* model */
 
         delegate: Kirigami.AbstractListItem {
-            width: root.width
+            width: articleList.width
             text: ref.article.headline
             padding: 10
             contentItem: ArticleListEntry { }
