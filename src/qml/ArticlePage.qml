@@ -99,17 +99,15 @@ Kirigami.Page {
 
 
         ScrollView {
+            id: scrollView
             clip: true
 
             Flickable {
                 id: scroller
                 anchors.fill: parent
+                Keys.forwardTo: [root]
 
-                /* setting the content width based on the page width, rather
-                  than the flickable width to avoid a binding loop:
-                  content height -> scrollbar visibility -> content width -> content height */
                 contentWidth: root.width - leftMargin - rightMargin
-
                 contentHeight: articleView.height + bottomMargin + topMargin
                 clip: true
                 flickableDirection: Flickable.AutoFlickIfNeeded
@@ -171,6 +169,14 @@ Kirigami.Page {
             nextItem();
             break;
 
+        case Qt.Key_Up:
+            pxUpDown(Kirigami.Units.gridUnit * -2);
+            break;
+
+        case Qt.Key_Down:
+            pxUpDown(Kirigami.Units.gridUnit * 2);
+            break;
+
         case Qt.Key_PageUp:
             pageUpDown(-0.9);
             break;
@@ -194,9 +200,13 @@ Kirigami.Page {
         item.article.requestContent();
     }
 
-    function pageUpDown(increment) {
+    function pxUpDown(increment) {
         animateScroll.enabled = true
-        scroller.contentY = scroller.contentY + (increment * scroller.height)
+        scroller.contentY = scroller.contentY + increment
         animateScroll.enabled = false
+    }
+
+    function pageUpDown(increment) {
+        pxUpDown(increment * scroller.height)
     }
 }
