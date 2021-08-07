@@ -126,7 +126,7 @@ Kirigami.Page {
                     id: animateScroll
                     enabled: false
                     NumberAnimation {
-                        duration: Kirigami.Units.longDuration
+                        duration: Kirigami.Units.shortDuration
                         easing.type: Easing.OutExpo
                         onRunningChanged: if (!running) scroller.returnToBounds()
                     }
