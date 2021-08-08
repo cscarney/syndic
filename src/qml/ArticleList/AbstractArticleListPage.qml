@@ -65,7 +65,7 @@ Kirigami.ScrollablePage {
                 if (articleList.currentIndex !== model.index) {
                     articleList.currentIndex = model.index
                 } else {
-                    currentItemChanged()
+                    articleList.currentItemChanged()
                 }
             }
         } /*  delegate */

@@ -1,3 +1,4 @@
+import Enums 1.0
 import org.kde.kirigami 2.7 as Kirigami
 
 AbstractArticleListPage {
@@ -13,15 +14,17 @@ AbstractArticleListPage {
             }
             displayHint: Kirigami.Action.DisplayHint.KeepVisible
         }
-         left: Kirigami.Action {
-             text: qsTr("Unread Only")
-             iconName: "view-filter"
-             checkable: true
-             checked: root.unreadFilter
-             displayHint: Kirigami.Action.DisplayHint.KeepVisible
-             onCheckedChanged: root.unreadFilter = checked
-         }
+
         contextualActions: [
+            Kirigami.Action {
+                 text: qsTr("Hide Read Items")
+                 iconName: "view-filter"
+                 checkable: true
+                 checked: root.unreadFilter
+                 displayHint: Kirigami.Action.DisplayHint.AlwaysHide
+                 onCheckedChanged: root.unreadFilter = checked
+             },
+
             Kirigami.Action {
                 text: qsTr("Edit...")
                 iconName: "document-edit"
@@ -31,8 +34,17 @@ AbstractArticleListPage {
                     pageRow.pop(root)
                     pageRow.push("qrc:/qml/EditFeedPage.qml", {targetFeed: feed});
                 }
-            }
+            },
 
+            Kirigami.Action {
+                text: qsTr("Refresh")
+                iconName: "view-refresh"
+                displayHint: Kirigami.Action.AlwaysHide
+                enabled: feed && feed.status!=Enums.Updating
+                onTriggered: {
+                    root.model.requestUpdate();
+                }
+            }
         ]
     }
 }
