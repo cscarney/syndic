@@ -1,5 +1,4 @@
 #include "gumbovisitor.h"
-#include <QDebug>
 
 GumboVisitor::GumboVisitor(const QString &input)
 {
@@ -11,7 +10,7 @@ void GumboVisitor::walk()
 {
     m_root = m_gumbo->root;
     m_node = m_root;
-    while(m_node) {
+    while(m_node != nullptr) {
         switch (m_node->type) {
         case GUMBO_NODE_TEXT:
         case GUMBO_NODE_CDATA:
@@ -27,9 +26,8 @@ void GumboVisitor::walk()
             if (element.children.length > 0) {
                 m_node = static_cast<GumboNode *>(element.children.data[0]);
                 continue;
-            } else {
-                visitElementClose(m_node);
             }
+            visitElementClose(m_node);
             break;
         }
         default:

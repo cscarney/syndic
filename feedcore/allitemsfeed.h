@@ -1,5 +1,5 @@
-#ifndef ALLITEMSFEED_H
-#define ALLITEMSFEED_H
+#ifndef FEEDCORE_ALLITEMSFEED_H
+#define FEEDCORE_ALLITEMSFEED_H
 #include <QSet>
 #include "feed.h"
 
@@ -29,4 +29,4 @@ private:
 };
 }
 
-#endif // ALLITEMSFEED_H
+#endif // FEEDCORE_ALLITEMSFEED_H

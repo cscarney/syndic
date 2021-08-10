@@ -1,29 +1,18 @@
-#ifndef PROVISIONALFEED_H
-#define PROVISIONALFEED_H
+#ifndef FEEDCORE_PROVISIONALFEED_H
+#define FEEDCORE_PROVISIONALFEED_H
 #include <Syndication/Feed>
 #include "future.h"
 #include "factory.h"
-#include "feed.h"
+#include "updatablefeed.h"
 namespace FeedCore {
-class XMLUpdater;
-namespace Preview {
-    class ArticleImpl;
-}
-
 /**
  * A minimal implementation of Feed, used for configuring and previewing feeds before commiting them to storage
  */
-class ProvisionalFeed : public Feed {
+class ProvisionalFeed : public UpdatableFeed {
     Q_OBJECT
     Q_PROPERTY(Feed *targetFeed MEMBER m_targetFeed NOTIFY targetFeedChanged)
 public:
     explicit ProvisionalFeed(QObject *parent=nullptr);
-
-    /**
-     * An XMLUpdater that can be used to check the validity of a feed configuration and
-     * retrieve a preview of the configured feed.
-     */
-    Updater *updater() final;
 
     /**
      * Retrieve preview articles.
@@ -42,10 +31,10 @@ signals:
     void targetFeedChanged();
 private:
     Feed *m_targetFeed { nullptr };
-    XMLUpdater *m_updater { nullptr };
     Syndication::FeedPtr m_feed;
-    SharedFactory<Syndication::ItemPtr, Preview::ArticleImpl> m_articles;
+    class ArticleImpl;
+    SharedFactory<Syndication::ItemPtr, ArticleImpl> m_articles;
     void onUrlChanged();
 };
 }
-#endif // PROVISIONALFEED_H
+#endif // FEEDCORE_PROVISIONALFEED_H

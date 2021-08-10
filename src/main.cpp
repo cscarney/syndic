@@ -28,7 +28,7 @@ static QString filePath(QString const &fileName)
 {
     QDir appDataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
     if (!appDataDir.mkpath(".")) {
-        qDebug("failed to create data dir");
+        qWarning("failed to create data dir");
         appDataDir = QDir(".");
     }
     return appDataDir.filePath(fileName);
@@ -48,7 +48,6 @@ static void registerQmlTypes() {
     qmlRegisterType<NewItemNotifier>("NewItemNotifier", 1, 0, "NewItemNotifier");
     qmlRegisterUncreatableType<Updater>("Updater", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<Context>("FeedContext", 1, 0, "FeedContext", "global object");
-    qmlRegisterUncreatableType<Enums>("Enums", 1, 0, "Enums", "enum container class");
     qmlRegisterUncreatableType<Feed>("Feed", 1,0, "Feed", "obtained from cpp model");
     qmlRegisterUncreatableType<Article>("Article", 1, 0, "Article", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlArticleRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
@@ -60,7 +59,6 @@ static void registerQmlTypes() {
 #ifdef ANDROID
 // https://bugreports.qt.io/browse/QTBUG-69494
 static void loadEmbeddedFonts(const QGuiApplication &app) {
-    qDebug() << "searching for fonts";
     QDirIterator it("/system/fonts", QDir::NoFilter, QDirIterator::Subdirectories);
     while(it.hasNext()) {
         it.next();
@@ -68,7 +66,6 @@ static void loadEmbeddedFonts(const QGuiApplication &app) {
         if (path.endsWith("_subset.ttf")) {
             continue;
         }
-        qDebug() << "Loaded application font: " << path;
         QFontDatabase::addApplicationFont(path);
     }
     QFont::insertSubstitution("sans", "Roboto");

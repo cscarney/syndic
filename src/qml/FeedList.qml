@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.7 as Kirigami
 import Feed 1.0
 import FeedListModel 1.0
-import Enums 1.0
 
 ScrollView {
     id: root
@@ -47,7 +46,7 @@ ScrollView {
             bottomPadding: Kirigami.Units.largeSpacing
             contentItem: RowLayout {
                 property var feed: model.feed
-                property var status: feed ? feed.status : Enums.Idle
+                property var status: feed ? feed.status : Feed.Idle
                 property var unreadCount: feed ? feed.unreadCount : 0
                 property var name: feed ? feed.name : qsTr("All Items")
                 property var icon: feed.icon.toString()
@@ -77,7 +76,7 @@ ScrollView {
                     source: "content-loading-symbolic"
                     isMask: true
                     color: fgColor
-                    visible: parent.status === Enums.Updating
+                    visible: parent.status === Feed.Updating
                 }
 
                 Kirigami.Icon {
@@ -87,7 +86,7 @@ ScrollView {
                     source: "dialog-error-symbolic"
                     isMask: true
                     color: fgColor
-                    visible: parent.status === Enums.Error
+                    visible: parent.status === Feed.Error
                 }
 
                 Label {

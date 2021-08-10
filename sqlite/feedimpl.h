@@ -1,6 +1,6 @@
 #ifndef SQLITE_FEEDIMPL_H
 #define SQLITE_FEEDIMPL_H
-#include "feed.h"
+#include "updatablefeed.h"
 #include "factory.h"
 class QSqlQuery;
 namespace FeedCore {
@@ -12,7 +12,7 @@ class StorageImpl;
 class ArticleImpl;
 class FeedQuery;
 
-class FeedImpl : public FeedCore::Feed {
+class FeedImpl : public FeedCore::UpdatableFeed {
     Q_OBJECT
 public:
     qint64 id() const;
@@ -20,13 +20,11 @@ public:
     FeedCore::Future<FeedCore::ArticleRef> *getArticles(bool unreadFilter) final;
     bool editable() final { return true; }
     void updateFromSource(const Syndication::FeedPtr &source) final;
-    FeedCore::Updater *updater() final;
     void onArticleReadChanged(ArticleImpl *article);
 private:
     FeedImpl(qint64 feedId, StorageImpl *storage);
     qint64 m_id { 0 };
     StorageImpl *m_storage{ nullptr };
-    FeedCore::XMLUpdater *m_updater{ nullptr };
     friend FeedCore::ObjectFactory<qint64, FeedImpl>;
 };
 }

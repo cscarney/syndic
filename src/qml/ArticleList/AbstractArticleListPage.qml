@@ -2,7 +2,6 @@ import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
-import Enums 1.0
 import ArticleListModel 1.0
 import Feed 1.0
 
@@ -13,7 +12,7 @@ Kirigami.ScrollablePage {
     property var pageRow: null
     property alias model: articleList.model
     property alias count: articleList.count
-    property bool isUpdating: model.status === Enums.Updating
+    property bool isUpdating: model.status === Feed.Updating
     property bool unreadFilter: true
     property bool automaticOpen: pageRow && (pageRow.defaultColumnWidth < pageRow.width)
     supportsRefreshing: true
@@ -46,7 +45,7 @@ Kirigami.ScrollablePage {
            unreadFilter: root.unreadFilter
            onStatusChanged: {
                if (articleList.currentItem || !automaticOpen) return;
-               if ((model.status === Enums.Idle) && (model.rowCount() > 0))
+               if ((model.status === Feed.Idle) && (model.rowCount() > 0))
                    articleList.currentIndex = 0;
                else openChild();
            }
@@ -80,7 +79,7 @@ Kirigami.ScrollablePage {
     }
 
     onRefreshingChanged: {
-        if (refreshing && (model.status === Enums.Idle)) {
+        if (refreshing && (model.status === Feed.Idle)) {
             model.requestUpdate();
             refreshing = Qt.binding(function(){ return isUpdating; });
         }
@@ -96,13 +95,13 @@ Kirigami.ScrollablePage {
 
     function pushPlaceholder() {
         switch(model.status) {
-        case Enums.Loading:
+        case Feed.Loading:
             // just wait for the load...
             break;
-        case Enums.Updating:
+        case Feed.Updating:
             root.pageRow.push("qrc:/qml/Placeholders/UpdatingPlaceholderPage.qml");
             break;
-        case Enums.Error:
+        case Feed.Error:
             root.pageRow.push("qrc:/qml/Placeholders/ErrorPlaceholderPage.qml", {model:model});
             break;
         default:

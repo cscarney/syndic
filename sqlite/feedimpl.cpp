@@ -2,7 +2,7 @@
 #include <QVariant>
 #include <QSqlQuery>
 #include <Syndication/Image>
-#include "xmlupdater.h"
+#include "updater.h"
 #include "sqlite/storageimpl.h"
 #include "article.h"
 #include "articleref.h"
@@ -14,10 +14,9 @@ using namespace Sqlite;
 
 
 FeedImpl::FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage):
-    Feed(storage),
+    UpdatableFeed(storage),
     m_id{feedId},
-    m_storage{storage},
-    m_updater{new XMLUpdater(this, this)}
+    m_storage{storage}
 {
     storage->listenForChanges(this);
 }
@@ -41,17 +40,16 @@ void FeedImpl::updateFromQuery(const FeedQuery &query)
     Feed::setIcon(query.icon());
     Feed::setUnreadCount(query.unreadCount());
 
-    m_updater->setLastUpdate(query.lastUpdate());
-    unpackUpdateInterval(m_updater, query.updateInterval());
+    updater()->setLastUpdate(query.lastUpdate());
+    unpackUpdateInterval(updater(), query.updateInterval());
 }
 
 Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)
 {
     if (unreadFilter) {
         return m_storage->getUnreadByFeed(this);
-    } else {
-        return m_storage->getByFeed(this);
     }
+    return m_storage->getByFeed(this);
 }
 
 void FeedImpl::updateFromSource(const Syndication::FeedPtr &source)
@@ -73,11 +71,6 @@ void FeedImpl::updateFromSource(const Syndication::FeedPtr &source)
             }
         });
     }
-}
-
-Updater *FeedImpl::updater()
-{
-    return m_updater;
 }
 
 void FeedImpl::onArticleReadChanged(ArticleImpl *article)

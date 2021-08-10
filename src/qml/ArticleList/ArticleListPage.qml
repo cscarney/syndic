@@ -1,4 +1,4 @@
-import Enums 1.0
+import Feed 1.0
 import org.kde.kirigami 2.14 as Kirigami
 
 AbstractArticleListPage {
@@ -40,7 +40,7 @@ AbstractArticleListPage {
                 text: qsTr("Refresh")
                 iconName: "view-refresh"
                 displayHint: Kirigami.DisplayHint.AlwaysHide
-                enabled: feed && feed.status!=Enums.Updating
+                enabled: feed && feed.status!=Feed.Updating
                 onTriggered: {
                     root.model.requestUpdate();
                 }

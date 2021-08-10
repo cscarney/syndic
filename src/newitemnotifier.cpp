@@ -8,7 +8,6 @@
 #include "knotification.h"
 #endif
 
-#include <QDebug>
 using namespace FeedCore;
 
 NewItemNotifier::NewItemNotifier(QObject *parent) : QObject(parent)
@@ -19,7 +18,7 @@ NewItemNotifier::NewItemNotifier(QObject *parent) : QObject(parent)
 void NewItemNotifier::setContext(FeedCore::Context *context)
 {
     if (m_context != context) {
-        if (m_feed) {
+        if (m_feed != nullptr) {
             QObject::disconnect(m_feed, nullptr, this, nullptr);
         }
         m_feed = new AllItemsFeed(context, "", this);
@@ -62,11 +61,10 @@ void NewItemNotifier::onArticleAdded(const ArticleRef &article){
     }
 }
 
-void NewItemNotifier::postNotification()
+void NewItemNotifier::postNotification() const
 {
-    QString notificationText { tr("%1 New Item(s)", "Notification Text", m_counter).arg(m_counter) };
-    qDebug() << "Notification: " << notificationText;
 #ifdef KF5Notifications_FOUND
+    QString notificationText { tr("%1 New Item(s)", "Notification Text", m_counter).arg(m_counter) };
     KNotification::event(KNotification::Notification, notificationText); 
 #endif
 }

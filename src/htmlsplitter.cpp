@@ -1,5 +1,7 @@
 #include "htmlsplitter.h"
 
+#include <utility>
+
 HtmlSplitter::HtmlSplitter(const QString &input, QObject *blockParent) :
     GumboVisitor(input),
     m_blockParent(blockParent)
@@ -68,7 +70,7 @@ void HtmlSplitter::visitText(GumboNode *node)
 void HtmlSplitter::visitElementClose(GumboNode *node)
 {
     m_openElements.removeLast();
-    if (m_currentTextBlock) {
+    if (m_currentTextBlock != nullptr) {
         m_currentTextBlock->appendText(buildCloseTag(node->v.element));
     }
 }
@@ -100,8 +102,8 @@ void HtmlSplitter::ensureTextBlock()
 
 void HtmlSplitter::closeTextBlock(GumboNode *currentNode)
 {
-    if (!m_currentTextBlock) return;
-    auto &rootNode = root();
+    if (m_currentTextBlock == nullptr){return;}
+    const auto &rootNode = root();
     for(;;) {
         assert(currentNode->type == GUMBO_NODE_ELEMENT);
         m_currentTextBlock->appendText(buildCloseTag(currentNode->v.element));
@@ -119,15 +121,15 @@ void HtmlSplitter::createImageBlock(GumboNode *node)
     closeTextBlock(node->parent);
     GumboElement &element = node->v.element;
     GumboAttribute *attr = gumbo_get_attribute(&element.attributes, "src");
-    if (!attr) return;
+    if (attr == nullptr){return;}
     QUrl src = QString(attr->value);
-    ImageBlock *image = new ImageBlock(src, m_blockParent);
+    auto *image = new ImageBlock(src, m_blockParent);
     m_blocks.push_back(image);
 }
 
 ImageBlock::ImageBlock(QUrl src, QObject *parent):
     ContentBlock(parent),
-    m_src(src)
+    m_src(std::move(src))
 {}
 
 const QString &ImageBlock::delegateName() const

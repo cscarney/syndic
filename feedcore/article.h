@@ -1,5 +1,5 @@
-#ifndef ARTICLE_H
-#define ARTICLE_H
+#ifndef FEEDCORE_ARTICLE_H
+#define FEEDCORE_ARTICLE_H
 #include <QObject>
 #include <QDateTime>
 #include <QUrl>
@@ -102,4 +102,4 @@ private:
 };
 }
 
-#endif // ARTICLE_H
+#endif // FEEDCORE_ARTICLE_H

@@ -1,8 +1,20 @@
 #include <Syndication/Image>
+#include <Syndication/Item>
+#include <Syndication/Person>
 #include "provisionalfeed.h"
-#include "xmlupdater.h"
-#include "preview/articleimpl.h"
+#include "updater.h"
+#include "article.h"
 using namespace FeedCore;
+
+class ProvisionalFeed::ArticleImpl : public Article {
+public:
+    explicit ArticleImpl(const Syndication::ItemPtr& item, Feed *feed, QObject *parent=nullptr);
+    void requestContent() final;
+    void setRead(bool isRead) final {};
+    void setStarred(bool isStarred) final {};
+private:
+    Syndication::ItemPtr m_item;
+};
 
 void ProvisionalFeed::onUrlChanged() {
     updater()->abort();
@@ -11,26 +23,19 @@ void ProvisionalFeed::onUrlChanged() {
 }
 
 ProvisionalFeed::ProvisionalFeed(QObject *parent) :
-    Feed(parent),
-    m_updater(new XMLUpdater(this, this))
+    UpdatableFeed(parent)
 {
     QObject::connect(this, &Feed::urlChanged, this, &ProvisionalFeed::onUrlChanged);
     QObject::connect(this, &ProvisionalFeed::targetFeedChanged, this,
                      [this]{ updateParams(m_targetFeed); });
 }
 
-FeedCore::Updater *ProvisionalFeed::updater()
-{
-    return m_updater;
-}
-
 Future<ArticleRef> *ProvisionalFeed::getArticles(bool unreadFilter)
 {
     return Future<ArticleRef>::yield(this, [this](auto *op){
-        if (!m_feed) {
-            return;
-        }
-        for(const auto &item : m_feed->items()) {
+        if (m_feed == nullptr) {return;}
+        const auto &items = m_feed->items();
+        for(const auto &item : items) {
             op->appendResult(m_articles.getInstance(item, this));
         }
     });
@@ -50,6 +55,24 @@ void ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed)
 
 void ProvisionalFeed::save()
 {
-    if (!m_targetFeed) return;
+    if (m_targetFeed == nullptr){return;}
     m_targetFeed->updateParams(this);
 }
+
+void ProvisionalFeed::ArticleImpl::requestContent()
+{
+    QString content { m_item->content() };
+    emit gotContent(content.isEmpty() ? m_item->description() : content);
+}
+
+ProvisionalFeed::ArticleImpl::ArticleImpl(const Syndication::ItemPtr& item, Feed *feed, QObject *parent):
+    Article(feed, parent),
+    m_item(item)
+{
+    setTitle(item->title());
+    setUrl(item->link());
+    setDate(QDateTime::fromTime_t(item->dateUpdated()));
+    auto authors = item->authors();
+    setAuthor(authors.isEmpty() ? "" : authors[0]->name());
+}
+

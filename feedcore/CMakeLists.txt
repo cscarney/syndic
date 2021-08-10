@@ -6,16 +6,13 @@ set(feedcore_HEADERS
     future.h
     context.h
     updater.h
-    xmlupdater.h
     scheduler.h
-    dataretriever.h
-    enums.h
     allitemsfeed.h
     factory.h
-    preview/articleimpl.h
     provisionalfeed.h
-    cachednetworkaccessmanager.h
+    networkaccessmanager.h
     starreditemsfeed.h
+    updatablefeed.h
     )
     
 set(feedcore_SRCS
@@ -24,14 +21,12 @@ set(feedcore_SRCS
     article.cpp
     context.cpp
     updater.cpp
-    xmlupdater.cpp
     scheduler.cpp
-    dataretriever.cpp
     allitemsfeed.cpp
-    preview/articleimpl.cpp
     provisionalfeed.cpp
-    cachednetworkaccessmanager.cpp
+    networkaccessmanager.cpp
     starreditemsfeed.cpp
+    updatablefeed.cpp
     )
     
 add_library(feedcore STATIC ${feedcore_SRCS})

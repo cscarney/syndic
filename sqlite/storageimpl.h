@@ -12,7 +12,7 @@ class StorageImpl : public FeedCore::Storage
 {
     Q_OBJECT
 public:
-    explicit StorageImpl(QString filePath);
+    explicit StorageImpl(const QString& filePath);
     FeedCore::Future<FeedCore::ArticleRef> *getById(qint64 id);
     FeedCore::Future<FeedCore::ArticleRef> *getByFeed(FeedImpl *feedId);
     FeedCore::Future<FeedCore::ArticleRef> *getUnreadByFeed(FeedImpl *feedId);

@@ -1,5 +1,4 @@
 #include "contentmodel.h"
-#include <QDebug>
 
 ContentModel::ContentModel(QObject *parent) :
     QAbstractListModel(parent)
@@ -20,14 +19,14 @@ QVariant ContentModel::data(const QModelIndex &index, int role) const
     return QVariant::fromValue(block);
 }
 
-void ContentModel::setText(QString text)
+void ContentModel::setText(const QString& text)
 {
     if (m_text != text) {
         m_text = text;
         beginResetModel();
         m_blocks = HtmlSplitter::cleanHtml(text, this);
         endResetModel();
-        textChanged();
+        emit textChanged();
     }
 }
 

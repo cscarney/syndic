@@ -19,44 +19,44 @@ struct Updater::PrivData {
 
 Updater::Updater(Feed *feed, QObject *parent) :
     QObject(parent),
-    priv{ std::make_unique<PrivData>() }
+    d{ std::make_unique<PrivData>() }
 {
-    priv->feed = feed;
+    d->feed = feed;
 }
 
 Updater::~Updater() = default;
 
 void Updater::start(const QDateTime &timestamp)
 {
-    if (priv->feed->status() != LoadStatus::Updating) {
-        priv->feed->setStatus(LoadStatus::Updating);
-        if (priv->expireAge > 0) {
-            expire(timestamp.addSecs(-priv->expireAge));
+    if (d->feed->status() != LoadStatus::Updating) {
+        d->feed->setStatus(LoadStatus::Updating);
+        if (d->expireAge > 0) {
+            emit expire(timestamp.addSecs(-d->expireAge));
         }
         run();
     }
-    priv->updateStartTime = timestamp;
+    d->updateStartTime = timestamp;
 }
 
 QString Updater::error()
 {
-    return priv->errorMsg;
+    return d->errorMsg;
 }
 
 Feed *Updater::feed()
 {
-    return priv->feed;
+    return d->feed;
 }
 
 QDateTime Updater::nextUpdate()
 {
-    return priv->updateStartTime.addSecs(priv->updateInterval);
+    return d->updateStartTime.addSecs(d->updateInterval);
 }
 
 bool Updater::hasNextUpdate()
 {
-    return (priv->updateMode != ManualUpdateMode
-            && priv->updateInterval > 0);
+    return (d->updateMode != ManualUpdateMode
+            && d->updateInterval > 0);
 }
 
 bool Updater::needsUpdate(const QDateTime &timestamp)
@@ -75,53 +75,53 @@ bool Updater::updateIfNecessary(const QDateTime &timestamp)
 
 const QDateTime &Updater::lastUpdate()
 {
-    return priv->lastUpdate;
+    return d->lastUpdate;
 }
 
 void Updater::setLastUpdate(const QDateTime &lastUpdate)
 {
-    if (priv->lastUpdate != lastUpdate) {
-        priv->lastUpdate = priv->updateStartTime = lastUpdate;
+    if (d->lastUpdate != lastUpdate) {
+        d->lastUpdate = d->updateStartTime = lastUpdate;
         emit lastUpdateChanged();
     }
 }
 
 Updater::UpdateMode Updater::updateMode()
 {
-    return priv->updateMode;
+    return d->updateMode;
 }
 
 void Updater::setUpdateMode(Updater::UpdateMode updateMode)
 {
-    if (updateMode != priv->updateMode) {
-        priv->updateMode = updateMode;
+    if (updateMode != d->updateMode) {
+        d->updateMode = updateMode;
         emit updateModeChanged();
     }
 }
 
 qint64 Updater::updateInterval()
 {
-    return priv->updateInterval;
+    return d->updateInterval;
 }
 
 void Updater::setUpdateInterval(qint64 updateInterval)
 {
-    if (updateInterval != priv->updateInterval) {
-        priv->updateInterval = updateInterval;
+    if (updateInterval != d->updateInterval) {
+        d->updateInterval = updateInterval;
         emit updateIntervalChanged();
     }
 }
 
 void Updater::setDefaultUpdateInterval(qint64 updateInterval)
 {
-    if (priv->updateMode == DefaultUpdateMode) {
+    if (d->updateMode == DefaultUpdateMode) {
         setUpdateInterval(updateInterval);
     }
 }
 
 void Updater::setExpireAge(qint64 expireAge)
 {
-    priv->expireAge = expireAge;
+    d->expireAge = expireAge;
 }
 
 void Updater::updateParams(Updater *other)
@@ -132,15 +132,14 @@ void Updater::updateParams(Updater *other)
 
 void Updater::finish()
 {
-    setLastUpdate(priv->updateStartTime);
-    priv->feed->setStatus(LoadStatus::Idle);
+    setLastUpdate(d->updateStartTime);
+    d->feed->setStatus(LoadStatus::Idle);
 }
 
 void Updater::setError(const QString &errorMsg)
 {
-    qDebug() << errorMsg;
-    priv->errorMsg = errorMsg;
-    priv->feed->setStatus(LoadStatus::Error);
+    d->errorMsg = errorMsg;
+    d->feed->setStatus(LoadStatus::Error);
 }
 
 }

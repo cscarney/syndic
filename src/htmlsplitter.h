@@ -43,7 +43,7 @@ public:
 
     void visitElementOpen(GumboNode *node) override;
     void visitText(GumboNode *node) override;
-    void visitElementClose(GumboNode *element) override;
+    void visitElementClose(GumboNode *node) override;
 private:
     QVector<ContentBlock*> m_blocks;
     TextBlock *m_currentTextBlock=nullptr;

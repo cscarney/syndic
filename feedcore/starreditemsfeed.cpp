@@ -9,8 +9,6 @@ public:
         Updater(parent, parent)
     {}
 
-    // Updater interface
-public:
     void run() override {
         finish();
     }

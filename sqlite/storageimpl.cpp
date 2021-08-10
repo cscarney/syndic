@@ -1,8 +1,8 @@
-#include "sqlite/storageimpl.h"
+﻿#include "sqlite/storageimpl.h"
 #include <QVector>
 #include <QTimer>
-#include <QDebug>
 #include <Syndication/Person>
+#include <utility>
 #include "sqlite/feedimpl.h"
 #include "sqlite/articleimpl.h"
 #include "articleref.h"
@@ -54,7 +54,7 @@ FeedCore::Future<ArticleRef> *StorageImpl::getStarred()
     });
 }
 
-StorageImpl::StorageImpl(QString filePath) :
+StorageImpl::StorageImpl(const QString& filePath) :
     m_db(filePath)
 {
 
@@ -139,7 +139,7 @@ void StorageImpl::onArticleStarredChanged(ArticleImpl *article)
 void StorageImpl::appendFeedResults(Future<Feed*> *op, FeedQuery &q)
 {
     while (q.next()) {
-        auto ref = m_feedFactory.getInstance(q.id(), this);
+        auto *ref = m_feedFactory.getInstance(q.id(), this);
         ref->updateFromQuery(q);
         op->appendResult(ref);
     }
@@ -174,12 +174,6 @@ Future<Feed*> *StorageImpl::storeFeed(Feed *feed)
     const QString &name = feed->name();
     const qint64 updateInterval = packFeedUpdateInterval(feed->updater());
     return Future<Feed*>::yield(this, [this, url, name, updateInterval](auto *op){
-        const auto &existingId = m_db.selectFeedId(0, url.toString());
-        if (existingId) {
-            qDebug() << "trying to insert feed for " << url << "which already exists";
-            op->setResult();
-            return;
-        }
         const auto &insertId = m_db.insertFeed(url);
         if (!insertId)
         {

@@ -12,7 +12,7 @@ public:
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     const QString &text() { return m_text; }
-    void setText(QString text);
+    void setText(const QString& text);
     QHash<int, QByteArray> roleNames() const override;
 
 signals:

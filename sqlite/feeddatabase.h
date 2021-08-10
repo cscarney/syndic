@@ -11,7 +11,7 @@ namespace Sqlite {
 class FeedDatabase
 {
 public:
-    explicit FeedDatabase(QString filePath);
+    explicit FeedDatabase(const QString& filePath);
     ~FeedDatabase();
     FeedDatabase(const FeedDatabase&) = delete;
     FeedDatabase &operator=(const FeedDatabase&) = delete;
@@ -29,7 +29,7 @@ public:
     void updateItemRead(qint64 id, bool isRead);
     void updateItemStarred(qint64 id, bool isStarred);
     void deleteItemsForFeed(qint64 feedId);
-    void deleteItemsOlderThan(qint64 feedId, QDateTime olderThan);
+    void deleteItemsOlderThan(qint64 feedId, const QDateTime& olderThan);
 
     FeedQuery selectAllFeeds();
     FeedQuery selectFeed(qint64 feedId);
@@ -39,7 +39,7 @@ public:
     void updateFeedLink(qint64 feedId, const QString &link);
     void updateFeedIcon(qint64 feedId, const QString &icon);
     void updateFeedUpdateInterval(qint64 feedId, qint64 updateInterval);
-    void updateFeedLastUpdate(qint64 feedId, QDateTime lastUpdated);
+    void updateFeedLastUpdate(qint64 feedId, const QDateTime& lastUpdated);
     void deleteFeed(qint64 feedId);
 private:
     QSqlDatabase db();

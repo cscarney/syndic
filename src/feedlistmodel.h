@@ -34,7 +34,7 @@ signals:
     void contextChanged();
 private:
     class PrivData;
-    std::unique_ptr<PrivData> priv;
+    std::unique_ptr<PrivData> d;
     void onGetFeedsFinished(FeedCore::Future<FeedCore::Feed*> *sender);
     void onFeedAdded(FeedCore::Feed *feed);
 };

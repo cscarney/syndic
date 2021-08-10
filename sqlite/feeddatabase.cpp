@@ -6,7 +6,6 @@
 #include <QSqlError>
 #include <QDebug>
 
-
 namespace Sqlite {
 
 static const QString db_name_fmt = QStringLiteral("Sqlite_FeedDatabase_%1");
@@ -20,7 +19,7 @@ static int getVersion(QSqlDatabase &db)
 {
     QSqlQuery q("PRAGMA user_version", db);
     if (!q.next()) {
-        qDebug("getVersion returned empty set");
+        qWarning("getVersion returned empty set");
         return 0;
     }
 
@@ -31,7 +30,7 @@ static bool exec(QSqlDatabase &db, const QString& queryString)
 {
     QSqlQuery q(db);
     if (!q.exec(queryString)) {
-        qDebug() << "SQL Error: " + q.lastError().text();
+        qWarning() << "SQL Error: " + q.lastError().text();
         return false;
     }
     return true;
@@ -78,23 +77,23 @@ static void initDatabase(QSqlDatabase &db)
                          "isStarred INTEGER,"
                          "UNIQUE(feed,localId));",
 
-                           "PRAGMA user_version = 1;"
+                          "PRAGMA user_version = 1;"
                      });
     }
     if (!success) {
-        qDebug("Database initialization failed!");
+        qWarning("Database initialization failed!");
         db.close();
     }
 }
 
-FeedDatabase::FeedDatabase(QString filePath)
+FeedDatabase::FeedDatabase(const QString& filePath)
 {
     static int dbCount {0};
     m_dbName = db_name_fmt.arg(++dbCount);
     auto db = QSqlDatabase::addDatabase("QSQLITE", m_dbName);
     db.setDatabaseName(filePath);
     if (!db.open()) {
-        qDebug("Failed to open database!");
+        qWarning("Failed to open database!");
     } else {
         initDatabase(db);
     }
@@ -111,7 +110,7 @@ ItemQuery FeedDatabase::selectAllItems()
 {
     ItemQuery q(db(), "1 "+select_sort);
     if (!q.exec()) {
-        qDebug() << "SQL Error in selectAllItems: " + q.lastError().text();
+        qWarning() << "SQL Error in selectAllItems: " + q.lastError().text();
     }
     return q;
 }
@@ -120,7 +119,7 @@ ItemQuery FeedDatabase::selectUnreadItems()
 {
     ItemQuery q(db(), "isRead=0 "+select_sort);
     if (!q.exec()) {
-        qDebug() << "SQL Error in selectUnreadItems: " + q.lastError().text();
+        qWarning() << "SQL Error in selectUnreadItems: " + q.lastError().text();
     }
     return q;
 }
@@ -129,7 +128,7 @@ ItemQuery FeedDatabase::selectStarredItems()
 {
     ItemQuery q(db(), "isStarred=1 "+select_sort);
     if (!q.exec()) {
-        qDebug() << "SQL Error in selectStarredItems: " + q.lastError().text();
+        qWarning() << "SQL Error in selectStarredItems: " + q.lastError().text();
     }
     return q;
 }
@@ -139,7 +138,7 @@ ItemQuery FeedDatabase::selectItemsByFeed(qint64 feedId)
     ItemQuery q(db(), "feed=:feed "+select_sort);
     q.bindValue(":feed", feedId);
     if (!q.exec()) {
-        qDebug() << "SQL Error in selectItemsByFeed: " + q.lastError().text();
+        qWarning() << "SQL Error in selectItemsByFeed: " + q.lastError().text();
     }
     return q;
 }
@@ -149,7 +148,7 @@ ItemQuery FeedDatabase::selectUnreadItemsByFeed(qint64 feedId)
     ItemQuery q(db(), "feed=:feed AND isRead=0 "+select_sort);
     q.bindValue(":feed", feedId);
     if (!q.exec()) {
-        qDebug() << "SQL Error in selectUnreadItemsByFeed: " + q.lastError().text();
+        qWarning() << "SQL Error in selectUnreadItemsByFeed: " + q.lastError().text();
     }
     return q;
 }
@@ -159,7 +158,7 @@ ItemQuery FeedDatabase::selectItem(qint64 id)
     ItemQuery q(db(), "id=:id");
     q.bindValue(":id", id);
     if (!q.exec()) {
-        qDebug() << "SQL Error in selectItem: " + q.lastError().text();
+        qWarning() << "SQL Error in selectItem: " + q.lastError().text();
     }
     return q;
 }
@@ -170,7 +169,7 @@ ItemQuery FeedDatabase::selectItem(qint64 feed, const QString &localId)
     q.bindValue(":feed", feed);
     q.bindValue(":localId", localId);
     if (!q.exec()) {
-        qDebug() << "SQL Error in selectItem: " + q.lastError().text();
+        qWarning() << "SQL Error in selectItem: " + q.lastError().text();
     }
     return q;
 }
@@ -184,7 +183,7 @@ std::optional<qint64> FeedDatabase::selectItemId(qint64 feedId, const QString &l
     q.bindValue(":feed", feedId);
     q.bindValue(":localId", localId);
     if (!q.exec()) {
-        qDebug() << "SQL Error in selectItemId: " + q.lastError().text();
+        qWarning() << "SQL Error in selectItemId: " + q.lastError().text();
         return std::nullopt;
     }
     if (!q.next()) {
@@ -211,7 +210,7 @@ std::optional<qint64> FeedDatabase::insertItem(qint64 feedId, const QString &loc
     q.bindValue(":isRead", false);
     q.bindValue(":isStarred", false);
     if (!q.exec()) {
-        qDebug() << "SQL Error in insertItem: " + q.lastError().text();
+        qWarning() << "SQL Error in insertItem: " + q.lastError().text();
         return std::nullopt;
     }
     return q.lastInsertId().toLongLong();
@@ -233,7 +232,7 @@ void FeedDatabase::updateItemHeaders(qint64 id, const QString &title, const QDat
     q.bindValue(":url", url.toString());
     q.bindValue(":id", id);
     if (!q.exec()) {
-        qDebug() << "SQL Error in updateItemHeaders: " + q.lastError().text();
+        qWarning() << "SQL Error in updateItemHeaders: " + q.lastError().text();
     }
 }
 
@@ -247,7 +246,7 @@ void FeedDatabase::updateItemContent(qint64 id, const QString &content)
     q.bindValue(":feedContent", content);
     q.bindValue(":id", id);
     if (!q.exec()) {
-        qDebug() << "SQL Error in updateItemContent: " + q.lastError().text();
+        qWarning() << "SQL Error in updateItemContent: " + q.lastError().text();
     }
 }
 
@@ -261,7 +260,7 @@ void FeedDatabase::updateItemRead(qint64 id, bool isRead)
     q.bindValue(":isRead", isRead);
     q.bindValue(":id", id);
     if (!q.exec()) {
-        qDebug() << "SQL Error in updateItemRead: " + q.lastError().text();
+        qWarning() << "SQL Error in updateItemRead: " + q.lastError().text();
     }
 }
 
@@ -275,7 +274,7 @@ void FeedDatabase::updateItemStarred(qint64 id, bool isStarred)
     q.bindValue(":isStarred", isStarred);
     q.bindValue(":id", id);
     if (!q.exec()) {
-        qDebug() << "SQL Error in updateItemStarred: " + q.lastError().text();
+        qWarning() << "SQL Error in updateItemStarred: " + q.lastError().text();
     }
 }
 
@@ -286,11 +285,11 @@ void FeedDatabase::deleteItemsForFeed(qint64 feedId)
                 "DELETE FROM Item WHERE feed=:feed");
     q.bindValue(":feed", feedId);
     if (!q.exec()) {
-        qDebug() << "SQL Error in deleteItemsForFeed: " << q.lastError().text();
+        qWarning() << "SQL Error in deleteItemsForFeed: " << q.lastError().text();
     }
 }
 
-void FeedDatabase::deleteItemsOlderThan(qint64 feedId, QDateTime olderThan)
+void FeedDatabase::deleteItemsOlderThan(qint64 feedId, const QDateTime& olderThan)
 {
     QSqlQuery q(db());
     q.prepare(
@@ -298,7 +297,7 @@ void FeedDatabase::deleteItemsOlderThan(qint64 feedId, QDateTime olderThan)
     q.bindValue(":feed", feedId);
     q.bindValue(":olderThan", olderThan.toSecsSinceEpoch());
     if (!q.exec()) {
-        qDebug() << "SQL Error in deleteItemsForFeed: " << q.lastError().text();
+        qWarning() << "SQL Error in deleteItemsForFeed: " << q.lastError().text();
     }
 }
 
@@ -306,7 +305,7 @@ FeedQuery FeedDatabase::selectAllFeeds()
 {
     FeedQuery q(db(), "1");
     if (!q.exec()) {
-        qDebug() << "SQL Error: " + q.lastError().text();
+        qWarning() << "SQL Error: " + q.lastError().text();
     }
     return q;
 }
@@ -316,7 +315,7 @@ FeedQuery FeedDatabase::selectFeed(qint64 feedId)
     FeedQuery q(db(), "Feed.id=:id");
     q.bindValue(":id", feedId);
     if (!q.exec()) {
-        qDebug() << "SQL Error in selectFeed: " + q.lastError().text();
+        qWarning() << "SQL Error in selectFeed: " + q.lastError().text();
     }
     return q;
 }
@@ -330,7 +329,7 @@ std::optional<qint64> FeedDatabase::selectFeedId(qint64 source, const QString &l
     q.bindValue(":source", source);
     q.bindValue(":localId", localId);
     if (!q.exec()) {
-        qDebug() << "SQL Error in selectFeedId: " + q.lastError().text();
+        qWarning() << "SQL Error in selectFeedId: " + q.lastError().text();
         return std::nullopt;
     }
     if (!q.next()) {
@@ -353,7 +352,7 @@ std::optional<qint64> FeedDatabase::insertFeed(const QUrl& url)
     q.bindValue(":displayName", urlHost);
     q.bindValue(":url", urlString);
     if (!q.exec()) {
-        qDebug() << "SQL Error in insertFeed: " + q.lastError().text();
+        qWarning() << "SQL Error in insertFeed: " + q.lastError().text();
         return std::nullopt;
     }
     return q.lastInsertId().toLongLong();
@@ -368,7 +367,7 @@ void FeedDatabase::updateFeedName(qint64 feedId, const QString &newName)
     q.bindValue(":displayName", newName);
     q.bindValue(":id", feedId);
     if (!q.exec()){
-        qDebug() << "SQL Error in updateFeedName: " << q.lastError().text();
+        qWarning() << "SQL Error in updateFeedName: " << q.lastError().text();
     }
 }
 
@@ -381,7 +380,7 @@ void FeedDatabase::updateFeedLink(qint64 feedId, const QString &link)
     q.bindValue(":link", link);
     q.bindValue(":id", feedId);
     if (!q.exec()){
-        qDebug() << "SQL Error in updateFeedLink: " << q.lastError().text();
+        qWarning() << "SQL Error in updateFeedLink: " << q.lastError().text();
     }
 }
 
@@ -394,7 +393,7 @@ void FeedDatabase::updateFeedIcon(qint64 feedId, const QString &icon)
     q.bindValue(":icon", icon);
     q.bindValue(":id", feedId);
     if (!q.exec()){
-        qDebug() << "SQL Error in updateFeedIcon: " << q.lastError().text();
+        qWarning() << "SQL Error in updateFeedIcon: " << q.lastError().text();
     }
 }
 
@@ -407,11 +406,11 @@ void FeedDatabase::updateFeedUpdateInterval(qint64 feedId, qint64 updateInterval
     q.bindValue(":updateInterval", updateInterval);
     q.bindValue(":id", feedId);
     if (!q.exec()){
-        qDebug() << "SQL Error in updateFeed: " << q.lastError().text();
+        qWarning() << "SQL Error in updateFeed: " << q.lastError().text();
     }
 }
 
-void FeedDatabase::updateFeedLastUpdate(qint64 feedId, QDateTime lastUpdate)
+void FeedDatabase::updateFeedLastUpdate(qint64 feedId, const QDateTime& lastUpdate)
 {
     QSqlQuery q(db());
     q.prepare("UPDATE Feed SET "
@@ -424,7 +423,7 @@ void FeedDatabase::updateFeedLastUpdate(qint64 feedId, QDateTime lastUpdate)
     }
     q.bindValue(":id", feedId);
     if (!q.exec()){
-        qDebug() << "SQL Error in updateFeed: " << q.lastError().text();
+        qWarning() << "SQL Error in updateFeed: " << q.lastError().text();
     }
 }
 
@@ -435,7 +434,7 @@ void FeedDatabase::deleteFeed(qint64 feedId)
                 "DELETE FROM Feed WHERE id=:id");
     q.bindValue(":id", feedId);
     if (!q.exec()) {
-        qDebug() << "SQL Error in deleteFeed: " << q.lastError().text();
+        qWarning() << "SQL Error in deleteFeed: " << q.lastError().text();
     }
 }
 

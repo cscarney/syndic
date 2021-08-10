@@ -1,5 +1,5 @@
-#ifndef UPDATER_H
-#define UPDATER_H
+#ifndef FEEDCORE_UPDATER_H
+#define FEEDCORE_UPDATER_H
 #include <Syndication/Feed>
 #include <QObject>
 #include <QDateTime>
@@ -13,8 +13,6 @@ class Feed;
  *
  * The base class contains code for tracking update times and determining when
  * updates are due; derived classes are responsible for performing the actual update.
- *
- * The XMLUpdater class provides an implementation using the KSyndication library.
  */
 class Updater : public QObject
 {
@@ -137,7 +135,7 @@ protected:
     void setError(const QString &errorMsg);
 private:
     struct PrivData;
-    std::unique_ptr<PrivData> priv;
+    std::unique_ptr<PrivData> d;
 
     /**
      * Implemented by derived classes to perform the update
@@ -146,4 +144,4 @@ private:
 };
 }
 
-#endif // UPDATER_H
+#endif // FEEDCORE_UPDATER_H

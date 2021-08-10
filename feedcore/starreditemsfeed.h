@@ -1,5 +1,5 @@
-#ifndef STARREDITEMSFEED_H
-#define STARREDITEMSFEED_H
+#ifndef FEEDCORE_STARREDITEMSFEED_H
+#define FEEDCORE_STARREDITEMSFEED_H
 #include "feed.h"
 namespace FeedCore {
 class Context;
@@ -22,4 +22,4 @@ private:
 };
 }
 
-#endif // STARREDITEMSFEED_H
+#endif // FEEDCORE_STARREDITEMSFEED_H

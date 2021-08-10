@@ -1,19 +1,15 @@
-#ifndef FEED_H
-#define FEED_H
+#ifndef FEEDCORE_FEED_H
+#define FEEDCORE_FEED_H
 #include <QObject>
 #include <QUrl>
 #include <Syndication/Feed>
-#include "enums.h"
 #include "future.h"
 
 namespace FeedCore {
 class Updater;
 
 /**
- * Abstract class for feeds
- *
- * This represents a monitored/stored feed in the application.  The content
- * of a remote feed is represented by Syndication::Feed (from the KSyndication library).
+ * Abstract class for stored feeds
  */
 class Feed : public QObject {
     Q_OBJECT
@@ -22,10 +18,18 @@ class Feed : public QObject {
     Q_PROPERTY(QUrl link READ link WRITE setLink NOTIFY linkChanged);
     Q_PROPERTY(QUrl icon READ icon WRITE setIcon NOTIFY iconChanged);
     Q_PROPERTY(int unreadCount READ unreadCount NOTIFY unreadCountChanged);
-    Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
+    Q_PROPERTY(FeedCore::Feed::LoadStatus status READ status NOTIFY statusChanged);
     Q_PROPERTY(FeedCore::Updater *updater READ updater CONSTANT);
     Q_PROPERTY(bool editable READ editable CONSTANT);
 public:
+    enum LoadStatus {
+        Idle, /** < no active updates */
+        Loading, /** < feed is being loaded from the storage backend */
+        Updating, /** < feed is being updated from the source URL */
+        Error /** < the last attempted update failed */
+    };
+    Q_ENUM(LoadStatus);
+
     ~Feed();
     /**
      * The user-facing display name of the feed.
@@ -93,9 +97,6 @@ public:
      * The Updater instance that should be used to update this feed.
      *
      * The returned updater belongs to the Feed object.
-     *
-     * Derived classes can provide their own Updater implementation,
-     * or implement updateFromSource and return an XMLUpdater instance.
      */
     virtual Updater *updater() = 0;
 
@@ -111,14 +112,6 @@ public:
      * changes to the feed's properties.
      */
     virtual bool editable() { return false; }
-
-    /**
-     * Update the stored feed from a Syndication::Feed object.
-     *
-     * Derived classes must implement this if they return an XMLUpdater
-     * instance from updater()
-     */
-    virtual void updateFromSource(const Syndication::FeedPtr &feed){ assert(false); };
 
     /**
      * Request that the feed be deleted from the storage backend.
@@ -157,5 +150,8 @@ private:
     int m_unreadCount { 0 };
     LoadStatus m_status { LoadStatus::Idle };
 };
+
+typedef Feed::LoadStatus LoadStatus;
+
 }
-#endif // FEED_H
+#endif // FEEDCORE_FEED_H

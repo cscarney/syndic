@@ -11,7 +11,7 @@ Feed::Feed(QObject *parent):
 
 Feed::~Feed()
 {
-    setStatus(Enums::Idle);
+    setStatus(Idle);
     setUnreadCount(0);
 }
 
@@ -56,7 +56,7 @@ void Feed::setLink(const QUrl &link)
 
 void Feed::setIcon(const QUrl &icon)
 {
-    if (!icon.isValid()) return;
+    if (!icon.isValid()){return;}
     if (m_icon != icon){
         m_icon = icon;
         emit iconChanged();
@@ -83,7 +83,7 @@ void Feed::setStatus(LoadStatus status)
 
 void Feed::updateParams(Feed *other)
 {
-    if (!other) return;
+    if (other==nullptr) {return;}
     setName(other->name());
     setUrl(other->url());
     this->updater()->updateParams(other->updater());

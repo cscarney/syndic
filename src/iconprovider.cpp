@@ -3,8 +3,8 @@
 #include <QTimer>
 #include <QImageReader>
 #include <QBuffer>
-#include "context.h"
 #include "feed.h"
+#include "networkaccessmanager.h"
 
 namespace {
 class IconImageResponse : public QQuickImageResponse {
@@ -21,7 +21,7 @@ public:
     }
 
     void onNetworkReplyFinished() {
-        QNetworkReply *reply = qobject_cast<QNetworkReply*>(QObject::sender());
+        auto *reply = qobject_cast<QNetworkReply*>(QObject::sender());
         bool success = m_image.loadFromData(reply->readAll());
         if (!success) {
             m_error = "failed to load image";
@@ -32,14 +32,14 @@ public:
 };
 }
 
-IconProvider::IconProvider(FeedCore::Context *ctx):
-    m_nam(ctx->networkAccessManager())
+IconProvider::IconProvider(FeedCore::Context *ctx)
 {}
 
 QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const QSize &requestedSize)
 {
     auto *response = new IconImageResponse;
-    QTimer::singleShot(0, m_nam, [nam=m_nam, id, response]{
+    auto *nam = FeedCore::NetworkAccessManager::instance();
+    QTimer::singleShot(0, nam, [nam, id, response]{
         QNetworkRequest req(id.mid(1));
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
         QNetworkReply *reply = nam->get(req);
@@ -48,11 +48,12 @@ QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const
     return response;
 }
 
-void IconProvider::discoverIcon(QNetworkAccessManager *nam, FeedCore::Feed *feed)
+void IconProvider::discoverIcon(FeedCore::Feed *feed)
 {
     QPointer<FeedCore::Feed> feed_ptr = feed;
+    auto *nam = FeedCore::NetworkAccessManager::instance();
     QTimer::singleShot(0, nam, [nam, feed_ptr]{
-        if (!feed_ptr) { return; }
+        if (feed_ptr == nullptr) {return;}
         QUrl iconUrl(feed_ptr->link());
         iconUrl.setPath("/favicon.ico");
         QNetworkRequest req(iconUrl);

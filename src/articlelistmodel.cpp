@@ -16,21 +16,21 @@ struct ArticleListModel::PrivData {
 
 ArticleListModel::ArticleListModel(QObject *parent) :
     QAbstractListModel(parent),
-    priv{ std::make_unique<PrivData>() }
+    d{ std::make_unique<PrivData>() }
 {
 
 }
 
 bool ArticleListModel::unreadFilter() const
 {
-    return priv->unreadFilter;
+    return d->unreadFilter;
 }
 
 void ArticleListModel::setUnreadFilter(bool unreadFilter)
 {
-    if (priv->unreadFilter != unreadFilter) {
-        priv->unreadFilter = unreadFilter;
-        if (priv->active) {
+    if (d->unreadFilter != unreadFilter) {
+        d->unreadFilter = unreadFilter;
+        if (d->active) {
             if (unreadFilter) {
                 refresh();
             } else {
@@ -43,7 +43,7 @@ void ArticleListModel::setUnreadFilter(bool unreadFilter)
 
 LoadStatus ArticleListModel::status()
 {
-    return priv->status;
+    return d->status;
 }
 
 void ArticleListModel::refresh()
@@ -57,7 +57,7 @@ void ArticleListModel::refresh()
 
 void ArticleListModel::markAllRead()
 {
-    const auto &items = priv->items;
+    const auto &items = d->items;
     for (const auto &item : items) {
         item->setRead(true);
     }
@@ -80,10 +80,10 @@ void ArticleListModel::classBegin()
 void ArticleListModel::componentComplete()
 {
     QTimer::singleShot(0, this, [this]{
-        priv->active = true;
-        QObject::connect(priv->feed, &Feed::articleAdded, this, &ArticleListModel::onItemAdded);
-        QObject::connect(priv->feed, &Feed::statusChanged, this, &ArticleListModel::onStatusChanged);
-        QObject::connect(priv->feed, &Feed::reset, this, &ArticleListModel::refresh);
+        d->active = true;
+        QObject::connect(d->feed, &Feed::articleAdded, this, &ArticleListModel::onItemAdded);
+        QObject::connect(d->feed, &Feed::statusChanged, this, &ArticleListModel::onStatusChanged);
+        QObject::connect(d->feed, &Feed::reset, this, &ArticleListModel::refresh);
         refresh();
     });
 }
@@ -91,9 +91,9 @@ void ArticleListModel::componentComplete()
 void ArticleListModel::onRefreshFinished(Future<ArticleRef> *sender)
 {
     beginResetModel();
-    priv->items = {};
+    d->items = {};
     for (const ArticleRef &i : sender->result()) {
-        priv->items.append(QmlArticleRef(i));
+        d->items.append(QmlArticleRef(i));
     }
     endResetModel();
     setStatusFromUpstream();
@@ -101,7 +101,7 @@ void ArticleListModel::onRefreshFinished(Future<ArticleRef> *sender)
 
 void ArticleListModel::onMergeFinished(Future<ArticleRef> *sender)
 {
-    auto &items = priv->items;
+    auto &items = d->items;
     int itemIndex = 0;
     const auto &result = sender->result();
     for (const auto &resultItem : result) {
@@ -118,7 +118,7 @@ void ArticleListModel::onMergeFinished(Future<ArticleRef> *sender)
     }
 }
 
-static qint64 indexForDate(const QList<QmlArticleRef> &list, const QDateTime &dt)
+static int indexForDate(const QList<QmlArticleRef> &list, const QDateTime &dt)
 {
     for (int i=0; i<list.count(); i++) {
         if (list.at(i)->date() <= dt) {
@@ -130,26 +130,26 @@ static qint64 indexForDate(const QList<QmlArticleRef> &list, const QDateTime &dt
 
 void ArticleListModel::onItemAdded(ArticleRef const &item)
 {
-    if (!priv->unreadFilter || !item->isRead()) {
-        const auto &idx = indexForDate(priv->items, item->date());
+    if (!d->unreadFilter || !item->isRead()) {
+        const auto &idx = indexForDate(d->items, item->date());
         beginInsertRows(QModelIndex(), idx, idx);
-        priv->items.insert(idx, QmlArticleRef(item));
+        d->items.insert(idx, QmlArticleRef(item));
         endInsertRows();
     }
 }
 
 void ArticleListModel::setStatus(LoadStatus status)
 {
-    if (status != priv->status) {
-        priv->status = status;
+    if (status != d->status) {
+        d->status = status;
         emit statusChanged();
     }
 }
 
-void ArticleListModel::insertAndNotify(qint64 index, const ArticleRef &item)
+void ArticleListModel::insertAndNotify(int index, const ArticleRef &item)
 {
     beginInsertRows(QModelIndex(), index, index);
-    priv->items.insert(index, QmlArticleRef(item));
+    d->items.insert(index, QmlArticleRef(item));
     endInsertRows();
 }
 
@@ -167,7 +167,7 @@ int ArticleListModel::rowCount(const QModelIndex &parent) const
         return 0;
     }
 
-    return priv->items.size();
+    return d->items.size();
 }
 
 QVariant ArticleListModel::data(const QModelIndex &index, int role) const
@@ -179,7 +179,7 @@ QVariant ArticleListModel::data(const QModelIndex &index, int role) const
     int indexRow = index.row() ;
 
     if (role == Qt::UserRole) {
-        return QVariant::fromValue(QmlArticleRef(priv->items[indexRow]));
+        return QVariant::fromValue(QmlArticleRef(d->items[indexRow]));
     }
 
     return QVariant();
@@ -187,16 +187,16 @@ QVariant ArticleListModel::data(const QModelIndex &index, int role) const
 
 Feed *ArticleListModel::feed() const
 {
-    return priv->feed;
+    return d->feed;
 }
 
 void ArticleListModel::setFeed(Feed *feed)
 {
-    if (priv->feed != feed) {
-        priv->feed = feed;
-        if (priv->active) {
+    if (d->feed != feed) {
+        d->feed = feed;
+        if (d->active) {
             beginResetModel();
-            priv->items = {};
+            d->items = {};
             endResetModel();
             refresh();
         }
@@ -211,21 +211,23 @@ void ArticleListModel::requestUpdate() const
 
 Future<ArticleRef> *ArticleListModel::getItems()
 {
-    if (priv->feed == nullptr) {
-        return Future<ArticleRef>::yield(this, [](auto){});
+    if (d->feed == nullptr) {
+        return Future<ArticleRef>::yield(this, [](auto result){});
     }
-    return priv->feed->getArticles(unreadFilter());
+    return d->feed->getArticles(unreadFilter());
 }
 
 void ArticleListModel::setStatusFromUpstream()
 {
-    auto *feed = priv->feed;
-    setStatus(feed ? feed->status() : Enums::Error);
+    auto *feed = d->feed;
+    if (feed != nullptr) {
+        setStatus(feed->status());
+    }
 }
 
 void ArticleListModel::onStatusChanged()
 {
-    if (status() != Enums::Loading) {
-        setStatus(priv->feed->status());
+    if (status() != Feed::Loading) {
+        setStatus(d->feed->status());
     }
 }

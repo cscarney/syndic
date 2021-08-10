@@ -1,13 +1,12 @@
-#ifndef SCHEDULER_H
-#define SCHEDULER_H
+#ifndef FEEDCORE_SCHEDULER_H
+#define FEEDCORE_SCHEDULER_H
 #include <QObject>
 #include <QDateTime>
 #include <memory>
-#include "enums.h"
+#include "feed.h"
 #include "future.h"
 
 namespace FeedCore {
-class Feed;
 class Updater;
 
 /**
@@ -91,11 +90,11 @@ public:
     void setExpireAge(qint64 newval);
 private:
     struct PrivData;
-    std::unique_ptr<PrivData> priv;
+    std::unique_ptr<PrivData> d;
     void reschedule(Feed *feed, const QDateTime &timestamp=QDateTime::currentDateTime());
     void onUpdateModeChanged(Feed *feed);
     void onFeedStatusChanged(Feed *sender);
     void onNetworkStateChanged();
 };
 }
-#endif // SCHEDULER_H
+#endif // FEEDCORE_SCHEDULER_H

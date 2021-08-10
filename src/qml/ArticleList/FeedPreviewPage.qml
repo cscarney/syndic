@@ -1,4 +1,4 @@
-import Enums 1.0
+import Feed 1.0
 import org.kde.kirigami 2.14 as Kirigami
 
 AbstractArticleListPage {
@@ -10,7 +10,7 @@ AbstractArticleListPage {
             id: saveAction
             text: qsTr("Subscribe")
             iconName: "list-add"
-            enabled: model.status == Enums.Idle
+            enabled: model.status == Feed.Idle
             onTriggered: {
                 var feed = root.feed
                 pageRow.clear();

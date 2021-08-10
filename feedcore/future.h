@@ -1,5 +1,5 @@
-#ifndef FUTURE_H
-#define FUTURE_H
+#ifndef FEEDCORE_FUTURE_H
+#define FEEDCORE_FUTURE_H
 #include <QObject>
 #include <QVector>
 #include <QTimer>
@@ -42,4 +42,4 @@ private:
     QVector<T> m_result;
 };
 }
-#endif // FUTURE_H
+#endif // FEEDCORE_FUTURE_H

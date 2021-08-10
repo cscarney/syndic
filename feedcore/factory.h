@@ -1,5 +1,5 @@
-#ifndef UNIQUEFACTORY_H
-#define UNIQUEFACTORY_H
+#ifndef FEEDCORE_UNIQUEFACTORY_H
+#define FEEDCORE_UNIQUEFACTORY_H
 #include <QHash>
 #include <QPointer>
 #include <QWeakPointer>
@@ -31,4 +31,4 @@ template<typename KeyType, typename ValueType>
 using ObjectFactory = Factory<KeyType, ValueType, QPointer<ValueType>, ValueType*>;
 
 }
-#endif // UNIQUEFACTORY_H
+#endif // FEEDCORE_UNIQUEFACTORY_H

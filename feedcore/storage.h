@@ -1,5 +1,5 @@
-#ifndef STORAGE_H
-#define STORAGE_H
+#ifndef FEEDCORE_STORAGE_H
+#define FEEDCORE_STORAGE_H
 #include <QObject>
 #include <Syndication/Item>
 #include <Syndication/Feed>
@@ -19,4 +19,4 @@ public:
     virtual Future<Feed *> *storeFeed(Feed *feed)=0;
 };
 }
-#endif //STORAGE_H
+#endif //FEEDCORE_STORAGE_H

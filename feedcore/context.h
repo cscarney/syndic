@@ -1,12 +1,11 @@
-﻿#ifndef CONTEXT_H
-#define CONTEXT_H
+﻿#ifndef FEEDCORE_CONTEXT_H
+#define FEEDCORE_CONTEXT_H
 #include <memory>
 #include <QObject>
 #include <QUrl>
 #include <Syndication/Feed>
 #include "future.h"
 
-class QNetworkAccessManager;
 namespace FeedCore {
 class Storage;
 class Feed;
@@ -110,7 +109,6 @@ public:
      */
     void setExpireAge(qint64 expireAge);
 
-    QNetworkAccessManager *networkAccessManager() const;
 signals:
     void defaultUpdateIntervalChanged();
     void expireAgeChanged();
@@ -123,7 +121,7 @@ signals:
     void feedAdded(FeedCore::Feed *feed);
 private:
     struct PrivData;
-    std::unique_ptr<PrivData> priv;
+    std::unique_ptr<PrivData> d;
 };
 }
-#endif // CONTEXT_H
+#endif // FEEDCORE_CONTEXT_H

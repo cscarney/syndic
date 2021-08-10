@@ -3,19 +3,18 @@
 #include <QModelIndex>
 #include <QQmlParserStatus>
 #include <memory>
-#include "enums.h"
+#include "feed.h"
 #include "future.h"
 #include "articleref.h"
 namespace FeedCore {
 class Context;
-class Feed;
 }
 class ArticleListModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(bool unreadFilter READ unreadFilter WRITE setUnreadFilter NOTIFY unreadFilterChanged);
-    Q_PROPERTY(FeedCore::Enums::LoadStatus status READ status NOTIFY statusChanged);
+    Q_PROPERTY(FeedCore::Feed::LoadStatus status READ status NOTIFY statusChanged);
     Q_PROPERTY(FeedCore::Feed *feed READ feed WRITE setFeed NOTIFY feedChanged);
 public:
     explicit ArticleListModel(QObject *parent=nullptr);
@@ -38,14 +37,14 @@ signals:
     void statusChanged();
 private:
     struct PrivData;
-    std::unique_ptr<PrivData> priv;
+    std::unique_ptr<PrivData> d;
     FeedCore::Future<FeedCore::ArticleRef> *getItems();
     void setStatusFromUpstream();
     void setStatus(FeedCore::LoadStatus status);
     void refresh();
     void onItemAdded(const FeedCore::ArticleRef &item);
     void removeRead();
-    void insertAndNotify(qint64 index, const FeedCore::ArticleRef &item);
+    void insertAndNotify(int index, const FeedCore::ArticleRef &item);
     void refreshMerge();
     void onRefreshFinished(FeedCore::Future<FeedCore::ArticleRef> *sender);
     void onMergeFinished(FeedCore::Future<FeedCore::ArticleRef> *sender);

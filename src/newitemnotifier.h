@@ -26,11 +26,11 @@ signals:
 private:
     FeedCore::Context *m_context { nullptr };
     FeedCore::Feed *m_feed { nullptr };
-    qint64 m_counter { 0 };
+    int m_counter { 0 };
     bool m_enabled { false };
     void onStatusChanged();
     void onArticleAdded(const FeedCore::ArticleRef &article);
-    void postNotification();
+    void postNotification() const;
 };
 
 #endif // NEWITEMNOTIFIER_H
