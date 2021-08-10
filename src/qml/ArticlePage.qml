@@ -17,19 +17,14 @@ Kirigami.Page {
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Layout.fillWidth: true
     title:  item.article.title || ""
-    titleDelegate: Kirigami.Heading {
-        visible: !scroller.atYBeginning
-        elide: Text.ElideRight
-         text: root.title
-         maximumLineCount: 1
-         Layout.maximumWidth: 0.66 * root.width
-    }
+    titleDelegate: Item { }
 
     actions {
         main: Kirigami.Action {
             text: qsTr("Open in Browser")
             iconName: "globe"
             onTriggered: Qt.openUrlExternally(item.article.url);
+            displayHint: Kirigami.Settings.isMobile ? Kirigami.DisplayHint.IconOnly : Kirigami.DisplayHint.NoPreference
         }
 
         left: Kirigami.Action {
