@@ -76,6 +76,7 @@ if (ANDROID)
         mail-read
         view-filter
         document-edit
+        globle
         )
 endif()
 
