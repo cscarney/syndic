@@ -1,5 +1,5 @@
 import Enums 1.0
-import org.kde.kirigami 2.7 as Kirigami
+import org.kde.kirigami 2.14 as Kirigami
 
 AbstractArticleListPage {
     id: root
@@ -12,7 +12,7 @@ AbstractArticleListPage {
             onTriggered: {
                 root.model.markAllRead();
             }
-            displayHint: Kirigami.Action.DisplayHint.KeepVisible
+            displayHint: Kirigami.DisplayHint.KeepVisible
         }
 
         contextualActions: [
@@ -21,14 +21,14 @@ AbstractArticleListPage {
                  iconName: "view-filter"
                  checkable: true
                  checked: root.unreadFilter
-                 displayHint: Kirigami.Action.DisplayHint.AlwaysHide
+                 displayHint: Kirigami.DisplayHint.AlwaysHide
                  onCheckedChanged: root.unreadFilter = checked
              },
 
             Kirigami.Action {
                 text: qsTr("Edit...")
                 iconName: "document-edit"
-                displayHint: Kirigami.Action.AlwaysHide
+                displayHint: Kirigami.DisplayHint.AlwaysHide
                 visible: feed && feed.editable
                 onTriggered: {
                     pageRow.pop(root)
@@ -39,7 +39,7 @@ AbstractArticleListPage {
             Kirigami.Action {
                 text: qsTr("Refresh")
                 iconName: "view-refresh"
-                displayHint: Kirigami.Action.AlwaysHide
+                displayHint: Kirigami.DisplayHint.AlwaysHide
                 enabled: feed && feed.status!=Enums.Updating
                 onTriggered: {
                     root.model.requestUpdate();

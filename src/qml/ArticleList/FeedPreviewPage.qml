@@ -1,5 +1,5 @@
 import Enums 1.0
-import org.kde.kirigami 2.7 as Kirigami
+import org.kde.kirigami 2.14 as Kirigami
 
 AbstractArticleListPage {
     id: root

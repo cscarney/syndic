@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import org.kde.kirigami 2.7 as Kirigami
+import org.kde.kirigami 2.14 as Kirigami
 import Feed 1.0
 
 AbstractFeedEditorPage {
@@ -19,6 +19,7 @@ AbstractFeedEditorPage {
             text: qsTr("Delete")
             iconName: "delete"
             onTriggered: targetFeed.requestDelete();
+            displayHint: Kirigami.DisplayHint.AlwaysHide
         }
     }
 }

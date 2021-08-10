@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import org.kde.kirigami 2.7 as Kirigami
+import org.kde.kirigami 2.14 as Kirigami
 
 Kirigami.Page {
     id: root
@@ -27,20 +27,30 @@ Kirigami.Page {
 
     actions {
         main: Kirigami.Action {
-            text: qsTr("Keep Unread")
-            iconName: "mail-mark-unread"
-            checkable: true
-            checked: false
-            onCheckedChanged: item.article.isRead = !checked
-            displayHint: Kirigami.Action.DisplayHint.KeepVisible
+            text: qsTr("Open in Browser")
+            iconName: "globe"
+            onTriggered: Qt.openUrlExternally(item.article.url);
         }
+
         left: Kirigami.Action {
             text: qsTr("Starred")
             checkable: true
             checked: item.article.isStarred
             onCheckedChanged: item.article.isStarred = checked
             iconName: checked ? "starred-symbolic" : "non-starred-symbolic"
+            displayHint: Kirigami.DisplayHint.IconOnly
         }
+
+        contextualActions: [
+            Kirigami.Action {
+                text: qsTr("Keep Unread")
+                iconName: "mail-mark-unread"
+                checkable: true
+                checked: false
+                onCheckedChanged: item.article.isRead = !checked
+                displayHint: Kirigami.DisplayHint.AlwaysHide
+            }
+        ]
     }
 
     /* extract <img> tags from the text so that we can use them as cover images */
@@ -111,10 +121,10 @@ Kirigami.Page {
                 contentHeight: articleView.height + bottomMargin + topMargin
                 clip: true
                 flickableDirection: Flickable.AutoFlickIfNeeded
-                topMargin: 20
-                bottomMargin: 20
-                leftMargin: 35
-                rightMargin: 35
+                topMargin: Kirigami.Units.gridUnit
+                bottomMargin: Kirigami.Units.gridUnit
+                leftMargin: Kirigami.Units.gridUnit * 1.6
+                rightMargin: Kirigami.Units.gridUnit * 1.6
                 ArticleView {
                     id: articleView
                     width: scroller.contentWidth
@@ -124,11 +134,9 @@ Kirigami.Page {
 
                 Behavior on contentY {
                     id: animateScroll
-                    enabled: false
                     NumberAnimation {
                         duration: Kirigami.Units.shortDuration
                         easing.type: Easing.OutExpo
-                        onRunningChanged: if (!running) scroller.returnToBounds()
                     }
                 }
             }
@@ -201,9 +209,9 @@ Kirigami.Page {
     }
 
     function pxUpDown(increment) {
-        animateScroll.enabled = true
-        scroller.contentY = scroller.contentY + increment
-        animateScroll.enabled = false
+        var topY = scroller.originY - scroller.topMargin;
+        var bottomY = scroller.originY + scroller.contentHeight + scroller.bottomMargin - scroller.height;
+        scroller.contentY = Math.max(topY, Math.min(scroller.contentY + increment, bottomY))
     }
 
     function pageUpDown(increment) {
