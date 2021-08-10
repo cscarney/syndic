@@ -17,7 +17,7 @@ AbstractArticleListPage {
 
         contextualActions: [
             Kirigami.Action {
-                 text: qsTr("Hide Read Items")
+                 text: qsTr("Hide Read")
                  iconName: "view-filter"
                  checkable: true
                  checked: root.unreadFilter
