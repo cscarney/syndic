@@ -103,13 +103,13 @@ ScrollView {
                     Layout.minimumWidth: implicitBackgroundWidth
                     Layout.minimumHeight: feedNameLabel.implicitHeight
                     horizontalAlignment: Text.AlignCenter
-                    color: Kirigami.Theme.activeTextColor
+                    color: Kirigami.Theme.highlightedTextColor
                     text: parent.unreadCount
                     leftInset: -background.radius
                     rightInset: -background.radius
                     background: Rectangle {
                         radius: parent.height / 2.0
-                        color: Kirigami.Theme.activeBackgroundColor;
+                        color: Kirigami.Theme.highlightColor;
                     }
                 }
             }
