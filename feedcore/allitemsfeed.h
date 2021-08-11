@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef FEEDCORE_ALLITEMSFEED_H
 #define FEEDCORE_ALLITEMSFEED_H
 #include <QSet>

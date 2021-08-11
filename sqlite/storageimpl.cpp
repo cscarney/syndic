@@ -1,4 +1,9 @@
-﻿#include "sqlite/storageimpl.h"
+﻿/**
+ * SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+#include "sqlite/storageimpl.h"
 #include <QVector>
 #include <QTimer>
 #include <Syndication/Person>

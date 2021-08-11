@@ -1,4 +1,9 @@
-﻿#ifndef SQLITE_STORAGEIMPL_H
+﻿/**
+ * SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+#ifndef SQLITE_STORAGEIMPL_H
 #define SQLITE_STORAGEIMPL_H
 #include "storage.h"
 #include "feeddatabase.h"

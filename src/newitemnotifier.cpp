@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #include "cmake-config.h"
 #include "newitemnotifier.h"
 #include "article.h"

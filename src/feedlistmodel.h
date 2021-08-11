@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef FEEDLISTMODEL_H
 #define FEEDLISTMODEL_H
 #include <QAbstractListModel>

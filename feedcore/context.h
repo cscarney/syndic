@@ -1,4 +1,9 @@
-﻿#ifndef FEEDCORE_CONTEXT_H
+﻿/**
+ * SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+#ifndef FEEDCORE_CONTEXT_H
 #define FEEDCORE_CONTEXT_H
 #include <memory>
 #include <QObject>

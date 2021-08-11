@@ -1,4 +1,9 @@
- #ifndef UNREADITEMMODEL_H
+/**
+ * SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+#ifndef UNREADITEMMODEL_H
 #define UNREADITEMMODEL_H
 #include <QModelIndex>
 #include <QQmlParserStatus>

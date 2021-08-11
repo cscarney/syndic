@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef FEEDCORE_SCHEDULER_H
 #define FEEDCORE_SCHEDULER_H
 #include <QObject>

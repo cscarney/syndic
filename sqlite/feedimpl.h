@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef SQLITE_FEEDIMPL_H
 #define SQLITE_FEEDIMPL_H
 #include "updatablefeed.h"
