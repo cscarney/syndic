@@ -8,6 +8,7 @@ set(feedkeeper_HEADERS
     htmlsplitter.h
     contentmodel.h
     newitemnotifier.h
+    platformhelper.h
     )
 
 set(feedkeeper_SRCS
@@ -19,6 +20,7 @@ set(feedkeeper_SRCS
     contentmodel.cpp
     newitemnotifier.cpp
     gumbovisitor.cpp
+    platformhelper.cpp
     main.cpp
     resources.qrc
     )
@@ -55,6 +57,7 @@ if (ANDROID)
         KF5::Kirigami2
         OpenSSL::SSL
         Qt5::Svg
+        Qt5::AndroidExtras
         )
 
     kirigami_package_breeze_icons(
@@ -76,7 +79,8 @@ if (ANDROID)
         mail-read
         view-filter
         document-edit
-        globle
+        globe
+        emblem-shared-symbolic
         )
 endif()
 

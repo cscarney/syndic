@@ -32,16 +32,23 @@ Kirigami.Page {
             displayHint: Kirigami.Settings.isMobile ? Kirigami.DisplayHint.IconOnly : Kirigami.DisplayHint.NoPreference
         }
 
-        left: Kirigami.Action {
-            text: qsTr("Starred")
-            checkable: true
-            checked: item.article.isStarred
-            onCheckedChanged: item.article.isStarred = checked
-            iconName: checked ? "starred-symbolic" : "non-starred-symbolic"
-            displayHint: Kirigami.DisplayHint.IconOnly
-        }
-
         contextualActions: [
+            Kirigami.Action {
+                text: qsTr("Share")
+                iconName: "emblem-shared-symbolic"
+                displayHint: Kirigami.Settings.isMobile ? Kirigami.DisplayHint.IconOnly : Kirigami.DisplayHint.AlwaysHide
+                onTriggered: platformHelper.share(item.article.url);
+            },
+
+            Kirigami.Action {
+                text: qsTr("Starred")
+                checkable: true
+                checked: item.article.isStarred
+                onCheckedChanged: item.article.isStarred = checked
+                iconName: checked ? "starred-symbolic" : "non-starred-symbolic"
+                displayHint: Kirigami.DisplayHint.IconOnly
+            },
+
             Kirigami.Action {
                 text: qsTr("Keep Unread")
                 iconName: "mail-mark-unread"

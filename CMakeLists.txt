@@ -29,7 +29,7 @@ include(KDECMakeSettings)
  if (ANDROID)
     find_package(KF5Kirigami2 REQUIRED)
     find_package(OpenSSL)
-    find_package(Qt5 COMPONENTS Svg REQUIRED)
+    find_package(Qt5 COMPONENTS Svg AndroidExtras REQUIRED)
 endif()
 
  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -Wno-error=deprecated-declarations")

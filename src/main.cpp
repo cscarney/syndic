@@ -26,6 +26,7 @@
 #include "updater.h"
 #include "iconprovider.h"
 #include "newitemnotifier.h"
+#include "platformhelper.h"
 using namespace FeedCore;
 
 static QString filePath(QString const &fileName)
@@ -54,6 +55,7 @@ static void registerQmlTypes() {
     qmlRegisterUncreatableType<Feed>("Feed", 1,0, "Feed", "obtained from cpp model");
     qmlRegisterUncreatableType<Article>("Article", 1, 0, "Article", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlArticleRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
+    qmlRegisterUncreatableType<PlatformHelper>("PlatformHelper", 1, 0, "PlatformHelper", "global object");
 }
 
 #ifdef ANDROID
@@ -95,6 +97,7 @@ int main(int argc, char *argv[])
     registerQmlTypes();
     auto *fm = createContext(&app);
     engine.rootContext()->setContextProperty("feedContext", fm);
+    engine.rootContext()->setContextProperty("platformHelper", new PlatformHelper);
     engine.addImageProvider("feedicons", new IconProvider(fm));
     engine.load(QUrl("qrc:/qml/main.qml"));
     int result = QApplication::exec();
