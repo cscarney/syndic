@@ -10,7 +10,9 @@ import org.kde.kirigami 2.7 as Kirigami
 import Feed 1.0
 import FeedListModel 1.0
 
+
 ScrollView {
+
     id: root
     property Feed currentlySelectedFeed
     property alias currentIndex: feedList.currentIndex
@@ -24,8 +26,9 @@ ScrollView {
 
         anchors {
             fill: parent
-            rightMargin: root.ScrollBar.vertical.visible ? root.ScrollBar.vertical.width : 0
+            rightMargin: root.ScrollBar.vertical.visible && !Kirigami.Settings.hasTransientTouchInput ? root.ScrollBar.vertical.width : 0
         }
+
 
         currentIndex: 0
         model: FeedListModel{
@@ -41,75 +44,45 @@ ScrollView {
         }
         clip: true
 
-        delegate: Kirigami.AbstractListItem {
-            property color fgColor: highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+        delegate: Kirigami.BasicListItem {
             property var feed: model.feed
-
+            property var iconName: feed.icon.toString()
+            icon: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
+            label: feed.name
             separatorVisible: false
-            width: feedList.width
-            topPadding: Kirigami.Units.largeSpacing
-            bottomPadding: Kirigami.Units.largeSpacing
-            contentItem: RowLayout {
+            padding: Kirigami.Units.largeSpacing
+            leftPadding: Kirigami.Units.smallSpacing
+            rightPadding: Kirigami.Units.smallSpacing
+            trailing: RowLayout {
                 property var feed: model.feed
                 property var status: feed ? feed.status : Feed.Idle
                 property var unreadCount: feed ? feed.unreadCount : 0
-                property var name: feed ? feed.name : qsTr("All Items")
-                property var icon: feed.icon.toString()
 
                 Kirigami.Icon {
-                    source: parent.icon.length ? "image://feedicons/"+parent.icon : "feed-subscribe"
-                    fallback: "feed-subscribe"
-                    Layout.maximumHeight: feedNameLabel.implicitHeight
-                    Layout.maximumWidth: feedNameLabel.implicitHeight
-                }
-
-                Label {
-                    id: feedNameLabel
-                    horizontalAlignment: Text.AlignLeft
-                    elide: Text.ElideRight
-                    Layout.fillWidth: true
-                    text: parent.name
-                    textFormat: Text.StyledText
-                    color: fgColor
-                    font.weight: parent.unreadCount !== 0 ? Font.Black : Font.Light
-                }
-
-                Kirigami.Icon {
-                    Layout.alignment: Qt.AlignRight
-                    Layout.preferredHeight: feedNameLabel.implicitHeight
-                    Layout.preferredWidth: feedNameLabel.implicitHeight
                     source: "content-loading-symbolic"
+                    Layout.preferredHeight: contentItem.height
                     isMask: true
-                    color: fgColor
                     visible: parent.status === Feed.Updating
                 }
 
                 Kirigami.Icon {
-                    Layout.alignment: Qt.AlignRight
-                    Layout.preferredHeight: feedNameLabel.implicitHeight
-                    Layout.preferredWidth: feedNameLabel.implicitHeight
                     source: "dialog-error-symbolic"
+                    Layout.preferredHeight: contentItem.height
                     isMask: true
-                    color: fgColor
                     visible: parent.status === Feed.Error
                 }
 
                 Label {
                     id: unreadCountLabel
                     visible: parent.unreadCount !== 0
-                    Layout.alignment: Qt.AlignRight
-                    Layout.leftMargin: Kirigami.Units.smallSpacing
-                    Layout.rightMargin: Kirigami.Units.smallSpacing
-                    Layout.minimumWidth: implicitBackgroundWidth
-                    Layout.minimumHeight: feedNameLabel.implicitHeight
                     horizontalAlignment: Text.AlignCenter
-                    color: Kirigami.Theme.highlightedTextColor
+                    Layout.rightMargin: background.radius * 2
                     text: parent.unreadCount
                     leftInset: -background.radius
                     rightInset: -background.radius
                     background: Rectangle {
                         radius: parent.height / 2.0
-                        color: Kirigami.Theme.highlightColor;
+                        color: Kirigami.Theme.activeBackgroundColor;
                     }
                 }
             }

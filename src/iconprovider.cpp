@@ -55,16 +55,16 @@ QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const
 
 void IconProvider::discoverIcon(FeedCore::Feed *feed)
 {
-    QPointer<FeedCore::Feed> feed_ptr = feed;
-    auto *nam = FeedCore::NetworkAccessManager::instance();
-    QTimer::singleShot(0, nam, [nam, feed_ptr]{
-        if (feed_ptr == nullptr) {return;}
-        QUrl iconUrl(feed_ptr->link());
+    if (feed->link().isEmpty()) {
+        return;
+    }
+    QTimer::singleShot(0, feed, [feed]{
+        QUrl iconUrl(feed->link());
         iconUrl.setPath("/favicon.ico");
         QNetworkRequest req(iconUrl);
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
+        QNetworkAccessManager *nam = FeedCore::NetworkAccessManager::instance();
         QNetworkReply *reply = nam->get(req);
-        FeedCore::Feed *feed = feed_ptr;
         QObject::connect(reply, &QNetworkReply::finished, feed, [reply, feed, iconUrl]{
             if (reply->error() != QNetworkReply::NoError) {
                 // couldn't get file
