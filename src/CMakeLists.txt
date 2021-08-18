@@ -9,6 +9,7 @@ set(feedkeeper_HEADERS
     contentmodel.h
     newitemnotifier.h
     platformhelper.h
+    contentimageitem.h
     )
 
 set(feedkeeper_SRCS
@@ -21,6 +22,7 @@ set(feedkeeper_SRCS
     newitemnotifier.cpp
     gumbovisitor.cpp
     platformhelper.cpp
+    contentimageitem.cpp
     main.cpp
     resources.qrc
     )

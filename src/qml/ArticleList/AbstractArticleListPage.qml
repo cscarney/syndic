@@ -61,10 +61,7 @@ Kirigami.ScrollablePage {
             text: ref.article.headline
             padding: 10
             contentItem: ArticleListEntry { }
-
             property var data: ref
-
-            highlighted: ListView.isCurrentItem
             onClicked: {
                 if (articleList.currentIndex !== model.index) {
                     articleList.currentIndex = model.index

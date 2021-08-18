@@ -9,33 +9,32 @@ import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
 import Article 1.0
+import ContentModel 1.0
+import ContentImage 1.0
 
 ColumnLayout {
     id: root
     property var item
-    property string firstImage: ""
-    property string textWithoutImages: ""
-    property string hoveredLink: titleMouse.containsMouse ? item.article.url : contentTextEdit.hoveredLink
+    property string text: ""
+    property string hoveredLink
 
     readonly property string textStyle: "<style>
     * {
         line-height: 150%;
     }
-    img {
-        line-height: 100%
-    }
     p {
         padding-bottom: 12px;
-        font-family: serif;
     }
     </style>"
 
     Settings {
+        id: articleViewSettings
         category: "ArticlePage"
-        property alias fontSize: contentTextEdit.font.pointSize
+        property real fontSize
     }
 
     Kirigami.Heading {
+        property string linkText: item.article.url
         level: 1
         Layout.fillWidth: true
         text: item.article.title
@@ -52,6 +51,7 @@ ColumnLayout {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onPressed: Qt.openUrlExternally(item.article.url)
+            onContainsMouseChanged: root.hoveredLink = containsMouse ? item.article.url : null
         }
     }
 
@@ -85,47 +85,90 @@ ColumnLayout {
         }
     }
 
-    Image {
-        visible: firstImage!==""
-        source: firstImage
-        property real scaleToFit: Math.min(parent.width, sourceSize.width) / sourceSize.width
-        Layout.preferredWidth: sourceSize.width * scaleToFit
-        Layout.preferredHeight: sourceSize.height * scaleToFit
-        Layout.alignment: Qt.AlignHCenter
-        fillMode: Image.PreserveAspectFit
+    Repeater {
+        model: ContentModel {
+            text: root.text
+        }
+
+        delegate: Loader {
+            Layout.fillWidth: item.Layout.fillWidth
+            Layout.alignment: item.Layout.alignment
+            Layout.preferredHeight: item.Layout.preferredHeight
+            Layout.preferredWidth: item.Layout.preferredWidth
+            Layout.topMargin: item.Layout.topMargin
+            sourceComponent: switch (block.delegateName) {
+                  case "ImageBlock":
+                      return imageBlockComponent;
+                  case "TextBlock":
+                      return textBlockComponent;
+                  default:
+                      return undefined;
+            }
+            property var modelBlock: block
+        }
     }
 
-    TextEdit {
-        id: contentTextEdit
-        Layout.fillWidth: true
-        Layout.topMargin: 20
-        textFormat: Text.RichText
-        text: textStyle + textWithoutImages
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignTop
-        wrapMode: Text.Wrap
-        readOnly: true
-        selectByMouse: !Kirigami.Settings.hasTransientTouchInput
-        color: Kirigami.Theme.textColor
-        selectedTextColor: Kirigami.Theme.highlightedTextColor
-        selectionColor: Kirigami.Theme.highlightColor
+    Component {
+        id: imageBlockComponent
+        ContentImage {
+            property string href: modelBlock.resolvedHref(root.item.article.url);
+            property real scaleToFit: Math.min(root.width, implicitWidth) / implicitWidth
+            source: modelBlock.resolvedSrc(root.item.article.url);
+            Layout.preferredWidth: implicitWidth * scaleToFit
+            Layout.preferredHeight: implicitHeight * scaleToFit
+            Layout.alignment: Qt.AlignHCenter
 
-        onLinkActivated: function(link){
-            Qt.openUrlExternally(link)
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: href ? Qt.PointingHandCursor : Qt.ArrowCursor
+                onContainsMouseChanged: root.hoveredLink = containsMouse ? href : null
+                onClicked: Qt.openUrlExternally(href)
+            }
         }
-        MouseArea
-        {
-            id: contentMouse
-            anchors.fill: parent
-            cursorShape: contentTextEdit.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
-            scrollGestureEnabled: true
-            acceptedButtons: Qt.NoButton
-            onWheel: {
-                    if (wheel.modifiers & Qt.ControlModifier) {
-                        contentTextEdit.font.pointSize += Math.sign(wheel.angleDelta.y)
-                    } else {
-                        wheel.accepted = false
-                    }
+    }
+
+    Component {
+        id: textBlockComponent
+        TextEdit {
+            id: contentTextEdit
+            property string linkText: hoveredLink
+            Layout.fillWidth: true
+            Layout.topMargin: 20
+            textFormat: Text.RichText
+            text: textStyle + modelBlock.text
+            font.pointSize: articleViewSettings.fontSize
+            font.family: "serif"
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignTop
+            wrapMode: Text.Wrap
+            readOnly: true
+            selectByMouse: !Kirigami.Settings.hasTransientTouchInput
+            color: Kirigami.Theme.textColor
+            selectedTextColor: Kirigami.Theme.highlightedTextColor
+            selectionColor: Kirigami.Theme.highlightColor
+            baseUrl: root.item.article.url
+
+            onLinkActivated: function(link){
+                Qt.openUrlExternally(link)
+            }
+
+            onHoveredLinkChanged: root.hoveredLink = hoveredLink
+
+            MouseArea
+            {
+                id: contentMouse
+                anchors.fill: parent
+                cursorShape: contentTextEdit.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
+                scrollGestureEnabled: true
+                acceptedButtons: Qt.NoButton
+                onWheel: {
+                        if (wheel.modifiers & Qt.ControlModifier) {
+                            articleViewSettings.fontSize += Math.sign(wheel.angleDelta.y)
+                        } else {
+                            wheel.accepted = false
+                        }
+                }
             }
         }
     }

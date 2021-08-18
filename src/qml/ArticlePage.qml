@@ -60,34 +60,11 @@ Kirigami.Page {
         ]
     }
 
-    /* extract <img> tags from the text so that we can use them as cover images */
-    QtObject {
-        id: priv
-        property var firstImage: ""
-        property var textWithoutImages: ""
-    }
-
     Connections {
         target: item.article
         function onGotContent(content) {
-            var src = content || ""
-            var images = []
-            var text = src.replace(/<img .*?src="(.*?)".*?>/ig, function(match, src){
-                images.push(src);
-                return "";
-            })
-            priv.firstImage = images[0] || ""
-            priv.textWithoutImages = text
+            articleView.text = content;
         }
-    }
-
-    /* Gets reparented to the overlay by ScrollablePage */
-    OverlayMessage {
-        id: hoveredLinkToolTip
-        text: articleView.hoveredLink
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
     }
 
     /* HACK this SwipeView contains sentinel items that will result in the current
@@ -135,8 +112,6 @@ Kirigami.Page {
                 ArticleView {
                     id: articleView
                     width: scroller.contentWidth
-                    firstImage: priv.firstImage
-                    textWithoutImages: priv.textWithoutImages
                 }
 
                 Behavior on contentY {
@@ -161,6 +136,14 @@ Kirigami.Page {
                 }
             }
         }
+    }
+
+    OverlayMessage {
+        id: hoveredLinkToolTip
+        text: articleView.hoveredLink
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
     }
 
     Keys.onPressed: {

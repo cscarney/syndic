@@ -4,8 +4,10 @@
  */
 
 #include "htmlsplitter.h"
-
+#include <cstdlib>
 #include <utility>
+
+static constexpr const int heightLimit = 36;
 
 HtmlSplitter::HtmlSplitter(const QString &input, QObject *blockParent) :
     GumboVisitor(input),
@@ -49,13 +51,33 @@ static QString buildCloseTag(const GumboElement &element)
     return tag;
 }
 
+static void pushAnchor(QStringList &anchors, const GumboElement &element) {
+    assert(element.tag == GUMBO_TAG_A);
+    GumboAttribute *attr = gumbo_get_attribute(&element.attributes, "href");
+    if (attr == nullptr) {
+        anchors.push_back(QString());
+        return;
+    }
+    anchors.push_back(QString::fromUtf8(attr->value));
+}
+
+static void popAnchor(QStringList &anchors) {
+    anchors.pop_back();
+}
+
 void HtmlSplitter::visitElementOpen(GumboNode *node)
 {
     GumboElement &element = node->v.element;
     QString tag = buildTag(element);
     switch (element.tag) {
     case GUMBO_TAG_IMG:
-        createImageBlock(node);
+        createImageBlock(node, tag);
+        break;
+
+    case GUMBO_TAG_A:
+        pushAnchor(m_anchors, element);
+        ensureTextBlock();
+        m_currentTextBlock->appendText(tag);
         break;
 
     default:
@@ -69,21 +91,32 @@ void HtmlSplitter::visitText(GumboNode *node)
 {
     GumboText &text = node->v.text;
     ensureTextBlock();
-    m_currentTextBlock->appendText(QString::fromUtf8(text.original_text.data, text.original_text.length));
+    QString textContent = QString::fromUtf8(text.original_text.data, text.original_text.length);
+    if (!textContent.isEmpty()) {
+        m_haveTextContent = true;
+        m_currentTextBlock->appendText(textContent);
+    }
 }
 
 void HtmlSplitter::visitElementClose(GumboNode *node)
 {
+    GumboElement &element = node->v.element;
+    if (element.tag == GUMBO_TAG_A) {
+        popAnchor(m_anchors);
+    }
     m_openElements.removeLast();
     if (m_currentTextBlock != nullptr) {
-        m_currentTextBlock->appendText(buildCloseTag(node->v.element));
+        m_currentTextBlock->appendText(buildCloseTag(element));
     }
 }
 
 void HtmlSplitter::openTextBlock()
 {
     m_currentTextBlock = new TextBlock(m_blockParent);
+    m_haveTextContent = false;
     m_blocks.push_back(m_currentTextBlock);
+
+    // re-open any tags that were open at the end of the last block
     const QStringList &openElements = m_openElements;
     for (const QString &element : openElements) {
         m_currentTextBlock->appendText(element);
@@ -108,6 +141,15 @@ void HtmlSplitter::ensureTextBlock()
 void HtmlSplitter::closeTextBlock(GumboNode *currentNode)
 {
     if (m_currentTextBlock == nullptr){return;}
+    if (!m_haveTextContent) {
+        // remove text blocks that don't have any text
+        m_blocks.pop_back();
+        delete m_currentTextBlock;
+        m_currentTextBlock = nullptr;
+        return;
+    }
+
+    // close out all open tags
     const auto &rootNode = root();
     for(;;) {
         assert(currentNode->type == GUMBO_NODE_ELEMENT);
@@ -120,19 +162,30 @@ void HtmlSplitter::closeTextBlock(GumboNode *currentNode)
     m_currentTextBlock = nullptr;
 }
 
-void HtmlSplitter::createImageBlock(GumboNode *node)
+void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
 {
     assert(node->type == GUMBO_NODE_ELEMENT);
-    closeTextBlock(node->parent);
     GumboElement &element = node->v.element;
-    GumboAttribute *attr = gumbo_get_attribute(&element.attributes, "src");
-    if (attr == nullptr){return;}
-    QUrl src = QString(attr->value);
-    auto *image = new ImageBlock(src, m_blockParent);
+    GumboAttribute *srcAttr = gumbo_get_attribute(&element.attributes, "src");
+    if (srcAttr == nullptr){return;}
+    GumboAttribute *heightAttr = gumbo_get_attribute(&element.attributes, "height");
+    if (heightAttr != nullptr) {
+        long int height = strtol(heightAttr->value, nullptr, 10);
+        if (height < heightLimit) {
+            ensureTextBlock();
+            m_currentTextBlock->appendText(tag);
+            return;
+        }
+    }
+    closeTextBlock(node->parent);
+    auto *image = new ImageBlock(srcAttr->value, m_blockParent);
+    if (!m_anchors.isEmpty()) {
+        image->m_href = m_anchors.last();
+    }
     m_blocks.push_back(image);
 }
 
-ImageBlock::ImageBlock(QUrl src, QObject *parent):
+ImageBlock::ImageBlock(QString src, QObject *parent):
     ContentBlock(parent),
     m_src(std::move(src))
 {}
@@ -141,6 +194,17 @@ const QString &ImageBlock::delegateName() const
 {
     static QString name { "ImageBlock" };
     return name;
+}
+
+QString ImageBlock::resolvedSrc(QUrl base)
+{
+    return base.resolved(m_src).toString();
+}
+
+QString ImageBlock::resolvedHref(QUrl base)
+{
+    if (m_href.isEmpty()){return QString();}
+    return base.resolved(m_href).toString();
 }
 
 const QString &TextBlock::delegateName() const

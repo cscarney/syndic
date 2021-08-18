@@ -8,6 +8,13 @@
 #include <QString>
 #include "htmlparser/gumbo.h"
 
+/**
+ * base class for walking an HTML document tree.
+ *
+ * This is a relatively thin wrapper around the gumbo parser.  Derived
+ * classes override some or all of the visit* methods, which are then called
+ * for each node by walk().
+ */
 class GumboVisitor
 {
 public:
@@ -16,25 +23,28 @@ public:
     GumboVisitor(GumboVisitor &other) = delete;
     void operator=(GumboVisitor &other) = delete;
 
+    /**
+     * Walk the element tree.
+     *
+     * This calls the appropriate visit* methods for each node in the parse tree
+     */
     void walk();
 
+    /**
+     * The root node of the parse tree.
+     */
+    GumboNode *const&root() { return m_root; }
+
+private:
     virtual void visitElementOpen(GumboNode *node) {  }
     virtual void visitText(GumboNode *node) { }
     virtual void visitElementClose(GumboNode *node) { };
     virtual void finished() {}
 
-protected:
-    void supress();
-    void stop();
-    GumboNode *const&root() { return m_root; }
-
-private:
     GumboOutput *m_gumbo;
     QByteArray m_data;
     GumboNode *m_root;
     GumboNode *m_node;
-    bool m_supress { false };
-    bool m_stop { false };
     void moveNext();
 };
 

@@ -27,6 +27,8 @@
 #include "iconprovider.h"
 #include "newitemnotifier.h"
 #include "platformhelper.h"
+#include "contentmodel.h"
+#include "contentimageitem.h"
 using namespace FeedCore;
 
 static QString filePath(QString const &fileName)
@@ -50,12 +52,17 @@ static void registerQmlTypes() {
     qmlRegisterType<ArticleListModel>("ArticleListModel", 1, 0, "ArticleListModel");
     qmlRegisterType<ProvisionalFeed>("ProvisionalFeed", 1, 0, "ProvisionalFeed");
     qmlRegisterType<NewItemNotifier>("NewItemNotifier", 1, 0, "NewItemNotifier");
+    qmlRegisterType<ContentModel>("ContentModel", 1, 0, "ContentModel");
+    qmlRegisterType<ContentImageItem>("ContentImage", 1, 0, "ContentImage");
     qmlRegisterUncreatableType<Updater>("Updater", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<Context>("FeedContext", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<Feed>("Feed", 1,0, "Feed", "obtained from cpp model");
     qmlRegisterUncreatableType<Article>("Article", 1, 0, "Article", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlArticleRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
     qmlRegisterUncreatableType<PlatformHelper>("PlatformHelper", 1, 0, "PlatformHelper", "global object");
+    qmlRegisterUncreatableType<ContentBlock>("ContentBlock", 1, 0, "ContentBlock", "obtained from contentmodel");
+    qmlRegisterUncreatableType<ImageBlock>("ImageBlock", 1, 0, "ImageBlock", "obtained from contentmodel");
+    qmlRegisterUncreatableType<TextBlock>("TextBlock", 1, 0, "TextBlock", "obtained from contentmodel");
 }
 
 #ifdef ANDROID

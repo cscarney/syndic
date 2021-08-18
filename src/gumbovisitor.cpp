@@ -22,11 +22,7 @@ void GumboVisitor::walk()
             visitText(m_node);
             break;
         case GUMBO_NODE_ELEMENT: {
-            m_supress = false;
             visitElementOpen(m_node);
-            if (m_supress || m_stop) {
-                break;
-            }
             GumboElement &element = m_node->v.element;
             if (element.children.length > 0) {
                 m_node = static_cast<GumboNode *>(element.children.data[0]);
@@ -43,22 +39,8 @@ void GumboVisitor::walk()
     finished();
 }
 
-void GumboVisitor::supress()
-{
-    m_supress = true;
-}
-
-void GumboVisitor::stop()
-{
-    m_stop = true;
-}
-
 void GumboVisitor::moveNext()
 {
-    if (m_stop) {
-        m_node = nullptr;
-        return;
-    }
     do {
         unsigned int nextIndex = m_node->index_within_parent + 1;
         GumboElement &parent = m_node->parent->v.element;
@@ -67,10 +49,6 @@ void GumboVisitor::moveNext()
             return;
         }
         visitElementClose(m_node->parent);
-        if (m_stop) {
-            m_node = nullptr;
-            return;
-        }
         m_node = m_node->parent;
     } while (m_node != m_root);
     m_node = nullptr;
