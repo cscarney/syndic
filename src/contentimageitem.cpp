@@ -19,9 +19,8 @@ QSGNode *ContentImageItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePain
     if (!m_needsUpdate) {
         return node;
     }
-    auto *imageNode = dynamic_cast<QSGImageNode*>(node);
+    auto *imageNode = static_cast<QSGImageNode*>(node);
     if (imageNode == nullptr) {
-        // delete node;
         imageNode = window()->createImageNode();
         auto *texture = window()->createTextureFromImage(m_image);
         imageNode->setOwnsTexture(true);
