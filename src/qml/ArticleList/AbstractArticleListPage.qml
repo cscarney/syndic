@@ -19,7 +19,7 @@ Kirigami.ScrollablePage {
     property alias count: articleList.count
     property bool isUpdating: model.status === Feed.Updating
     property bool unreadFilter: true
-    property bool automaticOpen: pageRow && (pageRow.defaultColumnWidth < pageRow.width)
+    property bool automaticOpen: pageRow && (pageRow.defaultColumnWidth * 2 < pageRow.width)
     supportsRefreshing: true
     refreshing: isUpdating
     signal suspendAnimations
@@ -88,7 +88,7 @@ Kirigami.ScrollablePage {
     }
 
     onAutomaticOpenChanged: {
-        if (automaticOpen) {
+        if (automaticOpen &&  pageRow.lastItem === root) {
             openChild()
         } else if (articleList.currentIndex < 0) {
             pageRow.pop()
