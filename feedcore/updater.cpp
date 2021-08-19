@@ -33,14 +33,11 @@ Updater::~Updater() = default;
 
 void Updater::start(const QDateTime &timestamp)
 {
+    d->updateStartTime = timestamp;
     if (d->feed->status() != LoadStatus::Updating) {
         d->feed->setStatus(LoadStatus::Updating);
-        if (d->expireAge > 0) {
-            emit expire(timestamp.addSecs(-d->expireAge));
-        }
         run();
     }
-    d->updateStartTime = timestamp;
 }
 
 QString Updater::error()
@@ -76,6 +73,11 @@ bool Updater::updateIfNecessary(const QDateTime &timestamp)
         return true;
     }
     return false;
+}
+
+const QDateTime &Updater::updateStartTime()
+{
+    return d->updateStartTime;
 }
 
 const QDateTime &Updater::lastUpdate()
@@ -127,6 +129,11 @@ void Updater::setDefaultUpdateInterval(qint64 updateInterval)
 void Updater::setExpireAge(qint64 expireAge)
 {
     d->expireAge = expireAge;
+}
+
+qint64 Updater::expireAge()
+{
+    return d->expireAge;
 }
 
 void Updater::updateParams(Updater *other)

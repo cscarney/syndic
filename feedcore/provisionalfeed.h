@@ -27,6 +27,7 @@ public:
     Future<ArticleRef> *getArticles(bool unreadFilter) final;
 
     void updateFromSource(const Syndication::FeedPtr &feed) final;
+    void updateSourceArticle(const Syndication::ItemPtr&) final {};
 
     /**
      * Copy this feed's configuration into the feed specified by the targetFeed property

@@ -57,25 +57,17 @@ Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)
     return m_storage->getByFeed(this);
 }
 
-void FeedImpl::updateFromSource(const Syndication::FeedPtr &source)
+void FeedImpl::updateSourceArticle(const Syndication::ItemPtr &article)
 {
-    if (name().isEmpty()) {
-        setName(source->title());
-    }
-    setLink(source->link());
-    setIcon(source->icon()->url());
-    const auto &items = source->items();
-    for (const auto &item : items) {
-        auto *q = m_storage->storeArticle(this, item);
-        QObject::connect(q, &BaseFuture::finished, this, [this, q]{
-            for (const auto &item : q->result()) {
-                if (!item->isRead()){
-                    incrementUnreadCount();
-                }
-                emit articleAdded(item);
+    auto *q = m_storage->storeArticle(this, article);
+    QObject::connect(q, &BaseFuture::finished, this, [this, q]{
+        for (const auto &item : q->result()) {
+            if (!item->isRead()){
+                incrementUnreadCount();
             }
-        });
-    }
+            emit articleAdded(item);
+        }
+    });
 }
 
 void FeedImpl::onArticleReadChanged(ArticleImpl *article)

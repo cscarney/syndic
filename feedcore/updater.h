@@ -82,6 +82,12 @@ public:
     bool updateIfNecessary(const QDateTime &timestamp);
 
     /**
+     * If an update is in progress, the time that the update started,
+     * otherwise the same as lastUpdate()
+     */
+    const QDateTime &updateStartTime();
+
+    /**
      * The time of the last update
      */
     const QDateTime &lastUpdate();
@@ -125,6 +131,8 @@ public:
      * Stale items will not be removed until the next update.
      */
     void setExpireAge(qint64 expireAge);
+
+    qint64 expireAge();
 
     /**
      * Set this Updater's parameters to match /other/

@@ -70,5 +70,35 @@ Kirigami.ScrollablePage {
                 value: runInBackground.checked
             }
         }
+
+        RowLayout {
+            Kirigami.FormData.label: qsTr("Delete after:")
+            CheckBox {
+                id: expireItems
+                checked: globalSettings.expireItems
+                Binding {
+                    target: globalSettings
+                    property: "expireItems"
+                    value: expireItems.checked
+                }
+            }
+            SpinBox {
+                id: expireAge
+                enabled: expireItems.checked
+                value: globalSettings.expireAge / 86400
+                from: 1
+                textFromValue: function(value, locale) {
+                    return qsTr("%n day(s)", "", value)
+                }
+                valueFromText: function(text, locale) {
+                    return +text.replace(/[^\d]/g, "")
+                }
+                Binding {
+                    target: globalSettings
+                    property: "expireAge"
+                    value: expireAge.value * 86400
+                }
+            }
+        }
     }
 }

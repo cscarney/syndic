@@ -24,7 +24,7 @@ public:
     void updateFromQuery(const FeedQuery &query);
     FeedCore::Future<FeedCore::ArticleRef> *getArticles(bool unreadFilter) final;
     bool editable() final { return true; }
-    void updateFromSource(const Syndication::FeedPtr &source) final;
+    void updateSourceArticle(const Syndication::ItemPtr &article) final;
     void onArticleReadChanged(ArticleImpl *article);
 private:
     FeedImpl(qint64 feedId, StorageImpl *storage);

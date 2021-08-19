@@ -7,6 +7,7 @@
 #include <QNetworkReply>
 #include <Syndication/Loader>
 #include <Syndication/DataRetriever>
+#include <Syndication/Image>
 #include "updater.h"
 #include "networkaccessmanager.h"
 using namespace FeedCore;
@@ -46,6 +47,29 @@ FeedCore::UpdatableFeed::UpdatableFeed(QObject *parent) :
     Feed(parent),
     m_updater { new UpdaterImpl(this, this) }
 {}
+
+void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
+{
+    if (name().isEmpty()) {
+        setName(feed->title());
+    }
+    setLink(feed->link());
+    setIcon(feed->icon()->url());
+    const auto &items = feed->items();
+    time_t expireTime = 0;
+    if (updater()->expireAge() > 0) {
+        expireTime = updater()->updateStartTime().toTime_t() - updater()->expireAge();
+    }
+    for (const auto &item : items) {
+        updateSourceArticle(item);
+        if (item->dateUpdated() < expireTime) {
+            expireTime = item->dateUpdated();
+        }
+    }
+    if (expireTime > 0) {
+        updater()->expire(QDateTime::fromTime_t(expireTime));
+    }
+}
 
 
 UpdatableFeed::UpdaterImpl::UpdaterImpl(UpdatableFeed *feed, QObject *parent):
