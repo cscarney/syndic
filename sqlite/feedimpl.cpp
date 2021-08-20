@@ -7,7 +7,6 @@
 #include <QVariant>
 #include <QSqlQuery>
 #include <Syndication/Image>
-#include "updater.h"
 #include "sqlite/storageimpl.h"
 #include "article.h"
 #include "articleref.h"
@@ -18,7 +17,7 @@ using namespace FeedCore;
 using namespace Sqlite;
 
 
-FeedImpl::FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage):
+FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage):
     UpdatableFeed(storage),
     m_id{feedId},
     m_storage{storage}
@@ -26,14 +25,15 @@ FeedImpl::FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage):
     storage->listenForChanges(this);
 }
 
-static void unpackUpdateInterval(Updater *updater, qint64 updateInterval)
+void FeedImpl::unpackUpdateInterval(qint64 updateInterval)
 {
     if (updateInterval == 0) {
-        updater->setUpdateMode(Updater::DefaultUpdateMode);
+        setUpdateMode(DefaultUpdateMode);
     } else if (updateInterval < 0) {
-        updater->setUpdateMode(Updater::ManualUpdateMode);
+        setUpdateMode(ManualUpdateMode);
     } else {
-        updater->setUpdateInterval(updateInterval);
+        setUpdateMode(CustomUpdateMode);
+        setUpdateInterval(updateInterval);
     }
 }
 
@@ -45,8 +45,8 @@ void FeedImpl::updateFromQuery(const FeedQuery &query)
     Feed::setIcon(query.icon());
     Feed::setUnreadCount(query.unreadCount());
 
-    updater()->setLastUpdate(query.lastUpdate());
-    unpackUpdateInterval(updater(), query.updateInterval());
+    setLastUpdate(query.lastUpdate());
+    unpackUpdateInterval(query.updateInterval());
 }
 
 Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)

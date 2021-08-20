@@ -6,52 +6,45 @@
 #include "scheduler.h"
 #include <QSet>
 #include <QNetworkConfigurationManager>
-#include "updater.h"
 #include "feed.h"
 
 namespace FeedCore {
 
 struct Scheduler::PrivData {
-    QSet<Feed*> feeds;
     QList<Feed *> schedule;
     QTimer timer;
-    qint64 updateInterval{ 0 };
-    qint64 expireAge { 0 };
-    QNetworkConfigurationManager ncm;
 };
-
-static void clearErrors(const QList<Feed*> &schedule)
-{
-    QList<Feed*> errorFeeds;
-    for(Feed *feed : schedule) {
-        if (feed->status() == Feed::Error) {
-            errorFeeds << feed;
-        }
-    }
-    for(Feed *feed : qAsConst(errorFeeds)) {
-        feed->updater()->start();
-    }
-}
 
 Scheduler::Scheduler(QObject *parent) :
     QObject(parent),
     d(std::make_unique<PrivData>())
 {
-    QObject::connect(&d->ncm, &QNetworkConfigurationManager::configurationAdded, this, &Scheduler::onNetworkStateChanged);
-    QObject::connect(&d->ncm, &QNetworkConfigurationManager::configurationChanged, this, &Scheduler::onNetworkStateChanged);
+
 }
 
 Scheduler::~Scheduler()=default;
 
+static QDateTime nextUpdate(Feed *feed)
+{
+    const QDateTime &updateStartTime = feed->updater()->updateStartTime();
+    QDateTime lastUpdate { updateStartTime.isValid() ? updateStartTime : feed->lastUpdate() };
+    return lastUpdate.addSecs(feed->updateInterval());
+}
+
+static bool needsUpdate(Feed *feed, const QDateTime &timestamp)
+{
+    return nextUpdate(feed) < timestamp;
+}
+
 void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
 {
-    Updater *updater { feed->updater() };
-    if (!updater->hasNextUpdate()) {
+    if (feed->updateMode()==Feed::DefaultUpdateMode
+            || feed->updateInterval()<=0) {
         return;
     }
-    const QDateTime &nextUpdate { updater->nextUpdate() };
+    const QDateTime &updateTime { nextUpdate(feed) };
     for (auto i=schedule.begin(); i!=schedule.end(); ++i) {
-        if ((*i)->updater()->nextUpdate() > nextUpdate) {
+        if (nextUpdate(*i) > updateTime) {
             schedule.insert(i, feed);
             return;
         }
@@ -61,18 +54,12 @@ void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
 
 void Scheduler::schedule(Feed *feed, const QDateTime &timestamp)
 {
-    d->feeds.insert(feed);
-    Updater *updater { feed->updater() };
-    updater->setDefaultUpdateInterval(d->updateInterval);
-    updater->setExpireAge(d->expireAge);
     QObject::connect(feed, &Feed::statusChanged, this,
                      [this, feed]{ onFeedStatusChanged(feed); });
-    QObject::connect(updater, &Updater::updateIntervalChanged, this,
+    QObject::connect(feed, &Feed::updateIntervalChanged, this,
                      [this, feed]{ reschedule(feed); });
-    QObject::connect(updater, &Updater::updateModeChanged, this,
-                     [this, feed]{ onUpdateModeChanged(feed); });
     QObject::connect(feed, &QObject::destroyed, this,
-                     [this, feed]{ unschedule(feed); });
+                     [this, feed]{ d->schedule.removeAll(feed); });
     reschedule(feed, timestamp);
 }
 
@@ -88,12 +75,9 @@ void Scheduler::schedule(Future<Feed*> *q)
 
 void Scheduler::unschedule(Feed *feed)
 {
-    bool isScheduled { d->feeds.contains(feed) };
-    if (!isScheduled) {
-        return;
-    }
-    d->schedule.removeOne(feed);
-    d->feeds.remove(feed);
+    if (d->schedule.removeOne(feed)) {
+        QObject::disconnect(feed, nullptr, this, nullptr);
+    };
 }
 
 void Scheduler::start(int resolution)
@@ -111,7 +95,7 @@ void Scheduler::stop()
     d->timer.stop();
 }
 
-static void updateMany(const QDateTime &timestamp, const QList<Updater *> &toUpdate)
+static void updateMany(const QDateTime &timestamp, const QList<Feed::Updater *> &toUpdate)
 {
     for (auto *entry : toUpdate)
     {
@@ -121,90 +105,40 @@ static void updateMany(const QDateTime &timestamp, const QList<Updater *> &toUpd
 
 void Scheduler::updateStale()
 {
+    // find all the stale feeds before we start updating them so that we don't modify the schedule while we're searching it...
     const auto &timestamp = QDateTime::currentDateTime();
-    QList<Updater *> toUpdate{};
+    QList<Feed::Updater *> toUpdate{};
     const auto &schedule { d->schedule };
     for (Feed *entry : schedule) {
-        Updater *updater = entry->updater();
-        if (!entry->updater()->needsUpdate(timestamp)) {
+        if (!needsUpdate(entry, timestamp)) {
             break;
         }
-         toUpdate << updater;
+         toUpdate << entry->updater();
     }
     updateMany(timestamp, toUpdate);
 }
 
-void Scheduler::updateAll()
+void Scheduler::clearErrors()
 {
-    const auto &timestamp = QDateTime::currentDateTime();
-    d->schedule.clear();
-    const auto &feeds = d->feeds;
-    for (Feed *const entry : feeds) {
-        entry->updater()->start(timestamp);
+    QList<Feed*> errorFeeds;
+    for(Feed *feed : d->schedule) {
+        if (feed->status() == Feed::Error) {
+            errorFeeds << feed;
+        }
     }
-}
-
-void Scheduler::abortAll()
-{
-    const auto &feeds = d->feeds;
-    for(Feed *const entry : feeds) {
-        entry->updater()->abort();
-    }
-}
-
-qint64 Scheduler::updateInterval()
-{
-    return d->updateInterval;
-}
-
-void Scheduler::setUpdateInterval(qint64 newval){
-    d->updateInterval = newval;
-    const auto &feeds = d->feeds;
-    for (const auto &feedRef : feeds) {
-        feedRef->updater()->setDefaultUpdateInterval(newval);
-    }
-}
-
-qint64 Scheduler::expireAge()
-{
-    return d->expireAge;
-}
-
-void Scheduler::setExpireAge(qint64 newval)
-{
-    d->expireAge = newval;
-    const auto &feeds = d->feeds;
-    for (const auto &feedRef : feeds) {
-        feedRef->updater()->setExpireAge(newval);
+    QDateTime timestamp { QDateTime::currentDateTime() };
+    for(Feed *feed : qAsConst(errorFeeds)) {
+        feed->updater()->start(timestamp);
     }
 }
 
 void Scheduler::reschedule(Feed *feed, const QDateTime &timestamp)
 {
-    Updater *updater { feed->updater() };
     d->schedule.removeOne(feed);
-    if (updater->needsUpdate(timestamp)) {
-        updater->start();
+    if (needsUpdate(feed, timestamp)) {
+        feed->updater()->start();
     } else {
         insertIntoSchedule(d->schedule, feed);
-    }
-}
-
-void Scheduler::onUpdateModeChanged(Feed *feed)
-{
-    Updater *updater { feed->updater() };
-    switch (updater->updateMode()) {
-    case Updater::DefaultUpdateMode:
-        updater->setDefaultUpdateInterval(d->updateInterval);
-        break;
-
-    case Updater::CustomUpdateMode:
-        reschedule(feed);
-        break;
-
-    case Updater::ManualUpdateMode:
-        d->schedule.removeOne(feed);
-        break;
     }
 }
 
@@ -214,13 +148,6 @@ void Scheduler::onFeedStatusChanged(Feed *sender)
         d->schedule.removeOne(sender);
     } else {
         insertIntoSchedule(d->schedule, sender);
-    }
-}
-
-void Scheduler::onNetworkStateChanged()
-{
-    if (d->ncm.isOnline()) {
-        clearErrors(d->schedule);
     }
 }
 

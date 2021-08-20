@@ -5,15 +5,14 @@
 
 #include "allitemsfeed.h"
 #include "context.h"
-#include "updater.h"
 #include "article.h"
-namespace FeedCore {
+using namespace FeedCore;
 
 namespace {
-    class AllUpdater : public FeedCore::Updater {
+    class AllUpdater : public Feed::Updater {
     public:
         AllUpdater(AllItemsFeed *feed, Context *context, QObject *parent):
-            FeedCore::Updater(feed, parent),
+            Feed::Updater(feed, parent),
             m_context { context }
         {}
 
@@ -36,10 +35,10 @@ AllItemsFeed::AllItemsFeed(Context *context, const QString &name, QObject *paren
     m_context{ context },
     m_updater{ new AllUpdater(this, context, this) }
 {
-    Future<Feed*> *q { context->getFeeds() };
     setName(name);
-    QObject::connect(q, &BaseFuture::finished, this,
-                     [this, q]{ onGetFeedsFinished(q); });
+    for (const auto &feed : context->getFeeds()){
+        addFeed(feed);
+    }
     QObject::connect(context, &Context::feedAdded, this, &AllItemsFeed::addFeed);
 }
 
@@ -48,7 +47,7 @@ Future<ArticleRef> *AllItemsFeed::getArticles(bool unreadFilter)
     return m_context->getArticles(unreadFilter);
 }
 
-Updater *AllItemsFeed::updater()
+Feed::Updater *AllItemsFeed::updater()
 {
     return m_updater;
 }
@@ -64,9 +63,7 @@ void AllItemsFeed::addFeed(Feed *feed)
 
 void AllItemsFeed::onGetFeedsFinished(Future<Feed*> *sender)
 {
-    for (const auto &feed : sender->result()){
-        addFeed(feed);
-    }
+
 }
 
 void AllItemsFeed::onArticleAdded(const ArticleRef &article)
@@ -82,6 +79,4 @@ void AllItemsFeed::syncFeedStatus(Feed *sender)
         m_active.remove(sender);
     }
     setStatus(m_active.isEmpty() ? LoadStatus::Idle : LoadStatus::Updating);
-}
-
 }

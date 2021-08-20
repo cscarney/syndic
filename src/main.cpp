@@ -23,7 +23,6 @@
 #include "qmlarticleref.h"
 #include "sqlite/storageimpl.h"
 #include "provisionalfeed.h"
-#include "updater.h"
 #include "iconprovider.h"
 #include "newitemnotifier.h"
 #include "platformhelper.h"
@@ -54,7 +53,7 @@ static void registerQmlTypes() {
     qmlRegisterType<NewItemNotifier>("NewItemNotifier", 1, 0, "NewItemNotifier");
     qmlRegisterType<ContentModel>("ContentModel", 1, 0, "ContentModel");
     qmlRegisterType<ContentImageItem>("ContentImage", 1, 0, "ContentImage");
-    qmlRegisterUncreatableType<Updater>("Updater", 1, 0, "Updater", "abstract base class");
+    qmlRegisterUncreatableType<Feed::Updater>("Updater", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<Context>("FeedContext", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<Feed>("Feed", 1,0, "Feed", "obtained from cpp model");
     qmlRegisterUncreatableType<Article>("Article", 1, 0, "Article", "obtained from cpp model");

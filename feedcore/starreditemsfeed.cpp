@@ -5,7 +5,6 @@
 
 #include "starreditemsfeed.h"
 #include "context.h"
-#include "updater.h"
 using namespace FeedCore;
 
 class StarredItemsFeed::StarredUpdater : public Updater {
@@ -17,7 +16,6 @@ public:
     void run() override {
         finish();
     }
-    void abort() override {}
 };
 
 StarredItemsFeed::StarredItemsFeed(FeedCore::Context *context, const QString &name, QObject *parent) :
@@ -33,7 +31,7 @@ Future<ArticleRef> *StarredItemsFeed::getArticles(bool unreadFilter)
     return m_context->getStarred();
 }
 
-Updater *StarredItemsFeed::updater()
+Feed::Updater *StarredItemsFeed::updater()
 {
     return m_updater;
 }

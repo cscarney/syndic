@@ -7,7 +7,6 @@
 #include <Syndication/Item>
 #include <Syndication/Person>
 #include "provisionalfeed.h"
-#include "updater.h"
 #include "article.h"
 using namespace FeedCore;
 

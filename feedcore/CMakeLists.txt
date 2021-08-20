@@ -5,7 +5,6 @@ set(feedcore_HEADERS
     storage.h
     future.h
     context.h
-    updater.h
     scheduler.h
     allitemsfeed.h
     factory.h
@@ -20,7 +19,6 @@ set(feedcore_SRCS
     feed.cpp
     article.cpp
     context.cpp
-    updater.cpp
     scheduler.cpp
     allitemsfeed.cpp
     provisionalfeed.cpp

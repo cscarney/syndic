@@ -4,6 +4,7 @@
  */
 
 #include "feedlistmodel.h"
+#include <algorithm>
 #include <QString>
 #include <QVector>
 #include <QPointer>
@@ -15,22 +16,28 @@
 
 using namespace FeedCore;
 
-struct FeedListEntry {
-    Feed *feed;
-    QString icon;
+namespace  {
+enum SpecialFeedIndex {
+    ALL_ITEMS_IDX = 0,
+    STARRED_ITEMS_IDX,
+    SPECIAL_FEED_COUNT
 };
+}
 
 class FeedListModel::PrivData {
 public:
     FeedListModel *parent;
     Context *context = nullptr;
-    QVector<FeedListEntry> feeds;
+    AllItemsFeed *allItems = nullptr;
+    StarredItemsFeed *starredItems = nullptr;
+    QVector<FeedCore::Feed*> feeds;
 
     PrivData(FeedListModel *parent) :
         parent{ parent }
     {}
 
     void addItem(FeedCore::Feed *feed);
+    void addItem(FeedCore::Feed *feed, int index);
     void removeItem(FeedCore::Feed *feed);
 };
 
@@ -42,13 +49,14 @@ FeedListModel::FeedListModel(QObject *parent)
 
 FeedListModel::~FeedListModel()=default;
 
-void FeedListModel::PrivData::addItem(FeedCore::Feed *feed)
+void FeedListModel::PrivData::addItem(Feed *feed)
 {
-    FeedListEntry item = {
-        .feed=feed,
-        .icon="feed-subscribe",
-    };
-    feeds << item;
+    addItem(feed, feeds.size());
+}
+
+void FeedListModel::PrivData::addItem(FeedCore::Feed *feed, int index)
+{
+    feeds.insert(index, feed);
     if (feed->icon().isEmpty()) {
         IconProvider::discoverIcon(feed);
     }
@@ -61,8 +69,7 @@ void FeedListModel::PrivData::removeItem(FeedCore::Feed *feed)
 {
     int i = 0;
     while (i < feeds.length()) {
-        const FeedListEntry &entry { feeds[i] };
-        FeedCore::Feed *const candidate { entry.feed };
+        FeedCore::Feed *const candidate { feeds[i] };
         if (candidate==feed) {
             parent->beginRemoveRows(QModelIndex(), i, i);
             feeds.remove(i);
@@ -81,6 +88,10 @@ Context *FeedListModel::context() const
 void FeedListModel::setContext(FeedCore::Context *context)
 {
     d->context = context;
+    if (context != nullptr) {
+        d->allItems = new AllItemsFeed(d->context, tr("All Items", "special feed name"), this);
+        d->starredItems = new StarredItemsFeed(d->context, tr("Starred", "special feed name"), this);
+    }
     emit contextChanged();
 }
 
@@ -90,7 +101,7 @@ int FeedListModel::rowCount(const QModelIndex &parent) const
         return 0;
     }
 
-    return d->feeds.size();
+    return d->feeds.size() + SPECIAL_FEED_COUNT;
 }
 
 QVariant FeedListModel::data(const QModelIndex &index, int role) const
@@ -100,25 +111,26 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
     }
 
     const int indexRow = index.row();
-    const FeedListEntry &entry { d->feeds[indexRow] };
-
-    switch(role){
-        case Roles::Feed:
-            return QVariant::fromValue(entry.feed);
-
-        case Roles::Icon:
-            return entry.icon;
+    FeedCore::Feed *entry;
+    switch (indexRow) {
+    case ALL_ITEMS_IDX:
+        entry = d->allItems;
+        break;
+    case STARRED_ITEMS_IDX:
+        entry = d->starredItems;
+        break;
+    default:
+        entry = d->feeds[indexRow-SPECIAL_FEED_COUNT];
     }
 
-    return QVariant();
+    return QVariant::fromValue(entry);
 }
 
 
 QHash<int, QByteArray> FeedListModel::roleNames() const
 {
     return {
-        {Roles::Feed, "feed"},
-        {Roles::Icon, "icon"},
+        {Qt::UserRole, "feed"}
     };
 }
 
@@ -129,31 +141,31 @@ void FeedListModel::classBegin()
 
 void FeedListModel::componentComplete()
 {
-    QTimer::singleShot(0, this, [this]{
-        Future<FeedCore::Feed*> *q { d->context->getFeeds() };
-        QObject::connect(q, &BaseFuture::finished, this,
-                         [this, q]{ onGetFeedsFinished(q); });
-        QObject::connect(d->context, &Context::feedAdded, this, &FeedListModel::onFeedAdded);
-    });
+    QTimer::singleShot(0, this, &FeedListModel::loadFeeds);
 }
 
-void FeedListModel::onGetFeedsFinished(Future<FeedCore::Feed*> *sender)
+static bool compareFeedNames(Feed *left, Feed *right) {
+    return left->name() < right->name();
+}
+
+void FeedListModel::loadFeeds()
 {
     beginResetModel();
     d->feeds.clear();
-    auto *allItems = new AllItemsFeed(d->context, tr("All Items", "special feed name"), this);
-    d->addItem(allItems);
-    auto *starredItems = new StarredItemsFeed(d->context, tr("Starred", "special feed name"), this);
-    d->addItem(starredItems);
-    for (const auto &item : sender->result()){
+    for (const auto &item : d->context->getFeeds()){
         d->addItem(item);
     }
+    std::sort(d->feeds.begin(), d->feeds.end(), compareFeedNames);
     endResetModel();
+    QObject::connect(d->context, &Context::feedAdded, this, &FeedListModel::onFeedAdded);
 }
 
 void FeedListModel::onFeedAdded(FeedCore::Feed *feed)
 {
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    d->addItem(feed);
+    auto it = std::lower_bound(d->feeds.constBegin(), d->feeds.constEnd(), feed, compareFeedNames);
+    const int index = it - d->feeds.constBegin();
+    const int row = index + SPECIAL_FEED_COUNT;
+    beginInsertRows(QModelIndex(), row, row);
+    d->addItem(feed, index);
     endInsertRows();
 }

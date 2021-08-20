@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+#include <algorithm>
 #include "articlelistmodel.h"
 #include "feed.h"
-#include "updater.h"
 #include "articleref.h"
 #include "qmlarticleref.h"
 
@@ -123,14 +123,12 @@ void ArticleListModel::onMergeFinished(Future<ArticleRef> *sender)
     }
 }
 
+
 static int indexForDate(const QList<QmlArticleRef> &list, const QDateTime &dt)
 {
-    for (int i=0; i<list.count(); i++) {
-        if (list.at(i)->date() <= dt) {
-            return i;
-        }
-    }
-    return list.count();
+    auto it = std::lower_bound(list.constBegin(), list.constEnd(), dt,
+                               [](auto a, auto d){ return a->date() > d; });
+    return it - list.constBegin();
 }
 
 void ArticleListModel::onItemAdded(ArticleRef const &item)

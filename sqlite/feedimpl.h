@@ -30,6 +30,7 @@ private:
     FeedImpl(qint64 feedId, StorageImpl *storage);
     qint64 m_id { 0 };
     StorageImpl *m_storage{ nullptr };
+    void unpackUpdateInterval(qint64 updateInterval);
     friend FeedCore::ObjectFactory<qint64, FeedImpl>;
 };
 }

@@ -65,3 +65,8 @@ void Article::setStarred(bool isStarred)
         emit starredChanged();
     }
 }
+
+QUrl Article::resolvedLink(QUrl link)
+{
+    return m_url.resolved(link);
+}

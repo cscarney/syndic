@@ -8,7 +8,6 @@ import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import org.kde.kirigami 2.7 as Kirigami
 import ProvisionalFeed 1.0
-import Updater 1.0
 
 Kirigami.ScrollablePage {
     id: root
@@ -16,10 +15,8 @@ Kirigami.ScrollablePage {
     property bool previewOpen: false
 
     property ProvisionalFeed provisionalFeed: ProvisionalFeed {
-        updater {
-            updateMode: Updater.DefaultUpdateMode
-            updateInterval: 3600
-        }
+        updateMode: Updater.DefaultUpdateMode
+        updateInterval: 3600
     }
 
     ButtonGroup {
@@ -58,23 +55,23 @@ Kirigami.ScrollablePage {
                 ButtonGroup.group: updateIntervalGroup
                 Kirigami.FormData.label: qsTr("Update Interval:")
                 text: qsTr("Use Global Setting")
-                checked: provisionalFeed.updater.updateMode === Updater.DefaultUpdateMode
+                checked: provisionalFeed.updateMode === Feed.DefaultUpdateMode
                 onToggled: {
                     if (checked) {
-                        provisionalFeed.updater.updateMode = Updater.DefaultUpdateMode
+                        provisionalFeed.updateMode = Feed.DefaultUpdateMode
                     }
                 }
             }
 
             RadioButton {
                 id: updateIntervalDisable
-                property int updateMode: Updater.ManualUpdateMode
+                property int updateMode: Feed.ManualUpdateMode
                 ButtonGroup.group: updateIntervalGroup
                 text: qsTr("Disable Automatic Updates")
-                checked: provisionalFeed.updater.updateMode === Updater.ManualUpdateMode
+                checked: provisionalFeed.updateMode === Feed.ManualUpdateMode
                 onToggled: {
                     if (checked) {
-                        provisionalFeed.updater.updateMode = Updater.ManualUpdateMode
+                        provisionalFeed.updateMode = Feed.ManualUpdateMode
                     }
                 }
             }
@@ -82,7 +79,7 @@ Kirigami.ScrollablePage {
             RadioButton {
                 id: updateIntervalCustom
                 ButtonGroup.group: updateIntervalGroup
-                checked: provisionalFeed.updater.updateMode === Updater.CustomUpdateMode
+                checked: provisionalFeed.updateMode === Feed.CustomUpdateMode
                 contentItem: SpinBox {
                     id: updateIntervalValue
                     anchors {
@@ -91,7 +88,7 @@ Kirigami.ScrollablePage {
                     }
                     KeyNavigation.backtab: updateIntervalCustom
                     enabled: parent.checked
-                    value: provisionalFeed.updater.updateInterval / 60
+                    value: provisionalFeed.updateInterval / 60
                     from: 1
                     textFromValue: function(value, locale) {
                         return qsTr("%n minute(s)", "", value)
@@ -99,11 +96,11 @@ Kirigami.ScrollablePage {
                     valueFromText: function(text, locale) {
                         return +text.replace(/[^\d]/g, "")
                     }
-                    onValueModified: provisionalFeed.updater.updateInterval = value * 60
+                    onValueModified: provisionalFeed.updateInterval = value * 60
                 }
                 onToggled: {
                     if (checked) {
-                        provisionalFeed.updater.updateMode = Updater.CustomUpdateMode
+                        provisionalFeed.updateMode = Feed.CustomUpdateMode
                     }
                 }
             }

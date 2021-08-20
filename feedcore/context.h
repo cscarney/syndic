@@ -41,7 +41,7 @@ public:
      *
      * @return A future representing the list of feeds.
      */
-    Future<Feed*> *getFeeds();
+    const QSet<Feed*> &getFeeds();
 
     /**
      * Create a new feed in the Context's storage object.
@@ -127,6 +127,7 @@ signals:
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
+    void populateFeeds(const QVector<Feed*> &feeds);
 };
 }
 #endif // FEEDCORE_CONTEXT_H

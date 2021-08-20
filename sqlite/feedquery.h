@@ -19,7 +19,7 @@ public:
 
         prepare("SELECT Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.url, Feed.link, Feed.icon, COUNT(Item.id), updateInterval, lastUpdate "
                 "FROM Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false "
-                "WHERE "+whereClause+" GROUP BY Feed.id ORDER BY Feed.displayName ASC");
+                "WHERE "+whereClause+" GROUP BY Feed.id");
     }
     qint64 id() const { return value(0).toLongLong(); }
     qint64 source() const { return value(1).toLongLong(); }

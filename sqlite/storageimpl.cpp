@@ -12,7 +12,6 @@
 #include "sqlite/articleimpl.h"
 #include "articleref.h"
 #include "provisionalfeed.h"
-#include "updater.h"
 using namespace FeedCore;
 using namespace Sqlite;
 
@@ -158,18 +157,18 @@ Future<Feed*> *StorageImpl::getFeeds()
     });
 }
 
-static qint64 packFeedUpdateInterval(Updater *updater)
+static qint64 packFeedUpdateInterval(Feed *feed)
 {
-    switch (updater->updateMode()) {
-    case Updater::DefaultUpdateMode:
+    switch (feed->updateMode()) {
+    case Feed::DefaultUpdateMode:
     default:
         return 0;
 
-    case Updater::ManualUpdateMode:
+    case Feed::ManualUpdateMode:
         return -1;
 
-    case Updater::CustomUpdateMode:
-        return updater->updateInterval();
+    case Feed::CustomUpdateMode:
+        return feed->updateInterval();
     }
 }
 
@@ -177,7 +176,7 @@ Future<Feed*> *StorageImpl::storeFeed(Feed *feed)
 {
     const QUrl &url = feed->url();
     const QString &name = feed->name();
-    const qint64 updateInterval = packFeedUpdateInterval(feed->updater());
+    const qint64 updateInterval = packFeedUpdateInterval(feed);
     return Future<Feed*>::yield(this, [this, url, name, updateInterval](auto *op){
         const auto &insertId = m_db.insertFeed(url);
         if (!insertId)
@@ -192,33 +191,32 @@ Future<Feed*> *StorageImpl::storeFeed(Feed *feed)
     });
 }
 
-static void onUpdateModeChanged(FeedDatabase &db, Updater *updater, qint64 feedId) {
-    qint64 updateInterval = packFeedUpdateInterval(updater);
+static void onUpdateModeChanged(FeedDatabase &db, Feed *feed, qint64 feedId) {
+    qint64 updateInterval = packFeedUpdateInterval(feed);
     db.updateFeedUpdateInterval(feedId, updateInterval);
 }
 
-static void onUpdateIntervalChanged(FeedDatabase &db, Updater *updater, qint64 feedId)
+static void onUpdateIntervalChanged(FeedDatabase &db, Feed *feed, qint64 feedId)
 {
-    if (updater->updateMode() != Updater::CustomUpdateMode) {
+    if (feed->updateMode() != Feed::CustomUpdateMode) {
         return;
     }
-    db.updateFeedUpdateInterval(feedId, updater->updateInterval());
+    db.updateFeedUpdateInterval(feedId, feed->updateInterval());
 }
 
 void StorageImpl::listenForChanges(FeedImpl *feed)
 {
-    Updater *updater { feed->updater() };
     qint64 feedId = feed->id();
-    QObject::connect(updater, &Updater::lastUpdateChanged, this, [this, updater, feedId]{
-        m_db.updateFeedLastUpdate(feedId, updater->lastUpdate());
+    QObject::connect(feed, &Feed::lastUpdateChanged, this, [this, feed, feedId]{
+        m_db.updateFeedLastUpdate(feedId, feed->lastUpdate());
     });
-    QObject::connect(updater, &Updater::updateIntervalChanged, this, [this, updater, feedId]{
-        onUpdateIntervalChanged(m_db, updater, feedId);
+    QObject::connect(feed, &Feed::updateIntervalChanged, this, [this, feed, feedId]{
+        onUpdateIntervalChanged(m_db, feed, feedId);
     });
-    QObject::connect(updater, &Updater::updateModeChanged, this, [this, updater, feedId]{
-        onUpdateModeChanged(m_db, updater, feedId);
+    QObject::connect(feed, &Feed::updateModeChanged, this, [this, feed, feedId]{
+        onUpdateModeChanged(m_db, feed, feedId);
     });
-    QObject::connect(updater, &Updater::expire, this, [this, feedId](auto olderThan){
+    QObject::connect(feed, &Feed::expire, this, [this, feedId](auto olderThan){
         m_db.deleteItemsOlderThan(feedId, olderThan);
     });
     QObject::connect(feed, &Feed::nameChanged, this, [this, feed]{

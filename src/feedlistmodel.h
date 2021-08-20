@@ -23,11 +23,6 @@ class FeedListModel : public QAbstractListModel, public QQmlParserStatus
 public:
     explicit FeedListModel(QObject *parent = nullptr);
     ~FeedListModel();
-    enum Roles {
-        Feed = Qt::UserRole,
-        Icon,
-    };
-    Q_ENUM(Roles);
     FeedCore::Context *context() const;
     void setContext(FeedCore::Context *context);
     int rowCount(const QModelIndex &parent = QModelIndex()) const final;
@@ -40,7 +35,7 @@ signals:
 private:
     class PrivData;
     std::unique_ptr<PrivData> d;
-    void onGetFeedsFinished(FeedCore::Future<FeedCore::Feed*> *sender);
+    void loadFeeds();
     void onFeedAdded(FeedCore::Feed *feed);
 };
 #endif // FEEDLISTMODEL_H

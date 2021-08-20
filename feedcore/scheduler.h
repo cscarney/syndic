@@ -12,7 +12,6 @@
 #include "future.h"
 
 namespace FeedCore {
-class Updater;
 
 /**
  * Automatically update feeds when they become stale
@@ -61,38 +60,10 @@ public:
     void updateStale();
 
     /**
-     * Trigger an update on all feeds that are registered with the Scheduler
-     */
-    void updateAll();
+      * Retry any scheduled updates that failed for some reason
+      */
+    void clearErrors();
 
-    /**
-     * Attempt to abort any pending updates
-     */
-    void abortAll();
-
-    /**
-     * The default update interval in seconds (for feeds using Updater::DefaultUpdateMode)
-     */
-    qint64 updateInterval();
-
-    /**
-     * Set the default update interval in seconds
-     */
-    void setUpdateInterval(qint64 newval);
-
-    /**
-     * The expire age for stale articles.
-     *
-     * This value is passed through to any scheduled feeds.
-     */
-    qint64 expireAge();
-
-    /**
-     * Set the expire age for stale articles.
-     *
-     * This value is passed through to any scheduled feeds.
-     */
-    void setExpireAge(qint64 newval);
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;

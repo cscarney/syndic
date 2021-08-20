@@ -82,6 +82,11 @@ public:
      * The gotContent signal will be emitted with the requested content, possibly asyncronously.
      */
     Q_INVOKABLE virtual void requestContent() = 0;
+
+    /**
+     * Resolves a link relative to the article page
+     */
+    Q_INVOKABLE QUrl resolvedLink(QUrl link);
 signals:
     void titleChanged();
     void authorChanged();

@@ -8,7 +8,6 @@
 #include <Syndication/Loader>
 #include <Syndication/DataRetriever>
 #include <Syndication/Image>
-#include "updater.h"
 #include "networkaccessmanager.h"
 using namespace FeedCore;
 
@@ -26,7 +25,7 @@ private:
 };
 }
 
-class UpdatableFeed::UpdaterImpl : public FeedCore::Updater
+class UpdatableFeed::UpdaterImpl : public Feed::Updater
 {
 public:
     UpdaterImpl(UpdatableFeed *feed, QObject *parent);
@@ -38,7 +37,7 @@ private:
     void loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status);
 };
 
-Updater *UpdatableFeed::updater()
+Feed::Updater *UpdatableFeed::updater()
 {
     return m_updater;
 }
@@ -57,8 +56,8 @@ void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
     setIcon(feed->icon()->url());
     const auto &items = feed->items();
     time_t expireTime = 0;
-    if (updater()->expireAge() > 0) {
-        expireTime = updater()->updateStartTime().toTime_t() - updater()->expireAge();
+    if (expireAge() > 0) {
+        expireTime = updater()->updateStartTime().toTime_t() - expireAge();
     }
     for (const auto &item : items) {
         updateSourceArticle(item);
@@ -67,7 +66,7 @@ void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
         }
     }
     if (expireTime > 0) {
-        updater()->expire(QDateTime::fromTime_t(expireTime));
+        emit expire(QDateTime::fromTime_t(expireTime));
     }
 }
 
@@ -108,7 +107,7 @@ void UpdatableFeed::UpdaterImpl::loadingComplete(Syndication::Loader *loader, co
         return;
     case Syndication::Aborted:
         qDebug() << "load aborted for " << m_updatableFeed->url();
-        finish();
+        aborted();
         return;
     case Syndication::Timeout:
         errorMessage = tr("Timeout", "error message");
