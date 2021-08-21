@@ -37,7 +37,7 @@ void ArticleListModel::setUnreadFilter(bool unreadFilter)
         d->unreadFilter = unreadFilter;
         if (d->active) {
             if (unreadFilter) {
-                refresh();
+                removeRead();
             } else {
                 refreshMerge();
             }
@@ -104,40 +104,46 @@ void ArticleListModel::onRefreshFinished(Future<ArticleRef> *sender)
     setStatusFromUpstream();
 }
 
+static bool compareDatesDescending(const ArticleRef &l, const ArticleRef &r)
+{
+    return l->date() > r->date();
+}
+
+static int indexForItem(const QList<QmlArticleRef> &list, const ArticleRef &item)
+{
+    auto it = std::lower_bound(list.constBegin(), list.constEnd(), item, compareDatesDescending);
+    return it - list.constBegin();
+}
+
 void ArticleListModel::onMergeFinished(Future<ArticleRef> *sender)
 {
     auto &items = d->items;
-    int itemIndex = 0;
-    const auto &result = sender->result();
-    for (const auto &resultItem : result) {
-        while ((itemIndex < items.size()) && (items[itemIndex]->date() > resultItem->date())) {
-            itemIndex++;
-        }
-        if (itemIndex >= items.size()) {
-            insertAndNotify(items.size(), resultItem);
-            itemIndex++;
-        } else if (items[itemIndex].get() != resultItem.get()) {
-            insertAndNotify(itemIndex, resultItem);
-            itemIndex++;
+    QSet<Article*> knownItems(items.constBegin(), items.constEnd());
+    for (const auto &item : sender->result()) {
+        if (!knownItems.contains(item.get())) {
+            insertAndNotify(indexForItem(d->items, item), item);
         }
     }
-}
-
-
-static int indexForDate(const QList<QmlArticleRef> &list, const QDateTime &dt)
-{
-    auto it = std::lower_bound(list.constBegin(), list.constEnd(), dt,
-                               [](auto a, auto d){ return a->date() > d; });
-    return it - list.constBegin();
 }
 
 void ArticleListModel::onItemAdded(ArticleRef const &item)
 {
     if (!d->unreadFilter || !item->isRead()) {
-        const auto &idx = indexForDate(d->items, item->date());
-        beginInsertRows(QModelIndex(), idx, idx);
-        d->items.insert(idx, QmlArticleRef(item));
-        endInsertRows();
+        insertAndNotify(indexForItem(d->items, item), item);
+    }
+}
+
+void ArticleListModel::removeRead()
+{
+    if (!d->unreadFilter) { return; }
+    auto &items = d->items;
+    for(int i=0; i<items.size(); ++i) {
+        if (items.at(i)->isRead()) {
+            beginRemoveRows(QModelIndex(), i,i);
+            items.removeAt(i);
+            endRemoveRows();
+            --i;
+        }
     }
 }
 

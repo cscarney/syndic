@@ -24,7 +24,8 @@ public:
     T *operator->() const { return m_ref.operator->(); }
     T *get() const { return m_ref.get(); }
     bool isNull() const { return m_ref.isNull(); }
-    operator const QSharedPointer<T>&() const{ return m_ref(); }
+    operator const QSharedPointer<T>&() const{ return m_ref; }
+    operator T*() const{ return m_ref.get(); }
 protected:
     ~QmlRef() = default;
 private:
