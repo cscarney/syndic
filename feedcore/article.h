@@ -86,7 +86,7 @@ public:
     /**
      * Resolves a link relative to the article page
      */
-    Q_INVOKABLE QUrl resolvedLink(QUrl link);
+    Q_INVOKABLE QUrl resolvedLink(const QUrl& link);
 signals:
     void titleChanged();
     void authorChanged();

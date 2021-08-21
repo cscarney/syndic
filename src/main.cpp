@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
     auto *fm = createContext(&app);
     engine.rootContext()->setContextProperty("feedContext", fm);
     engine.rootContext()->setContextProperty("platformHelper", new PlatformHelper);
-    engine.addImageProvider("feedicons", new IconProvider(fm));
+    engine.addImageProvider("feedicons", new IconProvider);
     engine.load(QUrl("qrc:/qml/main.qml"));
     int result = QApplication::exec();
     return result;

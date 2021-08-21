@@ -30,7 +30,7 @@ static QString buildTag(const GumboElement &element)
         const GumboAttribute *attribute = static_cast<GumboAttribute *>(attributes.data[i]);
         const char *attributeName = attribute->name;
         const GumboStringPiece &originalValue = attribute->original_value;
-        const QString attributeValue = QString::fromUtf8(originalValue.data, originalValue.length);
+        const QString attributeValue = QString::fromUtf8(originalValue.data, int(originalValue.length));
         tag.append(" ");
         tag.append(attributeName);
         tag.append("=");
@@ -91,7 +91,7 @@ void HtmlSplitter::visitText(GumboNode *node)
 {
     GumboText &text = node->v.text;
     ensureTextBlock();
-    QString textContent = QString::fromUtf8(text.original_text.data, text.original_text.length);
+    QString textContent = QString::fromUtf8(text.original_text.data, int(text.original_text.length));
     if (!textContent.isEmpty()) {
         m_haveTextContent = true;
         m_currentTextBlock->appendText(textContent);
@@ -196,12 +196,12 @@ const QString &ImageBlock::delegateName() const
     return name;
 }
 
-QString ImageBlock::resolvedSrc(QUrl base)
+QString ImageBlock::resolvedSrc(const QUrl& base)
 {
     return base.resolved(m_src).toString();
 }
 
-QString ImageBlock::resolvedHref(QUrl base)
+QString ImageBlock::resolvedHref(const QUrl& base)
 {
     if (m_href.isEmpty()){return QString();}
     return base.resolved(m_href).toString();

@@ -69,8 +69,8 @@ class ImageBlock : public ContentBlock {
 public:
     ImageBlock(QString src, QObject *parent=nullptr);
     const QString &delegateName() const override;
-    Q_INVOKABLE QString resolvedSrc(QUrl base);
-    Q_INVOKABLE QString resolvedHref(QUrl base);
+    Q_INVOKABLE QString resolvedSrc(const QUrl& base);
+    Q_INVOKABLE QString resolvedHref(const QUrl& base);
 private:
     QString m_src;
     QString m_href;

@@ -121,7 +121,7 @@ void Scheduler::updateStale()
 void Scheduler::clearErrors()
 {
     QList<Feed*> errorFeeds;
-    for(Feed *feed : d->schedule) {
+    for(Feed *feed : qAsConst(d->schedule)) {
         if (feed->status() == Feed::Error) {
             errorFeeds << feed;
         }

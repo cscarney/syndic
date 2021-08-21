@@ -11,7 +11,7 @@ public:
     explicit ContentImageItem(QQuickItem *parent=nullptr);
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *data) override;
     QUrl source() const;
-    void setSource(QUrl src);
+    void setSource(const QUrl& src);
 
 signals:
     void sourceChanged(QUrl src);

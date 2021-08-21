@@ -106,7 +106,7 @@ int FeedListModel::rowCount(const QModelIndex &parent) const
 
 QVariant FeedListModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid()) {
+    if (Q_UNLIKELY(!index.isValid() || role!=Qt::UserRole)) {
         return QVariant();
     }
 
@@ -162,8 +162,8 @@ void FeedListModel::loadFeeds()
 
 void FeedListModel::onFeedAdded(FeedCore::Feed *feed)
 {
-    auto it = std::lower_bound(d->feeds.constBegin(), d->feeds.constEnd(), feed, compareFeedNames);
-    const int index = it - d->feeds.constBegin();
+    const auto *it = std::lower_bound(d->feeds.constBegin(), d->feeds.constEnd(), feed, compareFeedNames);
+    const int index = int(it - d->feeds.constBegin());
     const int row = index + SPECIAL_FEED_COUNT;
     beginInsertRows(QModelIndex(), row, row);
     d->addItem(feed, index);

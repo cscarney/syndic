@@ -37,10 +37,9 @@ public:
 };
 }
 
-IconProvider::IconProvider(FeedCore::Context *ctx)
-{}
+IconProvider::IconProvider() = default;
 
-QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const QSize &requestedSize)
+QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const QSize & /*requestedSize */)
 {
     auto *response = new IconImageResponse;
     auto *nam = FeedCore::NetworkAccessManager::instance();

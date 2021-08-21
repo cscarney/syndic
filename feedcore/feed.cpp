@@ -176,13 +176,13 @@ struct Feed::Updater::PrivData {
     QDateTime updateStartTime;
     QString errorMsg;
     bool active { false };
+    PrivData(Feed *feed) : feed(feed) {};
 };
 
 Feed::Updater::Updater(Feed *feed, QObject *parent) :
     QObject(parent),
-    d{ std::make_unique<PrivData>() }
+    d{ std::make_unique<PrivData>(feed) }
 {
-    d->feed = feed;
 }
 
 Feed::Updater::~Updater() = default;

@@ -21,7 +21,10 @@ int ContentModel::rowCount(const QModelIndex &parent) const
 QVariant ContentModel::data(const QModelIndex &index, int role) const
 {
     ContentBlock *block = m_blocks[index.row()];
-    return QVariant::fromValue(block);
+    if (Q_LIKELY(role == Qt::UserRole)) {
+        return QVariant::fromValue(block);
+    }
+    return QVariant();
 }
 
 void ContentModel::setText(const QString& text)

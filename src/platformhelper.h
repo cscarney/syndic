@@ -9,7 +9,7 @@ class PlatformHelper : public QObject
     Q_OBJECT
 public:
     explicit PlatformHelper(QObject *parent = nullptr);
-    Q_INVOKABLE void share(const QUrl &url);
+    Q_INVOKABLE static void share(const QUrl &url);
 };
 
 #endif // PLATFORMHELPER_H

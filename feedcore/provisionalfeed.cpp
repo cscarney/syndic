@@ -34,7 +34,7 @@ ProvisionalFeed::ProvisionalFeed(QObject *parent) :
                      [this]{ updateParams(m_targetFeed); });
 }
 
-Future<ArticleRef> *ProvisionalFeed::getArticles(bool unreadFilter)
+Future<ArticleRef> *ProvisionalFeed::getArticles(bool /* unreadFilter */)
 {
     return Future<ArticleRef>::yield(this, [this](auto *op){
         if (m_feed == nullptr) {return;}

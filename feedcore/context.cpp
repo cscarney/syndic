@@ -23,7 +23,7 @@ struct Context::PrivData {
     QNetworkConfigurationManager ncm;
 
     PrivData(Storage *storage, Context *parent);
-    void configureUpdates(Feed *feed, const QDateTime &timestamp=QDateTime::currentDateTime());
+    void configureUpdates(Feed *feed, const QDateTime &timestamp=QDateTime::currentDateTime()) const;
 };
 
 Context::Context(Storage *storage, QObject *parent)
@@ -52,7 +52,7 @@ Context::PrivData::PrivData(Storage *storage, Context *parent) :
     storage->setParent(parent);
 }
 
-void Context::PrivData::configureUpdates(Feed *feed, const QDateTime &timestamp)
+void Context::PrivData::configureUpdates(Feed *feed, const QDateTime &timestamp) const
 {
     auto updateMode{feed->updateMode()};
     if (updateMode==Feed::DefaultUpdateMode) {

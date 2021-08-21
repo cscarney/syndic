@@ -15,7 +15,7 @@ namespace FeedCore {
 class IconProvider : public QQuickAsyncImageProvider
 {
 public:
-    IconProvider(FeedCore::Context *ctx);
+    IconProvider();
     QQuickImageResponse *requestImageResponse(const QString &id, const QSize &requestedSize) override;
     static void discoverIcon(FeedCore::Feed *feed);
 };

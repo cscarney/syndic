@@ -14,7 +14,7 @@ ContentImageItem::ContentImageItem(QQuickItem *parent) :
 
 }
 
-QSGNode *ContentImageItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *data)
+QSGNode *ContentImageItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData * /* data */)
 {
     if (!m_needsUpdate) {
         return node;
@@ -36,10 +36,9 @@ QUrl ContentImageItem::source() const
     return m_src;
 }
 
-void ContentImageItem::setSource(QUrl src)
+void ContentImageItem::setSource(const QUrl& src)
 {
-    if (m_src == src)
-        return;
+    if (m_src == src){ return; }
 
     m_src = src;
     if (!src.isEmpty()) {

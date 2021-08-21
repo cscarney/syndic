@@ -9,12 +9,12 @@ GumboVisitor::GumboVisitor(const QString &input)
 {
     m_data = input.toUtf8();
     m_gumbo = gumbo_parse(m_data);
+    m_root = m_gumbo->root;
+    m_node = m_root;
 }
 
 void GumboVisitor::walk()
 {
-    m_root = m_gumbo->root;
-    m_node = m_root;
     while(m_node != nullptr) {
         switch (m_node->type) {
         case GUMBO_NODE_TEXT:

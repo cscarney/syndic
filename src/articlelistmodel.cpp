@@ -12,7 +12,7 @@
 using namespace FeedCore;
 
 struct ArticleListModel::PrivData {
-    Feed *feed;
+    Feed *feed{};
     QList<QmlArticleRef> items;
     bool unreadFilter { false };
     LoadStatus status { LoadStatus::Idle };
