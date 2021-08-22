@@ -8,6 +8,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import org.kde.kirigami 2.7 as Kirigami
 import ProvisionalFeed 1.0
+import Feed 1.0
 
 Kirigami.ScrollablePage {
     id: root
@@ -15,7 +16,7 @@ Kirigami.ScrollablePage {
     property bool previewOpen: false
 
     property ProvisionalFeed provisionalFeed: ProvisionalFeed {
-        updateMode: Updater.DefaultUpdateMode
+        updateMode: Feed.DefaultUpdateMode
         updateInterval: 3600
     }
 
