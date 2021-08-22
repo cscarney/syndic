@@ -34,50 +34,51 @@ ScrollView {
         model: FeedListModel{
             context: feedContext
             onRowsInserted: {
-                feedList.currentIndex = -1;
-                currentlySelectedFeed = data(index(first,0), FeedListModel.Feed);
+                if (feedList.currentIndex < 0) {
+                    feedList.currentIndex = -1
+                    currentlySelectedFeed = data(index(first,0), FeedListModel.FeedRole);
+                }
             }
             onRowsRemoved: {
                 feedList.currentIndex = 0;
-                currentlySelectedFeed = data(index(0,0), FeedListModel.Feed);
+                currentlySelectedFeed = data(index(0,0), FeedListModel.FeedRole);
             }
         }
         clip: true
 
         delegate: Kirigami.BasicListItem {
+            id: listItem
             property var feed: model.feed
-            property var iconName: feed.icon.toString()
+            property var iconName: feed ? feed.icon.toString() : ""
+            property var status: feed ? feed.status : Feed.Idle
+            property var unreadCount: feed ? feed.unreadCount : 0
             icon: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
-            label: feed.name
+            label: feed ? feed.name : ""
             separatorVisible: false
             padding: Kirigami.Units.largeSpacing
             leftPadding: Kirigami.Units.smallSpacing
             rightPadding: Kirigami.Units.smallSpacing
             trailing: RowLayout {
-                property var feed: model.feed
-                property var status: feed ? feed.status : Feed.Idle
-                property var unreadCount: feed ? feed.unreadCount : 0
-
                 Kirigami.Icon {
                     source: "content-loading-symbolic"
                     Layout.preferredHeight: contentItem.height
                     isMask: true
-                    visible: parent.status === Feed.Updating
+                    visible: listItem.status === Feed.Updating
                 }
 
                 Kirigami.Icon {
                     source: "dialog-error-symbolic"
                     Layout.preferredHeight: contentItem.height
                     isMask: true
-                    visible: parent.status === Feed.Error
+                    visible: listItem.status === Feed.Error
                 }
 
                 Label {
                     id: unreadCountLabel
-                    visible: parent.unreadCount !== 0
+                    visible: listItem.unreadCount !== 0
                     horizontalAlignment: Text.AlignCenter
                     Layout.rightMargin: background.radius * 2
-                    text: parent.unreadCount
+                    text: listItem.unreadCount
                     leftInset: -background.radius
                     rightInset: -background.radius
                     background: Rectangle {

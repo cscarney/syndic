@@ -17,10 +17,10 @@ Kirigami.ApplicationWindow {
 
     pageStack {
         globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
-        globalToolBar.showNavigationButtons: priv.isFirstPage ? 0 : Kirigami.ApplicationHeaderStyle.ShowBackButton
+        globalToolBar.showNavigationButtons: Kirigami.ApplicationHeaderStyle.ShowBackButton
         defaultColumnWidth: (priv.itemListProportion * root.width) - (globalDrawer.actualWidth / 2)
         interactive: false
-        columnView.scrollDuration: animationSuspendTimer.running ? 0 : Kirigami.Units.longDuration
+        columnView.scrollDuration: Kirigami.Units.longDuration
     }
 
     globalDrawer: Kirigami.GlobalDrawer {

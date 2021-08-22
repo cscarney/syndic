@@ -67,17 +67,12 @@ void FeedListModel::PrivData::addItem(FeedCore::Feed *feed, int index)
 
 void FeedListModel::PrivData::removeItem(FeedCore::Feed *feed)
 {
-    int i = 0;
-    while (i < feeds.length()) {
-        FeedCore::Feed *const candidate { feeds[i] };
-        if (candidate==feed) {
-            parent->beginRemoveRows(QModelIndex(), i, i);
-            feeds.remove(i);
-            parent->endRemoveRows();
-        } else {
-            ++i;
-        }
-    }
+    int i = feeds.indexOf(feed);
+    if (i < 0) { return; }
+    const int row = i + SPECIAL_FEED_COUNT;
+    parent->beginRemoveRows(QModelIndex(), row, row);
+    feeds.remove(i);
+    parent->endRemoveRows();
 }
 
 Context *FeedListModel::context() const
@@ -106,7 +101,7 @@ int FeedListModel::rowCount(const QModelIndex &parent) const
 
 QVariant FeedListModel::data(const QModelIndex &index, int role) const
 {
-    if (Q_UNLIKELY(!index.isValid() || role!=Qt::UserRole)) {
+    if (Q_UNLIKELY(!index.isValid() || role!=FeedRole)) {
         return QVariant();
     }
 
@@ -130,7 +125,7 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
 QHash<int, QByteArray> FeedListModel::roleNames() const
 {
     return {
-        {Qt::UserRole, "feed"}
+        {FeedRole, "feed"}
     };
 }
 
