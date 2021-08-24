@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=FeedKeeper
+Icon=feedkeeper
+Exec=feedkeeper
+Type=Application
+Categories=Network;News;Feed;
+Terminal=false
+InitialPreference=10

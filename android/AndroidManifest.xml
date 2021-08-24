@@ -3,14 +3,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.rocksandpaper.feedkeeper"
           android:versionName="0.0.1"
-          android:versionCode="1627772009"
+          android:versionCode="1629823595"
           android:installLocation="auto">
 
     <supports-screens android:largeScreens="true" android:normalScreens="true" android:anyDensity="true" android:smallScreens="true"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="FeedKeeper"><!-- android:icon="" -->
+    <application android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="FeedKeeper" android:icon="@mipmap/ic_launcher">
         <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation"
                   android:name="org.qtproject.qt5.android.bindings.QtActivity"
                   android:label="FeedKeeper"
@@ -45,7 +45,7 @@
             <meta-data android:value="@string/unsupported_android_version" android:name="android.app.unsupported_android_version"/>
 
             <!-- Splash screen -->
-            <!-- meta-data android:name="android.app.splash_screen_drawable" android:resource=""/ -->
+            <meta-data android:name="android.app.splash_screen_drawable" android:resource="@drawable/splash" />
 
             <!-- Background running -->
             <meta-data android:name="android.app.background_running" android:value="false"/>
