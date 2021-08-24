@@ -17,7 +17,7 @@ Kirigami.ApplicationWindow {
 
     pageStack {
         globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
-        globalToolBar.showNavigationButtons: Kirigami.ApplicationHeaderStyle.ShowBackButton
+        globalToolBar.showNavigationButtons: priv.isFirstPage ? 0 : Kirigami.ApplicationHeaderStyle.ShowBackButton
         defaultColumnWidth: (priv.itemListProportion * root.width) - (globalDrawer.actualWidth / 2)
         interactive: false
         columnView.scrollDuration: Kirigami.Units.longDuration
