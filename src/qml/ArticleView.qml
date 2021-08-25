@@ -153,7 +153,7 @@ ColumnLayout {
                 Qt.openUrlExternally(root.item.article.resolvedLink(link))
             }
 
-            onHoveredLinkChanged: root.hoveredLink = root.item.article.resolvedLink(hoveredLink)
+            onHoveredLinkChanged: root.hoveredLink = hoveredLink ? root.item.article.resolvedLink(hoveredLink) : ""
 
             MouseArea
             {
