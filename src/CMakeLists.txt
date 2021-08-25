@@ -54,6 +54,12 @@ if (KF5Declarative_FOUND)
         )
 endif()
 
+if(KF5DBusAddons_FOUND)
+    target_link_libraries(feedkeeper
+        KF5::DBusAddons
+        )
+endif()
+
 if (ANDROID)
     target_link_libraries(feedkeeper
         KF5::Kirigami2

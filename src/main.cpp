@@ -12,9 +12,14 @@
 #include <QDirIterator>
 #include <QFontDatabase>
 #include <QStandardPaths>
+#include <QWindow>
 
 #ifdef KF5Declarative_FOUND
 #include <KDeclarative/KDeclarative>
+#endif
+
+#ifdef KF5DBusAddons_FOUND
+#include <KDBusService>
 #endif
 
 #include "context.h"
@@ -88,6 +93,21 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationDomain("rocksandpaper.com");
     QApplication::setApplicationName("FeedKeeper");
     QQmlApplicationEngine engine;
+
+#ifdef KF5DBusAddons_FOUND
+    KDBusService dbusService(KDBusService::Unique, &engine);
+    QObject::connect(&dbusService, &KDBusService::activateRequested, &engine, [&engine]{
+        const auto rootObjects = engine.rootObjects();
+        for (QObject *object : rootObjects) {
+            QWindow *window = qobject_cast<QWindow*>(object);
+            if (window) {
+                window->setVisible(true);
+                window->requestActivate();
+                return;
+            }
+        };
+    });
+#endif
 
 #ifdef ANDROID
     QQuickStyle::setStyle("Material");

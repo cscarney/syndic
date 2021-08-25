@@ -1,3 +1,4 @@
 
 #cmakedefine KF5Declarative_FOUND
 #cmakedefine KF5Notifications_FOUND
+#cmakedefine KF5DBusAddons_FOUND

@@ -25,6 +25,7 @@ find_package(Qt5 COMPONENTS Core Qml Network Widgets Quick QuickControls2 Sql RE
 find_package(KF5Declarative CONFIG QUIET)
 find_package(KF5Syndication REQUIRED)
 find_package(KF5Notifications CONFIG QUIET)
+find_package(KF5DBusAddons CONFIG QUIET)
 
 if (ANDROID)
     find_package(KF5Kirigami2 REQUIRED)
