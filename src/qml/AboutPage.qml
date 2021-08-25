@@ -9,19 +9,19 @@ import org.kde.kirigami 2.7 as Kirigami
 Kirigami.AboutPage {
     property bool keepDrawerOpen: true
     aboutData: ({
-        displayName: "FeedKeeper",
-        productName: "feedkeeper",
-        componentName: "feedkeeper",
-        shortDescription: "An Elegant RSS Reader",
+        displayName: "Syndic",
+        productName: "syndic",
+        componentName: "syndic",
+        shortDescription: "Feed Reader",
         homepage: "",
-        bugAddress: "feedkeeper@runningincircles.com",
+        bugAddress: "syndic@rocksandpaper.com",
         version: "1.0",
         otherText: "",
         authors: [
             {
                 name: "Connor Carney",
                 task: "",
-                emailAddress: "connor@runningincircles.com",
+                emailAddress: "hello@connorcarney.com",
                 webAddress: "",
                 ocsUsername: ""
             }
@@ -36,7 +36,7 @@ Kirigami.AboutPage {
             }
         ],
         copyrightStatement: "©2020 Connor Carney",
-        desktopFileName: "com.connorcarney.feedkeeper"
+        desktopFileName: "com.rocksandpaper.syndic"
     })
 
 

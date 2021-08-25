@@ -89,9 +89,9 @@ static void loadEmbeddedFonts(const QGuiApplication &app) {
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QApplication::setOrganizationName("feedkeeper");
+    QApplication::setOrganizationName("syndic");
     QApplication::setOrganizationDomain("rocksandpaper.com");
-    QApplication::setApplicationName("FeedKeeper");
+    QApplication::setApplicationName("Syndic");
     QQmlApplicationEngine engine;
 
 #ifdef KF5DBusAddons_FOUND

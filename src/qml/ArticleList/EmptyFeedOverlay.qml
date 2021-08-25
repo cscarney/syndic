@@ -18,7 +18,7 @@ Item {
 
         Kirigami.Icon {
             id: theIcon
-            source: "feedkeeper-feed-empty"
+            source: "syndic-feed-empty"
             Layout.minimumWidth: 32
             Layout.minimumHeight: 32
             Layout.preferredWidth: 128

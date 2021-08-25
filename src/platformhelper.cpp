@@ -13,7 +13,7 @@ PlatformHelper::PlatformHelper(QObject *parent) : QObject(parent)
 void PlatformHelper::share(const QUrl &url)
 {
     QAndroidJniObject javaUrlString = QAndroidJniObject::fromString(url.toString());
-    QAndroidJniObject::callStaticMethod<void>("com/rocksandpaper/feedkeeper/NativeHelper",
+    QAndroidJniObject::callStaticMethod<void>("com/rocksandpaper/syndic/NativeHelper",
                                            "sendUrl",
                                            "(Ljava/lang/String;)V",
                                             javaUrlString.object<jstring>());

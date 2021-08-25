@@ -1,7 +1,8 @@
 [Desktop Entry]
-Name=FeedKeeper
-Icon=feedkeeper
-Exec=feedkeeper
+Name=Syndic
+GenericName=News Reader
+Icon=syndic
+Exec=syndic
 Type=Application
 Categories=Network;News;Feed;
 Terminal=false

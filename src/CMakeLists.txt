@@ -1,4 +1,4 @@
-set(feedkeeper_HEADERS
+set(syndic_HEADERS
     feedlistmodel.h
     articlelistmodel.h
     qmlref.h
@@ -12,8 +12,8 @@ set(feedkeeper_HEADERS
     contentimageitem.h
     )
 
-set(feedkeeper_SRCS
-    ${feedkeeper_HEADERS}
+set(syndic_SRCS
+    ${syndic_HEADERS}
     feedlistmodel.cpp
     articlelistmodel.cpp
     iconprovider.cpp
@@ -27,9 +27,9 @@ set(feedkeeper_SRCS
     resources.qrc
     )
     
-add_executable(feedkeeper ${feedkeeper_SRCS})
+add_executable(syndic ${syndic_SRCS})
 
-target_link_libraries(feedkeeper
+target_link_libraries(syndic
     Qt5::Core
     Qt5::Widgets
     Qt5::Qml
@@ -42,26 +42,26 @@ target_link_libraries(feedkeeper
     )
     
 if (KF5Notifications_FOUND)
-    target_link_libraries(feedkeeper
+    target_link_libraries(syndic
         KF5::Notifications
         )
 endif()
 
 if (KF5Declarative_FOUND)
-    target_link_libraries(feedkeeper
+    target_link_libraries(syndic
         KF5::Declarative
         KF5::QuickAddons
         )
 endif()
 
 if(KF5DBusAddons_FOUND)
-    target_link_libraries(feedkeeper
+    target_link_libraries(syndic
         KF5::DBusAddons
         )
 endif()
 
 if (ANDROID)
-    target_link_libraries(feedkeeper
+    target_link_libraries(syndic
         KF5::Kirigami2
         OpenSSL::SSL
         Qt5::Svg
@@ -92,6 +92,6 @@ if (ANDROID)
         )
 endif()
 
-install(TARGETS feedkeeper DESTINATION bin)
+install(TARGETS syndic DESTINATION bin)
 
     

@@ -1,4 +1,4 @@
-package com.rocksandpaper.feedkeeper;
+package com.rocksandpaper.syndic;
 
 import org.qtproject.qt5.android.QtNative;
 import android.app.Activity;

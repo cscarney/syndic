@@ -136,9 +136,11 @@ void UpdatableFeed::UpdaterImpl::loadingComplete(Syndication::Loader *loader, co
 
     // try the discovered url
     if (loader->discoveredFeedURL().isValid()) {
+        qDebug() << "Discovered alternate source:"<< loader->discoveredFeedURL();
         m_updatableFeed->setUrl(loader->discoveredFeedURL());
         run();
     } else {
+        qDebug() << "Error:" << errorMessage;
         setError(errorMessage);
     }
 }
@@ -172,8 +174,10 @@ void DataRetriever::onFinished()
         emit dataRetrieved(data, true);
     } else if (m_reply->error() == QNetworkReply::InsecureRedirectError) {
         const auto &location = m_reply->header(QNetworkRequest::LocationHeader);
+        qDebug() << "redirecting to" << location;
         retrieveData(location.toUrl());
     } else {
+        qDebug() << "Retriever error: " << m_reply->errorString();
         emit dataRetrieved({}, false);
     }
 }
