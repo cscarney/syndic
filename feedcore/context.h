@@ -114,6 +114,9 @@ public:
      */
     void setExpireAge(qint64 expireAge);
 
+    Q_INVOKABLE void exportOpml(const QUrl &url) const;
+    Q_INVOKABLE void importOpml(const QUrl &url);
+
 signals:
     void defaultUpdateIntervalChanged();
     void expireAgeChanged();

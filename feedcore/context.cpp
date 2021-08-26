@@ -3,13 +3,17 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 #include "context.h"
-
 #include <QSet>
+#include <QNetworkConfigurationManager>
+#include <QFile>
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
+#include <QDebug>
 #include "storage.h"
 #include "scheduler.h"
 #include "feed.h"
 #include "future.h"
-#include <QNetworkConfigurationManager>
+#include "provisionalfeed.h"
 
 namespace FeedCore {
 
@@ -141,6 +145,74 @@ void Context::setExpireAge(qint64 expireAge)
         feed->setExpireAge(expireAge);
     }
     emit expireAgeChanged();
+}
+
+static QString urlToPath(const QUrl &url)
+{
+    QString path(url.toLocalFile());
+#ifdef ANDROID
+    // TODO maybe Qt has a better way to do this?
+    if (path.isEmpty()) {
+        if (url.scheme() == "content") {
+            path = QLatin1String("content:") + url.path();
+        }
+    }
+#endif
+    return path;
+}
+
+void Context::exportOpml(const QUrl &url) const
+{
+    QFile file(urlToPath(url));
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return;
+    }
+    QXmlStreamWriter xml(&file);
+    xml.writeStartDocument();
+    xml.writeStartElement("opml");
+    xml.writeAttribute("version", "1.0");
+    xml.writeStartElement("head");
+    xml.writeEndElement();
+    xml.writeStartElement("body");
+    for(auto *feed : qAsConst(d->feeds)) {
+        xml.writeEmptyElement("outline");
+        xml.writeAttribute("type", "rss");
+        xml.writeAttribute("text", feed->name());
+        xml.writeAttribute("xmlUrl", feed->url().toString());
+    }
+    xml.writeEndElement();
+    xml.writeEndElement();
+    file.close();
+}
+
+void Context::importOpml(const QUrl &url)
+{
+    QFile file(urlToPath(url));
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "failed to open file" << url;
+        return;
+    }
+    QXmlStreamReader xml(&file);
+    while (!xml.atEnd()) {
+        xml.readNext();
+        if (xml.isStartElement() && xml.name()=="outline") {
+            QXmlStreamAttributes attrs { xml.attributes() };
+            if (!attrs.hasAttribute("xmlUrl")) {
+                continue;
+            }
+            QUrl xmlUrl(attrs.value("xmlUrl").toString());
+            if (!xmlUrl.isValid()) {
+                continue;
+            }
+            ProvisionalFeed feed;
+            feed.setUrl(xmlUrl);
+            if (attrs.hasAttribute("text")) {
+                feed.setName(attrs.value("text").toString());
+            }
+            addFeed(&feed);
+        }
+    }
+    file.close();
 }
 
 void Context::populateFeeds(const QVector<Feed*> &feeds)

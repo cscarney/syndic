@@ -6,6 +6,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.0
+import QtQuick.Dialogs 1.2
 import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.ScrollablePage {
@@ -100,5 +101,36 @@ Kirigami.ScrollablePage {
                 }
             }
         }
+
+        RowLayout {
+            Kirigami.FormData.label: qsTr("OPML Data:")
+            Button {
+                text: qsTr("Import...");
+                onClicked: {
+                    opmlDialog.selectExisting = true;
+                    opmlDialog.acceptedFunc = function() {
+                        feedContext.importOpml(opmlDialog.fileUrl);
+                    }
+                    opmlDialog.open();
+                }
+            }
+
+            Button {
+                text: qsTr("Export...")
+                onClicked: {
+                    opmlDialog.selectExisting = false;
+                    opmlDialog.acceptedFunc = function() {
+                        feedContext.exportOpml(opmlDialog.fileUrl);
+                    }
+                    opmlDialog.open();
+                }
+            }
+        }
+    }
+
+    FileDialog {
+        id: opmlDialog
+        property var acceptedFunc: function(){}
+        onAccepted: acceptedFunc();
     }
 }
