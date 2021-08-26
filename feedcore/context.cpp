@@ -37,7 +37,6 @@ Context::Context(Storage *storage, QObject *parent)
     QObject::connect(getFeeds, &BaseFuture::finished, this, [this, getFeeds] {
         populateFeeds(getFeeds->result());
     });
-    d->updateScheduler->schedule(getFeeds);
     d->updateScheduler->start();
 }
 

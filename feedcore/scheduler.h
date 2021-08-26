@@ -32,11 +32,6 @@ public:
     void schedule(Feed *feed, const QDateTime &timestamp=QDateTime::currentDateTime());
 
     /**
-     * Wait on a future, then add its results to the update schedule.
-     */
-    void schedule(Future<Feed*> *q);
-
-    /**
      * Remove a feed from the update schedule.
      */
     void unschedule(Feed *feedRef);

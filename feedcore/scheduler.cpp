@@ -38,7 +38,7 @@ static bool needsUpdate(Feed *feed, const QDateTime &timestamp)
 
 void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
 {
-    if (feed->updateMode()==Feed::DefaultUpdateMode
+    if (feed->updateMode()==Feed::ManualUpdateMode
             || feed->updateInterval()<=0) {
         return;
     }
@@ -61,16 +61,6 @@ void Scheduler::schedule(Feed *feed, const QDateTime &timestamp)
     QObject::connect(feed, &QObject::destroyed, this,
                      [this, feed]{ d->schedule.removeAll(feed); });
     reschedule(feed, timestamp);
-}
-
-void Scheduler::schedule(Future<Feed*> *q)
-{
-    QObject::connect(q, &BaseFuture::finished, this, [this, q] {
-        const auto &timestamp = QDateTime::currentDateTime();
-        for (const auto &i : q->result()) {
-            schedule(i, timestamp);
-        }
-    });
 }
 
 void Scheduler::unschedule(Feed *feed)
