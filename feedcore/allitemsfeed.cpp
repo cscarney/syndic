@@ -59,6 +59,7 @@ void AllItemsFeed::addFeed(Feed *feed)
     QObject::connect(feed, &Feed::articleAdded, this, &AllItemsFeed::onArticleAdded);
     QObject::connect(feed, &Feed::unreadCountChanged, this, &AllItemsFeed::incrementUnreadCount);
     QObject::connect(feed, &Feed::statusChanged, this, [this, feed]{ syncFeedStatus(feed); });
+    emit reset();
 }
 
 void AllItemsFeed::onGetFeedsFinished(Future<Feed*> *sender)
