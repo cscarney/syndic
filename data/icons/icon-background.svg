@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="48"
+   height="48"
+   viewBox="0 0 12.7 12.7"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="icon-background.svg"
+   inkscape:export-filename="/home/connor/Projects/feedkeeper/android/res/drawable/splash.png"
+   inkscape:export-xdpi="384"
+   inkscape:export-ydpi="384">
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient870">
+      <stop
+         style="stop-color:#faf3ea;stop-opacity:1;"
+         offset="0"
+         id="stop866" />
+      <stop
+         style="stop-color:#dcd6ce;stop-opacity:1"
+         offset="1"
+         id="stop868" />
+    </linearGradient>
+    <style
+       type="text/css"
+       id="current-color-scheme">
+      .ColorScheme-Text {
+        color:#232629;
+      }
+      </style>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter1186"
+       inkscape:label="filter0">
+      <feGaussianBlur
+         stdDeviation="29.078728421118949"
+         id="feGaussianBlur1188" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Blur"
+       id="filter1232">
+      <feGaussianBlur
+         stdDeviation="0.2 0.2"
+         result="blur"
+         id="feGaussianBlur1230" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Blur"
+       id="filter863">
+      <feGaussianBlur
+         stdDeviation="0.2 0.2"
+         result="blur"
+         id="feGaussianBlur861" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient870"
+       id="linearGradient872"
+       x1="6.2763128"
+       y1="0.66159946"
+       x2="6.3499999"
+       y2="11.641666"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.99962017,0,0,0.99985136,0.00345383,-1.7423193e-4)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient870"
+       id="linearGradient953"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.99962497,0,0,0.99985136,0.06959399,0.06597223)"
+       x1="6.2763128"
+       y1="0.66159946"
+       x2="6.3499999"
+       y2="11.641666" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient870"
+       id="linearGradient955"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.99962497,0,0,0.99985136,0.06959399,0.06597223)"
+       x1="6.2763128"
+       y1="0.66159946"
+       x2="6.3499999"
+       y2="11.641666" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6927902"
+     inkscape:cx="-19.321305"
+     inkscape:cy="16.191411"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer2"
+     inkscape:document-rotation="0"
+     showgrid="true"
+     units="px"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:snap-grids="true"
+     showguides="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1053"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:snap-nodes="true"
+     inkscape:object-paths="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-to-guides="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid841"
+       empspacing="5"
+       color="#0000ff"
+       opacity="0.25098039"
+       dotted="false"
+       visible="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer 3"
+     style="display:inline">
+    <path
+       id="rect833"
+       style="color:#000000;display:inline;overflow:visible;fill:url(#linearGradient872);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.264583;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 0,0 H 12.7 V 12.7 H 0 Z"
+       sodipodi:nodetypes="ccccc" />
+  </g>
+</svg>
