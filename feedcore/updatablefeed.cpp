@@ -150,7 +150,6 @@ void DataRetriever::retrieveData(const QUrl &url)
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
     request.setTransferTimeout();
     m_reply = NetworkAccessManager::instance()->get(request);
-    m_reply->setParent(this);
     QObject::connect(m_reply, &QNetworkReply::finished, this, &DataRetriever::onFinished);
 }
 
@@ -163,10 +162,12 @@ void DataRetriever::abort()
 {
     m_reply->disconnect(this);
     m_reply->abort();
+    m_reply->deleteLater();
 }
 
 void DataRetriever::onFinished()
 {
+    m_reply->deleteLater();
     if (m_reply->error() == QNetworkReply::NoError) {
         const auto &data = m_reply->readAll();
         emit dataRetrieved(data, true);
