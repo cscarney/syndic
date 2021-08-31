@@ -49,6 +49,7 @@ void ContentImageItem::setSource(const QUrl& src)
         req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
         QNetworkReply *reply{nam->get(req)};
         QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]{
+            reply->deleteLater();
             if (reply->error() != QNetworkReply::NoError) {
                 qWarning() << "image load error: " << reply->errorString();
                 return;
@@ -62,7 +63,6 @@ void ContentImageItem::setSource(const QUrl& src)
             setImplicitHeight(m_image.height());
             m_needsUpdate = true;
             polish();
-            reply->deleteLater();
         });
     }
     polish();
