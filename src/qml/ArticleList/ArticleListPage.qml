@@ -12,7 +12,7 @@ AbstractArticleListPage {
     actions {
         main: Kirigami.Action {
             text: qsTr("Mark All Read")
-            iconName: "mail-read"
+            iconName: "checkmark"
             enabled: root.count > 0
             onTriggered: {
                 root.model.markAllRead();

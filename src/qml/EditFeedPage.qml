@@ -16,7 +16,7 @@ AbstractFeedEditorPage {
     actions {
         main: Kirigami.Action {
             text: qsTr("Save")
-            iconName: "document-save"
+            iconName: "checkmark"
             onTriggered: provisionalFeed.save();
         }
 

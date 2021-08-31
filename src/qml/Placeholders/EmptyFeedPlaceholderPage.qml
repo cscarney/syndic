@@ -9,7 +9,7 @@ import org.kde.kirigami 2.7 as Kirigami
 AbstractPlaceholderPage {
     property var model;
 
-    iconName: "mail-read-symbolic"
+    iconName: "checkmark"
     headingText: "All Read"
 
     actions {

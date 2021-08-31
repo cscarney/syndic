@@ -83,11 +83,10 @@ if (ANDROID)
         non-starred-symbolic
         document-preview
         view-refresh
-        mail-read-symbolic
-        mail-read
         view-filter
         document-edit
         globe
+        checkmark
         emblem-shared-symbolic
         )
 endif()
