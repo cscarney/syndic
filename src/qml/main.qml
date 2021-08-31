@@ -23,6 +23,24 @@ Kirigami.ApplicationWindow {
         columnView.scrollDuration: Kirigami.Units.longDuration
     }
 
+    MouseArea {
+        id: resizeMouse
+        property real xAnchor: 0
+        anchors {
+            top: pageStack.top
+            bottom: pageStack.bottom
+            left: pageStack.left
+            leftMargin: (pageStack.firstVisibleItem ? pageStack.firstVisibleItem.width : 0);
+        }
+        width: 10
+        cursorShape: Qt.SizeHorCursor;
+        enabled: pageStack.firstVisibleItem && !Kirigami.Settings.hasTransientTouchInput
+        onPositionChanged: {
+            var proportion = (resizeMouse.x + mouse.x +globalDrawer.actualWidth / 2) / root.width;
+            priv.itemListProportion = Math.max(Math.min(proportion, 0.49), 0.23);
+        }
+    }
+
     globalDrawer: Kirigami.GlobalDrawer {
         id: drawer
         property real actualWidth: drawerOpen && !modal ? width : 0
