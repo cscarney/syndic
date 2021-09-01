@@ -29,8 +29,9 @@ public:
     bool unreadFilter() const;
     void setUnreadFilter(bool unreadFilter);
     FeedCore::LoadStatus status();
-    Q_INVOKABLE void requestUpdate() const;
+    Q_INVOKABLE void requestUpdate();
     Q_INVOKABLE void markAllRead();
+    Q_INVOKABLE void removeRead();
     int rowCount(const QModelIndex &parent = QModelIndex()) const final;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const final;
     QHash<int, QByteArray> roleNames() const override;
@@ -48,7 +49,6 @@ private:
     void setStatus(FeedCore::LoadStatus status);
     void refresh();
     void onItemAdded(const FeedCore::ArticleRef &item);
-    void removeRead();
     void insertAndNotify(int index, const FeedCore::ArticleRef &item);
     void refreshMerge();
     void onRefreshFinished(FeedCore::Future<FeedCore::ArticleRef> *sender);

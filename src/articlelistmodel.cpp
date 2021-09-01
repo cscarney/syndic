@@ -66,6 +66,7 @@ void ArticleListModel::markAllRead()
     for (const auto &item : items) {
         item->setRead(true);
     }
+    removeRead();
 }
 
 ArticleListModel::~ArticleListModel() = default;
@@ -213,9 +214,10 @@ void ArticleListModel::setFeed(Feed *feed)
     }
 }
 
-void ArticleListModel::requestUpdate() const
+void ArticleListModel::requestUpdate()
 {
     feed()->updater()->start();
+    removeRead();
 }
 
 Future<ArticleRef> *ArticleListModel::getItems()

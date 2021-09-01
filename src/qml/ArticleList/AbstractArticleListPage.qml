@@ -17,6 +17,7 @@ Kirigami.ScrollablePage {
     property var pageRow: null
     property alias model: articleList.model
     property alias count: articleList.count
+    property alias currentIndex: articleList.currentIndex
     property bool isUpdating: model.status === Feed.Updating
     property bool unreadFilter: true
     property bool automaticOpen: pageRow && (pageRow.defaultColumnWidth * 2 < pageRow.width)
@@ -36,6 +37,8 @@ Kirigami.ScrollablePage {
         id: emptyOverlay
         anchors.fill: parent
         visible: articleList.count == 0
+        icon: unreadFilter ? "checkmark" : "syndic-feed-empty"
+        text: unreadFilter ? qsTr("All Read") : qsTr("No Items")
     }
 
     ListView {
@@ -107,7 +110,7 @@ Kirigami.ScrollablePage {
             root.pageRow.push("qrc:/qml/Placeholders/ErrorPlaceholderPage.qml", {model:model});
             break;
         default:
-            root.pageRow.push("qrc:/qml/Placeholders/EmptyFeedPlaceholderPage.qml", {model:model});
+            root.pageRow.push("qrc:/qml/Placeholders/EmptyFeedPlaceholderPage.qml");
         }
     }
 

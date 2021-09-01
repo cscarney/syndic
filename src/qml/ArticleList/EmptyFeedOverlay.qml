@@ -9,6 +9,8 @@ import QtQuick.Layouts 1.12
 
 Item {
     id: root
+    property alias icon: theIcon.source
+    property alias text: emptyText.text
 
     ColumnLayout {
         anchors {
@@ -18,7 +20,6 @@ Item {
 
         Kirigami.Icon {
             id: theIcon
-            source: "syndic-feed-empty"
             Layout.minimumWidth: 32
             Layout.minimumHeight: 32
             Layout.preferredWidth: 128
@@ -35,7 +36,6 @@ Item {
             color: Kirigami.Theme.textColor
             horizontalAlignment: Text.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
-            text: qsTr("No Items");
         }
     }
 }
