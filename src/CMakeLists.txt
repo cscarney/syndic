@@ -49,13 +49,6 @@ if (KF5Notifications_FOUND)
         )
 endif()
 
-if (KF5Declarative_FOUND)
-    target_link_libraries(syndic
-        KF5::Declarative
-        KF5::QuickAddons
-        )
-endif()
-
 if(KF5DBusAddons_FOUND)
     target_link_libraries(syndic
         KF5::DBusAddons

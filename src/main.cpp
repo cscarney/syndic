@@ -14,10 +14,6 @@
 #include <QStandardPaths>
 #include <QWindow>
 
-#ifdef KF5Declarative_FOUND
-#include <KDeclarative/KDeclarative>
-#endif
-
 #ifdef KF5DBusAddons_FOUND
 #include <KDBusService>
 #endif
@@ -115,10 +111,6 @@ int main(int argc, char *argv[])
     loadEmbeddedFonts(app);
 #else
     QQuickStyle::setStyle("org.kde.desktop");
-#endif
-
-#ifdef KF5Declarative_FOUND
-    KDeclarative::KDeclarative::setupEngine(&engine);
 #endif
 
     engine.setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
