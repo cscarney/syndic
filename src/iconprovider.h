@@ -16,8 +16,11 @@ class IconProvider : public QQuickAsyncImageProvider
 {
 public:
     IconProvider();
+    ~IconProvider();
     QQuickImageResponse *requestImageResponse(const QString &id, const QSize &requestedSize) override;
     static void discoverIcon(FeedCore::Feed *feed);
+private:
+    QSharedPointer<QNetworkAccessManager> m_nam;
 };
 
 

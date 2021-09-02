@@ -10,6 +10,7 @@ set(syndic_HEADERS
     newitemnotifier.h
     platformhelper.h
     contentimageitem.h
+    networkaccessmanagerfactory.h
     )
 
 set(syndic_SRCS
@@ -23,6 +24,7 @@ set(syndic_SRCS
     gumbovisitor.cpp
     platformhelper.cpp
     contentimageitem.cpp
+    networkaccessmanagerfactory.cpp
     main.cpp
     resources.qrc
     )

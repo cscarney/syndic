@@ -146,9 +146,6 @@ void UpdatableFeed::UpdaterImpl::loadingComplete(Syndication::Loader *loader, co
 void DataRetriever::retrieveData(const QUrl &url)
 {
     QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::UserAgentHeader, "curl/4.6");
-    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
-    request.setTransferTimeout();
     m_reply = NetworkAccessManager::instance()->get(request);
     QObject::connect(m_reply, &QNetworkReply::finished, this, &DataRetriever::onFinished);
 }

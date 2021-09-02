@@ -5,8 +5,8 @@
 #include <QSGTexture>
 #include <QSGImageNode>
 #include <QQuickWindow>
+#include <QQmlEngine>
 #include <QThread>
-#include "networkaccessmanager.h"
 
 ContentImageItem::ContentImageItem(QQuickItem *parent) :
     QQuickItem(parent)
@@ -43,9 +43,8 @@ void ContentImageItem::setSource(const QUrl& src)
     m_src = src;
     if (!src.isEmpty()) {
         m_image = QImage();
-        QNetworkAccessManager *nam{FeedCore::NetworkAccessManager::instance()};
+        QNetworkAccessManager *nam{ qmlEngine(this)->networkAccessManager() };
         QNetworkRequest req(src);
-        req.setHeader(QNetworkRequest::UserAgentHeader, "curl/4.6");
         req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
         QNetworkReply *reply{nam->get(req)};
         QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]{

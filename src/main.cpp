@@ -33,6 +33,7 @@
 #include "platformhelper.h"
 #include "contentmodel.h"
 #include "contentimageitem.h"
+#include "networkaccessmanagerfactory.h"
 using namespace FeedCore;
 
 static QString filePath(QString const &fileName)
@@ -120,6 +121,7 @@ int main(int argc, char *argv[])
     KDeclarative::KDeclarative::setupEngine(&engine);
 #endif
 
+    engine.setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
     registerQmlTypes();
     auto *fm = createContext(&app);
     engine.rootContext()->setContextProperty("feedContext", fm);

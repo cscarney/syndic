@@ -8,6 +8,8 @@
 #include <QTimer>
 #include <QImageReader>
 #include <QBuffer>
+#include <QNetworkDiskCache>
+#include <QStandardPaths>
 #include "feed.h"
 #include "networkaccessmanager.h"
 
@@ -35,17 +37,55 @@ public:
         emit finished();
     }
 };
+
+
+class IconCache : public QNetworkDiskCache {
+public:
+    IconCache();
+    QIODevice *prepare(const QNetworkCacheMetaData &metaData) override;
+    static constexpr const int kReasonableMaxAge = 86400;
+};
+
+IconCache::IconCache()
+{
+    QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QLatin1String("/icons/");
+    setCacheDirectory(cacheDir);
 }
 
-IconProvider::IconProvider() = default;
+QIODevice *IconCache::prepare(const QNetworkCacheMetaData &metaData)
+{
+    // make sure that the server's cache expiration isn't unreasonably short
+    QDateTime reasonableExpirationDate = QDateTime::currentDateTime().addSecs(kReasonableMaxAge);
+    if (metaData.expirationDate() < reasonableExpirationDate) {
+        QNetworkCacheMetaData newMetaData(metaData);
+        newMetaData.setExpirationDate(reasonableExpirationDate);
+        return QNetworkDiskCache::prepare(newMetaData);
+    }
+    return QNetworkDiskCache::prepare(metaData);
+}
+
+static IconProvider *s_instance;
+}
+
+IconProvider::IconProvider()
+    : m_nam { new FeedCore::NetworkAccessManager(new IconCache) }
+{
+    s_instance = this;
+}
+
+IconProvider::~IconProvider()
+{
+    if (s_instance == this) { s_instance = nullptr; }
+}
 
 QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const QSize & /*requestedSize */)
 {
     auto *response = new IconImageResponse;
-    auto *nam = FeedCore::NetworkAccessManager::instance();
+    auto *nam = m_nam.get();
     QTimer::singleShot(0, nam, [nam, id, response]{
         QNetworkRequest req(id.mid(1));
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
+        req.setRawHeader("Cache-Control", "private, immutable, max-age=31557600");
         QNetworkReply *reply = nam->get(req);
         QObject::connect(reply, &QNetworkReply::finished, response, &IconImageResponse::onNetworkReplyFinished);
     });
@@ -54,17 +94,15 @@ QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const
 
 void IconProvider::discoverIcon(FeedCore::Feed *feed)
 {
-    if (feed->link().isEmpty()) {
+    if (feed->link().isEmpty() || s_instance == nullptr) {
         return;
     }
-    QTimer::singleShot(0, feed, [feed]{
+    QTimer::singleShot(0, feed, [feed, nam=s_instance->m_nam]{
         QUrl iconUrl(feed->link());
         iconUrl.setPath("/favicon.ico");
         QNetworkRequest req(iconUrl);
-        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
-        QNetworkAccessManager *nam = FeedCore::NetworkAccessManager::instance();
         QNetworkReply *reply = nam->get(req);
-        QObject::connect(reply, &QNetworkReply::finished, feed, [reply, feed, iconUrl]{
+        QObject::connect(reply, &QNetworkReply::finished, feed, [reply, feed]{
             if (reply->error() != QNetworkReply::NoError) {
                 // couldn't get file
                 return;
@@ -75,7 +113,7 @@ void IconProvider::discoverIcon(FeedCore::Feed *feed)
             QImageReader reader(&buffer);
             bool success = reader.canRead();
             if (success) {
-                feed->setIcon(iconUrl);
+                feed->setIcon(reply->url());
             } else {
                 // unreadable image
             }
