@@ -85,7 +85,6 @@ QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const
     QTimer::singleShot(0, nam, [nam, id, response]{
         QNetworkRequest req(id.mid(1));
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
-        req.setRawHeader("Cache-Control", "private, immutable, max-age=31557600");
         QNetworkReply *reply = nam->get(req);
         QObject::connect(reply, &QNetworkReply::finished, response, &IconImageResponse::onNetworkReplyFinished);
     });
