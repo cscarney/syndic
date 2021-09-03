@@ -1,3 +1,3 @@
 
-#cmakedefine KF5Notifications_FOUND
+#cmakedefine Qt5Widgets_FOUND
 #cmakedefine KF5DBusAddons_FOUND

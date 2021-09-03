@@ -23,7 +23,7 @@ include(KDECMakeSettings)
 find_package(Qt5 COMPONENTS Core Qml Network Widgets Quick QuickControls2 Sql REQUIRED)
 
 find_package(KF5Syndication REQUIRED)
-find_package(KF5Notifications CONFIG QUIET)
+find_package(KF5Config REQUIRED)
 find_package(KF5DBusAddons CONFIG QUIET)
 
 if (ANDROID)

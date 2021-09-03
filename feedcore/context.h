@@ -39,7 +39,10 @@ public:
      * feed objects are unique-per-feed and parented to the context's
      * storage backend.
      *
-     * @return A future representing the list of feeds.
+     * In a newly created context, this will return an empty set, since feeds
+     * are asynchronously loaded.  To get a complete feed list on startup,
+     * you should wait for the feedListPopulated signal before calling this
+     * function.
      */
     const QSet<Feed*> &getFeeds();
 
@@ -122,11 +125,19 @@ signals:
     void expireAgeChanged();
 
     /**
-     * Emitted when a newly-created feed is added.
+     * Emitted when a feed is added to the context.  This may be a newly-created
+     * feed, or a feed asynchronously loaded from storage.
      *
      * The supplied feed object is unique-per-feed and belongs to the feed's storage backend.
      */
     void feedAdded(FeedCore::Feed *feed);
+
+    /**
+     * Emitted once when the context finishes populating the feed list.
+     *
+     * After this signal is emitted, getFeeds() will include all stored feeds.
+     */
+    void feedListPopulated();
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;

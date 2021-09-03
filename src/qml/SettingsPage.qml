@@ -12,7 +12,6 @@ import org.kde.kirigami 2.7 as Kirigami
 Kirigami.ScrollablePage {
     id: root
     property bool keepDrawerOpen: true
-    property var globalSettings;
 
     title: qsTr("Settings")
 

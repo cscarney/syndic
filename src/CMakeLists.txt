@@ -7,9 +7,10 @@ set(syndic_HEADERS
     gumbovisitor.h
     htmlsplitter.h
     contentmodel.h
-    newitemnotifier.h
+    notificationcontroller.h
     platformhelper.h
     contentimageitem.h
+    application.h
     networkaccessmanagerfactory.h
     )
 
@@ -20,16 +21,19 @@ set(syndic_SRCS
     iconprovider.cpp
     htmlsplitter.cpp
     contentmodel.cpp
-    newitemnotifier.cpp
+    notificationcontroller.cpp
     gumbovisitor.cpp
     platformhelper.cpp
     contentimageitem.cpp
     networkaccessmanagerfactory.cpp
+    application.cpp
     main.cpp
     resources.qrc
     )
     
 add_executable(syndic ${syndic_SRCS})
+
+kconfig_add_kcfg_files(syndic settings.kcfgc GENERATE_MOC)
 
 target_link_libraries(syndic
     Qt5::Core
@@ -38,6 +42,7 @@ target_link_libraries(syndic
     Qt5::Quick
     Qt5::QuickControls2
     KF5::Syndication
+    KF5::ConfigGui
     feedcore
     sqlite
     htmlparser

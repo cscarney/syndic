@@ -9,7 +9,6 @@ import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import Qt.labs.platform 1.1 as Platform
 import org.kde.kirigami 2.7 as Kirigami
-import NewItemNotifier 1.0
 
 Kirigami.ApplicationWindow {
     id: root
@@ -87,7 +86,7 @@ Kirigami.ApplicationWindow {
                 text: qsTr("Settings")
                 iconName: "settings-configure"
                 onTriggered: {
-                    pushUtilityPage("qrc:/qml/SettingsPage.qml", {globalSettings: globalSettings})
+                    pushUtilityPage("qrc:/qml/SettingsPage.qml")
                 }
             },
             Kirigami.Action {
@@ -104,29 +103,6 @@ Kirigami.ApplicationWindow {
         category: "Window"
         property alias width: root.width
         property alias height: root.height
-    }
-
-    Settings {
-        id: globalSettings
-        category: "Global"
-        property bool updateOnStart: false
-        property bool automaticUpdates: true
-        property int updateInterval: 3600
-        property bool runInBackground: true
-        property bool expireItems: false
-        property int expireAge: 2592000
-    }
-
-    Binding {
-        target: feedContext
-        property: "defaultUpdateInterval"
-        value: globalSettings.automaticUpdates ? globalSettings.updateInterval : 0
-    }
-
-    Binding {
-        target: feedContext
-        property: "expireAge"
-        value: globalSettings.expireItems ? globalSettings.expireAge : 0;
     }
 
     StateGroup {
@@ -184,34 +160,6 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    NewItemNotifier {
-        context: feedContext
-        enabled: root.visible == false
-    }
-
-    Platform.SystemTrayIcon {
-        id: trayIcon
-        visible: root.visible == false
-        icon.name: "feed-subscribe"
-        menu: Platform.Menu {
-            Platform.MenuItem {
-                text: qsTr("Quit");
-                iconName: "application-exit"
-                onTriggered: {
-                    Qt.quit()
-                }
-            }
-        }
-        onActivated: {
-            if (reason === Platform.SystemTrayIcon.Context) {
-                menu.open(trayIcon)
-            } else {
-                root.show()
-                root.requestActivate()
-            }
-        }
-    }
-
     Connections {
         target: pageStack.currentItem
         ignoreUnknownSignals: true
@@ -232,15 +180,6 @@ Kirigami.ApplicationWindow {
         function onSuspendAnimations() {
             // emitted by pages to temporarily suspend the page transition animation
             animationSuspendTimer.start()
-        }
-    }
-
-    onClosing: {
-        if (globalSettings.runInBackground) {
-            close.accepted = false
-            root.visible = false
-        } else {
-            Qt.quit()
         }
     }
 

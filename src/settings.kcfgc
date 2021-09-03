@@ -1,0 +1,6 @@
+File=settings.kcfg
+ClassName=Settings
+Inherits=KConfigSkeleton
+Mutators=true
+GenerateProperties=true
+ParentInConstructor=true
