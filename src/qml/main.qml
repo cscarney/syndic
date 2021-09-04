@@ -148,17 +148,6 @@ Kirigami.ApplicationWindow {
         interval: Kirigami.Units.longDuration
     }
 
-    Timer {
-        id: updateOnStartTimer
-        interval: 1
-        running: true
-        onTriggered: {
-            if (globalSettings.updateOnStart) {
-                feedContext.requestUpdate()
-            }
-        }
-    }
-
     Connections {
         target: pageStack.currentItem
         ignoreUnknownSignals: true
