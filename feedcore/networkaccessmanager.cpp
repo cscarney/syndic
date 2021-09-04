@@ -112,6 +112,7 @@ FeedCore::NetworkAccessManager::NetworkAccessManager(QObject *parent)
 {}
 
 NetworkAccessManager::NetworkAccessManager(QAbstractNetworkCache *cache, QObject *parent)
+    : QNetworkAccessManager(parent)
 {
     setCache(cache);
 }
