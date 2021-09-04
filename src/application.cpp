@@ -189,8 +189,10 @@ void Application::onActivateRequested(const QStringList &, const QString &)
 void Application::bindContextPropertiesToSettings()
 {
     syncDefaultUpdateInterval();
-    QObject::connect(settings(), &Settings::automaticUpdatesChanged, this, &Application::syncDefaultUpdateInterval);
     QObject::connect(settings(), &Settings::updateIntervalChanged, this, &Application::syncDefaultUpdateInterval);
+
+    syncAutomaticUpdates();
+    QObject::connect(settings(), &Settings::automaticUpdatesChanged, this, &Application::syncAutomaticUpdates);
 
     syncExpireAge();
     QObject::connect(settings(), &Settings::expireItemsChanged, this, &Application::syncExpireAge);
@@ -201,9 +203,13 @@ void Application::bindContextPropertiesToSettings()
     }
 }
 
+void Application::syncAutomaticUpdates()
+{
+    d->context->setDefaultUpdateEnabled(d->settings.automaticUpdates());
+}
 
 void Application::syncDefaultUpdateInterval() {
-    d->context->setDefaultUpdateInterval(d->settings.automaticUpdates() ? d->settings.updateInterval() : 0);
+    d->context->setDefaultUpdateInterval(d->settings.updateInterval());
 }
 
 void Application::syncExpireAge() {

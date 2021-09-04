@@ -21,6 +21,7 @@ struct Context::PrivData {
     Context *parent;
     Storage *storage;
     QSet<Feed*> feeds;
+    bool defaultUpdate { false };
     qint64 updateInterval{ 0 };
     qint64 expireAge { 0 };
     Scheduler *updateScheduler;
@@ -58,13 +59,19 @@ Context::PrivData::PrivData(Storage *storage, Context *parent) :
 void Context::PrivData::configureUpdates(Feed *feed, const QDateTime &timestamp) const
 {
     auto updateMode{feed->updateMode()};
+    bool shouldSchedule;
     if (updateMode==Feed::DefaultUpdateMode) {
         feed->setUpdateInterval(updateInterval);
-    }
-    if (updateMode==Feed::ManualUpdateMode) {
-        updateScheduler->unschedule(feed);
+        shouldSchedule = defaultUpdate;
     } else {
+        shouldSchedule = (updateMode != Feed::ManualUpdateMode);
+    }
+
+    if (shouldSchedule) {
         updateScheduler->schedule(feed, timestamp);
+    } else {
+        updateScheduler->unschedule(feed);
+
     }
 }
 
@@ -213,6 +220,26 @@ void Context::importOpml(const QUrl &url)
         }
     }
     file.close();
+}
+
+bool Context::defaultUpdateEnabled() const
+{
+    return d->defaultUpdate;
+}
+
+void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
+{
+    if (d->defaultUpdate == defaultUpdateEnabled)
+        return;
+
+    d->defaultUpdate = defaultUpdateEnabled;
+    const QDateTime timestamp = QDateTime::currentDateTime();
+    for (Feed *feed : qAsConst(d->feeds)) {
+        if (feed->updateMode() == Feed::DefaultUpdateMode) {
+            d->configureUpdates(feed, timestamp);
+        }
+    }
+    emit defaultUpdateEnabledChanged();
 }
 
 void Context::populateFeeds(const QVector<Feed*> &feeds)

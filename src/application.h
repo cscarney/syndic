@@ -29,6 +29,7 @@ private:
     void onLastWindowClosed();
     void onActivateRequested(const QStringList &arguments, const QString &workingDirectory);
     void bindContextPropertiesToSettings();
+    void syncAutomaticUpdates();
     void syncDefaultUpdateInterval();
     void syncExpireAge();
     void startNotifications();

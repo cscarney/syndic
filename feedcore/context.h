@@ -22,6 +22,7 @@ class ProvisionalFeed;
 class Context : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool defaultUpdateEnabled READ defaultUpdateEnabled WRITE setDefaultUpdateEnabled NOTIFY defaultUpdateEnabledChanged)
     Q_PROPERTY(qint64 defaultUpdateInterval READ defaultUpdateInterval WRITE setDefaultUpdateInterval NOTIFY defaultUpdateIntervalChanged)
     Q_PROPERTY(qint64 expireAge READ expireAge WRITE setExpireAge NOTIFY expireAgeChanged)
 public:
@@ -91,6 +92,10 @@ public:
      */
     void abortUpdates();
 
+    bool defaultUpdateEnabled() const;
+
+    void setDefaultUpdateEnabled(bool defaultUpdateEnabled);
+
     /**
      * The update interval that will be used for UpdateMode::DefaultUpdateMode
      * @return The interval in seconds
@@ -121,6 +126,7 @@ public:
     Q_INVOKABLE void importOpml(const QUrl &url);
 
 signals:
+    void defaultUpdateEnabledChanged();
     void defaultUpdateIntervalChanged();
     void expireAgeChanged();
 
@@ -138,6 +144,7 @@ signals:
      * After this signal is emitted, getFeeds() will include all stored feeds.
      */
     void feedListPopulated();
+
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
