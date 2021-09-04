@@ -8,9 +8,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
-import Article 1.0
-import ContentModel 1.0
-import ContentImage 1.0
+import com.rocksandpaper.syndic 1.0
 
 ColumnLayout {
     id: root

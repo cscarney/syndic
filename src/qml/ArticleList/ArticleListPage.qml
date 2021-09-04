@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import Feed 1.0
+import com.rocksandpaper.syndic 1.0
 import org.kde.kirigami 2.14 as Kirigami
 
 AbstractArticleListPage {

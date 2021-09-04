@@ -53,20 +53,20 @@ static FeedCore::Context *createContext(QObject *parent = nullptr) {
 }
 
 static void registerQmlTypes() {
-    qmlRegisterType<FeedListModel>("FeedListModel", 1, 0, "FeedListModel");
-    qmlRegisterType<ArticleListModel>("ArticleListModel", 1, 0, "ArticleListModel");
-    qmlRegisterType<FeedCore::ProvisionalFeed>("ProvisionalFeed", 1, 0, "ProvisionalFeed");
-    qmlRegisterType<ContentModel>("ContentModel", 1, 0, "ContentModel");
-    qmlRegisterType<ContentImageItem>("ContentImage", 1, 0, "ContentImage");
-    qmlRegisterUncreatableType<FeedCore::Feed::Updater>("Updater", 1, 0, "Updater", "abstract base class");
-    qmlRegisterUncreatableType<FeedCore::Context>("FeedContext", 1, 0, "FeedContext", "global object");
-    qmlRegisterUncreatableType<FeedCore::Feed>("Feed", 1,0, "Feed", "obtained from cpp model");
-    qmlRegisterUncreatableType<FeedCore::Article>("Article", 1, 0, "Article", "obtained from cpp model");
-    qmlRegisterUncreatableType<QmlArticleRef>("QmlFeedRef", 1, 0, "QmlFeedRef", "obtained from cpp model");
-    qmlRegisterUncreatableType<PlatformHelper>("PlatformHelper", 1, 0, "PlatformHelper", "global object");
-    qmlRegisterUncreatableType<ContentBlock>("ContentBlock", 1, 0, "ContentBlock", "obtained from contentmodel");
-    qmlRegisterUncreatableType<ImageBlock>("ImageBlock", 1, 0, "ImageBlock", "obtained from contentmodel");
-    qmlRegisterUncreatableType<TextBlock>("TextBlock", 1, 0, "TextBlock", "obtained from contentmodel");
+    qmlRegisterType<FeedListModel>("com.rocksandpaper.syndic", 1, 0, "FeedListModel");
+    qmlRegisterType<ArticleListModel>("com.rocksandpaper.syndic", 1, 0, "ArticleListModel");
+    qmlRegisterType<FeedCore::ProvisionalFeed>("com.rocksandpaper.syndic", 1, 0, "ProvisionalFeed");
+    qmlRegisterType<ContentModel>("com.rocksandpaper.syndic", 1, 0, "ContentModel");
+    qmlRegisterType<ContentImageItem>("com.rocksandpaper.syndic", 1, 0, "ContentImage");
+    qmlRegisterUncreatableType<FeedCore::Feed::Updater>("com.rocksandpaper.syndic", 1, 0, "Updater", "abstract base class");
+    qmlRegisterUncreatableType<FeedCore::Context>("com.rocksandpaper.syndic", 1, 0, "FeedContext", "global object");
+    qmlRegisterUncreatableType<FeedCore::Feed>("com.rocksandpaper.syndic", 1,0, "Feed", "obtained from cpp model");
+    qmlRegisterUncreatableType<FeedCore::Article>("com.rocksandpaper.syndic", 1, 0, "Article", "obtained from cpp model");
+    qmlRegisterUncreatableType<QmlArticleRef>("com.rocksandpaper.syndic", 1, 0, "QmlFeedRef", "obtained from cpp model");
+    qmlRegisterUncreatableType<PlatformHelper>("com.rocksandpaper.syndic", 1, 0, "PlatformHelper", "global object");
+    qmlRegisterUncreatableType<ContentBlock>("com.rocksandpaper.syndic", 1, 0, "ContentBlock", "obtained from contentmodel");
+    qmlRegisterUncreatableType<ImageBlock>("com.rocksandpaper.syndic", 1, 0, "ImageBlock", "obtained from contentmodel");
+    qmlRegisterUncreatableType<TextBlock>("com.rocksandpaper.syndic", 1, 0, "TextBlock", "obtained from contentmodel");
 }
 
 static void enableSettingsAutosave(const Settings &settings)
@@ -140,19 +140,17 @@ Settings *Application::settings()
 
 void Application::loadMainWindow()
 {
-    if (d->engine) {
-        // window already loaded
-        activateMainWindow();
-        return;
+    if (!d->engine) {
+        d->engine = std::make_unique<QQmlApplicationEngine>();
+        d->engine->setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
+        d->engine->rootContext()->setContextProperty("feedContext", d->context);
+        d->engine->rootContext()->setContextProperty("platformHelper", new PlatformHelper);
+        d->engine->rootContext()->setContextProperty("globalSettings", settings());
+        d->engine->addImageProvider("feedicons", new IconProvider);
+        d->engine->load(QUrl("qrc:/qml/main.qml"));
+        d->notifier = nullptr;
     }
-    d->engine = std::make_unique<QQmlApplicationEngine>();
-    d->engine->setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
-    d->engine->rootContext()->setContextProperty("feedContext", d->context);
-    d->engine->rootContext()->setContextProperty("platformHelper", new PlatformHelper);
-    d->engine->rootContext()->setContextProperty("globalSettings", settings());
-    d->engine->addImageProvider("feedicons", new IconProvider);
-    d->engine->load(QUrl("qrc:/qml/main.qml"));
-    d->notifier = nullptr;
+    activateMainWindow();
 }
 
 void Application::activateMainWindow()

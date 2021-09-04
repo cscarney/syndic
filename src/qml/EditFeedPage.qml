@@ -5,7 +5,7 @@
 
 import QtQuick 2.0
 import org.kde.kirigami 2.14 as Kirigami
-import Feed 1.0
+import com.rocksandpaper.syndic 1.0
 
 AbstractFeedEditorPage {
     property Feed targetFeed;

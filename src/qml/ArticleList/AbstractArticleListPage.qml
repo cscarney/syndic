@@ -7,8 +7,7 @@ import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
-import ArticleListModel 1.0
-import Feed 1.0
+import com.rocksandpaper.syndic 1.0
 
 Kirigami.ScrollablePage {
     id: root
