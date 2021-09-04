@@ -223,7 +223,7 @@ void ArticleListModel::requestUpdate()
 Future<ArticleRef> *ArticleListModel::getItems()
 {
     if (d->feed == nullptr) {
-        return Future<ArticleRef>::yield(this, [](auto result){});
+        return Future<ArticleRef>::yield(this, [](auto){});
     }
     return d->feed->getArticles(unreadFilter());
 }
