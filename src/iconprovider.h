@@ -12,6 +12,15 @@ namespace FeedCore {
     class Context;
 }
 
+/**
+ * The image provider for feed icons.
+ *
+ * Requests for feed icon URLs are routed through this class so that they
+ * can be cached more aggressvely than normal network content.
+ *
+ * TODO This class currently also handles icon discovery, but that should probably
+ * be moved to core.
+ */
 class IconProvider : public QQuickAsyncImageProvider
 {
 public:

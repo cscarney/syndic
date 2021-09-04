@@ -19,62 +19,43 @@ class Feed;
 class Article : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(FeedCore::Feed *feed READ feed CONSTANT)
-    Q_PROPERTY(bool isRead READ isRead WRITE setRead NOTIFY readStatusChanged);
-    Q_PROPERTY(bool isStarred READ isStarred WRITE setStarred NOTIFY starredChanged);
-    Q_PROPERTY(QString title READ title NOTIFY titleChanged);
-    Q_PROPERTY(QString author READ author NOTIFY authorChanged);
-    Q_PROPERTY(QDateTime date READ date NOTIFY dateChanged);
-    Q_PROPERTY(QUrl url READ url NOTIFY urlChanged);
-public:
+
     /**
      * The feed that this article belongs to
      */
-    Feed *feed() const;
-
-    /**
-     * The title/headline of the article
-     */
-    const QString &title() const { return m_title; }
-
-    /**
-     * The name of the author.
-     */
-    const QString &author() const { return m_author; }
-
-    /**
-     * The date the article was last updated.
-     */
-    const QDateTime &date() const { return m_date; }
-
-    /**
-     * Link to a web page containing the full article.
-     */
-    const QUrl &url() const { return m_url; }
+    Q_PROPERTY(FeedCore::Feed *feed READ feed CONSTANT)
 
     /**
      * True if the article has been read.
      */
-    bool isRead() const { return m_readStatus; }
-
-    /**
-     * Set whether the article has been read.
-     *
-     * Derived classes that override this method must call the base class implementation.
-     */
-    virtual void setRead(bool isRead);
+    Q_PROPERTY(bool isRead READ isRead WRITE setRead NOTIFY readStatusChanged);
 
     /**
      * True if the article has been marked as starred.
      */
-    bool isStarred() const { return m_starred; }
+    Q_PROPERTY(bool isStarred READ isStarred WRITE setStarred NOTIFY starredChanged);
 
     /**
-     * Set whether the article has been marked as starred.
-     *
-     * Derived classes that override this method must call the base class implementation.
+     * The title/headline of the article
      */
-    virtual void setStarred(bool isStarred);
+    Q_PROPERTY(QString title READ title NOTIFY titleChanged);
+
+    /**
+     * The name of the author.  If there are multiple authors, this is the first one.
+     */
+    Q_PROPERTY(QString author READ author NOTIFY authorChanged);
+
+    /**
+     * The date the article was last updated, according to the remote feed source.
+     */
+    Q_PROPERTY(QDateTime date READ date NOTIFY dateChanged);
+
+    /**
+     * Link to a web page containing the full article.
+     */
+    Q_PROPERTY(QUrl url READ url NOTIFY urlChanged);
+public:
+    Feed *feed() const;
 
     /**
      * Request the content of the article.
@@ -87,6 +68,16 @@ public:
      * Resolves a link relative to the article page
      */
     Q_INVOKABLE QUrl resolvedLink(const QUrl& link);
+
+    const QString &title() const { return m_title; }
+    const QString &author() const { return m_author; }
+    const QDateTime &date() const { return m_date; }
+    const QUrl &url() const { return m_url; }
+    bool isRead() const { return m_readStatus; }
+    virtual void setRead(bool isRead);
+    bool isStarred() const { return m_starred; }
+    virtual void setStarred(bool isStarred);
+
 signals:
     void titleChanged();
     void authorChanged();
@@ -95,12 +86,14 @@ signals:
     void readStatusChanged();
     void starredChanged();
     void gotContent(const QString &content);
+
 protected:
     explicit Article(Feed *feed, QObject *parent = nullptr);
     void setTitle(const QString &title);
     void setAuthor(const QString &author);
     void setDate(const QDateTime &date);
     void setUrl(const QUrl &url);
+
 private:
     QPointer<Feed> m_feed;
     QString m_title;

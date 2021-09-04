@@ -15,6 +15,9 @@ class Context;
 class Feed;
 }
 
+/**
+ * List model for the main list of feeds
+ */
 class FeedListModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT

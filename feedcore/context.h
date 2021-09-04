@@ -22,8 +22,28 @@ class ProvisionalFeed;
 class Context : public QObject
 {
     Q_OBJECT
+
+    /**
+      * Whether to schedule updates for feeds using UpdateMode::DefaultUpdateMode.
+      *
+      * The default value is false.  Set defaultUpdateInterval to a sane value before setting this to true.
+      */
     Q_PROPERTY(bool defaultUpdateEnabled READ defaultUpdateEnabled WRITE setDefaultUpdateEnabled NOTIFY defaultUpdateEnabledChanged)
+
+    /**
+     * The update interval (in seconds) that will be used for UpdateMode::DefaultUpdateMode.
+     *
+     * The default is 0.
+     */
     Q_PROPERTY(qint64 defaultUpdateInterval READ defaultUpdateInterval WRITE setDefaultUpdateInterval NOTIFY defaultUpdateIntervalChanged)
+
+    /**
+     * The age (in seconds) when articles are considered stale.
+     *
+     * Changing this value does not remove any stale articles; stale articles
+     * will be deleted as part of the next update.  Setting this value to 0
+     * disables item expiration.  The default is 0.
+     */
     Q_PROPERTY(qint64 expireAge READ expireAge WRITE setExpireAge NOTIFY expireAgeChanged)
 public:
     /**
@@ -92,38 +112,25 @@ public:
      */
     void abortUpdates();
 
-    bool defaultUpdateEnabled() const;
-
-    void setDefaultUpdateEnabled(bool defaultUpdateEnabled);
-
     /**
-     * The update interval that will be used for UpdateMode::DefaultUpdateMode
-     * @return The interval in seconds
+     * Write an OPML document with the feeds stored in this context
+     * to the provided url.  The URL must point to a writable local file.
      */
-    qint64 defaultUpdateInterval();
-
-    /**
-     * Set the update interval (in seconds) that will be used for UpdateMode::DefaultUpdateMode
-     */
-    void setDefaultUpdateInterval(qint64 defaultUpdateInterval);
-
-    /**
-     * The age when articles are considered stale.
-     * @return age in seconds
-     */
-    qint64 expireAge();
-
-    /**
-     * Set the age (in seconds) when articles are considered stale.
-     *
-     * Changing this value does not remove any stale articles; stale articles
-     * will be deleted as part of the next update.  Setting this value to 0
-     * disables item expiration.
-     */
-    void setExpireAge(qint64 expireAge);
-
     Q_INVOKABLE void exportOpml(const QUrl &url) const;
+
+    /**
+     * Read an OPML document from the provided URL and add all of
+     * the feeds in the file to this context.  The URL must point to a
+     * local file.
+     */
     Q_INVOKABLE void importOpml(const QUrl &url);
+
+    bool defaultUpdateEnabled() const;
+    void setDefaultUpdateEnabled(bool defaultUpdateEnabled);
+    qint64 defaultUpdateInterval();
+    void setDefaultUpdateInterval(qint64 defaultUpdateInterval);
+    qint64 expireAge();
+    void setExpireAge(qint64 expireAge);
 
 signals:
     void defaultUpdateEnabledChanged();

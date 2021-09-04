@@ -8,9 +8,18 @@
 #include <QAbstractListModel>
 #include "htmlsplitter.h"
 
+/**
+ * Renders an HTML document as a list of alternating text and image blocks.
+ *
+ * See also HtmlSplitter
+ */
 class ContentModel : public QAbstractListModel
 {
     Q_OBJECT
+
+    /**
+      * The HTML to be displayed
+      */
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
 public:
     ContentModel(QObject *parent=nullptr);

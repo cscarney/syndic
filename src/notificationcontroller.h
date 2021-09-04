@@ -12,6 +12,10 @@ namespace FeedCore {
     class Context;
 }
 
+/**
+ * This class handles the user interaction while the application is running
+ * in the background (e.g. systray, notifications, etc.).
+ */
 class NotificationController : public QObject
 {
     Q_OBJECT

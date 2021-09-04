@@ -3,9 +3,20 @@
 #include <QImage>
 #include <QQuickItem>
 
+/**
+ * A QQuickItem that displays block-level images.
+ *
+ * This component is used in the article view to display fluid-width images
+ * since the built-in text renderer doesn't support that.  Small images that
+ * are rendered inline with the text do not use this component.
+ */
 class ContentImageItem : public QQuickItem
 {
     Q_OBJECT
+
+    /**
+      * The url to load the image from
+      */
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 public:
     explicit ContentImageItem(QQuickItem *parent=nullptr);
