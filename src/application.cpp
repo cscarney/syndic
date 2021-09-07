@@ -104,7 +104,7 @@ static void loadEmbeddedFonts()
 #endif
 
 Application::Application(int &argc, char **argv)
-    : ApplicationBaseClass(argc, argv)
+    : QApplication(argc, argv)
     , d{std::make_unique<PrivData>()}
 {
     setOrganizationName("syndic");
@@ -118,6 +118,7 @@ Application::Application(int &argc, char **argv)
     registerQmlTypes();
     setQuitOnLastWindowClosed(false);
     QObject::connect(this, &Application::lastWindowClosed, this, &Application::onLastWindowClosed);
+    QQmlEngine::setObjectOwnership(settings(), QQmlEngine::CppOwnership);
     enableSettingsAutosave(d->settings);
 
 #ifdef ANDROID

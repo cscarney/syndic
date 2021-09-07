@@ -11,9 +11,7 @@ class Context;
 class Settings;
 class NotificationController;
 
-typedef QApplication ApplicationBaseClass;
-
-class Application : public ApplicationBaseClass
+class Application : public QApplication
 {
 public:
     Application(int &argc, char **argv);
