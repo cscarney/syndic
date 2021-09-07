@@ -4,39 +4,44 @@
  */
 
 #include "allitemsfeed.h"
-#include "context.h"
 #include "article.h"
+#include "context.h"
 using namespace FeedCore;
 
-namespace {
-    class AllUpdater : public Feed::Updater {
-    public:
-        AllUpdater(AllItemsFeed *feed, Context *context, QObject *parent):
-            Feed::Updater(feed, parent),
-            m_context { context }
-        {}
+namespace
+{
+class AllUpdater : public Feed::Updater
+{
+public:
+    AllUpdater(AllItemsFeed *feed, Context *context, QObject *parent)
+        : Feed::Updater(feed, parent)
+        , m_context{context}
+    {
+    }
 
-        void run() final {
-            m_context->requestUpdate();
-            finish();
-        }
+    void run() final
+    {
+        m_context->requestUpdate();
+        finish();
+    }
 
-        void abort() final {
-            m_context->abortUpdates();
-        }
+    void abort() final
+    {
+        m_context->abortUpdates();
+    }
 
-    private:
-        Context *m_context;
-    };
+private:
+    Context *m_context;
+};
 }
 
-AllItemsFeed::AllItemsFeed(Context *context, const QString &name, QObject *parent) :
-    Feed(parent),
-    m_context{ context },
-    m_updater{ new AllUpdater(this, context, this) }
+AllItemsFeed::AllItemsFeed(Context *context, const QString &name, QObject *parent)
+    : Feed(parent)
+    , m_context{context}
+    , m_updater{new AllUpdater(this, context, this)}
 {
     setName(name);
-    for (const auto &feed : context->getFeeds()){
+    for (const auto &feed : context->getFeeds()) {
         addFeed(feed);
     }
     QObject::connect(context, &Context::feedAdded, this, &AllItemsFeed::addFeed);
@@ -58,13 +63,14 @@ void AllItemsFeed::addFeed(Feed *feed)
     syncFeedStatus(feed);
     QObject::connect(feed, &Feed::articleAdded, this, &AllItemsFeed::onArticleAdded);
     QObject::connect(feed, &Feed::unreadCountChanged, this, &AllItemsFeed::incrementUnreadCount);
-    QObject::connect(feed, &Feed::statusChanged, this, [this, feed]{ syncFeedStatus(feed); });
+    QObject::connect(feed, &Feed::statusChanged, this, [this, feed] {
+        syncFeedStatus(feed);
+    });
     emit reset();
 }
 
-void AllItemsFeed::onGetFeedsFinished(Future<Feed*> *sender)
+void AllItemsFeed::onGetFeedsFinished(Future<Feed *> *sender)
 {
-
 }
 
 void AllItemsFeed::onArticleAdded(const ArticleRef &article)

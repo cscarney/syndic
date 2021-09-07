@@ -1,38 +1,38 @@
 #include "application.h"
+#include "cmake-config.h"
 #include <QDir>
-#include <QStandardPaths>
-#include <QWindow>
-#include <QQmlContext>
 #include <QDirIterator>
 #include <QFontDatabase>
-#include "cmake-config.h"
+#include <QQmlContext>
+#include <QStandardPaths>
+#include <QWindow>
 
 #ifdef KF5DBusAddons_FOUND
 #include <KDBusService>
 #endif
 
-#include "context.h"
 #include "articlelistmodel.h"
+#include "contentimageitem.h"
+#include "contentmodel.h"
+#include "context.h"
 #include "feedlistmodel.h"
-#include "qmlarticleref.h"
-#include "sqlite/storageimpl.h"
-#include "provisionalfeed.h"
 #include "iconprovider.h"
+#include "networkaccessmanagerfactory.h"
 #include "notificationcontroller.h"
 #include "platformhelper.h"
-#include "contentmodel.h"
-#include "contentimageitem.h"
-#include "networkaccessmanagerfactory.h"
+#include "provisionalfeed.h"
+#include "qmlarticleref.h"
 #include "settings.h"
+#include "sqlite/storageimpl.h"
 
 struct Application::PrivData {
-    FeedCore::Context *context { nullptr };
+    FeedCore::Context *context{nullptr};
     Settings settings;
-    std::unique_ptr<QQmlApplicationEngine>engine;
+    std::unique_ptr<QQmlApplicationEngine> engine;
     std::unique_ptr<NotificationController> notifier;
 
 #ifdef KF5DBusAddons_FOUND
-    KDBusService *service { nullptr };
+    KDBusService *service{nullptr};
 #endif
 };
 
@@ -46,13 +46,15 @@ static QString filePath(QString const &fileName)
     return appDataDir.filePath(fileName);
 }
 
-static FeedCore::Context *createContext(QObject *parent = nullptr) {
+static FeedCore::Context *createContext(QObject *parent = nullptr)
+{
     QString dbPath = filePath("feeds.db");
-    auto *fm = new Sqlite::StorageImpl(dbPath);  // ownership passes to context
+    auto *fm = new Sqlite::StorageImpl(dbPath); // ownership passes to context
     return new FeedCore::Context(fm, parent);
 }
 
-static void registerQmlTypes() {
+static void registerQmlTypes()
+{
     qmlRegisterType<FeedListModel>("com.rocksandpaper.syndic", 1, 0, "FeedListModel");
     qmlRegisterType<ArticleListModel>("com.rocksandpaper.syndic", 1, 0, "ArticleListModel");
     qmlRegisterType<FeedCore::ProvisionalFeed>("com.rocksandpaper.syndic", 1, 0, "ProvisionalFeed");
@@ -60,7 +62,7 @@ static void registerQmlTypes() {
     qmlRegisterType<ContentImageItem>("com.rocksandpaper.syndic", 1, 0, "ContentImage");
     qmlRegisterUncreatableType<FeedCore::Feed::Updater>("com.rocksandpaper.syndic", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<FeedCore::Context>("com.rocksandpaper.syndic", 1, 0, "FeedContext", "global object");
-    qmlRegisterUncreatableType<FeedCore::Feed>("com.rocksandpaper.syndic", 1,0, "Feed", "obtained from cpp model");
+    qmlRegisterUncreatableType<FeedCore::Feed>("com.rocksandpaper.syndic", 1, 0, "Feed", "obtained from cpp model");
     qmlRegisterUncreatableType<FeedCore::Article>("com.rocksandpaper.syndic", 1, 0, "Article", "obtained from cpp model");
     qmlRegisterUncreatableType<QmlArticleRef>("com.rocksandpaper.syndic", 1, 0, "QmlFeedRef", "obtained from cpp model");
     qmlRegisterUncreatableType<PlatformHelper>("com.rocksandpaper.syndic", 1, 0, "PlatformHelper", "global object");
@@ -74,7 +76,7 @@ static void enableSettingsAutosave(const Settings &settings)
     const QMetaObject *metaObject = settings.metaObject();
     int propCount = metaObject->propertyCount();
     const QMetaMethod saveSlot = metaObject->method(metaObject->indexOfSlot("save()"));
-    for (int i=0; i<propCount; ++i) {
+    for (int i = 0; i < propCount; ++i) {
         const QMetaProperty &prop = metaObject->property(i);
         if (prop.hasNotifySignal()) {
             const QMetaMethod &signal = prop.notifySignal();
@@ -85,11 +87,12 @@ static void enableSettingsAutosave(const Settings &settings)
 
 #ifdef ANDROID
 // https://bugreports.qt.io/browse/QTBUG-69494
-static void loadEmbeddedFonts() {
+static void loadEmbeddedFonts()
+{
     QDirIterator it("/system/fonts", QDir::NoFilter, QDirIterator::Subdirectories);
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         it.next();
-        QString path { it.filePath() };
+        QString path{it.filePath()};
         if (path.endsWith("_subset.ttf")) {
             continue;
         }
@@ -101,13 +104,12 @@ static void loadEmbeddedFonts() {
 #endif
 
 Application::Application(int &argc, char **argv)
-    : ApplicationBaseClass(argc, argv),
-      d { std::make_unique<PrivData>() }
+    : ApplicationBaseClass(argc, argv)
+    , d{std::make_unique<PrivData>()}
 {
     setOrganizationName("syndic");
     setOrganizationDomain("rocksandpaper.com");
     setApplicationName("Syndic");
-
 
 #ifdef KF5DBusAddons_FOUND
     d->service = new KDBusService(KDBusService::Unique, this);
@@ -157,8 +159,8 @@ void Application::activateMainWindow()
 {
     const auto rootObjects = d->engine->rootObjects();
     for (QObject *object : rootObjects) {
-        QWindow *window = qobject_cast<QWindow*>(object);
-        if (window) {
+        QWindow *window = qobject_cast<QWindow *>(object);
+        if (window != nullptr) {
             window->setVisible(true);
             window->requestActivate();
             return;
@@ -181,7 +183,7 @@ void Application::onLastWindowClosed()
 #endif
 }
 
-void Application::onActivateRequested(const QStringList &, const QString &)
+void Application::onActivateRequested(const QStringList & /*unused*/, const QString & /*unused*/)
 {
     loadMainWindow();
 }
@@ -208,10 +210,12 @@ void Application::syncAutomaticUpdates()
     d->context->setDefaultUpdateEnabled(d->settings.automaticUpdates());
 }
 
-void Application::syncDefaultUpdateInterval() {
+void Application::syncDefaultUpdateInterval()
+{
     d->context->setDefaultUpdateInterval(d->settings.updateInterval());
 }
 
-void Application::syncExpireAge() {
+void Application::syncExpireAge()
+{
     d->context->setExpireAge(d->settings.expireItems() ? d->settings.expireAge() : 0);
 }

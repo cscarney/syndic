@@ -5,14 +5,14 @@
 
 #ifndef FEEDCORE_SCHEDULER_H
 #define FEEDCORE_SCHEDULER_H
-#include <QObject>
-#include <QDateTime>
-#include <memory>
 #include "feed.h"
 #include "future.h"
+#include <QDateTime>
+#include <QObject>
+#include <memory>
 
-namespace FeedCore {
-
+namespace FeedCore
+{
 /**
  * Automatically update feeds when they become stale
  */
@@ -29,7 +29,7 @@ public:
      * If the feed is already stale as of /timestamp/ it is updated immediately and /timestamp/ is
      * recorded as the update time.
      */
-    void schedule(Feed *feed, const QDateTime &timestamp=QDateTime::currentDateTime());
+    void schedule(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime());
 
     /**
      * Remove a feed from the update schedule.
@@ -42,7 +42,7 @@ public:
      * Once this method is called, stale feeds will be checked for every /resolution/ msecs
      * until stop() is called.
      */
-    void start(int resolution=60000);
+    void start(int resolution = 60000);
 
     /**
      * Stop the update timer
@@ -55,14 +55,14 @@ public:
     void updateStale();
 
     /**
-      * Retry any scheduled updates that failed for some reason
-      */
+     * Retry any scheduled updates that failed for some reason
+     */
     void clearErrors();
 
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
-    void reschedule(Feed *feed, const QDateTime &timestamp=QDateTime::currentDateTime());
+    void reschedule(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime());
     void onUpdateModeChanged(Feed *feed);
     void onFeedStatusChanged(Feed *sender);
     void onNetworkStateChanged();

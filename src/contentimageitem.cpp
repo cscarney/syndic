@@ -1,17 +1,16 @@
 #include "contentimageitem.h"
 
 #include <QNetworkReply>
+#include <QQmlEngine>
+#include <QQuickWindow>
+#include <QSGImageNode>
 #include <QSGNode>
 #include <QSGTexture>
-#include <QSGImageNode>
-#include <QQuickWindow>
-#include <QQmlEngine>
 #include <QThread>
 
-ContentImageItem::ContentImageItem(QQuickItem *parent) :
-    QQuickItem(parent)
+ContentImageItem::ContentImageItem(QQuickItem *parent)
+    : QQuickItem(parent)
 {
-
 }
 
 QSGNode *ContentImageItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData * /* data */)
@@ -19,7 +18,7 @@ QSGNode *ContentImageItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePain
     if (!m_needsUpdate) {
         return node;
     }
-    auto *imageNode = static_cast<QSGImageNode*>(node);
+    auto *imageNode = static_cast<QSGImageNode *>(node);
     if (imageNode == nullptr) {
         imageNode = window()->createImageNode();
         auto *texture = window()->createTextureFromImage(m_image);
@@ -36,18 +35,20 @@ QUrl ContentImageItem::source() const
     return m_src;
 }
 
-void ContentImageItem::setSource(const QUrl& src)
+void ContentImageItem::setSource(const QUrl &src)
 {
-    if (m_src == src){ return; }
+    if (m_src == src) {
+        return;
+    }
 
     m_src = src;
     if (!src.isEmpty()) {
         m_image = QImage();
-        QNetworkAccessManager *nam{ qmlEngine(this)->networkAccessManager() };
+        QNetworkAccessManager *nam{qmlEngine(this)->networkAccessManager()};
         QNetworkRequest req(src);
         req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
         QNetworkReply *reply{nam->get(req)};
-        QObject::connect(reply, &QNetworkReply::finished, this, [this, reply]{
+        QObject::connect(reply, &QNetworkReply::finished, this, [this, reply] {
             reply->deleteLater();
             if (reply->error() != QNetworkReply::NoError) {
                 qWarning() << "image load error: " << reply->errorString();

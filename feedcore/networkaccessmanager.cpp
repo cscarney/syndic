@@ -4,18 +4,20 @@
  */
 
 #include "networkaccessmanager.h"
-#include <QStandardPaths>
-#include <QNetworkDiskCache>
-#include <QMutex>
 #include <QDebug>
+#include <QMutex>
+#include <QNetworkDiskCache>
+#include <QStandardPaths>
 using namespace FeedCore;
 
-
-namespace {
-class SharedDiskCache : public QNetworkDiskCache {
+namespace
+{
+class SharedDiskCache : public QNetworkDiskCache
+{
 public:
     QMutex mutex;
     static SharedDiskCache *instance();
+
 private:
     SharedDiskCache();
 };
@@ -24,7 +26,8 @@ private:
  *
  * This is necessary so that we can safely return instances of our NAM from QNetworkAccessManagerFactory.
  */
-class SharedCacheProxy : public QAbstractNetworkCache {
+class SharedCacheProxy : public QAbstractNetworkCache
+{
 public:
     SharedCacheProxy() = default;
     QNetworkCacheMetaData metaData(const QUrl &url) override;
@@ -92,7 +95,7 @@ void SharedCacheProxy::clear()
 
 SharedDiskCache *SharedDiskCache::instance()
 {
-    static SharedDiskCache *instance = new SharedDiskCache;
+    static auto *instance = new SharedDiskCache;
     return instance;
 }
 
@@ -102,14 +105,16 @@ SharedDiskCache::SharedDiskCache()
     setCacheDirectory(cacheDir);
 }
 
-NetworkAccessManager *NetworkAccessManager::instance() {
-    static NetworkAccessManager *singleton = new NetworkAccessManager();
+NetworkAccessManager *NetworkAccessManager::instance()
+{
+    static auto *singleton = new NetworkAccessManager();
     return singleton;
 }
 
 FeedCore::NetworkAccessManager::NetworkAccessManager(QObject *parent)
     : NetworkAccessManager(new SharedCacheProxy, parent)
-{}
+{
+}
 
 NetworkAccessManager::NetworkAccessManager(QAbstractNetworkCache *cache, QObject *parent)
     : QNetworkAccessManager(parent)

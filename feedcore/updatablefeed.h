@@ -8,8 +8,8 @@
 #include "feed.h"
 #include <Syndication/Feed>
 #include <Syndication/Item>
-namespace FeedCore {
-
+namespace FeedCore
+{
 /**
  * Base class for feed implementations that are updated locally using the Syndication library
  */
@@ -17,8 +17,10 @@ class UpdatableFeed : public Feed
 {
 public:
     virtual Updater *updater() final;
+
 protected:
     explicit UpdatableFeed(QObject *parent);
+
 private:
     /**
      * Process an update from the remote source.

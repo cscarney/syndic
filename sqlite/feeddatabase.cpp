@@ -4,15 +4,15 @@
  */
 
 #include "feeddatabase.h"
-#include <QDir>
-#include <QStandardPaths>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QDebug>
+#include <QDir>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QStandardPaths>
 
-namespace Sqlite {
-
+namespace Sqlite
+{
 static const QString db_name_fmt = QStringLiteral("Sqlite_FeedDatabase_%1");
 
 QSqlDatabase FeedDatabase::db()
@@ -31,7 +31,7 @@ static int getVersion(QSqlDatabase &db)
     return q.value(0).toInt();
 }
 
-static bool exec(QSqlDatabase &db, const QString& queryString)
+static bool exec(QSqlDatabase &db, const QString &queryString)
 {
     QSqlQuery q(db);
     if (!q.exec(queryString)) {
@@ -43,7 +43,7 @@ static bool exec(QSqlDatabase &db, const QString& queryString)
 
 static bool exec(QSqlDatabase &db, const QVector<QString> &queries)
 {
-    for(const auto &q : queries) {
+    for (const auto &q : queries) {
         if (!exec(db, q)) {
             return false;
         }
@@ -55,35 +55,34 @@ static void initDatabase(QSqlDatabase &db)
 {
     const auto &v = getVersion(db);
     bool success = true;
-    if (v==0) {
-        success = exec(db,{
-                         "CREATE TABLE Feed("
-                         "id INTEGER PRIMARY KEY,"
-                         "source INTEGER REFERENCES FeedSource,"
-                         "localId TEXT NOT NULL,"
-                         "displayName TEXT,"
-                         "url TEXT NOT NULL,"
-                         "link TEXT,"
-                         "icon TEXT,"
-                         "updateInterval INTEGER,"
-                         "lastUpdate INTEGER,"
-                         "UNIQUE(source,localId));",
+    if (v == 0) {
+        success = exec(db,
+                       {"CREATE TABLE Feed("
+                        "id INTEGER PRIMARY KEY,"
+                        "source INTEGER REFERENCES FeedSource,"
+                        "localId TEXT NOT NULL,"
+                        "displayName TEXT,"
+                        "url TEXT NOT NULL,"
+                        "link TEXT,"
+                        "icon TEXT,"
+                        "updateInterval INTEGER,"
+                        "lastUpdate INTEGER,"
+                        "UNIQUE(source,localId));",
 
-                         "CREATE TABLE Item("
-                         "id INTEGER PRIMARY KEY,"
-                         "feed INTEGER REFERENCES Feed,"
-                         "localId TEXT NOT NULL,"
-                         "headline TEXT,"
-                         "author TEXT,"
-                         "date INTEGER,"
-                         "url TEXT,"
-                         "feedContent TEXT,"
-                         "isRead INTEGER,"
-                         "isStarred INTEGER,"
-                         "UNIQUE(feed,localId));",
+                        "CREATE TABLE Item("
+                        "id INTEGER PRIMARY KEY,"
+                        "feed INTEGER REFERENCES Feed,"
+                        "localId TEXT NOT NULL,"
+                        "headline TEXT,"
+                        "author TEXT,"
+                        "date INTEGER,"
+                        "url TEXT,"
+                        "feedContent TEXT,"
+                        "isRead INTEGER,"
+                        "isStarred INTEGER,"
+                        "UNIQUE(feed,localId));",
 
-                          "PRAGMA user_version = 1;"
-                     });
+                        "PRAGMA user_version = 1;"});
     }
     if (!success) {
         qWarning("Database initialization failed!");
@@ -91,9 +90,9 @@ static void initDatabase(QSqlDatabase &db)
     }
 }
 
-FeedDatabase::FeedDatabase(const QString& filePath)
+FeedDatabase::FeedDatabase(const QString &filePath)
 {
-    static int dbCount {0};
+    static int dbCount{0};
     m_dbName = db_name_fmt.arg(++dbCount);
     auto db = QSqlDatabase::addDatabase("QSQLITE", m_dbName);
     db.setDatabaseName(filePath);
@@ -113,7 +112,7 @@ static const QString select_sort = QStringLiteral("ORDER BY date DESC");
 
 ItemQuery FeedDatabase::selectAllItems()
 {
-    ItemQuery q(db(), "1 "+select_sort);
+    ItemQuery q(db(), "1 " + select_sort);
     if (!q.exec()) {
         qWarning() << "SQL Error in selectAllItems: " + q.lastError().text();
     }
@@ -122,7 +121,7 @@ ItemQuery FeedDatabase::selectAllItems()
 
 ItemQuery FeedDatabase::selectUnreadItems()
 {
-    ItemQuery q(db(), "isRead=0 "+select_sort);
+    ItemQuery q(db(), "isRead=0 " + select_sort);
     if (!q.exec()) {
         qWarning() << "SQL Error in selectUnreadItems: " + q.lastError().text();
     }
@@ -131,7 +130,7 @@ ItemQuery FeedDatabase::selectUnreadItems()
 
 ItemQuery FeedDatabase::selectStarredItems()
 {
-    ItemQuery q(db(), "isStarred=1 "+select_sort);
+    ItemQuery q(db(), "isStarred=1 " + select_sort);
     if (!q.exec()) {
         qWarning() << "SQL Error in selectStarredItems: " + q.lastError().text();
     }
@@ -140,7 +139,7 @@ ItemQuery FeedDatabase::selectStarredItems()
 
 ItemQuery FeedDatabase::selectItemsByFeed(qint64 feedId)
 {
-    ItemQuery q(db(), "feed=:feed "+select_sort);
+    ItemQuery q(db(), "feed=:feed " + select_sort);
     q.bindValue(":feed", feedId);
     if (!q.exec()) {
         qWarning() << "SQL Error in selectItemsByFeed: " + q.lastError().text();
@@ -150,7 +149,7 @@ ItemQuery FeedDatabase::selectItemsByFeed(qint64 feedId)
 
 ItemQuery FeedDatabase::selectUnreadItemsByFeed(qint64 feedId)
 {
-    ItemQuery q(db(), "feed=:feed AND isRead=0 "+select_sort);
+    ItemQuery q(db(), "feed=:feed AND isRead=0 " + select_sort);
     q.bindValue(":feed", feedId);
     if (!q.exec()) {
         qWarning() << "SQL Error in selectUnreadItemsByFeed: " + q.lastError().text();
@@ -183,8 +182,8 @@ std::optional<qint64> FeedDatabase::selectItemId(qint64 feedId, const QString &l
 {
     QSqlQuery q(db());
     q.prepare(
-                "SELECT id FROM Item "
-                "WHERE feed=:feed AND localId=:localId;");
+        "SELECT id FROM Item "
+        "WHERE feed=:feed AND localId=:localId;");
     q.bindValue(":feed", feedId);
     q.bindValue(":localId", localId);
     if (!q.exec()) {
@@ -197,14 +196,18 @@ std::optional<qint64> FeedDatabase::selectItemId(qint64 feedId, const QString &l
     return q.value(0).toLongLong();
 }
 
-
-
-std::optional<qint64> FeedDatabase::insertItem(qint64 feedId, const QString &localId, const QString &title, const QString &author, const QDateTime &date, const QUrl &url, const QString &content)
+std::optional<qint64> FeedDatabase::insertItem(qint64 feedId,
+                                               const QString &localId,
+                                               const QString &title,
+                                               const QString &author,
+                                               const QDateTime &date,
+                                               const QUrl &url,
+                                               const QString &content)
 {
     QSqlQuery q(db());
     q.prepare(
-                "INSERT INTO Item (id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred) "
-                "VALUES (:id, :feed, :localId, :headline, :author, :date, :url, :feedContent, :isRead, :isStarred);");
+        "INSERT INTO Item (id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred) "
+        "VALUES (:id, :feed, :localId, :headline, :author, :date, :url, :feedContent, :isRead, :isStarred);");
     q.bindValue(":feed", feedId);
     q.bindValue(":localId", localId);
     q.bindValue(":headline", title);
@@ -225,12 +228,12 @@ void FeedDatabase::updateItemHeaders(qint64 id, const QString &title, const QDat
 {
     QSqlQuery q(db());
     q.prepare(
-                "UPDATE Item SET "
-                "headline=:headline,"
-                "author=:author,"
-                "date=:date,"
-                "url=:url "
-                "WHERE id=:id;");
+        "UPDATE Item SET "
+        "headline=:headline,"
+        "author=:author,"
+        "date=:date,"
+        "url=:url "
+        "WHERE id=:id;");
     q.bindValue(":headline", title);
     q.bindValue(":author", author);
     q.bindValue(":date", date.toSecsSinceEpoch());
@@ -245,9 +248,9 @@ void FeedDatabase::updateItemContent(qint64 id, const QString &content)
 {
     QSqlQuery q(db());
     q.prepare(
-                "UPDATE Item SET "
-                "feedContent=:feedContent "
-                "WHERE id=:id;");
+        "UPDATE Item SET "
+        "feedContent=:feedContent "
+        "WHERE id=:id;");
     q.bindValue(":feedContent", content);
     q.bindValue(":id", id);
     if (!q.exec()) {
@@ -259,9 +262,9 @@ void FeedDatabase::updateItemRead(qint64 id, bool isRead)
 {
     QSqlQuery q(db());
     q.prepare(
-                "UPDATE Item SET "
-                "isRead=:isRead "
-                "WHERE id=:id;");
+        "UPDATE Item SET "
+        "isRead=:isRead "
+        "WHERE id=:id;");
     q.bindValue(":isRead", isRead);
     q.bindValue(":id", id);
     if (!q.exec()) {
@@ -273,9 +276,9 @@ void FeedDatabase::updateItemStarred(qint64 id, bool isStarred)
 {
     QSqlQuery q(db());
     q.prepare(
-                "UPDATE Item SET "
-                "isStarred=:isStarred "
-                "WHERE id=:id;");
+        "UPDATE Item SET "
+        "isStarred=:isStarred "
+        "WHERE id=:id;");
     q.bindValue(":isStarred", isStarred);
     q.bindValue(":id", id);
     if (!q.exec()) {
@@ -286,19 +289,17 @@ void FeedDatabase::updateItemStarred(qint64 id, bool isStarred)
 void FeedDatabase::deleteItemsForFeed(qint64 feedId)
 {
     QSqlQuery q(db());
-    q.prepare(
-                "DELETE FROM Item WHERE feed=:feed");
+    q.prepare("DELETE FROM Item WHERE feed=:feed");
     q.bindValue(":feed", feedId);
     if (!q.exec()) {
         qWarning() << "SQL Error in deleteItemsForFeed: " << q.lastError().text();
     }
 }
 
-void FeedDatabase::deleteItemsOlderThan(qint64 feedId, const QDateTime& olderThan)
+void FeedDatabase::deleteItemsOlderThan(qint64 feedId, const QDateTime &olderThan)
 {
     QSqlQuery q(db());
-    q.prepare(
-                "DELETE FROM Item WHERE feed=:feed AND isStarred!=1 AND date<:olderThan");
+    q.prepare("DELETE FROM Item WHERE feed=:feed AND isStarred!=1 AND date<:olderThan");
     q.bindValue(":feed", feedId);
     q.bindValue(":olderThan", olderThan.toSecsSinceEpoch());
     if (!q.exec()) {
@@ -329,8 +330,8 @@ std::optional<qint64> FeedDatabase::selectFeedId(qint64 source, const QString &l
 {
     QSqlQuery q(db());
     q.prepare(
-                "SELECT id FROM Feed "
-                "WHERE source=:source AND localId=:localId;");
+        "SELECT id FROM Feed "
+        "WHERE source=:source AND localId=:localId;");
     q.bindValue(":source", source);
     q.bindValue(":localId", localId);
     if (!q.exec()) {
@@ -344,14 +345,14 @@ std::optional<qint64> FeedDatabase::selectFeedId(qint64 source, const QString &l
     return q.value(0).toLongLong();
 }
 
-std::optional<qint64> FeedDatabase::insertFeed(const QUrl& url)
+std::optional<qint64> FeedDatabase::insertFeed(const QUrl &url)
 {
-
     QSqlQuery q(db());
     const QString &urlString = url.toString();
     const QString &urlHost = url.host();
-    q.prepare("INSERT INTO Feed (source, localId, displayName, url) "
-              "VALUES (:source, :localId, :displayName, :url);");
+    q.prepare(
+        "INSERT INTO Feed (source, localId, displayName, url) "
+        "VALUES (:source, :localId, :displayName, :url);");
     q.bindValue(":source", 0);
     q.bindValue(":localId", urlString);
     q.bindValue(":displayName", urlHost);
@@ -366,12 +367,13 @@ std::optional<qint64> FeedDatabase::insertFeed(const QUrl& url)
 void FeedDatabase::updateFeedName(qint64 feedId, const QString &newName)
 {
     QSqlQuery q(db());
-    q.prepare("UPDATE Feed SET "
-              "displayName=:displayName "
-              "WHERE id=:id");
+    q.prepare(
+        "UPDATE Feed SET "
+        "displayName=:displayName "
+        "WHERE id=:id");
     q.bindValue(":displayName", newName);
     q.bindValue(":id", feedId);
-    if (!q.exec()){
+    if (!q.exec()) {
         qWarning() << "SQL Error in updateFeedName: " << q.lastError().text();
     }
 }
@@ -379,12 +381,13 @@ void FeedDatabase::updateFeedName(qint64 feedId, const QString &newName)
 void FeedDatabase::updateFeedLink(qint64 feedId, const QString &link)
 {
     QSqlQuery q(db());
-    q.prepare("UPDATE Feed SET "
-              "link=:link "
-              "WHERE id=:id");
+    q.prepare(
+        "UPDATE Feed SET "
+        "link=:link "
+        "WHERE id=:id");
     q.bindValue(":link", link);
     q.bindValue(":id", feedId);
-    if (!q.exec()){
+    if (!q.exec()) {
         qWarning() << "SQL Error in updateFeedLink: " << q.lastError().text();
     }
 }
@@ -392,12 +395,13 @@ void FeedDatabase::updateFeedLink(qint64 feedId, const QString &link)
 void FeedDatabase::updateFeedIcon(qint64 feedId, const QString &icon)
 {
     QSqlQuery q(db());
-    q.prepare("UPDATE Feed SET "
-              "icon=:icon "
-              "WHERE id=:id");
+    q.prepare(
+        "UPDATE Feed SET "
+        "icon=:icon "
+        "WHERE id=:id");
     q.bindValue(":icon", icon);
     q.bindValue(":id", feedId);
-    if (!q.exec()){
+    if (!q.exec()) {
         qWarning() << "SQL Error in updateFeedIcon: " << q.lastError().text();
     }
 }
@@ -405,29 +409,31 @@ void FeedDatabase::updateFeedIcon(qint64 feedId, const QString &icon)
 void FeedDatabase::updateFeedUpdateInterval(qint64 feedId, qint64 updateInterval)
 {
     QSqlQuery q(db());
-    q.prepare("UPDATE Feed SET "
-              "updateInterval=:updateInterval "
-              "WHERE id=:id");
+    q.prepare(
+        "UPDATE Feed SET "
+        "updateInterval=:updateInterval "
+        "WHERE id=:id");
     q.bindValue(":updateInterval", updateInterval);
     q.bindValue(":id", feedId);
-    if (!q.exec()){
+    if (!q.exec()) {
         qWarning() << "SQL Error in updateFeed: " << q.lastError().text();
     }
 }
 
-void FeedDatabase::updateFeedLastUpdate(qint64 feedId, const QDateTime& lastUpdate)
+void FeedDatabase::updateFeedLastUpdate(qint64 feedId, const QDateTime &lastUpdate)
 {
     QSqlQuery q(db());
-    q.prepare("UPDATE Feed SET "
-              "lastUpdate=:lastUpdate "
-              "WHERE id=:id");
+    q.prepare(
+        "UPDATE Feed SET "
+        "lastUpdate=:lastUpdate "
+        "WHERE id=:id");
     if (lastUpdate.isValid()) {
         q.bindValue(":lastUpdate", lastUpdate.toSecsSinceEpoch());
     } else {
         q.bindValue(":lastUpdate", QVariant(QVariant::LongLong));
     }
     q.bindValue(":id", feedId);
-    if (!q.exec()){
+    if (!q.exec()) {
         qWarning() << "SQL Error in updateFeed: " << q.lastError().text();
     }
 }
@@ -435,8 +441,7 @@ void FeedDatabase::updateFeedLastUpdate(qint64 feedId, const QDateTime& lastUpda
 void FeedDatabase::deleteFeed(qint64 feedId)
 {
     QSqlQuery q(db());
-    q.prepare(
-                "DELETE FROM Feed WHERE id=:id");
+    q.prepare("DELETE FROM Feed WHERE id=:id");
     q.bindValue(":id", feedId);
     if (!q.exec()) {
         qWarning() << "SQL Error in deleteFeed: " << q.lastError().text();

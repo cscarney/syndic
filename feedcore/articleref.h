@@ -7,7 +7,8 @@
 #define FEEDCORE_ARTICLEREF_H
 #include <QSharedPointer>
 
-namespace FeedCore {
+namespace FeedCore
+{
 class Article;
 typedef QSharedPointer<Article> ArticleRef;
 }

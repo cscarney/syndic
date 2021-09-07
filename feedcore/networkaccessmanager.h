@@ -8,14 +8,15 @@
 
 #include <QNetworkAccessManager>
 
-namespace FeedCore {
+namespace FeedCore
+{
 class NetworkAccessManager : public QNetworkAccessManager
 {
 public:
     static NetworkAccessManager *instance();
 
-    explicit NetworkAccessManager(QObject *parent=nullptr);
-    explicit NetworkAccessManager(QAbstractNetworkCache *cache, QObject *parent=nullptr);
+    explicit NetworkAccessManager(QObject *parent = nullptr);
+    explicit NetworkAccessManager(QAbstractNetworkCache *cache, QObject *parent = nullptr);
     QNetworkReply *createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData) override;
 };
 }

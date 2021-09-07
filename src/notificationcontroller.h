@@ -6,10 +6,11 @@
 #ifndef NOTIFICATIONCONTROLLER_H
 #define NOTIFICATIONCONTROLLER_H
 
-#include <QObject>
 #include "feed.h"
-namespace FeedCore {
-    class Context;
+#include <QObject>
+namespace FeedCore
+{
+class Context;
 }
 
 /**

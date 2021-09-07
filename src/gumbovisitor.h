@@ -5,8 +5,8 @@
 
 #ifndef GUMBOVISITOR_H
 #define GUMBOVISITOR_H
-#include <QString>
 #include "htmlparser/gumbo.h"
+#include <QString>
 
 /**
  * base class for walking an HTML document tree.
@@ -33,13 +33,22 @@ public:
     /**
      * The root node of the parse tree.
      */
-    GumboNode *const&root() { return m_root; }
+    GumboNode *const &root()
+    {
+        return m_root;
+    }
 
 private:
-    virtual void visitElementOpen(GumboNode *node) {  }
-    virtual void visitText(GumboNode *node) { }
-    virtual void visitElementClose(GumboNode *node) { };
-    virtual void finished() {}
+    virtual void visitElementOpen(GumboNode *node)
+    {
+    }
+    virtual void visitText(GumboNode *node)
+    {
+    }
+    virtual void visitElementClose(GumboNode *node){};
+    virtual void finished()
+    {
+    }
 
     GumboOutput *m_gumbo;
     QByteArray m_data;

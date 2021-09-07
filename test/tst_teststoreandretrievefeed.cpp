@@ -1,14 +1,13 @@
-#include <QtTest>
-#include <QCoreApplication>
-#include <QSignalSpy>
 #include "future.h"
 #include "provisionalfeed.h"
 #include "sqlite/storageimpl.h"
+#include <QCoreApplication>
+#include <QSignalSpy>
+#include <QtTest>
 
-
-static constexpr const char* testDbName = "testStoreAndRetrieveFeed.db";
-static constexpr const char* testFeedName = "testName";
-static constexpr const char* testUrl = "about:blank";
+static constexpr const char *testDbName = "testStoreAndRetrieveFeed.db";
+static constexpr const char *testFeedName = "testName";
+static constexpr const char *testUrl = "about:blank";
 
 class testStoreAndRetrieveFeed : public QObject
 {
@@ -22,14 +21,14 @@ private slots:
         testFeed.setUrl(QUrl(testUrl));
         testFeed.setName(testFeedName);
         auto *storeFuture = storage.storeFeed(&testFeed);
-        FeedCore::Feed *feed { nullptr };
+        FeedCore::Feed *feed{nullptr};
         QObject::connect(storeFuture, &FeedCore::BaseFuture::finished, this, [&feed, storeFuture] {
             QVERIFY(storeFuture->result().count() == 1);
             feed = storeFuture->result()[0];
         });
         QSignalSpy waitForInitialFeed(storeFuture, &FeedCore::BaseFuture::finished);
         waitForInitialFeed.wait();
-        QVERIFY(feed!=nullptr);
+        QVERIFY(feed != nullptr);
     }
 
     void cleanup()
@@ -42,8 +41,8 @@ private slots:
         {
             Sqlite::StorageImpl storage(testDbName);
             auto *retrieveFuture = storage.getFeeds();
-            FeedCore::Feed *feed { nullptr };
-            QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture]{
+            FeedCore::Feed *feed{nullptr};
+            QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture] {
                 feed = retrieveFuture->result()[0];
             });
             QSignalSpy waitForRetrievedFeed(retrieveFuture, &FeedCore::BaseFuture::finished);
@@ -56,8 +55,8 @@ private slots:
     {
         Sqlite::StorageImpl storage(testDbName);
         auto *retrieveFuture = storage.getFeeds();
-        FeedCore::Feed *feed { nullptr };
-        QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture]{
+        FeedCore::Feed *feed{nullptr};
+        QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture] {
             feed = retrieveFuture->result()[0];
         });
         QSignalSpy waitForRetrievedFeed(retrieveFuture, &FeedCore::BaseFuture::finished);
@@ -65,12 +64,13 @@ private slots:
         QVERIFY(feed->name() == testFeedName);
     }
 
-    void testModifyName() {
+    void testModifyName()
+    {
         {
             Sqlite::StorageImpl storage(testDbName);
             auto *retrieveFuture = storage.getFeeds();
-            FeedCore::Feed *feed { nullptr };
-            QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture]{
+            FeedCore::Feed *feed{nullptr};
+            QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture] {
                 feed = retrieveFuture->result()[0];
             });
             QSignalSpy waitForRetrievedFeed(retrieveFuture, &FeedCore::BaseFuture::finished);
@@ -81,8 +81,8 @@ private slots:
         {
             Sqlite::StorageImpl storage(testDbName);
             auto *retrieveFuture = storage.getFeeds();
-            FeedCore::Feed *feed { nullptr };
-            QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture]{
+            FeedCore::Feed *feed{nullptr};
+            QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture] {
                 feed = retrieveFuture->result()[0];
             });
             QSignalSpy waitForRetrievedFeed(retrieveFuture, &FeedCore::BaseFuture::finished);

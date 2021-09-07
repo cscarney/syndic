@@ -9,7 +9,8 @@
 #include "factory.h"
 class QSqlQuery;
 
-namespace Sqlite {
+namespace Sqlite
+{
 class FeedImpl;
 class StorageImpl;
 class ItemQuery;
@@ -21,6 +22,7 @@ public:
     qint64 id() const;
     void updateFromQuery(const ItemQuery &q);
     void requestContent() final;
+
 private:
     ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const ItemQuery &q);
     qint64 m_id;

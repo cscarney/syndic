@@ -1,10 +1,11 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 #include <QApplication>
-#include <memory>
 #include <QQmlApplicationEngine>
+#include <memory>
 
-namespace FeedCore {
+namespace FeedCore
+{
 class Context;
 }
 class Settings;

@@ -3,27 +3,26 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include <algorithm>
 #include "articlelistmodel.h"
-#include "feed.h"
 #include "articleref.h"
+#include "feed.h"
 #include "qmlarticleref.h"
+#include <algorithm>
 
 using namespace FeedCore;
 
 struct ArticleListModel::PrivData {
     Feed *feed{};
     QList<QmlArticleRef> items;
-    bool unreadFilter { false };
-    LoadStatus status { LoadStatus::Idle };
-    bool active { false };
+    bool unreadFilter{false};
+    LoadStatus status{LoadStatus::Idle};
+    bool active{false};
 };
 
-ArticleListModel::ArticleListModel(QObject *parent) :
-    QAbstractListModel(parent),
-    d{ std::make_unique<PrivData>() }
+ArticleListModel::ArticleListModel(QObject *parent)
+    : QAbstractListModel(parent)
+    , d{std::make_unique<PrivData>()}
 {
-
 }
 
 bool ArticleListModel::unreadFilter() const
@@ -55,7 +54,7 @@ void ArticleListModel::refresh()
 {
     setStatus(LoadStatus::Loading);
     auto *q = getItems();
-    QObject::connect(q, &BaseFuture::finished, this, [this, q]{
+    QObject::connect(q, &BaseFuture::finished, this, [this, q] {
         onRefreshFinished(q);
     });
 }
@@ -73,19 +72,16 @@ ArticleListModel::~ArticleListModel() = default;
 
 QHash<int, QByteArray> ArticleListModel::roleNames() const
 {
-    return {
-         {Qt::UserRole, "ref"}
-    };
+    return {{Qt::UserRole, "ref"}};
 }
 
 void ArticleListModel::classBegin()
 {
-
 }
 
 void ArticleListModel::componentComplete()
 {
-    QTimer::singleShot(0, this, [this]{
+    QTimer::singleShot(0, this, [this] {
         d->active = true;
         QObject::connect(d->feed, &Feed::articleAdded, this, &ArticleListModel::onItemAdded);
         QObject::connect(d->feed, &Feed::statusChanged, this, &ArticleListModel::onStatusChanged);
@@ -119,7 +115,7 @@ static int indexForItem(const QList<QmlArticleRef> &list, const ArticleRef &item
 void ArticleListModel::onMergeFinished(Future<ArticleRef> *sender)
 {
     auto &items = d->items;
-    QSet<Article*> knownItems(items.constBegin(), items.constEnd());
+    QSet<Article *> knownItems(items.constBegin(), items.constEnd());
     for (const auto &item : sender->result()) {
         if (!knownItems.contains(item.get())) {
             insertAndNotify(indexForItem(d->items, item), item);
@@ -136,11 +132,13 @@ void ArticleListModel::onItemAdded(ArticleRef const &item)
 
 void ArticleListModel::removeRead()
 {
-    if (!d->unreadFilter) { return; }
+    if (!d->unreadFilter) {
+        return;
+    }
     auto &items = d->items;
-    for(int i=0; i<items.size(); ++i) {
+    for (int i = 0; i < items.size(); ++i) {
         if (items.at(i)->isRead()) {
-            beginRemoveRows(QModelIndex(), i,i);
+            beginRemoveRows(QModelIndex(), i, i);
             items.removeAt(i);
             endRemoveRows();
             --i;
@@ -166,7 +164,7 @@ void ArticleListModel::insertAndNotify(int index, const ArticleRef &item)
 void ArticleListModel::refreshMerge()
 {
     auto *q = getItems();
-    QObject::connect(q, &BaseFuture::finished, this, [this, q]{
+    QObject::connect(q, &BaseFuture::finished, this, [this, q] {
         onMergeFinished(q);
     });
 }
@@ -186,7 +184,7 @@ QVariant ArticleListModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    int indexRow = index.row() ;
+    int indexRow = index.row();
 
     if (role == Qt::UserRole) {
         return QVariant::fromValue(QmlArticleRef(d->items[indexRow]));
@@ -223,7 +221,7 @@ void ArticleListModel::requestUpdate()
 Future<ArticleRef> *ArticleListModel::getItems()
 {
     if (d->feed == nullptr) {
-        return Future<ArticleRef>::yield(this, [](auto){});
+        return Future<ArticleRef>::yield(this, [](auto /*unused*/) {});
     }
     return d->feed->getArticles(unreadFilter());
 }

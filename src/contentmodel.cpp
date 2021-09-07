@@ -5,10 +5,10 @@
 
 #include "contentmodel.h"
 
-ContentModel::ContentModel(QObject *parent) :
-    QAbstractListModel(parent)
-{}
-
+ContentModel::ContentModel(QObject *parent)
+    : QAbstractListModel(parent)
+{
+}
 
 int ContentModel::rowCount(const QModelIndex &parent) const
 {
@@ -27,7 +27,7 @@ QVariant ContentModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void ContentModel::setText(const QString& text)
+void ContentModel::setText(const QString &text)
 {
     if (m_text != text) {
         m_text = text;

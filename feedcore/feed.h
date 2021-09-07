@@ -5,19 +5,20 @@
 
 #ifndef FEEDCORE_FEED_H
 #define FEEDCORE_FEED_H
-#include <memory>
+#include "future.h"
+#include <QDateTime>
 #include <QObject>
 #include <QUrl>
-#include <QDateTime>
 #include <Syndication/Feed>
-#include "future.h"
+#include <memory>
 
-namespace FeedCore {
-
+namespace FeedCore
+{
 /**
  * Abstract class for stored feeds
  */
-class Feed : public QObject {
+class Feed : public QObject
+{
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
     Q_PROPERTY(QUrl url READ url WRITE setUrl NOTIFY urlChanged);
@@ -30,6 +31,7 @@ class Feed : public QObject {
     Q_PROPERTY(int updateInterval READ updateInterval WRITE setUpdateInterval NOTIFY updateIntervalChanged)
     Q_PROPERTY(FeedCore::Feed::Updater *updater READ updater CONSTANT);
     Q_PROPERTY(bool editable READ editable CONSTANT);
+
 public:
     class Updater;
 
@@ -163,7 +165,7 @@ public:
      *
      * If unreadFilter is true, only unread articles are returned.
      */
-    virtual Future<ArticleRef> *getArticles(bool unreadFilter)=0;
+    virtual Future<ArticleRef> *getArticles(bool unreadFilter) = 0;
 
     /**
      * Returns true if the implementation supports storing and propagating
@@ -215,12 +217,15 @@ signals:
      * object is destroyed.
      */
     void deleteRequested();
+
 protected:
     explicit Feed(QObject *parent = nullptr);
     void setUnreadCount(int unreadCount);
-    void incrementUnreadCount(int delta=1);
-    void decrementUnreadCount();;
+    void incrementUnreadCount(int delta = 1);
+    void decrementUnreadCount();
+    ;
     void setStatus(LoadStatus status);
+
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
@@ -244,14 +249,14 @@ public:
      *
      * The implementation should call aborted() if the abort is successful.
      */
-    virtual void abort() {};
+    virtual void abort(){};
 
     /**
      * Begin an update.
      *
      * This sets the feed status and records the update time, then calls run() to perform the actual update.
      */
-    Q_INVOKABLE void start(const QDateTime &timestamp=QDateTime::currentDateTime());
+    Q_INVOKABLE void start(const QDateTime &timestamp = QDateTime::currentDateTime());
 
     /**
      * The last error reported by the implementation.

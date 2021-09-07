@@ -7,9 +7,9 @@
 #include "feed.h"
 using namespace FeedCore;
 
-Article::Article(Feed *feed, QObject *parent) :
-    QObject(parent),
-    m_feed(feed)
+Article::Article(Feed *feed, QObject *parent)
+    : QObject(parent)
+    , m_feed(feed)
 {
 }
 
@@ -66,7 +66,7 @@ void Article::setStarred(bool isStarred)
     }
 }
 
-QUrl Article::resolvedLink(const QUrl& link)
+QUrl Article::resolvedLink(const QUrl &link)
 {
     return m_url.resolved(link);
 }

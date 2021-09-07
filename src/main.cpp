@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+#include "application.h"
 #include "cmake-config.h"
 #include <QQuickStyle>
-#include "application.h"
 using namespace FeedCore;
-
 
 int main(int argc, char *argv[])
 {

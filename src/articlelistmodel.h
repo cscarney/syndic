@@ -5,13 +5,14 @@
 
 #ifndef UNREADITEMMODEL_H
 #define UNREADITEMMODEL_H
+#include "articleref.h"
+#include "feed.h"
+#include "future.h"
 #include <QModelIndex>
 #include <QQmlParserStatus>
 #include <memory>
-#include "feed.h"
-#include "future.h"
-#include "articleref.h"
-namespace FeedCore {
+namespace FeedCore
+{
 class Context;
 }
 
@@ -27,25 +28,26 @@ class ArticleListModel : public QAbstractListModel, public QQmlParserStatus
     Q_INTERFACES(QQmlParserStatus)
 
     /**
-      * Set to true to filter out unread articles.
-      *
-      * Note that this filtering is not dynamic -- an article hat is unread when loaded into the model remains
-      * in the list until removeRead() is called.  This prevents articles being removed from the list  while
-      * they are still open.
-      */
+     * Set to true to filter out unread articles.
+     *
+     * Note that this filtering is not dynamic -- an article hat is unread when loaded into the model remains
+     * in the list until removeRead() is called.  This prevents articles being removed from the list  while
+     * they are still open.
+     */
     Q_PROPERTY(bool unreadFilter READ unreadFilter WRITE setUnreadFilter NOTIFY unreadFilterChanged);
 
     /**
-      * A convenience accessor for feed()->status()
-      */
+     * A convenience accessor for feed()->status()
+     */
     Q_PROPERTY(FeedCore::Feed::LoadStatus status READ status NOTIFY statusChanged);
 
     /**
-      * The feed whose items are displayed in the list
-      */
+     * The feed whose items are displayed in the list
+     */
     Q_PROPERTY(FeedCore::Feed *feed READ feed WRITE setFeed NOTIFY feedChanged);
+
 public:
-    explicit ArticleListModel(QObject *parent=nullptr);
+    explicit ArticleListModel(QObject *parent = nullptr);
     ~ArticleListModel();
 
     /**

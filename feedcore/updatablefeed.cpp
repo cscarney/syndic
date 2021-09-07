@@ -4,22 +4,24 @@
  */
 
 #include "updatablefeed.h"
+#include "networkaccessmanager.h"
 #include <QNetworkReply>
-#include <Syndication/Loader>
 #include <Syndication/DataRetriever>
 #include <Syndication/Image>
-#include "networkaccessmanager.h"
+#include <Syndication/Loader>
 using namespace FeedCore;
 
-namespace {
+namespace
+{
 class DataRetriever : public Syndication::DataRetriever
 {
 public:
     void retrieveData(const QUrl &url) final;
     int errorCode() const final;
     void abort() final;
+
 private:
-    QNetworkReply *m_reply { nullptr };
+    QNetworkReply *m_reply{nullptr};
     void onRedirect(const QUrl &url);
     void onFinished();
 };
@@ -31,9 +33,10 @@ public:
     UpdaterImpl(UpdatableFeed *feed, QObject *parent);
     void run() final;
     void abort() final;
+
 private:
-    Syndication::Loader *m_loader { nullptr };
-    UpdatableFeed *m_updatableFeed { nullptr };
+    Syndication::Loader *m_loader{nullptr};
+    UpdatableFeed *m_updatableFeed{nullptr};
     void loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status);
 };
 
@@ -42,10 +45,11 @@ Feed::Updater *UpdatableFeed::updater()
     return m_updater;
 }
 
-FeedCore::UpdatableFeed::UpdatableFeed(QObject *parent) :
-    Feed(parent),
-    m_updater { new UpdaterImpl(this, this) }
-{}
+FeedCore::UpdatableFeed::UpdatableFeed(QObject *parent)
+    : Feed(parent)
+    , m_updater{new UpdaterImpl(this, this)}
+{
+}
 
 void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
 {
@@ -69,12 +73,10 @@ void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
     }
 }
 
-
-UpdatableFeed::UpdaterImpl::UpdaterImpl(UpdatableFeed *feed, QObject *parent):
-    Updater(feed, parent),
-    m_updatableFeed{ feed }
+UpdatableFeed::UpdaterImpl::UpdaterImpl(UpdatableFeed *feed, QObject *parent)
+    : Updater(feed, parent)
+    , m_updatableFeed{feed}
 {
-
 }
 
 void UpdatableFeed::UpdaterImpl::run()
@@ -90,7 +92,7 @@ void UpdatableFeed::UpdaterImpl::run()
 
 void UpdatableFeed::UpdaterImpl::abort()
 {
-    if (m_loader != nullptr){
+    if (m_loader != nullptr) {
         m_loader->abort();
     }
 }
@@ -134,7 +136,7 @@ void UpdatableFeed::UpdaterImpl::loadingComplete(Syndication::Loader *loader, co
 
     // try the discovered url
     if (loader->discoveredFeedURL().isValid()) {
-        qDebug() << "Discovered alternate source:"<< loader->discoveredFeedURL();
+        qDebug() << "Discovered alternate source:" << loader->discoveredFeedURL();
         m_updatableFeed->setUrl(loader->discoveredFeedURL());
         run();
     } else {

@@ -5,12 +5,13 @@
 
 #ifndef FEEDCORE_ARTICLE_H
 #define FEEDCORE_ARTICLE_H
-#include <QObject>
 #include <QDateTime>
-#include <QUrl>
+#include <QObject>
 #include <QPointer>
+#include <QUrl>
 
-namespace FeedCore {
+namespace FeedCore
+{
 class Feed;
 
 /**
@@ -54,6 +55,7 @@ class Article : public QObject
      * Link to a web page containing the full article.
      */
     Q_PROPERTY(QUrl url READ url NOTIFY urlChanged);
+
 public:
     Feed *feed() const;
 
@@ -67,15 +69,33 @@ public:
     /**
      * Resolves a link relative to the article page
      */
-    Q_INVOKABLE QUrl resolvedLink(const QUrl& link);
+    Q_INVOKABLE QUrl resolvedLink(const QUrl &link);
 
-    const QString &title() const { return m_title; }
-    const QString &author() const { return m_author; }
-    const QDateTime &date() const { return m_date; }
-    const QUrl &url() const { return m_url; }
-    bool isRead() const { return m_readStatus; }
+    const QString &title() const
+    {
+        return m_title;
+    }
+    const QString &author() const
+    {
+        return m_author;
+    }
+    const QDateTime &date() const
+    {
+        return m_date;
+    }
+    const QUrl &url() const
+    {
+        return m_url;
+    }
+    bool isRead() const
+    {
+        return m_readStatus;
+    }
     virtual void setRead(bool isRead);
-    bool isStarred() const { return m_starred; }
+    bool isStarred() const
+    {
+        return m_starred;
+    }
     virtual void setStarred(bool isStarred);
 
 signals:
@@ -100,8 +120,8 @@ private:
     QString m_author;
     QDateTime m_date;
     QUrl m_url;
-    bool m_readStatus { false };
-    bool m_starred { false };
+    bool m_readStatus{false};
+    bool m_starred{false};
 };
 }
 

@@ -15,7 +15,7 @@ GumboVisitor::GumboVisitor(const QString &input)
 
 void GumboVisitor::walk()
 {
-    while(m_node != nullptr) {
+    while (m_node != nullptr) {
         switch (m_node->type) {
         case GUMBO_NODE_TEXT:
         case GUMBO_NODE_CDATA:

@@ -4,23 +4,22 @@
  */
 
 #include "sqlite/feedimpl.h"
-#include <QVariant>
-#include <QSqlQuery>
-#include <Syndication/Image>
-#include "sqlite/storageimpl.h"
 #include "article.h"
-#include "articleref.h"
 #include "articleimpl.h"
+#include "articleref.h"
 #include "sqlite/feedquery.h"
+#include "sqlite/storageimpl.h"
+#include <QSqlQuery>
+#include <QVariant>
+#include <Syndication/Image>
 
 using namespace FeedCore;
 using namespace Sqlite;
 
-
-FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage):
-    UpdatableFeed(storage),
-    m_id{feedId},
-    m_storage{storage}
+FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage)
+    : UpdatableFeed(storage)
+    , m_id{feedId}
+    , m_storage{storage}
 {
     storage->listenForChanges(this);
 }
@@ -60,9 +59,9 @@ Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)
 void FeedImpl::updateSourceArticle(const Syndication::ItemPtr &article)
 {
     auto *q = m_storage->storeArticle(this, article);
-    QObject::connect(q, &BaseFuture::finished, this, [this, q]{
+    QObject::connect(q, &BaseFuture::finished, this, [this, q] {
         for (const auto &item : q->result()) {
-            if (!item->isRead()){
+            if (!item->isRead()) {
                 incrementUnreadCount();
             }
             emit articleAdded(item);

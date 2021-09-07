@@ -15,14 +15,14 @@ class ContentImageItem : public QQuickItem
     Q_OBJECT
 
     /**
-      * The url to load the image from
-      */
+     * The url to load the image from
+     */
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 public:
-    explicit ContentImageItem(QQuickItem *parent=nullptr);
+    explicit ContentImageItem(QQuickItem *parent = nullptr);
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *data) override;
     QUrl source() const;
-    void setSource(const QUrl& src);
+    void setSource(const QUrl &src);
 
 signals:
     void sourceChanged(QUrl src);

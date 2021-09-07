@@ -11,19 +11,18 @@ struct Feed::PrivData {
     QUrl url;
     QUrl link;
     QUrl icon;
-    int unreadCount { 0 };
-    LoadStatus status { LoadStatus::Idle };
-    UpdateMode updateMode { DefaultUpdateMode };
-    time_t updateInterval { 0 };
-    qint64 expireAge { 0 };
+    int unreadCount{0};
+    LoadStatus status{LoadStatus::Idle};
+    UpdateMode updateMode{DefaultUpdateMode};
+    time_t updateInterval{0};
+    qint64 expireAge{0};
     QDateTime lastUpdate;
 };
 
-Feed::Feed(QObject *parent):
-    QObject(parent),
-    d { std::make_unique<PrivData>() }
+Feed::Feed(QObject *parent)
+    : QObject(parent)
+    , d{std::make_unique<PrivData>()}
 {
-
 }
 
 Feed::~Feed()
@@ -32,7 +31,10 @@ Feed::~Feed()
     setUnreadCount(0);
 }
 
-const QString &Feed::name() const { return d->name; }
+const QString &Feed::name() const
+{
+    return d->name;
+}
 
 void Feed::setName(const QString &name)
 {
@@ -42,7 +44,10 @@ void Feed::setName(const QString &name)
     }
 }
 
-const QUrl &Feed::url() const { return d->url; }
+const QUrl &Feed::url() const
+{
+    return d->url;
+}
 
 void Feed::setUnreadCount(int unreadCount)
 {
@@ -59,7 +64,10 @@ void Feed::incrementUnreadCount(int delta)
     emit unreadCountChanged(delta);
 }
 
-void Feed::decrementUnreadCount() { incrementUnreadCount(-1); }
+void Feed::decrementUnreadCount()
+{
+    incrementUnreadCount(-1);
+}
 
 void Feed::setUrl(const QUrl &url)
 {
@@ -69,7 +77,10 @@ void Feed::setUrl(const QUrl &url)
     }
 }
 
-const QUrl &Feed::link() { return d->link; }
+const QUrl &Feed::link()
+{
+    return d->link;
+}
 
 void Feed::setLink(const QUrl &link)
 {
@@ -79,12 +90,17 @@ void Feed::setLink(const QUrl &link)
     }
 }
 
-const QUrl &Feed::icon() { return d->icon; }
+const QUrl &Feed::icon()
+{
+    return d->icon;
+}
 
 void Feed::setIcon(const QUrl &icon)
 {
-    if (!icon.isValid()){return;}
-    if (d->icon != icon){
+    if (!icon.isValid()) {
+        return;
+    }
+    if (d->icon != icon) {
         d->icon = icon;
         emit iconChanged();
     }
@@ -157,31 +173,39 @@ qint64 Feed::expireAge()
     return d->expireAge;
 }
 
-
 void Feed::updateParams(Feed *other)
 {
-    if (other==nullptr) {return;}
+    if (other == nullptr) {
+        return;
+    }
     setName(other->name());
     setUrl(other->url());
     setUpdateInterval(other->updateInterval());
     setUpdateMode(other->updateMode());
 }
 
-bool Feed::editable() { return false; }
+bool Feed::editable()
+{
+    return false;
+}
 
-void Feed::requestDelete(){ emit deleteRequested(); }
+void Feed::requestDelete()
+{
+    emit deleteRequested();
+}
 
 struct Feed::Updater::PrivData {
     Feed *feed;
     QDateTime updateStartTime;
     QString errorMsg;
-    bool active { false };
-    PrivData(Feed *feed) : feed(feed) {};
+    bool active{false};
+    PrivData(Feed *feed)
+        : feed(feed){};
 };
 
-Feed::Updater::Updater(Feed *feed, QObject *parent) :
-    QObject(parent),
-    d{ std::make_unique<PrivData>(feed) }
+Feed::Updater::Updater(Feed *feed, QObject *parent)
+    : QObject(parent)
+    , d{std::make_unique<PrivData>(feed)}
 {
 }
 

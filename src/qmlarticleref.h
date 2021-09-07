@@ -5,10 +5,11 @@
 
 #ifndef QMLARTICLEREF_H
 #define QMLARTICLEREF_H
-#include "qmlref.h"
 #include "article.h"
+#include "qmlref.h"
 
-class QmlArticleRef : public QmlRef<FeedCore::Article> {
+class QmlArticleRef : public QmlRef<FeedCore::Article>
+{
     Q_GADGET
     Q_PROPERTY(FeedCore::Article *article READ get CONSTANT);
     using QmlRef::QmlRef;

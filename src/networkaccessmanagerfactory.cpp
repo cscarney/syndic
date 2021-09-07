@@ -1,11 +1,7 @@
 #include "networkaccessmanagerfactory.h"
 #include "networkaccessmanager.h"
 
-NetworkAccessManagerFactory::NetworkAccessManagerFactory()
-{
-
-}
-
+NetworkAccessManagerFactory::NetworkAccessManagerFactory() = default;
 
 QNetworkAccessManager *NetworkAccessManagerFactory::create(QObject *parent)
 {

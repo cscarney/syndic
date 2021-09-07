@@ -5,13 +5,14 @@
 
 #ifndef FEEDCORE_CONTEXT_H
 #define FEEDCORE_CONTEXT_H
-#include <memory>
+#include "future.h"
 #include <QObject>
 #include <QUrl>
 #include <Syndication/Feed>
-#include "future.h"
+#include <memory>
 
-namespace FeedCore {
+namespace FeedCore
+{
 class Storage;
 class Feed;
 class ProvisionalFeed;
@@ -24,10 +25,10 @@ class Context : public QObject
     Q_OBJECT
 
     /**
-      * Whether to schedule updates for feeds using UpdateMode::DefaultUpdateMode.
-      *
-      * The default value is false.  Set defaultUpdateInterval to a sane value before setting this to true.
-      */
+     * Whether to schedule updates for feeds using UpdateMode::DefaultUpdateMode.
+     *
+     * The default value is false.  Set defaultUpdateInterval to a sane value before setting this to true.
+     */
     Q_PROPERTY(bool defaultUpdateEnabled READ defaultUpdateEnabled WRITE setDefaultUpdateEnabled NOTIFY defaultUpdateEnabledChanged)
 
     /**
@@ -65,7 +66,7 @@ public:
      * you should wait for the feedListPopulated signal before calling this
      * function.
      */
-    const QSet<Feed*> &getFeeds();
+    const QSet<Feed *> &getFeeds();
 
     /**
      * Create a new feed in the Context's storage object.
@@ -155,7 +156,7 @@ signals:
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
-    void populateFeeds(const QVector<Feed*> &feeds);
+    void populateFeeds(const QVector<Feed *> &feeds);
 };
 }
 #endif // FEEDCORE_CONTEXT_H

@@ -7,9 +7,10 @@
 #define ICONPROVIDER_H
 #include <QQuickAsyncImageProvider>
 
-namespace FeedCore {
-    class Feed;
-    class Context;
+namespace FeedCore
+{
+class Feed;
+class Context;
 }
 
 /**
@@ -28,10 +29,10 @@ public:
     ~IconProvider();
     QQuickImageResponse *requestImageResponse(const QString &id, const QSize &requestedSize) override;
     static void discoverIcon(FeedCore::Feed *feed);
+
 private:
+    static IconProvider *s_instance;
     QSharedPointer<QNetworkAccessManager> m_nam;
 };
-
-
 
 #endif // ICONPROVIDER_H

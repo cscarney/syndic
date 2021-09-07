@@ -9,9 +9,9 @@
 
 static constexpr const int heightLimit = 36;
 
-HtmlSplitter::HtmlSplitter(const QString &input, QObject *blockParent) :
-    GumboVisitor(input),
-    m_blockParent(blockParent)
+HtmlSplitter::HtmlSplitter(const QString &input, QObject *blockParent)
+    : GumboVisitor(input)
+    , m_blockParent(blockParent)
 {
     walk();
 }
@@ -26,7 +26,7 @@ static QString buildTag(const GumboElement &element)
     QString tag = "<";
     tag.append(gumbo_normalized_tagname(element.tag));
     const GumboVector &attributes = element.attributes;
-    for(unsigned int i=0; i<attributes.length; i++) {
+    for (unsigned int i = 0; i < attributes.length; i++) {
         const GumboAttribute *attribute = static_cast<GumboAttribute *>(attributes.data[i]);
         const char *attributeName = attribute->name;
         const GumboStringPiece &originalValue = attribute->original_value;
@@ -36,7 +36,7 @@ static QString buildTag(const GumboElement &element)
         tag.append("=");
         tag.append(attributeValue);
     }
-    if (element.children.length==0) {
+    if (element.children.length == 0) {
         tag.append(" /");
     }
     tag.append(">");
@@ -51,7 +51,8 @@ static QString buildCloseTag(const GumboElement &element)
     return tag;
 }
 
-static void pushAnchor(QStringList &anchors, const GumboElement &element) {
+static void pushAnchor(QStringList &anchors, const GumboElement &element)
+{
     assert(element.tag == GUMBO_TAG_A);
     GumboAttribute *attr = gumbo_get_attribute(&element.attributes, "href");
     if (attr == nullptr) {
@@ -61,7 +62,8 @@ static void pushAnchor(QStringList &anchors, const GumboElement &element) {
     anchors.push_back(QString::fromUtf8(attr->value));
 }
 
-static void popAnchor(QStringList &anchors) {
+static void popAnchor(QStringList &anchors)
+{
     anchors.pop_back();
 }
 
@@ -140,7 +142,9 @@ void HtmlSplitter::ensureTextBlock()
 
 void HtmlSplitter::closeTextBlock(GumboNode *currentNode)
 {
-    if (m_currentTextBlock == nullptr){return;}
+    if (m_currentTextBlock == nullptr) {
+        return;
+    }
     if (!m_haveTextContent) {
         // remove text blocks that don't have any text
         m_blocks.pop_back();
@@ -151,10 +155,10 @@ void HtmlSplitter::closeTextBlock(GumboNode *currentNode)
 
     // close out all open tags
     const auto &rootNode = root();
-    for(;;) {
+    for (;;) {
         assert(currentNode->type == GUMBO_NODE_ELEMENT);
         m_currentTextBlock->appendText(buildCloseTag(currentNode->v.element));
-        if (currentNode==rootNode) {
+        if (currentNode == rootNode) {
             break;
         }
         currentNode = currentNode->parent;
@@ -167,7 +171,9 @@ void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
     assert(node->type == GUMBO_NODE_ELEMENT);
     GumboElement &element = node->v.element;
     GumboAttribute *srcAttr = gumbo_get_attribute(&element.attributes, "src");
-    if (srcAttr == nullptr){return;}
+    if (srcAttr == nullptr) {
+        return;
+    }
     GumboAttribute *heightAttr = gumbo_get_attribute(&element.attributes, "height");
     if (heightAttr != nullptr) {
         long int height = strtol(heightAttr->value, nullptr, 10);
@@ -185,31 +191,34 @@ void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
     m_blocks.push_back(image);
 }
 
-ImageBlock::ImageBlock(QString src, QObject *parent):
-    ContentBlock(parent),
-    m_src(std::move(src))
-{}
+ImageBlock::ImageBlock(QString src, QObject *parent)
+    : ContentBlock(parent)
+    , m_src(std::move(src))
+{
+}
 
 const QString &ImageBlock::delegateName() const
 {
-    static QString name { "ImageBlock" };
+    static QString name{"ImageBlock"};
     return name;
 }
 
-QString ImageBlock::resolvedSrc(const QUrl& base)
+QString ImageBlock::resolvedSrc(const QUrl &base)
 {
     return base.resolved(m_src).toString();
 }
 
-QString ImageBlock::resolvedHref(const QUrl& base)
+QString ImageBlock::resolvedHref(const QUrl &base)
 {
-    if (m_href.isEmpty()){return QString();}
+    if (m_href.isEmpty()) {
+        return QString();
+    }
     return base.resolved(m_href).toString();
 }
 
 const QString &TextBlock::delegateName() const
 {
-    static QString name { "TextBlock" };
+    static QString name{"TextBlock"};
     return name;
 }
 

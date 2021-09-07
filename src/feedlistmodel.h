@@ -5,12 +5,13 @@
 
 #ifndef FEEDLISTMODEL_H
 #define FEEDLISTMODEL_H
+#include "articleref.h"
+#include "future.h"
 #include <QAbstractListModel>
 #include <QQmlParserStatus>
 #include <memory>
-#include "future.h"
-#include "articleref.h"
-namespace FeedCore {
+namespace FeedCore
+{
 class Context;
 class Feed;
 }
@@ -23,10 +24,9 @@ class FeedListModel : public QAbstractListModel, public QQmlParserStatus
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(FeedCore::Context *context READ context WRITE setContext NOTIFY contextChanged);
+
 public:
-    enum Roles {
-        FeedRole = Qt::UserRole
-    };
+    enum Roles { FeedRole = Qt::UserRole };
     Q_ENUM(Roles);
     explicit FeedListModel(QObject *parent = nullptr);
     ~FeedListModel();
@@ -39,6 +39,7 @@ public:
     void componentComplete() override;
 signals:
     void contextChanged();
+
 private:
     class PrivData;
     std::unique_ptr<PrivData> d;

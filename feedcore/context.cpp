@@ -3,55 +3,54 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 #include "context.h"
-#include <QSet>
-#include <QNetworkConfigurationManager>
-#include <QFile>
-#include <QXmlStreamWriter>
-#include <QXmlStreamReader>
-#include <QDebug>
-#include "storage.h"
-#include "scheduler.h"
 #include "feed.h"
 #include "future.h"
 #include "provisionalfeed.h"
+#include "scheduler.h"
+#include "storage.h"
+#include <QDebug>
+#include <QFile>
+#include <QNetworkConfigurationManager>
+#include <QSet>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
-namespace FeedCore {
-
+namespace FeedCore
+{
 struct Context::PrivData {
     Context *parent;
     Storage *storage;
-    QSet<Feed*> feeds;
-    bool defaultUpdate { false };
-    qint64 updateInterval{ 0 };
-    qint64 expireAge { 0 };
+    QSet<Feed *> feeds;
+    bool defaultUpdate{false};
+    qint64 updateInterval{0};
+    qint64 expireAge{0};
     Scheduler *updateScheduler;
     QNetworkConfigurationManager ncm;
 
     PrivData(Storage *storage, Context *parent);
-    void configureUpdates(Feed *feed, const QDateTime &timestamp=QDateTime::currentDateTime()) const;
+    void configureUpdates(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime()) const;
 };
 
 Context::Context(Storage *storage, QObject *parent)
-    : QObject(parent),
-      d{ std::make_unique<PrivData>(storage, this) }
+    : QObject(parent)
+    , d{std::make_unique<PrivData>(storage, this)}
 {
     QObject::connect(&d->ncm, &QNetworkConfigurationManager::configurationAdded, d->updateScheduler, &Scheduler::clearErrors);
     QObject::connect(&d->ncm, &QNetworkConfigurationManager::configurationChanged, d->updateScheduler, &Scheduler::clearErrors);
 
-    Future<Feed*> *getFeeds { d->storage->getFeeds() };
+    Future<Feed *> *getFeeds{d->storage->getFeeds()};
     QObject::connect(getFeeds, &BaseFuture::finished, this, [this, getFeeds] {
         populateFeeds(getFeeds->result());
     });
     d->updateScheduler->start();
 }
 
-
 Context::~Context() = default;
 
-Context::PrivData::PrivData(Storage *storage, Context *parent) :
-    parent(parent),
-    storage(storage),
-    updateScheduler(new Scheduler(parent))
+Context::PrivData::PrivData(Storage *storage, Context *parent)
+    : parent(parent)
+    , storage(storage)
+    , updateScheduler(new Scheduler(parent))
 {
     storage->setParent(parent);
 }
@@ -59,8 +58,8 @@ Context::PrivData::PrivData(Storage *storage, Context *parent) :
 void Context::PrivData::configureUpdates(Feed *feed, const QDateTime &timestamp) const
 {
     auto updateMode{feed->updateMode()};
-    bool shouldSchedule;
-    if (updateMode==Feed::DefaultUpdateMode) {
+    bool shouldSchedule{false};
+    if (updateMode == Feed::DefaultUpdateMode) {
         feed->setUpdateInterval(updateInterval);
         shouldSchedule = defaultUpdate;
     } else {
@@ -71,19 +70,18 @@ void Context::PrivData::configureUpdates(Feed *feed, const QDateTime &timestamp)
         updateScheduler->schedule(feed, timestamp);
     } else {
         updateScheduler->unschedule(feed);
-
     }
 }
 
-const QSet<Feed*> &Context::getFeeds()
+const QSet<Feed *> &Context::getFeeds()
 {
     return d->feeds;
 }
 
 void Context::addFeed(Feed *feed)
 {
-    Future<Feed*> *q { d->storage->storeFeed(feed) };
-    QObject::connect(q, &BaseFuture::finished, this, [this, q]{
+    Future<Feed *> *q{d->storage->storeFeed(feed)};
+    QObject::connect(q, &BaseFuture::finished, this, [this, q] {
         populateFeeds(q->result());
     });
 }
@@ -113,7 +111,7 @@ void Context::requestUpdate()
 void Context::abortUpdates()
 {
     const auto &feeds = d->feeds;
-    for(Feed *const entry : feeds) {
+    for (Feed *const entry : feeds) {
         entry->updater()->abort();
     }
 }
@@ -181,7 +179,7 @@ void Context::exportOpml(const QUrl &url) const
     xml.writeStartElement("head");
     xml.writeEndElement();
     xml.writeStartElement("body");
-    for(auto *feed : qAsConst(d->feeds)) {
+    for (auto *feed : qAsConst(d->feeds)) {
         xml.writeEmptyElement("outline");
         xml.writeAttribute("type", "rss");
         xml.writeAttribute("text", feed->name());
@@ -202,8 +200,8 @@ void Context::importOpml(const QUrl &url)
     QXmlStreamReader xml(&file);
     while (!xml.atEnd()) {
         xml.readNext();
-        if (xml.isStartElement() && xml.name()=="outline") {
-            QXmlStreamAttributes attrs { xml.attributes() };
+        if (xml.isStartElement() && xml.name() == "outline") {
+            QXmlStreamAttributes attrs{xml.attributes()};
             if (!attrs.hasAttribute("xmlUrl")) {
                 continue;
             }
@@ -229,8 +227,9 @@ bool Context::defaultUpdateEnabled() const
 
 void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
 {
-    if (d->defaultUpdate == defaultUpdateEnabled)
+    if (d->defaultUpdate == defaultUpdateEnabled) {
         return;
+    }
 
     d->defaultUpdate = defaultUpdateEnabled;
     const QDateTime timestamp = QDateTime::currentDateTime();
@@ -242,14 +241,14 @@ void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
     emit defaultUpdateEnabledChanged();
 }
 
-void Context::populateFeeds(const QVector<Feed*> &feeds)
+void Context::populateFeeds(const QVector<Feed *> &feeds)
 {
     const QDateTime timestamp = QDateTime::currentDateTime();
-    for(const auto &feed : feeds) {
+    for (const auto &feed : feeds) {
         d->feeds.insert(feed);
         feed->setExpireAge(d->expireAge);
         d->configureUpdates(feed, timestamp);
-        QObject::connect(feed, &Feed::updateModeChanged, this, [this, feed]{
+        QObject::connect(feed, &Feed::updateModeChanged, this, [this, feed] {
             d->configureUpdates(feed);
         });
         emit feedAdded(feed);
