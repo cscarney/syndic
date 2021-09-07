@@ -13,7 +13,6 @@ AbstractArticleListPage {
         main: Kirigami.Action {
             text: qsTr("Mark All Read")
             iconName: "checkmark"
-            visible: !clearReadAction.visible
             enabled: root.feed.unreadCount > 0
             onTriggered: {
                 root.model.markAllRead();
@@ -21,19 +20,19 @@ AbstractArticleListPage {
             displayHint: Kirigami.DisplayHint.KeepVisible
         }
 
-        contextualActions: [
-            Kirigami.Action {
-                id: clearReadAction
-                text: qsTr("Clear Read")
-                iconName: "checkmark"
-                visible: root.feed && root.unreadFilter && root.count > root.feed.unreadCount
-                displayHint: Kirigami.DisplayHint.KeepVisible
-                onTriggered: {
-                    root.currentIndex = -1
-                    root.model.removeRead()
-                }
-            },
+        right: Kirigami.Action {
+            id: clearReadAction
+            text: qsTr("Clear")
+            iconName: "edit-clear-all"
+            visible: root.feed && root.unreadFilter
+            enabled: root.count > root.feed.unreadCount
+            onTriggered: {
+                root.currentIndex = -1
+                root.model.removeRead()
+            }
+        }
 
+        contextualActions: [
             Kirigami.Action {
                  text: qsTr("Hide Read")
                  iconName: "view-filter"
