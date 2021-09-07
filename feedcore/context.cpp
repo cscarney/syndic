@@ -253,6 +253,7 @@ void Context::populateFeeds(const QVector<Feed *> &feeds)
         });
         emit feedAdded(feed);
     }
+    emit feedListPopulated();
 }
 
 }
