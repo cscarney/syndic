@@ -47,12 +47,6 @@ target_link_libraries(syndic
     sqlite
     htmlparser
     )
-    
-if (KF5Notifications_FOUND)
-    target_link_libraries(syndic
-        KF5::Notifications
-        )
-endif()
 
 if(KF5DBusAddons_FOUND)
     target_link_libraries(syndic
