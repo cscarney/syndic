@@ -2,6 +2,7 @@
 #define CONTENTIMAGEITEM_H
 #include <QImage>
 #include <QQuickItem>
+class QNetworkReply;
 
 /**
  * A QQuickItem that displays block-level images.
@@ -20,6 +21,7 @@ class ContentImageItem : public QQuickItem
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 public:
     explicit ContentImageItem(QQuickItem *parent = nullptr);
+    ~ContentImageItem();
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *data) override;
     QUrl source() const;
     void setSource(const QUrl &src);
@@ -35,6 +37,11 @@ private:
     QUrl m_src;
     QImage m_image;
     bool m_needsUpdate{false};
+    QNetworkReply *m_reply{nullptr};
+
+    void beginImageLoad();
+    void cancelImageLoad();
+    void onImageLoadFinished();
 };
 
 #endif // CONTENTIMAGEITEM_H
