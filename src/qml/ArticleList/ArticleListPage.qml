@@ -13,7 +13,7 @@ AbstractArticleListPage {
         main: Kirigami.Action {
             text: qsTr("Mark All Read")
             iconName: "checkmark"
-            enabled: root.feed.unreadCount > 0
+            enabled: root.feed && root.feed.unreadCount > 0
             onTriggered: {
                 root.model.markAllRead();
             }
@@ -25,7 +25,7 @@ AbstractArticleListPage {
             text: qsTr("Clear")
             iconName: "edit-clear-all"
             visible: root.feed && root.unreadFilter
-            enabled: root.count > root.feed.unreadCount
+            enabled: root.feed && root.count > root.feed.unreadCount
             onTriggered: {
                 root.currentIndex = -1
                 root.model.removeRead()

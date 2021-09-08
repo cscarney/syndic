@@ -27,7 +27,6 @@ Feed::Feed(QObject *parent)
 
 Feed::~Feed()
 {
-    setStatus(Idle);
     setUnreadCount(0);
 }
 

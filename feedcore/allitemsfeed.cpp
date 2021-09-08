@@ -66,11 +66,10 @@ void AllItemsFeed::addFeed(Feed *feed)
     QObject::connect(feed, &Feed::statusChanged, this, [this, feed] {
         syncFeedStatus(feed);
     });
+    QObject::connect(feed, &Feed::destroyed, this, [this, feed] {
+        onFeedDestroyed(feed);
+    });
     emit reset();
-}
-
-void AllItemsFeed::onGetFeedsFinished(Future<Feed *> *sender)
-{
 }
 
 void AllItemsFeed::onArticleAdded(const ArticleRef &article)
@@ -78,12 +77,22 @@ void AllItemsFeed::onArticleAdded(const ArticleRef &article)
     emit articleAdded(article);
 }
 
-void AllItemsFeed::syncFeedStatus(Feed *sender)
+void AllItemsFeed::setFeedActive(Feed *feed, bool active)
 {
-    if (sender->status() == LoadStatus::Updating) {
-        m_active.insert(sender);
+    if (active) {
+        m_active.insert(feed);
     } else {
-        m_active.remove(sender);
+        m_active.remove(feed);
     }
     setStatus(m_active.isEmpty() ? LoadStatus::Idle : LoadStatus::Updating);
+}
+
+void AllItemsFeed::syncFeedStatus(Feed *sender)
+{
+    setFeedActive(sender, sender->status() == LoadStatus::Updating);
+}
+
+void AllItemsFeed::onFeedDestroyed(Feed *sender)
+{
+    setFeedActive(sender, false);
 }

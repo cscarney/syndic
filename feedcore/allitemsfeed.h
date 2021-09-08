@@ -28,9 +28,9 @@ private:
     Updater *m_updater{nullptr};
     QSet<Feed *> m_active;
     void addFeed(Feed *feed);
-    void onGetFeedsFinished(Future<Feed *> *sender);
     void onUnreadCountChanged(int delta);
     void onArticleAdded(const ArticleRef &article);
+    void setFeedActive(FeedCore::Feed *feed, bool active);
     void syncFeedStatus(FeedCore::Feed *sender);
     void onFeedDestroyed(FeedCore::Feed *sender);
 };
