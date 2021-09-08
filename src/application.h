@@ -25,6 +25,7 @@ private:
     std::unique_ptr<PrivData> d;
 
     void activateMainWindow();
+    void unloadEngine();
     void onLastWindowClosed();
     void onActivateRequested(const QStringList &arguments, const QString &workingDirectory);
     void bindContextPropertiesToSettings();

@@ -117,7 +117,7 @@ Application::Application(int &argc, char **argv)
 #endif
     registerQmlTypes();
     setQuitOnLastWindowClosed(false);
-    QObject::connect(this, &Application::lastWindowClosed, this, &Application::onLastWindowClosed);
+    QObject::connect(this, &QGuiApplication::lastWindowClosed, this, &Application::onLastWindowClosed);
     QQmlEngine::setObjectOwnership(settings(), QQmlEngine::CppOwnership);
     enableSettingsAutosave(d->settings);
 
@@ -169,16 +169,32 @@ void Application::activateMainWindow()
     };
 }
 
+void Application::unloadEngine()
+{
+    const auto rootObjects = d->engine->rootObjects();
+    for (auto *object : rootObjects) {
+        delete object;
+    }
+    d->engine->clearComponentCache();
+    d->engine->collectGarbage();
+    d->engine = nullptr;
+}
+
 void Application::onLastWindowClosed()
 {
 #ifdef ANDROID
     quit();
 #else
-    d->engine = nullptr;
+    if (topLevelWindows().size() > 1) {
+        // we sometimes get called when dialogs are closed
+        // possibly related: https://bugreports.qt.io/browse/QTBUG-80483
+        return;
+    }
     if (!d->settings.runInBackground()) {
         quit();
         return;
     }
+    unloadEngine();
     d->notifier = std::make_unique<NotificationController>(d->context);
     QObject::connect(d->notifier.get(), &NotificationController::activate, this, &Application::loadMainWindow);
 #endif
