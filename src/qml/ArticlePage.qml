@@ -26,7 +26,7 @@ Kirigami.Page {
 
     actions {
         main: Kirigami.Action {
-            text: qsTr("Open in Browser")
+            text: qsTr("Open")
             iconName: "globe"
             onTriggered: Qt.openUrlExternally(item.article.url);
             displayHint: Kirigami.Settings.isMobile ? Kirigami.DisplayHint.IconOnly : Kirigami.DisplayHint.NoPreference
@@ -36,7 +36,7 @@ Kirigami.Page {
             Kirigami.Action {
                 text: qsTr("Share")
                 iconName: "emblem-shared-symbolic"
-                displayHint: Kirigami.Settings.isMobile ? Kirigami.DisplayHint.IconOnly : Kirigami.DisplayHint.AlwaysHide
+                displayHint: Kirigami.DisplayHint.AlwaysHide
                 onTriggered: platformHelper.share(item.article.url);
             },
 
