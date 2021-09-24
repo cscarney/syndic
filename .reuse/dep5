@@ -1,0 +1,14 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: syndic
+Upstream-Contact: Connor Carney <hello@connorcarney.com>
+Source: https://github.com/cscarney/syndic
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...
+
+Files: htmlparser/*
+Copyright: 2010 Google Inc.
+License: Apache-2.0

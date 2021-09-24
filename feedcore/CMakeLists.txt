@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 set(feedcore_HEADERS
     feed.h
     article.h

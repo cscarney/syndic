@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 set(syndic_HEADERS
     feedlistmodel.h
     articlelistmodel.h
@@ -10,6 +13,7 @@ set(syndic_HEADERS
     notificationcontroller.h
     platformhelper.h
     contentimageitem.h
+    objectcollectionmodel.h
     application.h
     networkaccessmanagerfactory.h
     )
@@ -26,6 +30,7 @@ set(syndic_SRCS
     platformhelper.cpp
     contentimageitem.cpp
     networkaccessmanagerfactory.cpp
+    objectcollectionmodel.cpp
     application.cpp
     main.cpp
     resources.qrc

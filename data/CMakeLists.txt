@@ -1,4 +1,6 @@
- 
+# SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 set(icons 
     icons/sc-apps-syndic.svg
     icons/sc-status-syndic-feed-empty.svg)
