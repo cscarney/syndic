@@ -13,7 +13,6 @@ set(syndic_HEADERS
     notificationcontroller.h
     platformhelper.h
     contentimageitem.h
-    objectcollectionmodel.h
     application.h
     networkaccessmanagerfactory.h
     )
@@ -30,7 +29,6 @@ set(syndic_SRCS
     platformhelper.cpp
     contentimageitem.cpp
     networkaccessmanagerfactory.cpp
-    objectcollectionmodel.cpp
     application.cpp
     main.cpp
     resources.qrc
