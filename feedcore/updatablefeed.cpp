@@ -37,6 +37,7 @@ public:
 private:
     Syndication::Loader *m_loader{nullptr};
     UpdatableFeed *m_updatableFeed{nullptr};
+    bool m_sourceIsFeedDiscoveryResult{false};
     void loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status);
 };
 
@@ -135,8 +136,9 @@ void UpdatableFeed::UpdaterImpl::loadingComplete(Syndication::Loader *loader, co
     }
 
     // try the discovered url
-    if (loader->discoveredFeedURL().isValid()) {
+    if ((!m_sourceIsFeedDiscoveryResult) && loader->discoveredFeedURL().isValid()) {
         qDebug() << "Discovered alternate source:" << loader->discoveredFeedURL();
+        m_sourceIsFeedDiscoveryResult = true;
         m_updatableFeed->setUrl(loader->discoveredFeedURL());
         run();
     } else {
