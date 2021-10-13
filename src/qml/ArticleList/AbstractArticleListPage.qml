@@ -5,7 +5,6 @@
 
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
-import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
 import com.rocksandpaper.syndic 1.0
 
@@ -75,12 +74,6 @@ Kirigami.ScrollablePage {
 
         onCurrentItemChanged: openChild()
     } /* articleList */
-
-    Settings {
-        id: settings
-        category: "ArticleList"
-        property alias unreadFilter: root.unreadFilter
-    }
 
     onRefreshingChanged: {
         if (refreshing && (model.status === Feed.Idle)) {

@@ -5,6 +5,7 @@
 
 import com.rocksandpaper.syndic 1.0
 import org.kde.kirigami 2.14 as Kirigami
+import Qt.labs.settings 1.1
 
 AbstractArticleListPage {
     id: root
@@ -63,5 +64,11 @@ AbstractArticleListPage {
                 }
             }
         ]
+    }
+
+    Settings {
+        id: settings
+        category: "ArticleList"
+        property alias unreadFilter: root.unreadFilter
     }
 }

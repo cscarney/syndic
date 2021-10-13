@@ -9,6 +9,7 @@ import org.kde.kirigami 2.14 as Kirigami
 AbstractArticleListPage {
     id: root
     automaticOpen: false
+    unreadFilter: false
 
     actions {
         main: Kirigami.Action {
