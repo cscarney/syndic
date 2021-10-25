@@ -19,6 +19,7 @@ Kirigami.Page {
     bottomPadding: 0
     leftPadding: 0
     rightPadding: 0
+    Kirigami.Theme.inherit: false
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Layout.fillWidth: true
     title:  item.article.title || ""
