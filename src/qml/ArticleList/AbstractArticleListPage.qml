@@ -72,6 +72,22 @@ Kirigami.ScrollablePage {
             }
         } /*  delegate */
 
+        header: Kirigami.InlineMessage {
+            id: errorMessage
+            text: qsTr("Couldn't fetch feed from source")
+            width: parent.width
+            visible: model.status === Feed.Error
+            type: Kirigami.MessageType.Error
+            actions: [
+                Kirigami.Action {
+                    text: qsTr("Retry")
+                    onTriggered: {
+                        root.model.requestUpdate();
+                    }
+                }
+            ]
+        }
+
         onCurrentItemChanged: openChild()
     } /* articleList */
 
