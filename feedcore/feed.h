@@ -15,21 +15,73 @@
 namespace FeedCore
 {
 /**
- * Abstract class for stored feeds
+ * Abstract class for stored feeds.
  */
 class Feed : public QObject
 {
     Q_OBJECT
+
+    /**
+     * The user-facing display name of the feed.
+     */
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
+
+    /**
+     * A category string used to group feeds together in the feed list.
+     */
+    Q_PROPERTY(QString category READ category WRITE setCategory NOTIFY categoryChanged);
+
+    /**
+     * The url of the feed source.
+     */
     Q_PROPERTY(QUrl url READ url WRITE setUrl NOTIFY urlChanged);
+
+    /**
+     * A link to a web page associated with this feed
+     */
     Q_PROPERTY(QUrl link READ link WRITE setLink NOTIFY linkChanged);
+
+    /**
+     * A URL pointing to an image that will be displayed as the feed's icon
+     */
     Q_PROPERTY(QUrl icon READ icon WRITE setIcon NOTIFY iconChanged);
+
+    /**
+     * The number of unread articles associated with this feed.
+     */
     Q_PROPERTY(int unreadCount READ unreadCount NOTIFY unreadCountChanged);
+
+    /**
+     * The feed's update status
+     */
     Q_PROPERTY(FeedCore::Feed::LoadStatus status READ status NOTIFY statusChanged);
+
+    /**
+     * The time of the last update
+     */
     Q_PROPERTY(QDateTime lastUpdate READ lastUpdate NOTIFY lastUpdateChanged)
+
+    /**
+     * The update scheduling mode
+     */
     Q_PROPERTY(FeedCore::Feed::UpdateMode updateMode READ updateMode WRITE setUpdateMode NOTIFY updateModeChanged)
+
+    /**
+     * How often to update the feed.
+     */
     Q_PROPERTY(int updateInterval READ updateInterval WRITE setUpdateInterval NOTIFY updateIntervalChanged)
+
+    /**
+     * The Updater instance that should be used to update this feed.
+     */
     Q_PROPERTY(FeedCore::Feed::Updater *updater READ updater CONSTANT);
+
+    /**
+     * Whether to enable feed editing in the UI.  An editable feed implementation is expected
+     * to monitor property changes and propagate them to the storage backend.
+     *
+     * The default implementation returns false; override and return true to enable editing.
+     */
     Q_PROPERTY(bool editable READ editable CONSTANT);
 
 public:
@@ -51,114 +103,6 @@ public:
     Q_ENUM(UpdateMode)
 
     ~Feed();
-    /**
-     * The user-facing display name of the feed.
-     */
-    const QString &name() const;
-
-    /**
-     * Set the name of the feed.
-     */
-    void setName(const QString &name);
-
-    /**
-     * The url of the feed source.
-     */
-    const QUrl &url() const;
-
-    /**
-     * Set the url of the feed source.
-     */
-    void setUrl(const QUrl &url);
-
-    /**
-     * A link to a web page associated with this feed
-     */
-    const QUrl &link();
-
-    /**
-     * Set the web link associated associated with this feed
-     */
-    void setLink(const QUrl &link);
-
-    /**
-     * A URL pointing to an image that will be displayed as the feed's icon
-     */
-    const QUrl &icon();
-
-    /**
-     * Set the icon URL.
-     */
-    void setIcon(const QUrl &icon);
-
-    /**
-     * The number of unread articles associated with this feed.
-     */
-    int unreadCount() const;
-
-    /**
-     * The feed's update status
-     */
-    LoadStatus status() const;
-
-    /**
-     * The time of the last update
-     */
-    const QDateTime &lastUpdate();
-
-    /**
-     * Set the timestamp of the last update.
-     */
-    void setLastUpdate(const QDateTime &lastUpdate);
-
-    /**
-     * The update scheduling mode
-     */
-    UpdateMode updateMode();
-
-    /**
-     * Set the update scheduling mode.
-     */
-    void setUpdateMode(UpdateMode updateMode);
-
-    /**
-     * How often to update the feed.
-     */
-    qint64 updateInterval();
-
-    /**
-     * Set the update interval.
-     *
-     * This value is used to determine when an update is due.
-     */
-    void setUpdateInterval(qint64 updateInterval);
-
-    /**
-     * Sets the update interval that will be used when using DefaultupdateMode
-     */
-    void setDefaultUpdateInterval(qint64 updateInterval);
-
-    /**
-     * Set the age when article are considered stale.
-     *
-     * A value of 0 disables stale item expiration.
-     * Stale items will not be removed until the next update.
-     */
-    void setExpireAge(qint64 expireAge);
-
-    qint64 expireAge();
-
-    /**
-     * Set this feed's metadata to match that of /other/
-     */
-    void updateParams(Feed *other);
-
-    /**
-     * The Updater instance that should be used to update this feed.
-     *
-     * The returned updater belongs to the Feed object.
-     */
-    virtual Updater *updater() = 0;
 
     /**
      * Returns a future representing all of the stored articles associated with this feed.
@@ -167,11 +111,28 @@ public:
      */
     virtual Future<ArticleRef> *getArticles(bool unreadFilter) = 0;
 
-    /**
-     * Returns true if the implementation supports storing and propagating
-     * changes to the feed's properties.
-     */
+    virtual Updater *updater() = 0;
+
     virtual bool editable();
+
+    /**
+     * Sets the update interval that will be used when using DefaultupdateMode
+     */
+    void setDefaultUpdateInterval(qint64 updateInterval);
+
+    /**
+     * Set this feed's metadata to match that of /other/
+     */
+    void updateParams(Feed *other);
+
+    /**
+     * Set the age when article are considered stale.
+     *
+     * A value of 0 disables stale item expiration.
+     * Stale items will not be removed until the next update.
+     */
+    void setExpireAge(qint64 expireAge);
+    qint64 expireAge();
 
     /**
      * Request that the feed be deleted from the storage backend.
@@ -182,17 +143,26 @@ public:
      */
     Q_INVOKABLE virtual void requestDelete();
 
-signals:
-    void nameChanged();
-    void urlChanged();
-    void linkChanged();
-    void iconChanged();
-    void unreadCountChanged(int delta);
-    void statusChanged();
-    void lastUpdateChanged();
-    void updateModeChanged();
-    void updateIntervalChanged();
+    const QString &name() const;
+    void setName(const QString &name);
+    QString category() const;
+    void setCategory(const QString &category);
+    const QUrl &url() const;
+    void setUrl(const QUrl &url);
+    const QUrl &link();
+    void setLink(const QUrl &link);
+    const QUrl &icon();
+    void setIcon(const QUrl &icon);
+    int unreadCount() const;
+    LoadStatus status() const;
+    const QDateTime &lastUpdate();
+    void setLastUpdate(const QDateTime &lastUpdate);
+    UpdateMode updateMode();
+    void setUpdateMode(UpdateMode updateMode);
+    qint64 updateInterval();
+    void setUpdateInterval(qint64 updateInterval);
 
+signals:
     /**
      * Emitted when old items should be removed from the storage backend
      */
@@ -218,12 +188,22 @@ signals:
      */
     void deleteRequested();
 
+    void nameChanged();
+    void categoryChanged();
+    void urlChanged();
+    void linkChanged();
+    void iconChanged();
+    void unreadCountChanged(int delta);
+    void statusChanged();
+    void lastUpdateChanged();
+    void updateModeChanged();
+    void updateIntervalChanged();
+
 protected:
     explicit Feed(QObject *parent = nullptr);
     void setUnreadCount(int unreadCount);
     void incrementUnreadCount(int delta = 1);
     void decrementUnreadCount();
-    ;
     void setStatus(LoadStatus status);
 
 private:
