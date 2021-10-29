@@ -103,9 +103,12 @@ Kirigami.ScrollablePage {
 
         RowLayout {
             Kirigami.FormData.label: qsTr("OPML Data:")
+
             Button {
                 text: qsTr("Import...");
                 onClicked: {
+                    dialogLoader.sourceComponent = dialogComponent;
+                    var opmlDialog = dialogLoader.item;
                     opmlDialog.selectExisting = true;
                     opmlDialog.acceptedFunc = function() {
                         feedContext.importOpml(opmlDialog.fileUrl);
@@ -117,6 +120,8 @@ Kirigami.ScrollablePage {
             Button {
                 text: qsTr("Export...")
                 onClicked: {
+                    dialogLoader.sourceComponent = dialogComponent;
+                    var opmlDialog = dialogLoader.item;
                     opmlDialog.selectExisting = false;
                     opmlDialog.acceptedFunc = function() {
                         feedContext.exportOpml(opmlDialog.fileUrl);
@@ -127,9 +132,18 @@ Kirigami.ScrollablePage {
         }
     }
 
-    FileDialog {
-        id: opmlDialog
-        property var acceptedFunc: function(){}
-        onAccepted: acceptedFunc();
-    }
+    resources: [
+        Loader {
+            id: dialogLoader
+        },
+
+        Component {
+            id: dialogComponent;
+
+            FileDialog {
+                property var acceptedFunc: function(){}
+                onAccepted: acceptedFunc();
+            }
+        }
+    ]
 }
