@@ -9,7 +9,7 @@
 #include "feeddatabase.h"
 #include "storage.h"
 
-namespace Sqlite
+namespace SqliteStorage
 {
 class FeedImpl;
 class ArticleImpl;

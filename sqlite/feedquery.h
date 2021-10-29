@@ -10,7 +10,7 @@
 #include <QUrl>
 #include <QVariant>
 
-namespace Sqlite
+namespace SqliteStorage
 {
 class FeedQuery : public QSqlQuery
 {

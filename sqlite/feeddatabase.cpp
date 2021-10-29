@@ -11,7 +11,7 @@
 #include <QSqlQuery>
 #include <QStandardPaths>
 
-namespace Sqlite
+namespace SqliteStorage
 {
 static const QString db_name_fmt = QStringLiteral("Sqlite_FeedDatabase_%1");
 

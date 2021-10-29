@@ -9,7 +9,7 @@
 #include "factory.h"
 class QSqlQuery;
 
-namespace Sqlite
+namespace SqliteStorage
 {
 class FeedImpl;
 class StorageImpl;

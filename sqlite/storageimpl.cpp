@@ -13,7 +13,7 @@
 #include <Syndication/Person>
 #include <utility>
 using namespace FeedCore;
-using namespace Sqlite;
+using namespace SqliteStorage;
 
 void StorageImpl::appendArticleResults(Future<ArticleRef> *op, ItemQuery &q)
 {

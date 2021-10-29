@@ -54,7 +54,7 @@ static QString filePath(QString const &fileName)
 static FeedCore::Context *createContext(QObject *parent = nullptr)
 {
     QString dbPath = filePath("feeds.db");
-    auto *fm = new Sqlite::StorageImpl(dbPath); // ownership passes to context
+    auto *fm = new SqliteStorage::StorageImpl(dbPath); // ownership passes to context
     return new FeedCore::Context(fm, parent);
 }
 

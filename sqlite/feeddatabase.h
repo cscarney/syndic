@@ -12,7 +12,7 @@
 #include <QUrl>
 #include <optional>
 
-namespace Sqlite
+namespace SqliteStorage
 {
 class FeedDatabase
 {

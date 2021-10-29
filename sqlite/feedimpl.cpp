@@ -14,7 +14,7 @@
 #include <Syndication/Image>
 
 using namespace FeedCore;
-using namespace Sqlite;
+using namespace SqliteStorage;
 
 FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage)
     : UpdatableFeed(storage)

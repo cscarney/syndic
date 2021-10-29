@@ -13,7 +13,7 @@ namespace FeedCore
 class XMLUpdater;
 }
 
-namespace Sqlite
+namespace SqliteStorage
 {
 class StorageImpl;
 class ArticleImpl;

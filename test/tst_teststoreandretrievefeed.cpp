@@ -16,7 +16,7 @@ private slots:
     void init()
     {
         QFile(testDbName).remove();
-        Sqlite::StorageImpl storage(testDbName);
+        SqliteStorage::StorageImpl storage(testDbName);
         FeedCore::ProvisionalFeed testFeed;
         testFeed.setUrl(QUrl(testUrl));
         testFeed.setName(testFeedName);
@@ -39,7 +39,7 @@ private slots:
     void testUrlFieldPreserved()
     {
         {
-            Sqlite::StorageImpl storage(testDbName);
+            SqliteStorage::StorageImpl storage(testDbName);
             auto *retrieveFuture = storage.getFeeds();
             FeedCore::Feed *feed{nullptr};
             QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture] {
@@ -53,7 +53,7 @@ private slots:
 
     void testNameFieldPreserved()
     {
-        Sqlite::StorageImpl storage(testDbName);
+        SqliteStorage::StorageImpl storage(testDbName);
         auto *retrieveFuture = storage.getFeeds();
         FeedCore::Feed *feed{nullptr};
         QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture] {
@@ -67,7 +67,7 @@ private slots:
     void testModifyName()
     {
         {
-            Sqlite::StorageImpl storage(testDbName);
+            SqliteStorage::StorageImpl storage(testDbName);
             auto *retrieveFuture = storage.getFeeds();
             FeedCore::Feed *feed{nullptr};
             QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture] {
@@ -79,7 +79,7 @@ private slots:
             QCoreApplication::processEvents();
         }
         {
-            Sqlite::StorageImpl storage(testDbName);
+            SqliteStorage::StorageImpl storage(testDbName);
             auto *retrieveFuture = storage.getFeeds();
             FeedCore::Feed *feed{nullptr};
             QObject::connect(retrieveFuture, &FeedCore::BaseFuture::finished, this, [&feed, retrieveFuture] {
