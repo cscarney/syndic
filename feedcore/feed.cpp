@@ -8,6 +8,7 @@ using namespace FeedCore;
 
 struct Feed::PrivData {
     QString name;
+    QString category;
     QUrl url;
     QUrl link;
     QUrl icon;
@@ -178,6 +179,7 @@ void Feed::updateParams(Feed *other)
         return;
     }
     setName(other->name());
+    setCategory(other->category());
     setUrl(other->url());
     setUpdateInterval(other->updateInterval());
     setUpdateMode(other->updateMode());
@@ -191,6 +193,19 @@ bool Feed::editable()
 void Feed::requestDelete()
 {
     emit deleteRequested();
+}
+
+QString Feed::category() const
+{
+    return d->category;
+}
+
+void Feed::setCategory(const QString &category)
+{
+    if (d->category != category) {
+        d->category = category;
+        emit categoryChanged();
+    }
 }
 
 struct Feed::Updater::PrivData {

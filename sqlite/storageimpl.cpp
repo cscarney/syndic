@@ -221,6 +221,9 @@ void StorageImpl::listenForChanges(FeedImpl *feed)
     QObject::connect(feed, &Feed::nameChanged, this, [this, feed] {
         m_db.updateFeedName(feed->id(), feed->name());
     });
+    QObject::connect(feed, &Feed::categoryChanged, this, [this, feed] {
+        m_db.updateFeedCategory(feed->id(), feed->category());
+    });
     QObject::connect(feed, &Feed::linkChanged, this, [this, feed] {
         m_db.updateFeedLink(feed->id(), feed->link().toString());
     });

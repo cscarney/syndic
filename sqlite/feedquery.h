@@ -19,7 +19,8 @@ public:
         : QSqlQuery(db)
     {
         prepare(
-            "SELECT Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.url, Feed.link, Feed.icon, COUNT(Item.id), updateInterval, lastUpdate "
+            "SELECT Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.category, Feed.url, Feed.link, Feed.icon, "
+            "COUNT(Item.id), updateInterval, lastUpdate "
             "FROM Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false "
             "WHERE "
             + whereClause + " GROUP BY Feed.id");
@@ -40,29 +41,33 @@ public:
     {
         return value(3).toString();
     }
-    QUrl url() const
+    QString category() const
     {
-        return value(4).toUrl();
+        return value(4).toString();
     }
-    QUrl link() const
+    QUrl url() const
     {
         return value(5).toUrl();
     }
-    QUrl icon() const
+    QUrl link() const
     {
         return value(6).toUrl();
     }
+    QUrl icon() const
+    {
+        return value(7).toUrl();
+    }
     int unreadCount() const
     {
-        return value(7).toInt();
+        return value(8).toInt();
     }
     qint64 updateInterval() const
     {
-        return value(8).toLongLong();
+        return value(9).toLongLong();
     }
     QDateTime lastUpdate() const
     {
-        return QDateTime::fromSecsSinceEpoch(value(9).toLongLong());
+        return QDateTime::fromSecsSinceEpoch(value(10).toLongLong());
     }
 };
 }

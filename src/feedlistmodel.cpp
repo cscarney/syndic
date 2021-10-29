@@ -102,7 +102,7 @@ int FeedListModel::rowCount(const QModelIndex &parent) const
 
 QVariant FeedListModel::data(const QModelIndex &index, int role) const
 {
-    if (Q_UNLIKELY(!index.isValid() || role != FeedRole)) {
+    if (Q_UNLIKELY(!index.isValid())) {
         return QVariant();
     }
 
@@ -119,12 +119,20 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
         entry = d->feeds[indexRow - SPECIAL_FEED_COUNT];
     }
 
-    return QVariant::fromValue(entry);
+    switch (role) {
+    case FeedRole:
+        return QVariant::fromValue(entry);
+
+    case CategoryRole:
+        return entry->category();
+    }
+
+    return QVariant();
 }
 
 QHash<int, QByteArray> FeedListModel::roleNames() const
 {
-    return {{FeedRole, "feed"}};
+    return {{FeedRole, "feed"}, {CategoryRole, "category"}};
 }
 
 void FeedListModel::classBegin()
@@ -138,7 +146,7 @@ void FeedListModel::componentComplete()
 
 static bool compareFeedNames(Feed *left, Feed *right)
 {
-    return left->name() < right->name();
+    return std::pair(left->category(), left->name()) < std::pair(right->category(), right->name());
 }
 
 void FeedListModel::loadFeeds()

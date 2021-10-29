@@ -62,6 +62,7 @@ static void initDatabase(QSqlDatabase &db)
                         "source INTEGER REFERENCES FeedSource,"
                         "localId TEXT NOT NULL,"
                         "displayName TEXT,"
+                        "category TEXT,"
                         "url TEXT NOT NULL,"
                         "link TEXT,"
                         "icon TEXT,"
@@ -372,6 +373,20 @@ void FeedDatabase::updateFeedName(qint64 feedId, const QString &newName)
         "displayName=:displayName "
         "WHERE id=:id");
     q.bindValue(":displayName", newName);
+    q.bindValue(":id", feedId);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in updateFeedName: " << q.lastError().text();
+    }
+}
+
+void FeedDatabase::updateFeedCategory(qint64 feedId, const QString &category)
+{
+    QSqlQuery q(db());
+    q.prepare(
+        "UPDATE Feed SET "
+        "category=:category "
+        "WHERE id=:id");
+    q.bindValue(":category", category);
     q.bindValue(":id", feedId);
     if (!q.exec()) {
         qWarning() << "SQL Error in updateFeedName: " << q.lastError().text();

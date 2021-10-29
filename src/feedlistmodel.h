@@ -26,7 +26,7 @@ class FeedListModel : public QAbstractListModel, public QQmlParserStatus
     Q_PROPERTY(FeedCore::Context *context READ context WRITE setContext NOTIFY contextChanged);
 
 public:
-    enum Roles { FeedRole = Qt::UserRole };
+    enum Roles { FeedRole = Qt::UserRole, CategoryRole };
     Q_ENUM(Roles);
     explicit FeedListModel(QObject *parent = nullptr);
     ~FeedListModel();

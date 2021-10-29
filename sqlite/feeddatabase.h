@@ -48,6 +48,7 @@ public:
     std::optional<qint64> selectFeedId(qint64 source, const QString &localId);
     std::optional<qint64> insertFeed(const QUrl &url);
     void updateFeedName(qint64 feedId, const QString &name);
+    void updateFeedCategory(qint64 feedId, const QString &category);
     void updateFeedLink(qint64 feedId, const QString &link);
     void updateFeedIcon(qint64 feedId, const QString &icon);
     void updateFeedUpdateInterval(qint64 feedId, qint64 updateInterval);

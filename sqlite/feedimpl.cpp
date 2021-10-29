@@ -38,12 +38,12 @@ void FeedImpl::unpackUpdateInterval(qint64 updateInterval)
 
 void FeedImpl::updateFromQuery(const FeedQuery &query)
 {
-    Feed::setName(query.displayName());
-    Feed::setUrl(query.url());
-    Feed::setLink(query.link());
-    Feed::setIcon(query.icon());
-    Feed::setUnreadCount(query.unreadCount());
-
+    setName(query.displayName());
+    setCategory(query.category());
+    setUrl(query.url());
+    setLink(query.link());
+    setIcon(query.icon());
+    setUnreadCount(query.unreadCount());
     setLastUpdate(query.lastUpdate());
     unpackUpdateInterval(query.updateInterval());
 }
