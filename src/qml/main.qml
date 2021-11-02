@@ -171,6 +171,10 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    Component.onCompleted: {
+        pushFeed(feedList.currentlySelectedFeed)
+    }
+
     function pushFeed(feed) {
         pageStack.clear()
         pageStack.push("qrc:/qml/ArticleList/ArticleListPage.qml",
