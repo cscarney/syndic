@@ -91,7 +91,7 @@ QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const
     auto *response = new IconImageResponse;
     auto *nam = m_nam.get();
     QTimer::singleShot(0, nam, [nam, id, response] {
-        QNetworkRequest req(id.mid(1));
+        QNetworkRequest req(id);
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
         QNetworkReply *reply = nam->get(req);
         QObject::connect(reply, &QNetworkReply::finished, response, &IconImageResponse::onNetworkReplyFinished);
