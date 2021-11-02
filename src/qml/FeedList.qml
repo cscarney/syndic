@@ -95,9 +95,6 @@ ScrollView {
         section.property: "category"
         section.delegate: Kirigami.ListSectionHeader {
             label: section
-            Component.onCompleted: {
-                console.log("created section header");
-            }
         }
 
         onCurrentItemChanged: {
