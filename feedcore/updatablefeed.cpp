@@ -65,7 +65,8 @@ void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
         expireTime = updater()->updateStartTime().toTime_t() - expireAge();
     }
     for (const auto &item : items) {
-        if (item->dateUpdated() >= expireTime) {
+        const auto &dateUpdated = item->dateUpdated();
+        if (dateUpdated == 0 || dateUpdated >= expireTime) {
             updateSourceArticle(item);
         }
     }

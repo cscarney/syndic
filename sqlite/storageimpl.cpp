@@ -96,14 +96,17 @@ Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication:
         const auto &itemId = m_db.selectItemId(feedId, item->id());
         const auto &authors = item->authors();
         const auto &authorName = authors.empty() ? "" : authors[0]->name();
-        const auto &date = QDateTime::fromTime_t(item->dateUpdated());
+        time_t date = item->dateUpdated();
         auto content = item->content();
         if (content.isEmpty()) {
             content = item->description();
         }
 
         if (itemId) {
-            m_db.updateItemHeaders(*itemId, item->title(), date, authorName, item->link());
+            m_db.updateItemHeaders(*itemId, item->title(), authorName, item->link());
+            if (date > 0) {
+                m_db.updateItemDate(*itemId, date);
+            }
             if (!content.isEmpty()) {
                 m_db.updateItemContent(*itemId, content);
             }
@@ -115,6 +118,9 @@ Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication:
             return;
         }
 
+        if (date == 0) {
+            date = QDateTime::currentSecsSinceEpoch();
+        }
         const auto &newId = m_db.insertItem(feedId, item->id(), item->title(), authorName, date, item->link(), content);
         if (!newId) {
             op->setResult();

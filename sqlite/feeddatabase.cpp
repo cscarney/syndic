@@ -201,7 +201,7 @@ std::optional<qint64> FeedDatabase::insertItem(qint64 feedId,
                                                const QString &localId,
                                                const QString &title,
                                                const QString &author,
-                                               const QDateTime &date,
+                                               time_t date,
                                                const QUrl &url,
                                                const QString &content)
 {
@@ -213,7 +213,7 @@ std::optional<qint64> FeedDatabase::insertItem(qint64 feedId,
     q.bindValue(":localId", localId);
     q.bindValue(":headline", title);
     q.bindValue(":author", author);
-    q.bindValue(":date", date.toSecsSinceEpoch());
+    q.bindValue(":date", qint64(date));
     q.bindValue(":url", url.toString());
     q.bindValue(":feedContent", content);
     q.bindValue(":isRead", false);
@@ -225,23 +225,35 @@ std::optional<qint64> FeedDatabase::insertItem(qint64 feedId,
     return q.lastInsertId().toLongLong();
 }
 
-void FeedDatabase::updateItemHeaders(qint64 id, const QString &title, const QDateTime &date, const QString &author, const QUrl &url)
+void FeedDatabase::updateItemHeaders(qint64 id, const QString &title, const QString &author, const QUrl &url)
 {
     QSqlQuery q(db());
     q.prepare(
         "UPDATE Item SET "
         "headline=:headline,"
         "author=:author,"
-        "date=:date,"
         "url=:url "
         "WHERE id=:id;");
     q.bindValue(":headline", title);
     q.bindValue(":author", author);
-    q.bindValue(":date", date.toSecsSinceEpoch());
     q.bindValue(":url", url.toString());
     q.bindValue(":id", id);
     if (!q.exec()) {
         qWarning() << "SQL Error in updateItemHeaders: " + q.lastError().text();
+    }
+}
+
+void FeedDatabase::updateItemDate(qint64 id, time_t date)
+{
+    QSqlQuery q(db());
+    q.prepare(
+        "UPDATE Item SET "
+        "date=:date "
+        "WHERE id=:id;");
+    q.bindValue(":date", qint64(date));
+    q.bindValue(":id", id);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in updateItemDate: " + q.lastError().text();
     }
 }
 

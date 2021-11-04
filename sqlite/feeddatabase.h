@@ -29,14 +29,10 @@ public:
     ItemQuery selectItem(qint64 id);
     ItemQuery selectItem(qint64 feed, const QString &localId);
     std::optional<qint64> selectItemId(qint64 feedId, const QString &localId);
-    std::optional<qint64> insertItem(qint64 feedId,
-                                     const QString &localId,
-                                     const QString &title,
-                                     const QString &author,
-                                     const QDateTime &date,
-                                     const QUrl &url,
-                                     const QString &content);
-    void updateItemHeaders(qint64 id, const QString &title, const QDateTime &date, const QString &author, const QUrl &url);
+    std::optional<qint64>
+    insertItem(qint64 feedId, const QString &localId, const QString &title, const QString &author, time_t date, const QUrl &url, const QString &content);
+    void updateItemHeaders(qint64 id, const QString &title, const QString &author, const QUrl &url);
+    void updateItemDate(qint64 id, time_t date);
     void updateItemContent(qint64 id, const QString &content);
     void updateItemRead(qint64 id, bool isRead);
     void updateItemStarred(qint64 id, bool isStarred);
