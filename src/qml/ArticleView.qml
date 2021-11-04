@@ -115,8 +115,12 @@ ColumnLayout {
             Layout.preferredWidth: implicitWidth * scaleToFit
             Layout.preferredHeight: implicitHeight * scaleToFit
             Layout.alignment: Qt.AlignHCenter
+            ToolTip.text: modelBlock.title || ""
+            ToolTip.visible: (ToolTip.text != "") && (imageMouse.containsMouse || imageMouse.pressed)
+            ToolTip.delay: Kirigami.Units.toolTipDelay
 
             MouseArea {
+                id: imageMouse
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: href ? Qt.PointingHandCursor : Qt.ArrowCursor

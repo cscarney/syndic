@@ -170,6 +170,8 @@ void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
 {
     assert(node->type == GUMBO_NODE_ELEMENT);
     GumboElement &element = node->v.element;
+
+    // TODO maybe scan the attribute list once instead of searching for each attr separately?
     GumboAttribute *srcAttr = gumbo_get_attribute(&element.attributes, "src");
     if (srcAttr == nullptr) {
         return;
@@ -183,10 +185,15 @@ void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
             return;
         }
     }
+
     closeTextBlock(node->parent);
     auto *image = new ImageBlock(srcAttr->value, m_blockParent);
     if (!m_anchors.isEmpty()) {
         image->m_href = m_anchors.last();
+    }
+    GumboAttribute *titleAttr = gumbo_get_attribute(&element.attributes, "title");
+    if (titleAttr != nullptr) {
+        image->m_title = titleAttr->value;
     }
     m_blocks.push_back(image);
 }

@@ -76,6 +76,7 @@ private:
 class ImageBlock : public ContentBlock
 {
     Q_OBJECT
+    Q_PROPERTY(QString title MEMBER m_title CONSTANT)
 public:
     ImageBlock(QString src, QObject *parent = nullptr);
     const QString &delegateName() const override;
@@ -85,6 +86,7 @@ public:
 private:
     QString m_src;
     QString m_href;
+    QString m_title;
     friend HtmlSplitter;
 };
 
