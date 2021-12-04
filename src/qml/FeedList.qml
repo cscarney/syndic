@@ -95,6 +95,8 @@ ScrollView {
         section.property: "category"
         section.delegate: Kirigami.ListSectionHeader {
             label: section
+            topPadding: padding * 2
+            bottomPadding: padding * 2
         }
 
         onCurrentItemChanged: {
