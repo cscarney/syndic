@@ -50,6 +50,14 @@ Kirigami.ScrollablePage {
                 onTextEdited: provisionalFeed.name = text
             }
 
+            ComboBox {
+                id: categoryField
+                Kirigami.FormData.label: qsTr("Category:")
+                editable: true
+                editText: provisionalFeed.category
+                onEditTextChanged: provisionalFeed.category = editText
+            }
+
             RadioButton {
                 id: updateIntervalGlobal
                 ButtonGroup.group: updateIntervalGroup
