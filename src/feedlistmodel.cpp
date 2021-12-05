@@ -62,6 +62,8 @@ void FeedListModel::PrivData::addItem(FeedCore::Feed *feed, int index)
     QObject::connect(feed, &QObject::destroyed, parent, [this, feed] {
         removeItem(feed);
     });
+    QObject::connect(feed, &FeedCore::Feed::categoryChanged, parent, &FeedListModel::onFeedSortValueChanged);
+    QObject::connect(feed, &FeedCore::Feed::nameChanged, parent, &FeedListModel::onFeedSortValueChanged);
 }
 
 void FeedListModel::PrivData::removeItem(FeedCore::Feed *feed)
@@ -144,7 +146,7 @@ void FeedListModel::componentComplete()
     QTimer::singleShot(0, this, &FeedListModel::loadFeeds);
 }
 
-static bool compareFeedNames(Feed *left, Feed *right)
+static bool compareFeedNames(const Feed *left, const Feed *right)
 {
     return std::pair(left->category(), left->name()) < std::pair(right->category(), right->name());
 }
@@ -169,4 +171,40 @@ void FeedListModel::onFeedAdded(FeedCore::Feed *feed)
     beginInsertRows(QModelIndex(), row, row);
     d->addItem(feed, index);
     endInsertRows();
+}
+
+void FeedListModel::onFeedSortValueChanged()
+{
+    auto *feed = qobject_cast<FeedCore::Feed *>(QObject::sender());
+    const QVector<Feed *>::iterator it = std::find(d->feeds.begin(), d->feeds.end(), feed);
+    if (it == d->feeds.end()) {
+        // feed not found
+        return;
+    }
+
+    const QVector<Feed *>::iterator next_it = it + 1;
+    if (next_it != d->feeds.end() && compareFeedNames(*next_it, feed)) {
+        // move toward end
+        const QVector<Feed *>::iterator newLocation = std::lower_bound(next_it, d->feeds.end(), feed, compareFeedNames);
+        int oldRow = int(it - d->feeds.begin()) + SPECIAL_FEED_COUNT;
+        int newRow = int(newLocation - d->feeds.begin()) + SPECIAL_FEED_COUNT;
+        beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
+        std::rotate(it, it + 1, newLocation);
+        endMoveRows();
+        return;
+    }
+
+    const QVector<Feed *>::iterator prev_it = it - 1;
+    if (it != d->feeds.begin() && compareFeedNames(feed, *prev_it)) {
+        // move toward beginning
+        const QVector<Feed *>::iterator newLocation = std::lower_bound(d->feeds.begin(), it, feed, compareFeedNames);
+        int oldRow = int(it - d->feeds.begin()) + SPECIAL_FEED_COUNT;
+        int newRow = int(newLocation - d->feeds.begin()) + SPECIAL_FEED_COUNT;
+        beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
+        std::rotate(newLocation, it, it + 1);
+        endMoveRows();
+        return;
+    }
+
+    // no change in position
 }

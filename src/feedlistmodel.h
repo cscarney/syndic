@@ -45,5 +45,6 @@ private:
     std::unique_ptr<PrivData> d;
     void loadFeeds();
     void onFeedAdded(FeedCore::Feed *feed);
+    void onFeedSortValueChanged();
 };
 #endif // FEEDLISTMODEL_H
