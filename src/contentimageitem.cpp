@@ -32,6 +32,7 @@ QSGNode *ContentImageItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePain
     if (imageNode == nullptr) {
         imageNode = window()->createImageNode();
         auto *texture = window()->createTextureFromImage(m_image);
+        imageNode->setFiltering(QSGTexture::Linear);
         imageNode->setOwnsTexture(true);
         imageNode->setTexture(texture);
     }
