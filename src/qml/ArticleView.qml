@@ -151,6 +151,9 @@ ColumnLayout {
             selectionColor: Kirigami.Theme.highlightColor
             baseUrl: root.item.article.url
 
+            // native rendering is glitchy with selection highlight
+            renderType: Text.QtRendering
+
             onLinkActivated: function(link){
                 Qt.openUrlExternally(root.item.article.resolvedLink(link))
             }
