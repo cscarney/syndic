@@ -14,9 +14,8 @@ namespace FeedCore
 /**
  * A minimal implementation of Feed, used for configuring and previewing feeds before commiting them to storage.
  *
- * This implementation provides preview content backed directly by the downloaded KSyndication class.
+ * This implementation provides preview content backed directly by a Syndication::Feed instance.
  * Preview content is not downloaded automatically; call updater()->start() to fetch it from the remote source.
- * Once the update is complete it can be treated like any other feed.
  *
  * The preview implementation does not do any state tracking -- marking a preview article as read, etc. is a no-op
  * and every update obliterates all previous content.
