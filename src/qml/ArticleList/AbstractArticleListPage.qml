@@ -88,7 +88,15 @@ Kirigami.ScrollablePage {
             ]
         }
 
-        onCurrentItemChanged: openChild()
+        onCurrentItemChanged: openChild();
+
+        function pageDownIfNecessary() {
+            if (!currentItem) return;
+            var pos = currentItem.y + currentItem.height - contentY;
+            if ( pos >= height) {
+                positionViewAtIndex(currentIndex - 1, ListView.Beginning);
+            }
+        }
     } /* articleList */
 
     onRefreshingChanged: {
@@ -137,6 +145,9 @@ Kirigami.ScrollablePage {
         }
     }
 
-    function nextItem () { articleList.currentIndex++ }
+    function nextItem () {
+        articleList.currentIndex++;
+        articleList.pageDownIfNecessary();
+    }
     function previousItem () { articleList.currentIndex-- }
 }
