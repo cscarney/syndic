@@ -86,6 +86,15 @@ void Context::addFeed(Feed *feed)
     });
 }
 
+QStringList Context::getCategories()
+{
+    QMap<QString, std::nullptr_t> categories;
+    for (auto *feed : qAsConst(d->feeds)) {
+        categories.insert(feed->category(), nullptr);
+    }
+    return categories.keys();
+}
+
 Future<ArticleRef> *Context::getArticles(bool unreadFilter)
 {
     if (unreadFilter) {

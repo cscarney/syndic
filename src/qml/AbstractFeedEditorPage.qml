@@ -53,9 +53,14 @@ Kirigami.ScrollablePage {
             ComboBox {
                 id: categoryField
                 Kirigami.FormData.label: qsTr("Category:")
+                model: feedContext.getCategories()
                 editable: true
-                editText: provisionalFeed.category
-                onEditTextChanged: provisionalFeed.category = editText
+                onEditTextChanged: {
+                    provisionalFeed.category = editText
+                }
+                Component.onCompleted: {
+                    currentIndex = indexOfValue(provisionalFeed.category);
+                }
             }
 
             RadioButton {

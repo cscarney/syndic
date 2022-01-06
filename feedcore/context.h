@@ -79,6 +79,14 @@ public:
     Q_INVOKABLE void addFeed(FeedCore::Feed *feed);
 
     /**
+     * Get a list of category strings
+     *
+     * Returns an alphabetized list containing every category name that is assigned
+     * to at least one feed.
+     */
+    Q_INVOKABLE QStringList getCategories();
+
+    /**
      * List articles stored in this context.
      *
      * This returns articles from all feeds; to get articles from a single feed use Feed::getArticles.
