@@ -174,12 +174,31 @@ static QString urlToPath(const QUrl &url)
     return path;
 }
 
+static void writeOpmlFeed(QXmlStreamWriter &xml, Feed *feed)
+{
+    xml.writeEmptyElement("outline");
+    xml.writeAttribute("type", "rss");
+    xml.writeAttribute("text", feed->name());
+    xml.writeAttribute("xmlUrl", feed->url().toString());
+}
+
 void Context::exportOpml(const QUrl &url) const
 {
     QFile file(urlToPath(url));
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         return;
     }
+    QVector<Feed *> uncategorizedFeeds;
+    QMap<QString, QVector<Feed *>> categories;
+    for (Feed *feed : qAsConst(d->feeds)) {
+        QString category = feed->category();
+        if (category.isEmpty()) {
+            uncategorizedFeeds.append(feed);
+        } else {
+            categories[category].append(feed);
+        }
+    }
+
     QXmlStreamWriter xml(&file);
     xml.writeStartDocument();
     xml.writeStartElement("opml");
@@ -187,11 +206,16 @@ void Context::exportOpml(const QUrl &url) const
     xml.writeStartElement("head");
     xml.writeEndElement();
     xml.writeStartElement("body");
-    for (auto *feed : qAsConst(d->feeds)) {
-        xml.writeEmptyElement("outline");
-        xml.writeAttribute("type", "rss");
-        xml.writeAttribute("text", feed->name());
-        xml.writeAttribute("xmlUrl", feed->url().toString());
+    for (Feed *feed : qAsConst(uncategorizedFeeds)) {
+        writeOpmlFeed(xml, feed);
+    }
+    for (auto i = categories.constBegin(); i != categories.constEnd(); ++i) {
+        xml.writeStartElement("outline");
+        xml.writeAttribute("text", i.key());
+        for (Feed *feed : i.value()) {
+            writeOpmlFeed(xml, feed);
+        }
+        xml.writeEndElement();
     }
     xml.writeEndElement();
     xml.writeEndElement();
