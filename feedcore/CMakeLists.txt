@@ -15,6 +15,7 @@ set(feedcore_HEADERS
     networkaccessmanager.h
     starreditemsfeed.h
     updatablefeed.h
+    opmlreader.h
     )
     
 set(feedcore_SRCS
@@ -28,6 +29,7 @@ set(feedcore_SRCS
     networkaccessmanager.cpp
     starreditemsfeed.cpp
     updatablefeed.cpp
+    opmlreader.cpp
     )
     
 add_library(feedcore STATIC ${feedcore_SRCS})

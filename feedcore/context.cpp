@@ -5,6 +5,7 @@
 #include "context.h"
 #include "feed.h"
 #include "future.h"
+#include "opmlreader.h"
 #include "provisionalfeed.h"
 #include "scheduler.h"
 #include "storage.h"
@@ -12,8 +13,6 @@
 #include <QFile>
 #include <QNetworkConfigurationManager>
 #include <QSet>
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
 
 namespace FeedCore
 {
@@ -206,26 +205,15 @@ void Context::importOpml(const QUrl &url)
         qDebug() << "failed to open file" << url;
         return;
     }
-    QXmlStreamReader xml(&file);
-    while (!xml.atEnd()) {
-        xml.readNext();
-        if (xml.isStartElement() && xml.name() == "outline") {
-            QXmlStreamAttributes attrs{xml.attributes()};
-            if (!attrs.hasAttribute("xmlUrl")) {
-                continue;
-            }
-            QUrl xmlUrl(attrs.value("xmlUrl").toString());
-            if (!xmlUrl.isValid()) {
-                continue;
-            }
-            ProvisionalFeed feed;
-            feed.setUrl(xmlUrl);
-            if (attrs.hasAttribute("text")) {
-                feed.setName(attrs.value("text").toString());
-            }
-            addFeed(&feed);
-        }
-    }
+    OpmlReader opml(&file);
+    QObject::connect(&opml, &OpmlReader::foundFeed, this, [this](const QUrl &url, const QString &name, const QString &category) {
+        ProvisionalFeed feed;
+        feed.setUrl(url);
+        feed.setName(name);
+        feed.setCategory(category);
+        addFeed(&feed);
+    });
+    opml.readAll();
     file.close();
 }
 

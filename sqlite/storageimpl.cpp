@@ -181,8 +181,9 @@ Future<Feed *> *StorageImpl::storeFeed(Feed *feed)
 {
     const QUrl &url = feed->url();
     const QString &name = feed->name();
+    const QString &category = feed->category();
     const qint64 updateInterval = packFeedUpdateInterval(feed);
-    return Future<Feed *>::yield(this, [this, url, name, updateInterval](auto *op) {
+    return Future<Feed *>::yield(this, [this, url, name, category, updateInterval](auto *op) {
         const auto &insertId = m_db.insertFeed(url);
         if (!insertId) {
             op->setResult();
@@ -190,6 +191,7 @@ Future<Feed *> *StorageImpl::storeFeed(Feed *feed)
         }
         m_db.updateFeedUpdateInterval(*insertId, updateInterval);
         m_db.updateFeedName(*insertId, name);
+        m_db.updateFeedCategory(*insertId, category);
         FeedQuery result{m_db.selectFeed(*insertId)};
         appendFeedResults(op, result);
     });
