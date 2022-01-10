@@ -81,7 +81,7 @@ void Context::addFeed(Feed *feed)
 {
     Future<Feed *> *q{d->storage->storeFeed(feed)};
     QObject::connect(q, &BaseFuture::finished, this, [this, q] {
-        populateFeeds(q->result());
+        registerFeeds(q->result());
     });
 }
 
@@ -264,17 +264,25 @@ void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
 
 void Context::populateFeeds(const QVector<Feed *> &feeds)
 {
+    registerFeeds(feeds);
+    emit feedListPopulated();
+}
+
+void Context::registerFeeds(const QVector<Feed *> &feeds)
+{
     const QDateTime timestamp = QDateTime::currentDateTime();
     for (const auto &feed : feeds) {
         d->feeds.insert(feed);
         feed->setExpireAge(d->expireAge);
         d->configureUpdates(feed, timestamp);
+        QObject::connect(feed, &QObject::destroyed, this, [this, feed] {
+            d->feeds.remove(feed);
+        });
         QObject::connect(feed, &Feed::updateModeChanged, this, [this, feed] {
             d->configureUpdates(feed);
         });
         emit feedAdded(feed);
     }
-    emit feedListPopulated();
 }
 
 }

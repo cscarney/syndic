@@ -165,6 +165,7 @@ private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
     void populateFeeds(const QVector<Feed *> &feeds);
+    void registerFeeds(const QVector<Feed *> &feeds);
 };
 }
 #endif // FEEDCORE_CONTEXT_H
