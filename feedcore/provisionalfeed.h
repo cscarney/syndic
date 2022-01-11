@@ -34,7 +34,7 @@ class ProvisionalFeed : public UpdatableFeed
      *
      * This property is null by default.
      */
-    Q_PROPERTY(Feed *targetFeed MEMBER m_targetFeed NOTIFY targetFeedChanged)
+    Q_PROPERTY(Feed *targetFeed READ targetFeed WRITE setTargetFeed NOTIFY targetFeedChanged)
 public:
     explicit ProvisionalFeed(QObject *parent = nullptr);
 
@@ -46,6 +46,9 @@ public:
     Future<ArticleRef> *getArticles(bool unreadFilter) final;
     void updateFromSource(const Syndication::FeedPtr &feed) final;
     void updateSourceArticle(const Syndication::ItemPtr &) final{};
+
+    Feed *targetFeed() const;
+    void setTargetFeed(Feed *targetFeed);
 
 signals:
     void targetFeedChanged();

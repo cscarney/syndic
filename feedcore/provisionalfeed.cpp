@@ -63,6 +63,20 @@ void ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed)
     emit reset();
 }
 
+Feed *ProvisionalFeed::targetFeed() const
+{
+    return m_targetFeed;
+}
+
+void ProvisionalFeed::setTargetFeed(Feed *targetFeed)
+{
+    if (m_targetFeed == targetFeed) {
+        return;
+    }
+    m_targetFeed = targetFeed;
+    emit targetFeedChanged();
+}
+
 void ProvisionalFeed::save()
 {
     if (m_targetFeed == nullptr) {
