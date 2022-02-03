@@ -99,6 +99,14 @@ ScrollView {
             bottomPadding: padding * 2
         }
 
+        move: Transition {
+            NumberAnimation { properties: "x, y"; duration: Kirigami.Units.shortDuration }
+        }
+
+        displaced: Transition {
+            NumberAnimation { properties: "x, y"; duration: Kirigami.Units.shortDuration }
+        }
+
         onCurrentItemChanged: {
             if (currentItem)
                 root.currentlySelectedFeed = currentItem.feed;
