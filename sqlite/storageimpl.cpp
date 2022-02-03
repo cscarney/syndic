@@ -131,6 +131,14 @@ Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication:
     });
 }
 
+FeedCore::Future<QString> *StorageImpl::getContent(ArticleImpl *article)
+{
+    qint64 id = article->id();
+    return Future<QString>::yield(this, [this, id](auto *op) {
+        op->appendResult(m_db.selectItemContent(id));
+    });
+}
+
 void StorageImpl::onArticleReadChanged(ArticleImpl *article)
 {
     const qint64 itemId{article->id()};

@@ -179,6 +179,21 @@ ItemQuery FeedDatabase::selectItem(qint64 feed, const QString &localId)
     return q;
 }
 
+QString FeedDatabase::selectItemContent(qint64 id)
+{
+    QSqlQuery q(db());
+    q.prepare("SELECT feedContent FROM Item WHERE id=:id LIMIT 1");
+    q.bindValue(":id", id);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in selectItemContent: " << q.lastError().text();
+        return QString();
+    }
+    if (!q.next()) {
+        return QString();
+    }
+    return q.value(0).toString();
+}
+
 std::optional<qint64> FeedDatabase::selectItemId(qint64 feedId, const QString &localId)
 {
     QSqlQuery q(db());

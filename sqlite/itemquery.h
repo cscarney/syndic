@@ -19,7 +19,7 @@ public:
         : QSqlQuery(db)
     {
         prepare(
-            "SELECT id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred "
+            "SELECT id, feed, localId, headline, author, date, url, isRead, isStarred "
             "FROM Item WHERE "
             + whereClause);
     }
@@ -52,17 +52,13 @@ public:
     {
         return value(6).toUrl();
     }
-    QString content() const
-    {
-        return value(7).toString();
-    }
     bool isRead() const
     {
-        return value(8).toBool();
+        return value(7).toBool();
     }
     bool isStarred() const
     {
-        return value(9).toBool();
+        return value(8).toBool();
     }
 };
 }

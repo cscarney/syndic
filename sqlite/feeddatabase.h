@@ -28,6 +28,7 @@ public:
     ItemQuery selectUnreadItemsByFeed(qint64 feedId);
     ItemQuery selectItem(qint64 id);
     ItemQuery selectItem(qint64 feed, const QString &localId);
+    QString selectItemContent(qint64 id);
     std::optional<qint64> selectItemId(qint64 feedId, const QString &localId);
     std::optional<qint64>
     insertItem(qint64 feedId, const QString &localId, const QString &title, const QString &author, time_t date, const QUrl &url, const QString &content);

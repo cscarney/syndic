@@ -23,6 +23,7 @@ public:
     FeedCore::Future<FeedCore::ArticleRef> *getByFeed(FeedImpl *feedId);
     FeedCore::Future<FeedCore::ArticleRef> *getUnreadByFeed(FeedImpl *feedId);
     FeedCore::Future<FeedCore::ArticleRef> *storeArticle(FeedImpl *feed, const Syndication::ItemPtr &item);
+    FeedCore::Future<QString> *getContent(ArticleImpl *article);
     void onArticleReadChanged(ArticleImpl *article);
     void onArticleStarredChanged(ArticleImpl *article);
 

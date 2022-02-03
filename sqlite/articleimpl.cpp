@@ -15,6 +15,7 @@ using namespace SqliteStorage;
 ArticleImpl::ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const ItemQuery &q)
     : Article(feed, nullptr)
     , m_id{id}
+    , m_storage(storage)
 {
     updateFromQuery(q);
     QObject::connect(this, &Article::readStatusChanged, storage, [this, storage] {
@@ -39,12 +40,17 @@ void ArticleImpl::updateFromQuery(const ItemQuery &q)
     Article::setAuthor(q.author());
     Article::setDate(q.date());
     Article::setUrl(q.url());
-    m_content = q.content();
     Article::setRead(q.isRead());
     Article::setStarred(q.isStarred());
 }
 
 void ArticleImpl::requestContent()
 {
-    emit gotContent(m_content);
+    if (m_storage.isNull()) {
+        return;
+    }
+    Future<QString> *fut = m_storage->getContent(this);
+    QObject::connect(fut, &BaseFuture::finished, this, [this, fut] {
+        emit gotContent(fut->result().first());
+    });
 }
