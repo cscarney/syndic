@@ -148,7 +148,8 @@ void FeedListModel::componentComplete()
 
 static bool compareFeedNames(const Feed *left, const Feed *right)
 {
-    return std::pair(left->category(), left->name()) < std::pair(right->category(), right->name());
+    int catComp = left->category().localeAwareCompare(right->category());
+    return catComp < 0 || (catComp == 0 && left->name().localeAwareCompare(right->name()) < 0);
 }
 
 void FeedListModel::loadFeeds()
