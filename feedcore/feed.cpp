@@ -13,6 +13,7 @@ struct Feed::PrivData {
     QUrl link;
     QUrl icon;
     int unreadCount{0};
+    int pendingUnreadCountChange{0};
     LoadStatus status{LoadStatus::Idle};
     UpdateMode updateMode{DefaultUpdateMode};
     time_t updateInterval{0};
@@ -60,8 +61,16 @@ void Feed::setUnreadCount(int unreadCount)
 
 void Feed::incrementUnreadCount(int delta)
 {
-    d->unreadCount += delta;
-    emit unreadCountChanged(delta);
+    if (d->pendingUnreadCountChange == 0) {
+        QTimer::singleShot(0, this, [this] {
+            if (d->pendingUnreadCountChange != 0) {
+                d->unreadCount += d->pendingUnreadCountChange;
+                emit unreadCountChanged(d->pendingUnreadCountChange);
+                d->pendingUnreadCountChange = 0;
+            }
+        });
+    }
+    d->pendingUnreadCountChange += delta;
 }
 
 void Feed::decrementUnreadCount()
