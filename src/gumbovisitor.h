@@ -5,7 +5,7 @@
 
 #ifndef GUMBOVISITOR_H
 #define GUMBOVISITOR_H
-#include "htmlparser/gumbo.h"
+#include "gumbo/gumbo.h"
 #include <QString>
 
 /**

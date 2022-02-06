@@ -39,9 +39,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -Wno-error=dep
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 configure_file(cmake-config.h.template ${CMAKE_CURRENT_BINARY_DIR}/cmake-config.h)
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} feedcore src)
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} 3rdparty feedcore src)
 
-add_subdirectory(htmlparser)
+add_subdirectory(3rdparty/gumbo)
 add_subdirectory(data)
 add_subdirectory(feedcore)
 add_subdirectory(sqlite)
