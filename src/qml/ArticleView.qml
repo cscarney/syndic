@@ -6,7 +6,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
 import com.rocksandpaper.syndic 1.0
 
@@ -24,12 +23,6 @@ ColumnLayout {
         padding-bottom: 12px;
     }
     </style>"
-
-    Settings {
-        id: articleViewSettings
-        category: "ArticlePage"
-        property real fontSize
-    }
 
     Kirigami.Heading {
         property string linkText: item.article.url
@@ -139,7 +132,7 @@ ColumnLayout {
             Layout.topMargin: 20
             textFormat: Text.RichText
             text: textStyle + modelBlock.text
-            font.pointSize: articleViewSettings.fontSize
+            font.pointSize: Math.max(fontMetrics.font.pointSize + globalSettings.textAdjust, 6)
             font.family: "serif"
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignTop
@@ -169,12 +162,16 @@ ColumnLayout {
                 acceptedButtons: Qt.NoButton
                 onWheel: {
                         if (wheel.modifiers & Qt.ControlModifier) {
-                            articleViewSettings.fontSize += Math.sign(wheel.angleDelta.y)
+                            globalSettings.textAdjust += Math.sign(wheel.angleDelta.y);
                         } else {
                             wheel.accepted = false
                         }
                 }
             }
         }
+    }
+
+    FontMetrics{
+        id: fontMetrics
     }
 }
