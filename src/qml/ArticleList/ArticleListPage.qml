@@ -5,10 +5,10 @@
 
 import com.rocksandpaper.syndic 1.0
 import org.kde.kirigami 2.14 as Kirigami
-import Qt.labs.settings 1.1
 
 AbstractArticleListPage {
     id: root
+    unreadFilter: globalSettings.unreadFilter
 
     actions {
         main: Kirigami.Action {
@@ -38,9 +38,9 @@ AbstractArticleListPage {
                  text: qsTr("Hide Read")
                  iconName: "view-filter"
                  checkable: true
-                 checked: root.unreadFilter
+                 checked: globalSettings.unreadFilter
                  displayHint: Kirigami.DisplayHint.AlwaysHide
-                 onCheckedChanged: root.unreadFilter = checked
+                 onCheckedChanged: globalSettings.unreadFilter = checked
              },
 
             Kirigami.Action {
@@ -64,11 +64,5 @@ AbstractArticleListPage {
                 }
             }
         ]
-    }
-
-    Settings {
-        id: settings
-        category: "ArticleList"
-        property alias unreadFilter: root.unreadFilter
     }
 }

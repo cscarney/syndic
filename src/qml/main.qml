@@ -6,12 +6,13 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import Qt.labs.settings 1.1
 import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.ApplicationWindow {
     id: root
     title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + Qt.application.name
+    width: globalSettings.width
+    height: globalSettings.height
 
     pageStack {
         globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
@@ -98,12 +99,6 @@ Kirigami.ApplicationWindow {
         ]
     }
 
-    Settings {
-        category: "Window"
-        property alias width: root.width
-        property alias height: root.height
-    }
-
     StateGroup {
         states: [
             State {
@@ -169,6 +164,11 @@ Kirigami.ApplicationWindow {
             // emitted by pages to temporarily suspend the page transition animation
             animationSuspendTimer.start()
         }
+    }
+
+    onClosing: {
+        globalSettings.width = width
+        globalSettings.height = height
     }
 
     function pushFeed(feed) {

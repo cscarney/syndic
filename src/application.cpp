@@ -190,6 +190,7 @@ void Application::onLastWindowClosed()
 #ifdef ANDROID
     quit();
 #else
+    d->settings.save();
     if (topLevelWindows().size() > 1) {
         // we sometimes get called when dialogs are closed
         // possibly related: https://bugreports.qt.io/browse/QTBUG-80483
