@@ -4,3 +4,5 @@ Inherits=KConfigSkeleton
 Mutators=true
 GenerateProperties=true
 ParentInConstructor=true
+UseEnumTypes=true
+IncludeFiles=feedlistmodel.h

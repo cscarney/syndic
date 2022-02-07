@@ -101,6 +101,18 @@ Kirigami.ScrollablePage {
             }
         }
 
+        ComboBox {
+            id: feedListSort
+            Kirigami.FormData.label: qsTr("Sort Feed List:");
+            model: [qsTr("Alphabetical"), qsTr("Unread First")]
+            currentIndex: globalSettings.feedListSort
+            Binding {
+                target: globalSettings
+                property: "feedListSort"
+                value: feedListSort.currentIndex
+            }
+        }
+
         RowLayout {
             Kirigami.FormData.label: qsTr("OPML Data:")
 

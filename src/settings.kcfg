@@ -37,5 +37,11 @@
         <entry name="unreadFilter" type="Bool">
             <default>false</default>
         </entry>
+        <entry name="feedListSort" type="Enum">
+            <choices name="FeedListModel::Sort">
+                <choice name="Name" />
+                <choice name="UnreadCount" />
+            </choices>
+        </entry>
     </group>
 </kcfg>

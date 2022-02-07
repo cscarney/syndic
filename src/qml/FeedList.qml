@@ -31,6 +31,7 @@ ScrollView {
         currentIndex: 0
         model: FeedListModel{
             context: feedContext
+            sortMode: globalSettings.feedListSort
             onRowsInserted: {
                 if (feedList.currentIndex < 0) {
                     feedList.currentIndex = -1

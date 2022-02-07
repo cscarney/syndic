@@ -19,6 +19,77 @@ using namespace FeedCore;
 namespace
 {
 enum SpecialFeedIndex { ALL_ITEMS_IDX = 0, STARRED_ITEMS_IDX, SPECIAL_FEED_COUNT };
+
+class SortHelper : public FeedSortNotifier
+{
+public:
+    typedef bool (*Comparator)(const Feed *, const Feed *);
+    const Comparator comparator;
+
+    explicit SortHelper(Comparator comparator)
+        : comparator{comparator} {};
+
+    virtual void connectFeed(const Feed *feed) = 0;
+
+    template<typename SlotType>
+    void connectModel(FeedListModel *model, SlotType slot)
+    {
+        QObject::connect(this, &FeedSortNotifier::feedSortValueChanged, model, slot);
+    }
+
+    void onFeedSortValueChanged()
+    {
+        emit feedSortValueChanged(qobject_cast<Feed *>(QObject::sender()));
+    }
+};
+
+class NameSortHelper : public SortHelper
+{
+public:
+    NameSortHelper()
+        : SortHelper(&cmp)
+    {
+    }
+
+    static bool cmp(const Feed *left, const Feed *right)
+    {
+        int catComp = left->category().localeAwareCompare(right->category());
+        return catComp < 0 || (catComp == 0 && left->name().localeAwareCompare(right->name()) < 0);
+    };
+
+    void connectFeed(const Feed *feed) final
+    {
+        QObject::connect(feed, &FeedCore::Feed::categoryChanged, this, &SortHelper::onFeedSortValueChanged);
+        QObject::connect(feed, &FeedCore::Feed::nameChanged, this, &SortHelper::onFeedSortValueChanged);
+    }
+};
+
+class UnreadCountSortHelper : public SortHelper
+{
+public:
+    UnreadCountSortHelper()
+        : SortHelper(&cmp){};
+
+    static bool cmp(const Feed *left, const Feed *right)
+    {
+        int catComp = left->category().localeAwareCompare(right->category());
+        if (catComp != 0) {
+            return catComp < 0;
+        }
+        int unreadComp = right->unreadCount() - left->unreadCount();
+        if (unreadComp != 0) {
+            return unreadComp < 0;
+        }
+        return left->name().localeAwareCompare(right->name()) < 0;
+    }
+
+    void connectFeed(const Feed *feed) final
+    {
+        QObject::connect(feed, &FeedCore::Feed::categoryChanged, this, &SortHelper::onFeedSortValueChanged);
+        QObject::connect(feed, &FeedCore::Feed::nameChanged, this, &SortHelper::onFeedSortValueChanged);
+        QObject::connect(feed, &FeedCore::Feed::unreadCountChanged, this, &SortHelper::onFeedSortValueChanged);
+    }
+};
 }
 
 class FeedListModel::PrivData
@@ -29,6 +100,8 @@ public:
     AllItemsFeed *allItems = nullptr;
     StarredItemsFeed *starredItems = nullptr;
     QVector<FeedCore::Feed *> feeds;
+    Sort sortMode = Name;
+    std::unique_ptr<SortHelper> sortHelper = std::make_unique<NameSortHelper>();
 
     PrivData(FeedListModel *parent)
         : parent{parent}
@@ -44,6 +117,7 @@ FeedListModel::FeedListModel(QObject *parent)
     : QAbstractListModel(parent)
     , d{std::make_unique<PrivData>(this)}
 {
+    d->sortHelper->connectModel(this, &FeedListModel::onFeedSortValueChanged);
 }
 
 FeedListModel::~FeedListModel() = default;
@@ -62,8 +136,7 @@ void FeedListModel::PrivData::addItem(FeedCore::Feed *feed, int index)
     QObject::connect(feed, &QObject::destroyed, parent, [this, feed] {
         removeItem(feed);
     });
-    QObject::connect(feed, &FeedCore::Feed::categoryChanged, parent, &FeedListModel::onFeedSortValueChanged);
-    QObject::connect(feed, &FeedCore::Feed::nameChanged, parent, &FeedListModel::onFeedSortValueChanged);
+    sortHelper->connectFeed(feed);
 }
 
 void FeedListModel::PrivData::removeItem(FeedCore::Feed *feed)
@@ -143,13 +216,39 @@ void FeedListModel::classBegin()
 
 void FeedListModel::componentComplete()
 {
-    QTimer::singleShot(0, this, &FeedListModel::loadFeeds);
+    QTimer::singleShot(0, this, [this] {
+        loadFeeds();
+        QObject::connect(d->context, &Context::feedAdded, this, &FeedListModel::onFeedAdded);
+    });
 }
 
-static bool compareFeedNames(const Feed *left, const Feed *right)
+FeedListModel::Sort FeedListModel::sortMode() const
 {
-    int catComp = left->category().localeAwareCompare(right->category());
-    return catComp < 0 || (catComp == 0 && left->name().localeAwareCompare(right->name()) < 0);
+    return d->sortMode;
+}
+
+void FeedListModel::setSortMode(FeedListModel::Sort sortMode)
+{
+    if (d->sortMode == sortMode) {
+        return;
+    }
+
+    d->sortMode = sortMode;
+    switch (sortMode) {
+    case Name:
+        d->sortHelper = std::make_unique<NameSortHelper>();
+        break;
+
+    case UnreadCount:
+        d->sortHelper = std::make_unique<UnreadCountSortHelper>();
+        break;
+    }
+
+    d->sortHelper->connectModel(this, &FeedListModel::onFeedSortValueChanged);
+    emit sortModeChanged();
+    if (!d->feeds.isEmpty()) {
+        loadFeeds();
+    }
 }
 
 void FeedListModel::loadFeeds()
@@ -159,14 +258,13 @@ void FeedListModel::loadFeeds()
     for (const auto &item : d->context->getFeeds()) {
         d->addItem(item);
     }
-    std::sort(d->feeds.begin(), d->feeds.end(), compareFeedNames);
+    std::sort(d->feeds.begin(), d->feeds.end(), d->sortHelper->comparator);
     endResetModel();
-    QObject::connect(d->context, &Context::feedAdded, this, &FeedListModel::onFeedAdded);
 }
 
 void FeedListModel::onFeedAdded(FeedCore::Feed *feed)
 {
-    const auto *it = std::lower_bound(d->feeds.constBegin(), d->feeds.constEnd(), feed, compareFeedNames);
+    const auto *it = std::lower_bound(d->feeds.constBegin(), d->feeds.constEnd(), feed, d->sortHelper->comparator);
     const int index = int(it - d->feeds.constBegin());
     const int row = index + SPECIAL_FEED_COUNT;
     beginInsertRows(QModelIndex(), row, row);
@@ -174,9 +272,9 @@ void FeedListModel::onFeedAdded(FeedCore::Feed *feed)
     endInsertRows();
 }
 
-void FeedListModel::onFeedSortValueChanged()
+void FeedListModel::onFeedSortValueChanged(Feed *feed)
 {
-    auto *feed = qobject_cast<FeedCore::Feed *>(QObject::sender());
+    const auto comparator = d->sortHelper->comparator;
     const QVector<Feed *>::iterator it = std::find(d->feeds.begin(), d->feeds.end(), feed);
     if (it == d->feeds.end()) {
         // feed not found
@@ -184,9 +282,9 @@ void FeedListModel::onFeedSortValueChanged()
     }
 
     const QVector<Feed *>::iterator next_it = it + 1;
-    if (next_it != d->feeds.end() && compareFeedNames(*next_it, feed)) {
+    if (next_it != d->feeds.end() && comparator(*next_it, feed)) {
         // move toward end
-        const QVector<Feed *>::iterator newLocation = std::lower_bound(next_it, d->feeds.end(), feed, compareFeedNames);
+        const QVector<Feed *>::iterator newLocation = std::lower_bound(next_it, d->feeds.end(), feed, comparator);
         int oldRow = int(it - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         int newRow = int(newLocation - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
@@ -196,9 +294,9 @@ void FeedListModel::onFeedSortValueChanged()
     }
 
     const QVector<Feed *>::iterator prev_it = it - 1;
-    if (it != d->feeds.begin() && compareFeedNames(feed, *prev_it)) {
+    if (it != d->feeds.begin() && comparator(feed, *prev_it)) {
         // move toward beginning
-        const QVector<Feed *>::iterator newLocation = std::lower_bound(d->feeds.begin(), it, feed, compareFeedNames);
+        const QVector<Feed *>::iterator newLocation = std::lower_bound(d->feeds.begin(), it, feed, comparator);
         int oldRow = int(it - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         int newRow = int(newLocation - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
