@@ -6,9 +6,7 @@
 #include "platformhelper.h"
 #ifdef ANDROID
 
-#include <QAndroidJniEnvironment>
 #include <QAndroidJniObject>
-#include <QtAndroid>
 
 PlatformHelper::PlatformHelper(QObject *parent)
     : QObject(parent)

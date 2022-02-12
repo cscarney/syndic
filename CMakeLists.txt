@@ -41,6 +41,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 configure_file(cmake-config.h.template ${CMAKE_CURRENT_BINARY_DIR}/cmake-config.h)
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} 3rdparty feedcore src)
 
+if (ANDROID)
+    set(ANDROID_EXTRA_PLUGINS ${CMAKE_BINARY_DIR}/plugins)
+    add_subdirectory(androidstyleplugin)
+endif()
+
 add_subdirectory(3rdparty/gumbo)
 add_subdirectory(data)
 add_subdirectory(feedcore)

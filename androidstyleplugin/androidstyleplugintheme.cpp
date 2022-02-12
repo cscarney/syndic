@@ -1,0 +1,188 @@
+/*
+    SPDX-FileCopyrightText: 2021 Connor Carney <hello@connorcarney.com>
+
+    SPDX-License-Identifier: LGPL-2.0-or-later
+*/
+
+#include "androidstyleplugintheme.h"
+#include <QAndroidJniObject>
+#include <QCache>
+#include <QGuiApplication>
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQmlProperty>
+
+namespace
+{
+
+struct StyleData {
+    // from https://developer.android.com/reference/android/R.attr
+    enum AndroidResourceId {
+        COLOR_ACCENT = 16843829,
+        COLOR_BACKGROUND = 16842801,
+        COLOR_FOREGROUND = 16842800,
+        TEXT_COLOR_HIGHLIGHT = 16842905,
+        TEXT_COLOR_LINK = 16842907
+    };
+
+    QPalette basePalette;
+    QPalette inversePalette;
+    QColor accentColor;
+
+    QFont smallFont;
+
+    QCache<QString, QIcon> darkModeIconCache;
+    QObject *materialHelper{nullptr};
+
+    static StyleData *createIfNecessary(QQmlEngine *engine = nullptr);
+
+private:
+    StyleData(QQmlEngine *engine);
+    friend StyleData *styleData();
+};
+
+StyleData *styleData()
+{
+    return StyleData::createIfNecessary();
+}
+
+constexpr const int kDarkModeValueThreshold = 128;
+constexpr const float kUnscaledDefaultFontSize = 16;
+constexpr const float kUnscaledSmallFontSize = 14;
+}
+
+StyleData::StyleData(QQmlEngine *engine)
+{
+    QQmlComponent materialHelperComponent(engine, QUrl("qrc:/qml/materialhelper.qml"));
+    materialHelper = materialHelperComponent.create();
+
+    accentColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_ACCENT);
+    QRgb backgroundColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_BACKGROUND);
+    QRgb textColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_FOREGROUND);
+    QRgb highlightedTextColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", TEXT_COLOR_HIGHLIGHT);
+    QRgb linkColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", TEXT_COLOR_LINK);
+
+    QColor disabledTextColor = textColor;
+    disabledTextColor.setAlphaF(0.8); // TODO theme value for this?
+
+    basePalette = qGuiApp->palette();
+    basePalette.setColor(QPalette::Window, backgroundColor);
+    basePalette.setColor(QPalette::WindowText, textColor);
+    basePalette.setColor(QPalette::Disabled, QPalette::WindowText, disabledTextColor);
+    basePalette.setColor(QPalette::Highlight, accentColor);
+    basePalette.setColor(QPalette::HighlightedText, highlightedTextColor);
+    basePalette.setColor(QPalette::Base, backgroundColor);
+    basePalette.setColor(QPalette::AlternateBase, backgroundColor);
+    basePalette.setColor(QPalette::Text, textColor);
+    basePalette.setColor(QPalette::Link, linkColor);
+    basePalette.setColor(QPalette::LinkVisited, linkColor);
+    qGuiApp->setPalette(basePalette);
+
+    auto fontScale = QAndroidJniObject::callStaticMethod<jfloat>("com/rocksandpaper/syndic/NativeHelper", "getFontScale");
+    QFont font = qGuiApp->font();
+    font.setPointSizeF(kUnscaledDefaultFontSize * fontScale);
+    qApp->setFont(font);
+    font.setPointSizeF(kUnscaledSmallFontSize * fontScale);
+    smallFont = font;
+}
+
+StyleData *StyleData::createIfNecessary(QQmlEngine *engine)
+{
+    static auto *styleData = new StyleData(engine);
+    return styleData;
+}
+
+AndroidStylePluginTheme::AndroidStylePluginTheme(QObject *parent)
+    : Kirigami::PlatformTheme(parent)
+{
+    Q_INIT_RESOURCE(androidstyleplugin);
+    StyleData::createIfNecessary(qmlEngine(parent));
+    updateColors();
+    setSmallFont(styleData()->smallFont);
+    setDefaultFont(qGuiApp->font());
+    setSupportsIconColoring(true);
+}
+
+bool AndroidStylePluginTheme::event(QEvent *event)
+{
+    if (event->type() == Kirigami::PlatformThemeEvents::ColorSetChangedEvent::type) {
+        updateColors();
+    }
+    if (event->type() == Kirigami::PlatformThemeEvents::ColorGroupChangedEvent::type) {
+        updateColors();
+    }
+    return PlatformTheme::event(event);
+}
+
+void AndroidStylePluginTheme::updateColors()
+{
+    const StyleData *style = styleData();
+    QPalette pal = style->basePalette;
+
+    switch (colorSet()) {
+    default:
+    case Window:
+        setTextColor(pal.color(QPalette::WindowText));
+        setDisabledTextColor(pal.color(QPalette::Disabled, QPalette::WindowText));
+        setHighlightedTextColor(pal.color(QPalette::HighlightedText));
+        setActiveTextColor(pal.color(QPalette::WindowText));
+        setLinkColor(pal.color(QPalette::Link));
+        setVisitedLinkColor(pal.color(QPalette::LinkVisited));
+        setNegativeTextColor(pal.color(QPalette::WindowText));
+        setNeutralTextColor(pal.color(QPalette::WindowText));
+        setPositiveTextColor(pal.color(QPalette::WindowText));
+
+        setBackgroundColor(pal.color(QPalette::Window));
+        setAlternateBackgroundColor(pal.color(QPalette::Window));
+        setHighlightColor(pal.color(QPalette::Highlight));
+        setActiveBackgroundColor(pal.color(QPalette::Window));
+        setLinkBackgroundColor(pal.color(QPalette::Window));
+        setVisitedLinkBackgroundColor(pal.color(QPalette::Window));
+        setNegativeBackgroundColor(pal.color(QPalette::Window));
+        setNeutralBackgroundColor(pal.color(QPalette::Window));
+        setPositiveBackgroundColor(pal.color(QPalette::Window));
+
+        setHoverColor(style->accentColor);
+        setFocusColor(style->accentColor);
+        break;
+
+    case View:
+        setTextColor(pal.color(QPalette::Text));
+        setDisabledTextColor(pal.color(QPalette::Disabled, QPalette::Base));
+        setHighlightedTextColor(pal.color(QPalette::HighlightedText));
+        setActiveTextColor(pal.color(QPalette::Text));
+        setLinkColor(pal.color(QPalette::Link));
+        setVisitedLinkColor(pal.color(QPalette::LinkVisited));
+        setNegativeTextColor(pal.color(QPalette::Text));
+        setNeutralTextColor(pal.color(QPalette::Text));
+        setPositiveTextColor(pal.color(QPalette::Text));
+
+        setBackgroundColor(pal.color(QPalette::Base));
+        setAlternateBackgroundColor(pal.color(QPalette::AlternateBase));
+        setHighlightColor(pal.color(QPalette::Highlight));
+        setActiveBackgroundColor(pal.color(QPalette::Base));
+        setLinkBackgroundColor(pal.color(QPalette::Base));
+        setVisitedLinkBackgroundColor(pal.color(QPalette::Base));
+        setNegativeBackgroundColor(pal.color(QPalette::Base));
+        setNeutralBackgroundColor(pal.color(QPalette::Base));
+        setPositiveBackgroundColor(pal.color(QPalette::Base));
+
+        setHoverColor(style->accentColor);
+        setFocusColor(style->accentColor);
+        break;
+    }
+
+    // the material theme settings are private in CPP but exposed in qml
+    // so we call out to a qml helper object.
+    auto *item = parent();
+    auto *helper = styleData()->materialHelper;
+    bool isDarkMode = backgroundColor().value() < kDarkModeValueThreshold;
+    QMetaObject::invokeMethod(helper,
+                              "updateMaterialTheme",
+                              Q_ARG(QVariant, QVariant::fromValue(item)),
+                              Q_ARG(QVariant, QVariant::fromValue(isDarkMode)),
+                              Q_ARG(QVariant, QVariant::fromValue(textColor())),
+                              Q_ARG(QVariant, QVariant::fromValue(backgroundColor())),
+                              Q_ARG(QVariant, QVariant::fromValue(highlightColor())),
+                              Q_ARG(QVariant, QVariant::fromValue(highlightColor())));
+}

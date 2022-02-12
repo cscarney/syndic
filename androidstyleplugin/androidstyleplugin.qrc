@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/materialhelper.qml</file>
+    </qresource>
+</RCC>
