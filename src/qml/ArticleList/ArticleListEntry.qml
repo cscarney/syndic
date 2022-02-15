@@ -24,7 +24,10 @@ ColumnLayout {
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
-        font.weight: ref.article.isRead ? Font.ExtraLight : Font.Bold
+        font {
+            weight: ref.article.isRead ? Font.ExtraLight : Font.Bold
+            pointSize: Kirigami.Theme.smallFont.pointSize
+        }
         color: textColor
         textFormat: Text.RichText
     }

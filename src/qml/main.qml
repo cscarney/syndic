@@ -13,6 +13,7 @@ Kirigami.ApplicationWindow {
     title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + Qt.application.name
     width: globalSettings.width
     height: globalSettings.height
+    font: Kirigami.Theme.defaultFont
 
     pageStack {
         globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
