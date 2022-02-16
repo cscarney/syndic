@@ -20,8 +20,8 @@ struct StyleData {
     enum AndroidResourceId {
         COLOR_ACCENT = 16843829,
         COLOR_BACKGROUND = 16842801,
+        COLOR_BACKGROUND_FLOATING = 16844002,
         COLOR_FOREGROUND = 16842800,
-        TEXT_COLOR_HIGHLIGHT = 16842905,
         TEXT_COLOR_LINK = 16842907
     };
 
@@ -57,9 +57,10 @@ StyleData::StyleData(QQmlEngine *engine)
     materialHelper = materialHelperComponent.create();
 
     accentColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_ACCENT);
+    QRgb floatingBackgroundColor =
+        QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_BACKGROUND_FLOATING);
     QRgb backgroundColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_BACKGROUND);
     QRgb textColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_FOREGROUND);
-    QRgb highlightedTextColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", TEXT_COLOR_HIGHLIGHT);
     QRgb linkColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", TEXT_COLOR_LINK);
 
     QColor disabledTextColor = textColor;
@@ -70,8 +71,8 @@ StyleData::StyleData(QQmlEngine *engine)
     basePalette.setColor(QPalette::WindowText, textColor);
     basePalette.setColor(QPalette::Disabled, QPalette::WindowText, disabledTextColor);
     basePalette.setColor(QPalette::Highlight, accentColor);
-    basePalette.setColor(QPalette::HighlightedText, highlightedTextColor);
-    basePalette.setColor(QPalette::Base, backgroundColor);
+    basePalette.setColor(QPalette::HighlightedText, backgroundColor);
+    basePalette.setColor(QPalette::Base, floatingBackgroundColor);
     basePalette.setColor(QPalette::AlternateBase, backgroundColor);
     basePalette.setColor(QPalette::Text, textColor);
     basePalette.setColor(QPalette::Link, linkColor);
