@@ -26,7 +26,7 @@ ColumnLayout {
         wrapMode: Text.WordWrap
         font {
             weight: ref.article.isRead ? Font.ExtraLight : Font.Bold
-            pointSize: Kirigami.Theme.smallFont.pointSize
+            pointSize: Kirigami.Theme.defaultFont.pointSize
         }
         color: textColor
         textFormat: Text.RichText
@@ -42,6 +42,7 @@ ColumnLayout {
             verticalAlignment: Text.AlignVCenter
             color: textColor
             font {
+                pointSize: Kirigami.Theme.smallFont.pointSize
                 italic: true
                 weight: Font.Light
             }
@@ -57,6 +58,7 @@ ColumnLayout {
             verticalAlignment: Text.AlignVCenter
             color: textColor
             opacity: 0.6
+            font.pointSize: Kirigami.Theme.smallFont.pointSize
         }
     }
 }
