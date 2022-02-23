@@ -22,7 +22,8 @@ struct StyleData {
         COLOR_BACKGROUND = 16842801,
         COLOR_BACKGROUND_FLOATING = 16844002,
         COLOR_FOREGROUND = 16842800,
-        TEXT_COLOR_LINK = 16842907
+        COLOR_FOREGROUND_INVERSE = 16843270,
+        TEXT_COLOR_LINK = 16842907,
     };
 
     QPalette basePalette;
@@ -60,6 +61,8 @@ StyleData::StyleData(QQmlEngine *engine)
     QRgb floatingBackgroundColor =
         QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_BACKGROUND_FLOATING);
     QRgb backgroundColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_BACKGROUND);
+    QRgb foregroundInverseColor =
+        QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_FOREGROUND_INVERSE);
     QRgb textColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_FOREGROUND);
     QRgb linkColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", TEXT_COLOR_LINK);
 
@@ -71,9 +74,9 @@ StyleData::StyleData(QQmlEngine *engine)
     basePalette.setColor(QPalette::WindowText, textColor);
     basePalette.setColor(QPalette::Disabled, QPalette::WindowText, disabledTextColor);
     basePalette.setColor(QPalette::Highlight, accentColor);
-    basePalette.setColor(QPalette::HighlightedText, backgroundColor);
-    basePalette.setColor(QPalette::Base, floatingBackgroundColor);
-    basePalette.setColor(QPalette::AlternateBase, backgroundColor);
+    basePalette.setColor(QPalette::HighlightedText, foregroundInverseColor);
+    basePalette.setColor(QPalette::Base, foregroundInverseColor);
+    basePalette.setColor(QPalette::AlternateBase, floatingBackgroundColor);
     basePalette.setColor(QPalette::Text, textColor);
     basePalette.setColor(QPalette::Link, linkColor);
     basePalette.setColor(QPalette::LinkVisited, linkColor);
@@ -134,7 +137,7 @@ void AndroidStylePluginTheme::updateColors()
         setPositiveTextColor(pal.color(QPalette::WindowText));
 
         setBackgroundColor(pal.color(QPalette::Window));
-        setAlternateBackgroundColor(pal.color(QPalette::Window));
+        setAlternateBackgroundColor(pal.color(QPalette::AlternateBase));
         setHighlightColor(pal.color(QPalette::Highlight));
         setActiveBackgroundColor(pal.color(QPalette::Window));
         setLinkBackgroundColor(pal.color(QPalette::Window));
