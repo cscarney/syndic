@@ -99,7 +99,7 @@ Kirigami.ScrollablePage {
             if (!currentItem) return;
             var pos = currentItem.y + currentItem.height - contentY;
             if ( pos >= height) {
-                positionViewAtIndex(currentIndex - 1, ListView.Beginning);
+                positionViewAtIndex(currentIndex, ListView.Beginning);
             }
         }
     } /* articleList */
