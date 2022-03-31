@@ -44,8 +44,6 @@ public:
     Q_INVOKABLE void save();
 
     Future<ArticleRef> *getArticles(bool unreadFilter) final;
-    void updateFromSource(const Syndication::FeedPtr &feed) final;
-    void updateSourceArticle(const Syndication::ItemPtr &) final{};
 
     Feed *targetFeed() const;
     void setTargetFeed(Feed *targetFeed);
@@ -59,6 +57,9 @@ private:
     class ArticleImpl;
     SharedFactory<Syndication::ItemPtr, ArticleImpl> m_articles;
     void onUrlChanged();
+    void updateFromSource(const Syndication::FeedPtr &feed) final;
+    void updateSourceArticle(const Syndication::ItemPtr &) final{};
+    void expire(const QDateTime &) final{};
 };
 }
 #endif // FEEDCORE_PROVISIONALFEED_H

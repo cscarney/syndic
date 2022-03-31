@@ -33,6 +33,7 @@ public:
     FeedCore::Future<FeedCore::Feed *> *getFeeds() final;
     FeedCore::Future<FeedCore::Feed *> *storeFeed(FeedCore::Feed *feed) final;
     void listenForChanges(FeedImpl *feed);
+    void expire(FeedImpl *feed, const QDateTime &olderThan);
 
 private:
     FeedDatabase m_db;

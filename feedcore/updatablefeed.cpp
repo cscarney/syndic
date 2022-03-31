@@ -71,7 +71,7 @@ void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
         }
     }
     if (expireTime > 0) {
-        emit expire(QDateTime::fromTime_t(expireTime));
+        expire(QDateTime::fromTime_t(expireTime));
     }
 }
 

@@ -69,6 +69,11 @@ void FeedImpl::updateSourceArticle(const Syndication::ItemPtr &article)
     });
 }
 
+void FeedImpl::expire(const QDateTime &olderThan)
+{
+    m_storage->expire(this, olderThan);
+}
+
 void FeedImpl::onArticleReadChanged(ArticleImpl *article)
 {
     incrementUnreadCount(article->isRead() ? -1 : 1);

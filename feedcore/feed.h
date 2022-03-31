@@ -116,11 +116,6 @@ public:
     virtual bool editable();
 
     /**
-     * Sets the update interval that will be used when using DefaultupdateMode
-     */
-    void setDefaultUpdateInterval(qint64 updateInterval);
-
-    /**
      * Set this feed's metadata to match that of /other/
      */
     void updateParams(Feed *other);
@@ -163,11 +158,6 @@ public:
     void setUpdateInterval(qint64 updateInterval);
 
 signals:
-    /**
-     * Emitted when old items should be removed from the storage backend
-     */
-    void expire(const QDateTime &olderThan);
-
     /**
      * Emitted when an article has been added to the feed.
      */

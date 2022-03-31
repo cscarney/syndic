@@ -40,6 +40,15 @@ private:
      * Feed::articleAdded signal when a new article is found.
      */
     virtual void updateSourceArticle(const Syndication::ItemPtr &article) = 0;
+
+    /**
+     * Delete old articles
+     *
+     * This is called by the base implementation of updateFromSource.  Derivce classes
+     * should override this and remove old articles from storage.
+     */
+    virtual void expire(const QDateTime &olderThan) = 0;
+
     class UpdaterImpl;
     UpdaterImpl *m_updater;
 };
