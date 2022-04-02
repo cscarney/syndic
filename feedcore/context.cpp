@@ -58,11 +58,11 @@ void Context::PrivData::configureUpdates(Feed *feed, const QDateTime &timestamp)
 {
     auto updateMode{feed->updateMode()};
     bool shouldSchedule{false};
-    if (updateMode == Feed::DefaultUpdateMode) {
+    if (updateMode == Feed::InheritUpdateMode) {
         feed->setUpdateInterval(updateInterval);
         shouldSchedule = defaultUpdate;
     } else {
-        shouldSchedule = (updateMode != Feed::ManualUpdateMode);
+        shouldSchedule = (updateMode != Feed::DisableUpdateMode);
     }
 
     if (shouldSchedule) {
@@ -136,7 +136,7 @@ void Context::setDefaultUpdateInterval(qint64 defaultUpdateInterval)
     }
     d->updateInterval = defaultUpdateInterval;
     for (Feed *feed : qAsConst(d->feeds)) {
-        if (feed->updateMode() == Feed::DefaultUpdateMode) {
+        if (feed->updateMode() == Feed::InheritUpdateMode) {
             feed->setUpdateInterval(defaultUpdateInterval);
         }
     }
@@ -264,7 +264,7 @@ void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
     d->defaultUpdate = defaultUpdateEnabled;
     const QDateTime timestamp = QDateTime::currentDateTime();
     for (Feed *feed : qAsConst(d->feeds)) {
-        if (feed->updateMode() == Feed::DefaultUpdateMode) {
+        if (feed->updateMode() == Feed::InheritUpdateMode) {
             d->configureUpdates(feed, timestamp);
         }
     }

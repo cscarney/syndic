@@ -37,7 +37,7 @@ static bool needsUpdate(Feed *feed, const QDateTime &timestamp)
 
 void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
 {
-    if (feed->updateMode() == Feed::ManualUpdateMode || feed->updateInterval() <= 0) {
+    if (feed->updateMode() == Feed::DisableUpdateMode || feed->updateInterval() <= 0) {
         return;
     }
     const QDateTime &updateTime{nextUpdate(feed)};

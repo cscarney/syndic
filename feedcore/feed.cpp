@@ -15,7 +15,7 @@ struct Feed::PrivData {
     int unreadCount{0};
     int pendingUnreadCountChange{0};
     LoadStatus status{LoadStatus::Idle};
-    UpdateMode updateMode{DefaultUpdateMode};
+    UpdateMode updateMode{InheritUpdateMode};
     time_t updateInterval{0};
     qint64 expireAge{0};
     QDateTime lastUpdate;

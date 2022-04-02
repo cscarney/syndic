@@ -173,14 +173,14 @@ Future<Feed *> *StorageImpl::getFeeds()
 static qint64 packFeedUpdateInterval(Feed *feed)
 {
     switch (feed->updateMode()) {
-    case Feed::DefaultUpdateMode:
+    case Feed::InheritUpdateMode:
     default:
         return 0;
 
-    case Feed::ManualUpdateMode:
+    case Feed::DisableUpdateMode:
         return -1;
 
-    case Feed::CustomUpdateMode:
+    case Feed::OverrideUpdateMode:
         return feed->updateInterval();
     }
 }
@@ -213,7 +213,7 @@ static void onUpdateModeChanged(FeedDatabase &db, Feed *feed, qint64 feedId)
 
 static void onUpdateIntervalChanged(FeedDatabase &db, Feed *feed, qint64 feedId)
 {
-    if (feed->updateMode() != Feed::CustomUpdateMode) {
+    if (feed->updateMode() != Feed::OverrideUpdateMode) {
         return;
     }
     db.updateFeedUpdateInterval(feedId, feed->updateInterval());

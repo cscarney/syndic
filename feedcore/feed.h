@@ -96,9 +96,9 @@ public:
     Q_ENUM(LoadStatus);
 
     enum UpdateMode {
-        DefaultUpdateMode, /** < Use the default update interval */
-        CustomUpdateMode, /** < Use the update interval provided by the updateInterval property */
-        ManualUpdateMode, /** < Do not perform scheduled updates */
+        InheritUpdateMode, /** < Use update parameters provided by the context */
+        OverrideUpdateMode, /** < Use update parameters specified by the feed */
+        DisableUpdateMode, /** < Disable automatic updates */
     };
     Q_ENUM(UpdateMode)
 

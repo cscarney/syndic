@@ -68,10 +68,10 @@ Kirigami.ScrollablePage {
                 ButtonGroup.group: updateIntervalGroup
                 Kirigami.FormData.label: qsTr("Update Interval:")
                 text: qsTr("Use Global Setting")
-                checked: provisionalFeed.updateMode === Feed.DefaultUpdateMode
+                checked: provisionalFeed.updateMode === Feed.InheritUpdateMode
                 onToggled: {
                     if (checked) {
-                        provisionalFeed.updateMode = Feed.DefaultUpdateMode
+                        provisionalFeed.updateMode = Feed.InheritUpdateMode
                     }
                 }
             }
@@ -81,10 +81,10 @@ Kirigami.ScrollablePage {
                 property int updateMode: Feed.ManualUpdateMode
                 ButtonGroup.group: updateIntervalGroup
                 text: qsTr("Disable Automatic Updates")
-                checked: provisionalFeed.updateMode === Feed.ManualUpdateMode
+                checked: provisionalFeed.updateMode === Feed.DisableUpdateMode
                 onToggled: {
                     if (checked) {
-                        provisionalFeed.updateMode = Feed.ManualUpdateMode
+                        provisionalFeed.updateMode = Feed.DisableUpdateMode
                     }
                 }
             }
@@ -92,7 +92,7 @@ Kirigami.ScrollablePage {
             RadioButton {
                 id: updateIntervalCustom
                 ButtonGroup.group: updateIntervalGroup
-                checked: provisionalFeed.updateMode === Feed.CustomUpdateMode
+                checked: provisionalFeed.updateMode === Feed.OverrideUpdateMode
                 contentItem: SpinBox {
                     id: updateIntervalValue
                     anchors {
@@ -113,7 +113,7 @@ Kirigami.ScrollablePage {
                 }
                 onToggled: {
                     if (checked) {
-                        provisionalFeed.updateMode = Feed.CustomUpdateMode
+                        provisionalFeed.updateMode = Feed.OverrideUpdateMode
                     }
                 }
             }

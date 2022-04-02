@@ -27,11 +27,11 @@ FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage)
 void FeedImpl::unpackUpdateInterval(qint64 updateInterval)
 {
     if (updateInterval == 0) {
-        setUpdateMode(DefaultUpdateMode);
+        setUpdateMode(InheritUpdateMode);
     } else if (updateInterval < 0) {
-        setUpdateMode(ManualUpdateMode);
+        setUpdateMode(DisableUpdateMode);
     } else {
-        setUpdateMode(CustomUpdateMode);
+        setUpdateMode(OverrideUpdateMode);
         setUpdateInterval(updateInterval);
     }
 }
