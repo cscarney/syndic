@@ -61,7 +61,7 @@ void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
     setIcon(feed->icon()->url());
     const auto &items = feed->items();
     time_t expireTime = 0;
-    if (expireAge() > 0) {
+    if ((expireAge() > 0) && (expireMode() != DisableUpdateMode)) {
         expireTime = updater()->updateStartTime().toTime_t() - expireAge();
     }
     for (const auto &item : items) {

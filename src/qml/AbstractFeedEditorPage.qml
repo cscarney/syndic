@@ -15,8 +15,15 @@ Kirigami.ScrollablePage {
     property bool previewOpen: false
 
     property ProvisionalFeed provisionalFeed: ProvisionalFeed {
-        updateMode: Feed.DefaultUpdateMode
-        updateInterval: 3600
+        updateMode: Feed.InheritUpdateMode
+        updateInterval: globalSettings.updateInterval
+        expireMode: Feed.InheritUpdateMode
+        expireAge: globalSettings.expireAge
+    }
+
+    ButtonGroup {
+        id: expireAgeGroup
+        exclusive: true
     }
 
     ButtonGroup {
@@ -63,10 +70,12 @@ Kirigami.ScrollablePage {
                 }
             }
 
+            Kirigami.Separator{}
+
             RadioButton {
                 id: updateIntervalGlobal
                 ButtonGroup.group: updateIntervalGroup
-                Kirigami.FormData.label: qsTr("Update Interval:")
+                Kirigami.FormData.label: qsTr("Fetch updates:")
                 text: qsTr("Use Global Setting")
                 checked: provisionalFeed.updateMode === Feed.InheritUpdateMode
                 onToggled: {
@@ -77,30 +86,17 @@ Kirigami.ScrollablePage {
             }
 
             RadioButton {
-                id: updateIntervalDisable
-                property int updateMode: Feed.ManualUpdateMode
-                ButtonGroup.group: updateIntervalGroup
-                text: qsTr("Disable Automatic Updates")
-                checked: provisionalFeed.updateMode === Feed.DisableUpdateMode
-                onToggled: {
-                    if (checked) {
-                        provisionalFeed.updateMode = Feed.DisableUpdateMode
-                    }
-                }
-            }
-
-            RadioButton {
                 id: updateIntervalCustom
                 ButtonGroup.group: updateIntervalGroup
                 checked: provisionalFeed.updateMode === Feed.OverrideUpdateMode
                 contentItem: SpinBox {
                     id: updateIntervalValue
+                    KeyNavigation.backtab: updateIntervalCustom
                     anchors {
                         left: parent.indicator.right
                         verticalCenter: parent.indicator.verticalCenter
                     }
-                    KeyNavigation.backtab: updateIntervalCustom
-                    enabled: parent.checked
+                    enabled: updateIntervalCustom.checked
                     value: provisionalFeed.updateInterval / 60
                     from: 1
                     textFromValue: function(value, locale) {
@@ -114,6 +110,75 @@ Kirigami.ScrollablePage {
                 onToggled: {
                     if (checked) {
                         provisionalFeed.updateMode = Feed.OverrideUpdateMode
+                    }
+                }
+            }
+
+            RadioButton {
+                id: updateIntervalDisable
+                ButtonGroup.group: updateIntervalGroup
+                text: qsTr("Never")
+                checked: provisionalFeed.updateMode === Feed.DisableUpdateMode
+                onToggled: {
+                    if (checked) {
+                        provisionalFeed.updateMode = Feed.DisableUpdateMode
+                    }
+                }
+            }
+
+            Kirigami.Separator {}
+
+            RadioButton {
+                id: expireAgeGlobal
+                ButtonGroup.group: expireAgeGroup
+                Kirigami.FormData.label: qsTr("Delete old items:")
+                text: qsTr("Use Global Setting")
+                checked: provisionalFeed.expireMode === Feed.InheritUpdateMode
+                onToggled: {
+                    if (checked) {
+                        provisionalFeed.expireMode = Feed.InheritUpdateMode
+                    }
+                }
+            }
+
+            RadioButton {
+                id: expireAgeCustom
+                ButtonGroup.group: expireAgeGroup
+                checked: provisionalFeed.expireMode === Feed.OverrideUpdateMode
+                contentItem: SpinBox {
+                    id: expireAgeValue
+                    anchors {
+                        left: parent.indicator.right
+                        verticalCenter: parent.indicator.verticalCenter
+                    }
+                    KeyNavigation.backtab: expireAgeCustom
+                    enabled: expireAgeCustom.checked
+                    value: provisionalFeed.expireAge / 86400
+                    from: 1
+                    textFromValue: function(value, locale) {
+                        return qsTr("%n day(s)", "", value)
+                    }
+                    valueFromText: function(text, locale) {
+                        return +text.replace(/[^\d]/g, "")
+                    }
+                    onValueModified: provisionalFeed.expireAge = value * 86400
+                }
+                onToggled: {
+                    if (checked) {
+                        provisionalFeed.expireMode = Feed.OverrideUpdateMode
+                    }
+                }
+            }
+
+
+            RadioButton {
+                id: expireAgeDisable
+                ButtonGroup.group: expireAgeGroup
+                text: qsTr("Never")
+                checked: provisionalFeed.expireMode === Feed.DisableUpdateMode
+                onToggled: {
+                    if (checked) {
+                        provisionalFeed.expireMode = Feed.DisableUpdateMode
                     }
                 }
             }

@@ -20,7 +20,7 @@ public:
     {
         prepare(
             "SELECT Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.category, Feed.url, Feed.link, Feed.icon, "
-            "COUNT(Item.id), updateInterval, lastUpdate "
+            "COUNT(Item.id), updateInterval, lastUpdate, expireAge "
             "FROM Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false "
             "WHERE "
             + whereClause + " GROUP BY Feed.id");
@@ -68,6 +68,10 @@ public:
     QDateTime lastUpdate() const
     {
         return QDateTime::fromSecsSinceEpoch(value(10).toLongLong());
+    }
+    qint64 expireAge() const
+    {
+        return value(11).toLongLong();
     }
 };
 }

@@ -62,14 +62,28 @@ class Feed : public QObject
     Q_PROPERTY(QDateTime lastUpdate READ lastUpdate NOTIFY lastUpdateChanged)
 
     /**
-     * The update scheduling mode
+     * Mode for determining when to automatically update the feed
      */
     Q_PROPERTY(FeedCore::Feed::UpdateMode updateMode READ updateMode WRITE setUpdateMode NOTIFY updateModeChanged)
 
     /**
      * How often to update the feed.
+     *
+     * This is normally set by the context unless updateMode is set to OverrideUpdateMode.
      */
     Q_PROPERTY(int updateInterval READ updateInterval WRITE setUpdateInterval NOTIFY updateIntervalChanged)
+
+    /**
+     * Mode for determining when to delete old items.
+     */
+    Q_PROPERTY(FeedCore::Feed::UpdateMode expireMode READ expireMode WRITE setExpireMode NOTIFY expireModeChanged)
+
+    /**
+     * Threshold for when items are considered stale and can be deleted.
+     *
+     * This is normally set by the context unless expireMode is set to OverrideUpdateMode.
+     */
+    Q_PROPERTY(int expireAge READ expireAge WRITE setExpireAge NOTIFY expireAgeChanged)
 
     /**
      * The Updater instance that should be used to update this feed.
@@ -121,15 +135,6 @@ public:
     void updateParams(Feed *other);
 
     /**
-     * Set the age when article are considered stale.
-     *
-     * A value of 0 disables stale item expiration.
-     * Stale items will not be removed until the next update.
-     */
-    void setExpireAge(qint64 expireAge);
-    qint64 expireAge();
-
-    /**
      * Request that the feed be deleted from the storage backend.
      *
      * If the delete operation succeeds, the Feed object will be
@@ -156,6 +161,10 @@ public:
     void setUpdateMode(UpdateMode updateMode);
     qint64 updateInterval();
     void setUpdateInterval(qint64 updateInterval);
+    UpdateMode expireMode();
+    void setExpireMode(UpdateMode expireMode);
+    void setExpireAge(qint64 expireAge);
+    qint64 expireAge();
 
 signals:
     /**
@@ -188,6 +197,8 @@ signals:
     void lastUpdateChanged();
     void updateModeChanged();
     void updateIntervalChanged();
+    void expireModeChanged();
+    void expireAgeChanged();
 
 protected:
     explicit Feed(QObject *parent = nullptr);

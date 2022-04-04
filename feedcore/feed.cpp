@@ -17,6 +17,7 @@ struct Feed::PrivData {
     LoadStatus status{LoadStatus::Idle};
     UpdateMode updateMode{InheritUpdateMode};
     time_t updateInterval{0};
+    UpdateMode expireMode{InheritUpdateMode};
     qint64 expireAge{0};
     QDateTime lastUpdate;
 };
@@ -172,9 +173,25 @@ void Feed::setUpdateInterval(qint64 updateInterval)
     }
 }
 
+Feed::UpdateMode Feed::expireMode()
+{
+    return d->expireMode;
+}
+
+void Feed::setExpireMode(Feed::UpdateMode expireMode)
+{
+    if (d->expireMode != expireMode) {
+        d->expireMode = expireMode;
+        emit expireModeChanged();
+    }
+}
+
 void Feed::setExpireAge(qint64 expireAge)
 {
-    d->expireAge = expireAge;
+    if (expireAge != d->expireAge) {
+        d->expireAge = expireAge;
+        emit expireAgeChanged();
+    }
 }
 
 qint64 Feed::expireAge()
@@ -192,6 +209,8 @@ void Feed::updateParams(Feed *other)
     setUrl(other->url());
     setUpdateInterval(other->updateInterval());
     setUpdateMode(other->updateMode());
+    setExpireAge(other->expireAge());
+    setExpireMode(other->expireMode());
 }
 
 bool Feed::editable()

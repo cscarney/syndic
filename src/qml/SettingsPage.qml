@@ -72,7 +72,7 @@ Kirigami.ScrollablePage {
         }
 
         RowLayout {
-            Kirigami.FormData.label: qsTr("Delete after:")
+            Kirigami.FormData.label: qsTr("Delete old items:")
             CheckBox {
                 id: expireItems
                 checked: globalSettings.expireItems
@@ -103,7 +103,7 @@ Kirigami.ScrollablePage {
 
         ComboBox {
             id: feedListSort
-            Kirigami.FormData.label: qsTr("Sort Feed List:");
+            Kirigami.FormData.label: qsTr("Sort feed list:");
             model: [qsTr("Alphabetical"), qsTr("Unread First")]
             currentIndex: globalSettings.feedListSort
             Binding {

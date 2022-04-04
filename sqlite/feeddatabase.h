@@ -50,6 +50,7 @@ public:
     void updateFeedIcon(qint64 feedId, const QString &icon);
     void updateFeedUpdateInterval(qint64 feedId, qint64 updateInterval);
     void updateFeedLastUpdate(qint64 feedId, const QDateTime &lastUpdated);
+    void updateFeedExpireAge(qint64 feedId, qint64 expireAge);
     void deleteFeed(qint64 feedId);
 
 private:

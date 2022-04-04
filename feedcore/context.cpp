@@ -28,6 +28,7 @@ struct Context::PrivData {
 
     PrivData(Storage *storage, Context *parent);
     void configureUpdates(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime()) const;
+    void configureExpiration(Feed *feed) const;
 };
 
 Context::Context(Storage *storage, QObject *parent)
@@ -69,6 +70,14 @@ void Context::PrivData::configureUpdates(Feed *feed, const QDateTime &timestamp)
         updateScheduler->schedule(feed, timestamp);
     } else {
         updateScheduler->unschedule(feed);
+    }
+}
+
+void Context::PrivData::configureExpiration(Feed *feed) const
+{
+    auto expireMode{feed->expireMode()};
+    if (expireMode != Feed::OverrideUpdateMode) {
+        feed->setExpireAge(expireAge);
     }
 }
 
@@ -155,7 +164,9 @@ void Context::setExpireAge(qint64 expireAge)
     }
     d->expireAge = expireAge;
     for (Feed *feed : qAsConst(d->feeds)) {
-        feed->setExpireAge(expireAge);
+        if (feed->expireMode() != Feed::OverrideUpdateMode) {
+            feed->setExpireAge(expireAge);
+        }
     }
     emit expireAgeChanged();
 }
@@ -282,13 +293,16 @@ void Context::registerFeeds(const QVector<Feed *> &feeds)
     const QDateTime timestamp = QDateTime::currentDateTime();
     for (const auto &feed : feeds) {
         d->feeds.insert(feed);
-        feed->setExpireAge(d->expireAge);
+        d->configureExpiration(feed);
         d->configureUpdates(feed, timestamp);
         QObject::connect(feed, &QObject::destroyed, this, [this, feed] {
             d->feeds.remove(feed);
         });
         QObject::connect(feed, &Feed::updateModeChanged, this, [this, feed] {
             d->configureUpdates(feed);
+        });
+        QObject::connect(feed, &Feed::expireModeChanged, this, [this, feed] {
+            d->configureExpiration(feed);
         });
         emit feedAdded(feed);
     }

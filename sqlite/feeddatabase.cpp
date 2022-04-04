@@ -68,6 +68,7 @@ static void initDatabase(QSqlDatabase &db)
                         "icon TEXT,"
                         "updateInterval INTEGER,"
                         "lastUpdate INTEGER,"
+                        "expireAge INTEGER,"
                         "UNIQUE(source,localId));",
 
                         "CREATE TABLE Item("
@@ -477,6 +478,20 @@ void FeedDatabase::updateFeedLastUpdate(qint64 feedId, const QDateTime &lastUpda
     q.bindValue(":id", feedId);
     if (!q.exec()) {
         qWarning() << "SQL Error in updateFeed: " << q.lastError().text();
+    }
+}
+
+void FeedDatabase::updateFeedExpireAge(qint64 feedId, qint64 expireAge)
+{
+    QSqlQuery q(db());
+    q.prepare(
+        "UPDATE Feed SET "
+        "expireAge=:expireAge "
+        "WHERE id=:id");
+    q.bindValue(":expireAge", expireAge);
+    q.bindValue(":id", feedId);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in updateFeedExpireAge: " << q.lastError().text();
     }
 }
 

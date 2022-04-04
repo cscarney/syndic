@@ -36,6 +36,18 @@ void FeedImpl::unpackUpdateInterval(qint64 updateInterval)
     }
 }
 
+void FeedImpl::unpackExpireAge(qint64 expireAge)
+{
+    if (expireAge == 0) {
+        setExpireMode(InheritUpdateMode);
+    } else if (expireAge < 0) {
+        setExpireMode(DisableUpdateMode);
+    } else {
+        setExpireMode(OverrideUpdateMode);
+        setExpireAge(expireAge);
+    }
+}
+
 void FeedImpl::updateFromQuery(const FeedQuery &query)
 {
     setName(query.displayName());
@@ -46,6 +58,7 @@ void FeedImpl::updateFromQuery(const FeedQuery &query)
     setUnreadCount(query.unreadCount());
     setLastUpdate(query.lastUpdate());
     unpackUpdateInterval(query.updateInterval());
+    unpackExpireAge(query.expireAge());
 }
 
 Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)

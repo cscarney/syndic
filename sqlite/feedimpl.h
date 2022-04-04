@@ -37,6 +37,7 @@ private:
     qint64 m_id{0};
     StorageImpl *m_storage{nullptr};
     void unpackUpdateInterval(qint64 updateInterval);
+    void unpackExpireAge(qint64 expireAge);
     void updateSourceArticle(const Syndication::ItemPtr &article) final;
     void expire(const QDateTime &olderThan) final;
     friend FeedCore::ObjectFactory<qint64, FeedImpl>;

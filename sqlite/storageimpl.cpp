@@ -170,9 +170,9 @@ Future<Feed *> *StorageImpl::getFeeds()
     });
 }
 
-static qint64 packFeedUpdateInterval(Feed *feed)
+static qint64 packModeValue(Feed::UpdateMode mode, qint64 value)
 {
-    switch (feed->updateMode()) {
+    switch (mode) {
     case Feed::InheritUpdateMode:
     default:
         return 0;
@@ -181,8 +181,18 @@ static qint64 packFeedUpdateInterval(Feed *feed)
         return -1;
 
     case Feed::OverrideUpdateMode:
-        return feed->updateInterval();
+        return value;
     }
+}
+
+static qint64 packFeedUpdateInterval(Feed *feed)
+{
+    return packModeValue(feed->updateMode(), feed->updateInterval());
+}
+
+static qint64 packFeedExpireAge(Feed *feed)
+{
+    return packModeValue(feed->expireMode(), feed->expireAge());
 }
 
 Future<Feed *> *StorageImpl::storeFeed(Feed *feed)
@@ -191,13 +201,15 @@ Future<Feed *> *StorageImpl::storeFeed(Feed *feed)
     const QString &name = feed->name();
     const QString &category = feed->category();
     const qint64 updateInterval = packFeedUpdateInterval(feed);
-    return Future<Feed *>::yield(this, [this, url, name, category, updateInterval](auto *op) {
+    const qint64 expireAge = packFeedExpireAge(feed);
+    return Future<Feed *>::yield(this, [this, url, name, category, updateInterval, expireAge](auto *op) {
         const auto &insertId = m_db.insertFeed(url);
         if (!insertId) {
             op->setResult();
             return;
         }
         m_db.updateFeedUpdateInterval(*insertId, updateInterval);
+        m_db.updateFeedExpireAge(*insertId, expireAge);
         m_db.updateFeedName(*insertId, name);
         m_db.updateFeedCategory(*insertId, category);
         FeedQuery result{m_db.selectFeed(*insertId)};
@@ -219,6 +231,20 @@ static void onUpdateIntervalChanged(FeedDatabase &db, Feed *feed, qint64 feedId)
     db.updateFeedUpdateInterval(feedId, feed->updateInterval());
 }
 
+static void onExpireModeChanged(FeedDatabase &db, FeedImpl *feed)
+{
+    qint64 expireAge = packFeedExpireAge(feed);
+    db.updateFeedExpireAge(feed->id(), expireAge);
+}
+
+static void onExpireAgeChanged(FeedDatabase &db, FeedImpl *feed)
+{
+    if (feed->expireMode() != Feed::OverrideUpdateMode) {
+        return;
+    }
+    db.updateFeedExpireAge(feed->id(), feed->expireAge());
+}
+
 void StorageImpl::listenForChanges(FeedImpl *feed)
 {
     qint64 feedId = feed->id();
@@ -230,6 +256,12 @@ void StorageImpl::listenForChanges(FeedImpl *feed)
     });
     QObject::connect(feed, &Feed::updateModeChanged, this, [this, feed, feedId] {
         onUpdateModeChanged(m_db, feed, feedId);
+    });
+    QObject::connect(feed, &Feed::expireModeChanged, this, [this, feed] {
+        onExpireModeChanged(m_db, feed);
+    });
+    QObject::connect(feed, &Feed::expireAgeChanged, this, [this, feed] {
+        onExpireAgeChanged(m_db, feed);
     });
     QObject::connect(feed, &Feed::nameChanged, this, [this, feed] {
         m_db.updateFeedName(feed->id(), feed->name());
