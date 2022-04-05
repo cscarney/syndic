@@ -38,9 +38,6 @@ public:
     QIODevice *prepare(const QNetworkCacheMetaData &metaData) override;
     void insert(QIODevice *device) override;
     void clear() override;
-
-private:
-    static SharedDiskCache *getShared();
 };
 
 }
