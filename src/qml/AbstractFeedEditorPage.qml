@@ -12,14 +12,8 @@ import com.rocksandpaper.syndic 1.0
 Kirigami.ScrollablePage {
     id: root
     property Item pageRow;
+    property ProvisionalFeed provisionalFeed
     property bool previewOpen: false
-
-    property ProvisionalFeed provisionalFeed: ProvisionalFeed {
-        updateMode: Feed.InheritUpdateMode
-        updateInterval: globalSettings.updateInterval
-        expireMode: Feed.InheritUpdateMode
-        expireAge: globalSettings.expireAge
-    }
 
     ButtonGroup {
         id: expireAgeGroup

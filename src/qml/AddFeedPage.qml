@@ -5,10 +5,18 @@
 
 import QtQuick 2.0
 import org.kde.kirigami 2.7 as Kirigami
+import com.rocksandpaper.syndic 1.0
 
 AbstractFeedEditorPage {
     property bool keepDrawerOpen: true
     title: qsTr("Add Content")
+
+    provisionalFeed: ProvisionalFeed {
+        updateMode: Feed.InheritUpdateMode
+        updateInterval: globalSettings.updateInterval
+        expireMode: Feed.InheritUpdateMode
+        expireAge: globalSettings.expireAge
+    }
 
     actions {
         main: Kirigami.Action {

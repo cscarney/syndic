@@ -8,9 +8,10 @@ import org.kde.kirigami 2.14 as Kirigami
 import com.rocksandpaper.syndic 1.0
 
 AbstractFeedEditorPage {
+    id: root
     property Feed targetFeed;
-    provisionalFeed {
-        targetFeed: targetFeed
+    provisionalFeed: ProvisionalFeed {
+        targetFeed: root.targetFeed
     }
 
     actions {

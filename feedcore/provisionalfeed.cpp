@@ -74,6 +74,7 @@ void ProvisionalFeed::setTargetFeed(Feed *targetFeed)
         return;
     }
     m_targetFeed = targetFeed;
+    updateParams(m_targetFeed);
     emit targetFeedChanged();
 }
 
