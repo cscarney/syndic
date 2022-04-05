@@ -159,7 +159,7 @@ signals:
      *
      * After this signal is emitted, getFeeds() will include all stored feeds.
      */
-    void feedListPopulated();
+    void feedListPopulated(int nFeeds);
 
 private:
     struct PrivData;

@@ -167,6 +167,15 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    Connections {
+        target: feedContext
+        function onFeedListPopulated(nFeeds) {
+            if (nFeeds === 0) {
+                pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
+            }
+        }
+    }
+
     onClosing: {
         globalSettings.width = width
         globalSettings.height = height

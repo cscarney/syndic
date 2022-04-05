@@ -285,7 +285,7 @@ void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
 void Context::populateFeeds(const QVector<Feed *> &feeds)
 {
     registerFeeds(feeds);
-    emit feedListPopulated();
+    emit feedListPopulated(d->feeds.size());
 }
 
 void Context::registerFeeds(const QVector<Feed *> &feeds)
