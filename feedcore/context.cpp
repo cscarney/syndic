@@ -96,7 +96,7 @@ void Context::addFeed(Feed *feed)
 
 QStringList Context::getCategories()
 {
-    QMap<QString, std::nullptr_t> categories;
+    QMap<QString, std::nullptr_t> categories{{"", nullptr}};
     for (auto *feed : qAsConst(d->feeds)) {
         categories.insert(feed->category(), nullptr);
     }
