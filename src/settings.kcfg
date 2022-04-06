@@ -26,10 +26,10 @@
     </group>
     <group name="MainWindow">
         <entry name="width" type="Int">
-            <default>1024</default>
+            <default>1700</default>
         </entry>
         <entry name="height" type="Int">
-            <default>768</default>
+            <default>960</default>
         </entry>
         <entry name="textAdjust" type="Int">
             <default>0</default>
