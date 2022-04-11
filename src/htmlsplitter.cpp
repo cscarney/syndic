@@ -95,7 +95,9 @@ void HtmlSplitter::visitText(GumboNode *node)
     ensureTextBlock();
     QString textContent = QString::fromUtf8(text.original_text.data, int(text.original_text.length));
     if (!textContent.isEmpty()) {
-        m_haveTextContent = true;
+        if (node->type != GUMBO_NODE_WHITESPACE) {
+            m_haveTextContent = true;
+        }
         m_currentTextBlock->appendText(textContent);
     }
 }

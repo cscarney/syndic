@@ -19,6 +19,7 @@ void GumboVisitor::walk()
         switch (m_node->type) {
         case GUMBO_NODE_TEXT:
         case GUMBO_NODE_CDATA:
+        case GUMBO_NODE_WHITESPACE:
             visitText(m_node);
             break;
         case GUMBO_NODE_ELEMENT: {
