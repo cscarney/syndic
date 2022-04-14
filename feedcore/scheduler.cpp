@@ -66,9 +66,8 @@ void Scheduler::schedule(Feed *feed, const QDateTime &timestamp)
 
 void Scheduler::unschedule(Feed *feed)
 {
-    if (d->schedule.removeOne(feed)) {
-        QObject::disconnect(feed, nullptr, this, nullptr);
-    };
+    d->schedule.removeOne(feed);
+    QObject::disconnect(feed, nullptr, this, nullptr);
 }
 
 void Scheduler::start(int resolution)
