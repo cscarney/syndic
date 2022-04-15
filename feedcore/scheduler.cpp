@@ -124,6 +124,9 @@ void Scheduler::clearErrors()
 void Scheduler::reschedule(Feed *feed, const QDateTime &timestamp)
 {
     d->schedule.removeOne(feed);
+    if (feed->status() == LoadStatus::Updating) {
+        return;
+    }
     if (needsUpdate(feed, timestamp)) {
         feed->updater()->start();
     } else {
