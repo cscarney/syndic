@@ -7,3 +7,11 @@ add_executable(testStoreAndRetrieveFeed tst_teststoreandretrievefeed.cpp)
 add_test(NAME testStoreAndRetrieveFeed COMMAND testStoreAndRetrieveFeed)
 target_link_libraries(testStoreAndRetrieveFeed PRIVATE Qt5::Test feedcore sqlite)
 
+add_executable(testUpdateScheduler tst_testupdatescheduler.cpp)
+add_test(NAME testUpdateScheduler COMMAND testUpdateScheduler)
+target_link_libraries(testUpdateScheduler PRIVATE Qt5::Test feedcore)
+
+add_executable(testContextValuePropagation tst_testcontextvaluepropagation.cpp)
+add_test(NAME testContextValuePropagation COMMAND testContextValuePropagation)
+target_link_libraries(testContextValuePropagation PRIVATE Qt5::Test feedcore)
+

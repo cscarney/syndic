@@ -35,7 +35,10 @@ if (ANDROID)
     find_package(Qt5 COMPONENTS Svg AndroidExtras REQUIRED)
 endif()
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -Wno-error=deprecated-declarations")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Werror -Wno-error=deprecated-declarations ${CMAKE_CXX_FLAGS_DEBUG}")
+if (SYNDIC_BUILD_TESTS)
+    set(CMAKE_CXX_FLAGS_DEBUG "--coverage -fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS_DEBUG}")
+endif()
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 configure_file(cmake-config.h.template ${CMAKE_CURRENT_BINARY_DIR}/cmake-config.h)
@@ -51,5 +54,8 @@ add_subdirectory(data)
 add_subdirectory(feedcore)
 add_subdirectory(sqlite)
 add_subdirectory(src)
-add_subdirectory(test)
+
+if (SYNDIC_BUILD_TESTS)
+    add_subdirectory(test)
+endif()
 
