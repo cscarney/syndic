@@ -101,10 +101,12 @@ ScrollView {
         }
 
         move: Transition {
+            enabled: root.visible
             NumberAnimation { properties: "x, y"; duration: Kirigami.Units.shortDuration }
         }
 
         displaced: Transition {
+            enabled: root.visible
             NumberAnimation { properties: "x, y"; duration: Kirigami.Units.shortDuration }
         }
 
