@@ -114,8 +114,6 @@ Kirigami.ScrollablePage {
     onAutomaticOpenChanged: {
         if (automaticOpen &&  pageRow.lastItem === root) {
             openChild()
-        } else if (!articleList.currentItem) {
-            pageRow.currentIndex = root.Kirigami.ColumnView.index
         }
     }
 
@@ -147,6 +145,8 @@ Kirigami.ScrollablePage {
             data.article.isRead = true
         } else if (model && automaticOpen) {
             pushPlaceholder();
+        } else {
+            root.pageRow.pop(root)
         }
     }
 

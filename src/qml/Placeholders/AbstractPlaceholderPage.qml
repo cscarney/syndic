@@ -46,4 +46,16 @@ Kirigami.Page {
             text: descriptionText
         }
     }
+
+    Connections {
+        target: root.Kirigami.ColumnView.view
+        function onFirstVisibleItemChanged() {
+            if (target.firstVisibleItem === root) {
+                // calling removeItem directly from change handler causes crash in Kirigami
+                Qt.callLater(function(){
+                    target.removeItem(root)
+                });
+            }
+        }
+    }
 }
