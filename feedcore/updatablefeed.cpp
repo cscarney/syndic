@@ -5,6 +5,7 @@
 
 #include "updatablefeed.h"
 #include "networkaccessmanager.h"
+#include <QDebug>
 #include <QNetworkReply>
 #include <Syndication/DataRetriever>
 #include <Syndication/Image>
