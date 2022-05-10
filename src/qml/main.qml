@@ -147,18 +147,9 @@ Kirigami.ApplicationWindow {
     Connections {
         target: pageStack.currentItem
         ignoreUnknownSignals: true
+
         function onBackRequested(event) {
-            // go back to the first non-visible page (rather than the
-            // default back behavior, which just moves the focus
-            // one column to the left)
-            var index = pageStack.firstVisibleItem.Kirigami.ColumnView.index;
-            if (index > 0) {
-                pageStack.currentIndex = index-1;
-                event.accepted = true;
-            } else if (feedList.currentIndex != 0) {
-                feedList.currentIndex = 0;
-                event.accepted = true
-            }
+            root.goBack(event);
         }
 
         function onSuspendAnimations() {
@@ -179,6 +170,35 @@ Kirigami.ApplicationWindow {
     onClosing: {
         globalSettings.width = width
         globalSettings.height = height
+    }
+
+    Component.onCompleted: {
+        // HACK workaround Kirigami's hopelessly broken back button behavior
+        // Kirigami doesn't accept the underlying key event when the backRequested
+        // event is accepted, so if we don't handle the back button directly we
+        // get the fallback behavior of *quitting the application* every time
+        // the user hits the back button.
+        //
+        // To avoid this, we call goBack again with the key event.
+        pageStack.Keys.released.connect(function(event) {
+            if (event.key === Qt.Key_Back) {
+                goBack(event);
+            }
+        });
+    }
+
+    function goBack(event) {
+        // go back to the first non-visible page (rather than the
+        // default back behavior, which just moves the focus
+        // one column to the left)
+        var index = pageStack.firstVisibleItem.Kirigami.ColumnView.index;
+        if (index > 0) {
+            pageStack.currentIndex = index-1;
+            event.accepted = true;
+        } else if (feedList.currentIndex != 0) {
+            feedList.currentIndex = 0;
+            event.accepted = true
+        }
     }
 
     function pushFeed(feed) {
