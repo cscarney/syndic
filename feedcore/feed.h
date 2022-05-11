@@ -230,7 +230,7 @@ public:
      *
      * The implementation should call aborted() if the abort is successful.
      */
-    virtual void abort(){};
+    Q_INVOKABLE virtual void abort(){};
 
     /**
      * Begin an update.

@@ -59,10 +59,23 @@ AbstractArticleListPage {
                 iconName: "view-refresh"
                 displayHint: Kirigami.DisplayHint.AlwaysHide
                 enabled: feed && feed.status!=Feed.Updating
+                visible: !cancelAction.visible
                 onTriggered: {
                     root.model.requestUpdate();
                 }
+            },
+
+            Kirigami.Action {
+                id: cancelAction
+                text: qsTr("Cancel")
+                iconName: "dialog-cancel"
+                displayHint: Kirigami.DisplayHint.AlwaysHide
+                visible: feed && feed.status===Feed.Updating
+                onTriggered: {
+                    feed.updater.abort()
+                }
             }
+
         ]
     }
 }
