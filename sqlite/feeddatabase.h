@@ -42,7 +42,6 @@ public:
 
     FeedQuery selectAllFeeds();
     FeedQuery selectFeed(qint64 feedId);
-    std::optional<qint64> selectFeedId(qint64 source, const QString &localId);
     std::optional<qint64> insertFeed(const QUrl &url);
     void updateFeedName(qint64 feedId, const QString &name);
     void updateFeedCategory(qint64 feedId, const QString &category);

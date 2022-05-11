@@ -59,8 +59,6 @@ static void initDatabase(QSqlDatabase &db)
         success = exec(db,
                        {"CREATE TABLE Feed("
                         "id INTEGER PRIMARY KEY,"
-                        "source INTEGER REFERENCES FeedSource,"
-                        "localId TEXT NOT NULL,"
                         "displayName TEXT,"
                         "category TEXT,"
                         "url TEXT NOT NULL,"
@@ -68,8 +66,7 @@ static void initDatabase(QSqlDatabase &db)
                         "icon TEXT,"
                         "updateInterval INTEGER,"
                         "lastUpdate INTEGER,"
-                        "expireAge INTEGER,"
-                        "UNIQUE(source,localId));",
+                        "expireAge INTEGER);",
 
                         "CREATE TABLE Item("
                         "id INTEGER PRIMARY KEY,"
@@ -355,35 +352,14 @@ FeedQuery FeedDatabase::selectFeed(qint64 feedId)
     return q;
 }
 
-std::optional<qint64> FeedDatabase::selectFeedId(qint64 source, const QString &localId)
-{
-    QSqlQuery q(db());
-    q.prepare(
-        "SELECT id FROM Feed "
-        "WHERE source=:source AND localId=:localId;");
-    q.bindValue(":source", source);
-    q.bindValue(":localId", localId);
-    if (!q.exec()) {
-        qWarning() << "SQL Error in selectFeedId: " + q.lastError().text();
-        return std::nullopt;
-    }
-    if (!q.next()) {
-        return std::nullopt;
-    }
-
-    return q.value(0).toLongLong();
-}
-
 std::optional<qint64> FeedDatabase::insertFeed(const QUrl &url)
 {
     QSqlQuery q(db());
     const QString &urlString = url.toString();
     const QString &urlHost = url.host();
     q.prepare(
-        "INSERT INTO Feed (source, localId, displayName, url) "
-        "VALUES (:source, :localId, :displayName, :url);");
-    q.bindValue(":source", 0);
-    q.bindValue(":localId", urlString);
+        "INSERT INTO Feed (displayName, url) "
+        "VALUES (:displayName, :url);");
     q.bindValue(":displayName", urlHost);
     q.bindValue(":url", urlString);
     if (!q.exec()) {

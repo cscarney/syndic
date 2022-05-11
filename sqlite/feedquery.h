@@ -19,7 +19,7 @@ public:
         : QSqlQuery(db)
     {
         prepare(
-            "SELECT Feed.id, Feed.source, Feed.localId, Feed.displayName, Feed.category, Feed.url, Feed.link, Feed.icon, "
+            "SELECT Feed.id, Feed.displayName, Feed.category, Feed.url, Feed.link, Feed.icon, "
             "COUNT(Item.id), updateInterval, lastUpdate, expireAge "
             "FROM Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false "
             "WHERE "
@@ -29,49 +29,41 @@ public:
     {
         return value(0).toLongLong();
     }
-    qint64 source() const
-    {
-        return value(1).toLongLong();
-    }
-    QString localId() const
-    {
-        return value(2).toString();
-    }
     QString displayName() const
     {
-        return value(3).toString();
+        return value(1).toString();
     }
     QString category() const
     {
-        return value(4).toString();
+        return value(2).toString();
     }
     QUrl url() const
     {
-        return value(5).toUrl();
+        return value(3).toUrl();
     }
     QUrl link() const
     {
-        return value(6).toUrl();
+        return value(4).toUrl();
     }
     QUrl icon() const
     {
-        return value(7).toUrl();
+        return value(5).toUrl();
     }
     int unreadCount() const
     {
-        return value(8).toInt();
+        return value(6).toInt();
     }
     qint64 updateInterval() const
     {
-        return value(9).toLongLong();
+        return value(7).toLongLong();
     }
     QDateTime lastUpdate() const
     {
-        return QDateTime::fromSecsSinceEpoch(value(10).toLongLong());
+        return QDateTime::fromSecsSinceEpoch(value(8).toLongLong());
     }
     qint64 expireAge() const
     {
-        return value(11).toLongLong();
+        return value(9).toLongLong();
     }
 };
 }
