@@ -5,6 +5,7 @@
 
 #include "application.h"
 #include "cmake-config.h"
+#include <QDebug>
 #include <QDir>
 #include <QDirIterator>
 #include <QFontDatabase>
@@ -194,7 +195,11 @@ void Application::onLastWindowClosed()
     if (topLevelWindows().size() > 1) {
         // we sometimes get called when dialogs are closed
         // possibly related: https://bugreports.qt.io/browse/QTBUG-80483
-        return;
+        for (auto *eachWindow : topLevelWindows()) {
+            if (eachWindow->visibility() != QWindow::Hidden) {
+                return;
+            }
+        }
     }
     if (!d->settings.runInBackground()) {
         quit();
