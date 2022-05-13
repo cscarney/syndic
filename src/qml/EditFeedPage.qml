@@ -10,6 +10,8 @@ import com.rocksandpaper.syndic 1.0
 AbstractFeedEditorPage {
     id: root
     property Feed targetFeed;
+    property var onDone: function(){}
+
     provisionalFeed: ProvisionalFeed {
         targetFeed: root.targetFeed
     }
@@ -18,7 +20,10 @@ AbstractFeedEditorPage {
         main: Kirigami.Action {
             text: qsTr("Save")
             iconName: "checkmark"
-            onTriggered: provisionalFeed.save();
+            onTriggered: {
+                provisionalFeed.save();
+                onDone();
+            }
         }
 
         left: Kirigami.Action {
