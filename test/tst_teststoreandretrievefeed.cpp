@@ -102,6 +102,20 @@ private slots:
         }
     }
 
+    void testModifyUrl()
+    {
+        const QUrl testUrl = QUrl("http://new.url");
+        {
+            m_feed->setUrl(testUrl);
+            QCoreApplication::processEvents();
+        }
+        {
+            refreshContext();
+            QVERIFY(m_feed != nullptr);
+            QVERIFY(m_feed->url() == testUrl);
+        }
+    }
+
     void testSetUpdateModeInherit()
     {
         setupModifyUpdateModeTest(FeedCore::Feed::InheritUpdateMode);

@@ -383,6 +383,21 @@ void FeedDatabase::updateFeedName(qint64 feedId, const QString &newName)
     }
 }
 
+void FeedDatabase::updateFeedUrl(qint64 feedId, const QUrl &url)
+{
+    QSqlQuery q(db());
+    const QString &urlString = url.toString();
+    q.prepare(
+        "UPDATE Feed SET "
+        "url=:url "
+        "WHERE id=:id");
+    q.bindValue(":url", urlString);
+    q.bindValue(":id", feedId);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in updateFeedUrl: " << q.lastError().text();
+    }
+}
+
 void FeedDatabase::updateFeedCategory(qint64 feedId, const QString &category)
 {
     QSqlQuery q(db());

@@ -32,7 +32,6 @@ Kirigami.ScrollablePage {
             id: optionsForm
             TextField {
                 id: urlField
-                readOnly: !!provisionalFeed.targetFeed
                 Kirigami.FormData.label: qsTr("Feed Url:")
                 text: provisionalFeed.targetFeed ? provisionalFeed.url : ""
                 onTextChanged: previewOpen = false;
