@@ -36,7 +36,7 @@ if (ANDROID)
 endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Werror -Wno-error=deprecated-declarations ${CMAKE_CXX_FLAGS_DEBUG}")
-if (SYNDIC_BUILD_TESTS)
+if (BUILD_TESTING)
     set(CMAKE_CXX_FLAGS_DEBUG "--coverage -fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
@@ -55,7 +55,6 @@ add_subdirectory(feedcore)
 add_subdirectory(sqlite)
 add_subdirectory(src)
 
-if (SYNDIC_BUILD_TESTS)
+if (BUILD_TESTING)
     add_subdirectory(test)
 endif()
-
