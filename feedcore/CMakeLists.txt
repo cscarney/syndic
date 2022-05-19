@@ -33,6 +33,7 @@ set(feedcore_SRCS
     )
     
 add_library(feedcore STATIC ${feedcore_SRCS})
+ecm_create_qm_loader(feedcore feedcore)
 
 target_link_libraries(feedcore
     Qt5::Core

@@ -20,6 +20,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(ECM CONFIG REQUIRED)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(ECMInstallIcons)
+include(ECMPoQmTools)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 
@@ -54,6 +55,8 @@ add_subdirectory(data)
 add_subdirectory(feedcore)
 add_subdirectory(sqlite)
 add_subdirectory(src)
+
+ecm_install_po_files_as_qm(po)
 
 if (BUILD_TESTING)
     add_subdirectory(test)

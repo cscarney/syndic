@@ -37,6 +37,7 @@ set(syndic_SRCS
 add_executable(syndic ${syndic_SRCS})
 
 kconfig_add_kcfg_files(syndic settings.kcfgc GENERATE_MOC)
+ecm_create_qm_loader(syndic syndic)
 
 target_link_libraries(syndic
     Qt5::Core

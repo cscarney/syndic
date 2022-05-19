@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Qt-Contexts: true\n"
+
+#: src/qml/AbstractFeedEditorPage.qml:96
+#, qt-format
+msgctxt "AbstractFeedEditorPage|"
+msgid "%n minute(s)"
+msgid_plural "%n minute(s)"
+msgstr[0] "%n minute"
+msgstr[1] "%n minutes"
+
+#: src/qml/AbstractFeedEditorPage.qml:152
+#, qt-format
+msgctxt "AbstractFeedEditorPage|"
+msgid "%n day(s)"
+msgid_plural "%n day(s)"
+msgstr[0] "%n day"
+msgstr[1] "%n days"
+
+#: src/notificationcontroller.cpp:71
+#, qt-format
+msgctxt "NotificationController|Notification Text"
+msgid "%1 New Item(s)"
+msgid_plural "%1 New Item(s)"
+msgstr[0] "%n New Item"
+msgstr[1] "%n New Items"
+
+#: src/qml/SettingsPage.qml:50
+#, qt-format
+msgctxt "SettingsPage|"
+msgid "%n minute(s)"
+msgid_plural "%n minute(s)"
+msgstr[0] "%n minute"
+msgstr[1] "%n minutes"
+
+#: src/qml/SettingsPage.qml:91
+#, qt-format
+msgctxt "SettingsPage|"
+msgid "%n day(s)"
+msgid_plural "%n day(s)"
+msgstr[0] "%n day"
+msgstr[1] "%n days"
