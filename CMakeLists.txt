@@ -31,6 +31,7 @@ find_package(KF5Config REQUIRED)
 find_package(KF5DBusAddons CONFIG QUIET)
 
 if (ANDROID)
+    set(BUILD_TESTING OFF)
     find_package(KF5Kirigami2 REQUIRED)
     find_package(OpenSSL)
     find_package(Qt5 COMPONENTS Svg AndroidExtras REQUIRED)
