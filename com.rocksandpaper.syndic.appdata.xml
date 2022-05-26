@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component type="desktop-application">
+    <id>com.rocksandpaper.syndic</id>
+    <name>Syndic</name>
+    <description><p>Convergent RSS/Atom reader</p></description>
+    <metadata_licence>GPL-3.0-or-later</metadata_licence>
+    <project_license>GPL-3.0-or-later</project_license>
+    <developer_name>Connor Carney</developer_name>
+    <launchable type="desktop-id">com.rocksandpaper.syndic.desktop</launchable>
+</component>

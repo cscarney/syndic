@@ -10,7 +10,7 @@ import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.ApplicationWindow {
     id: root
-    title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + Qt.application.name
+    title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + qsTr("Syndic")
     width: globalSettings.width
     height: globalSettings.height
     font: Kirigami.Theme.defaultFont

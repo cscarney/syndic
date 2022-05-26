@@ -35,7 +35,7 @@ Kirigami.ScrollablePage {
         id: emptyOverlay
         anchors.fill: parent
         visible: articleList.count == 0
-        icon: unreadFilter ? "checkmark" : "syndic-feed-empty"
+        icon: unreadFilter ? "checkmark" : "com.rocksandpaper.syndic.feed-empty"
         text: unreadFilter ? qsTr("All Read") : qsTr("No Items")
     }
 

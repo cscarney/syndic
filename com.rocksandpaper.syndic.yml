@@ -1,0 +1,24 @@
+id: com.rocksandpaper.syndic
+runtime: org.kde.Platform
+runtime-version: '5.15-21.08'
+sdk: org.kde.Sdk
+command: syndic
+rename-icon: syndic
+finish-args:
+- --share=network
+- --share=ipc
+- --socket=x11
+- --socket=wayland
+- --device=dri
+- --filesystem=home
+- --talk-name=org.freedesktop.Notifications
+- --talk-name=org.kde.StatusNotifierWatcher
+# HACK work around QSystemTrayIcon brokenness
+- --own-name=org.kde.*
+modules:
+- name: syndic
+  buildsystem: cmake-ninja
+  sources:
+  - type: dir
+    path: '.'
+    

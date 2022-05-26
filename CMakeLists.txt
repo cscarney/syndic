@@ -58,6 +58,7 @@ add_subdirectory(sqlite)
 add_subdirectory(src)
 
 ecm_install_po_files_as_qm(po)
+install(FILES com.rocksandpaper.syndic.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 if (BUILD_TESTING)
     add_subdirectory(test)

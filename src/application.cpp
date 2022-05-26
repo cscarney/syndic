@@ -115,7 +115,8 @@ Application::Application(int &argc, char **argv)
 {
     setOrganizationName("syndic");
     setOrganizationDomain("rocksandpaper.com");
-    setApplicationName("Syndic");
+    setApplicationName("syndic");
+    setDesktopFileName("com.rocksandpaper.syndic.desktop");
 
 #ifdef KF5DBusAddons_FOUND
     d->service = new KDBusService(KDBusService::Unique, this);

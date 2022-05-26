@@ -196,6 +196,11 @@ msgctxt "SettingsPage|"
 msgid "Export..."
 msgstr ""
 
+#: src/qml/main.qml:13
+msgctxt "main|"
+msgid "Syndic"
+msgstr ""
+
 #: src/qml/main.qml:80
 msgctxt "main|"
 msgid "Add Content"
