@@ -10,7 +10,7 @@ import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.ApplicationWindow {
     id: root
-    title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + qsTr("Syndic")
+    title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + Qt.application.displayName
     width: globalSettings.width
     height: globalSettings.height
     font: Kirigami.Theme.defaultFont
@@ -91,7 +91,7 @@ Kirigami.ApplicationWindow {
                 }
             },
             Kirigami.Action {
-                text: qsTr("About %1").arg(Qt.application.name)
+                text: qsTr("About %1").arg(Qt.application.displayName)
                 iconName: "help-about"
                 onTriggered: {
                     pushUtilityPage("qrc:/qml/AboutPage.qml")

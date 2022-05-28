@@ -11,7 +11,7 @@
 
 #ifdef Qt5Widgets_FOUND
 #define HAVE_SYSTEM_TRAY
-#include <QCoreApplication>
+#include <QGuiApplication>
 #include <QMenu>
 #include <QSystemTrayIcon>
 #endif
@@ -44,7 +44,7 @@ NotificationController::NotificationController(FeedCore::Context *context, QObje
     d->trayIcon = new QSystemTrayIcon(QIcon::fromTheme("rss"), this);
     d->trayIcon->setContextMenu(d->trayMenu.get());
     QObject::connect(d->trayIcon, &QSystemTrayIcon::activated, this, &NotificationController::activate);
-    d->trayIcon->setToolTip(QCoreApplication::applicationName());
+    d->trayIcon->setToolTip(QGuiApplication::applicationDisplayName());
     d->trayIcon->show();
 #endif
 }

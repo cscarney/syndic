@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import QtQuick 2.0
+import QtQuick 2.15
 import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.AboutPage {
     property bool keepDrawerOpen: true
     aboutData: ({
-        displayName: "Syndic",
+        displayName: Qt.application.displayName,
         productName: "syndic",
         componentName: "syndic",
         shortDescription: "Feed Reader",
