@@ -117,7 +117,7 @@ Kirigami.ScrollablePage {
             Kirigami.FormData.label: qsTr("OPML Data:")
 
             Button {
-                text: qsTr("Import...");
+                text: qsTr("Import…");
                 onClicked: {
                     dialogLoader.sourceComponent = dialogComponent;
                     var opmlDialog = dialogLoader.item;
@@ -130,7 +130,7 @@ Kirigami.ScrollablePage {
             }
 
             Button {
-                text: qsTr("Export...")
+                text: qsTr("Export…")
                 onClicked: {
                     dialogLoader.sourceComponent = dialogComponent;
                     var opmlDialog = dialogLoader.item;

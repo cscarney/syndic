@@ -44,7 +44,7 @@ AbstractArticleListPage {
              },
 
             Kirigami.Action {
-                text: qsTr("Edit...")
+                text: qsTr("Edit…")
                 iconName: "document-edit"
                 displayHint: Kirigami.DisplayHint.AlwaysHide
                 visible: feed && feed.editable

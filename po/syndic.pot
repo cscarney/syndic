@@ -66,8 +66,14 @@ msgid "Add Content"
 msgstr ""
 
 #: src/qml/AddFeedPage.qml:24
+#| msgid "Preview..."
 msgctxt "AddFeedPage|"
-msgid "Preview..."
+msgid "Preview…"
+msgstr ""
+
+#: src/application.cpp:120
+msgctxt "Application|"
+msgid "Syndic"
 msgstr ""
 
 #: src/qml/ArticlePage.qml:30
@@ -187,18 +193,15 @@ msgid "OPML Data:"
 msgstr ""
 
 #: src/qml/SettingsPage.qml:120
+#| msgid "Import..."
 msgctxt "SettingsPage|"
-msgid "Import..."
+msgid "Import…"
 msgstr ""
 
 #: src/qml/SettingsPage.qml:133
+#| msgid "Export..."
 msgctxt "SettingsPage|"
-msgid "Export..."
-msgstr ""
-
-#: src/qml/main.qml:13
-msgctxt "main|"
-msgid "Syndic"
+msgid "Export…"
 msgstr ""
 
 #: src/qml/main.qml:80
