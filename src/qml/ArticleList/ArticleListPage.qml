@@ -21,18 +21,6 @@ AbstractArticleListPage {
             displayHint: Kirigami.DisplayHint.KeepVisible
         }
 
-        right: Kirigami.Action {
-            id: clearReadAction
-            text: qsTr("Clear")
-            iconName: "edit-clear-all"
-            visible: root.feed && root.unreadFilter
-            enabled: root.feed && root.count > root.feed.unreadCount
-            onTriggered: {
-                root.currentIndex = -1
-                root.model.removeRead()
-            }
-        }
-
         contextualActions: [
             Kirigami.Action {
                  text: qsTr("Hide Read")

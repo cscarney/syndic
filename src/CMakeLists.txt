@@ -86,7 +86,6 @@ if (ANDROID)
         globe
         checkmark
         emblem-shared-symbolic
-        edit-clear-all
         )
 endif()
 

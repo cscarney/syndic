@@ -64,6 +64,8 @@ Kirigami.ApplicationWindow {
                 Layout.preferredHeight: drawer.height
                 onCurrentlySelectedFeedChanged:
                     if (currentlySelectedFeed) pushFeed(currentlySelectedFeed)
+                onReselectedCurrentFeed:
+                    if (pageStack.items[0].clearRead) pageStack.items[0].clearRead()
                 onItemClicked:
                     drawer.drawerOpen = !drawer.modal
             }

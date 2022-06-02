@@ -117,6 +117,12 @@ Kirigami.ScrollablePage {
         }
     }
 
+    function clearRead() {
+        root.currentIndex = model.status === Feed.Idle ? 0 : -1
+        root.model.removeRead()
+        articleList.positionViewAtBeginning()
+    }
+
     function pushPlaceholder() {
         switch(model.status) {
         case Feed.Loading:
