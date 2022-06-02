@@ -5,6 +5,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 
+#: src/qml/ArticleList/AbstractArticleListPage.qml:39
+msgctxt "AbstractArticleListPage|"
+msgid "All Read"
+msgstr ""
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:39
+msgctxt "AbstractArticleListPage|"
+msgid "No Items"
+msgstr ""
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:82
+msgctxt "AbstractArticleListPage|"
+msgid "Couldn't fetch feed from source"
+msgstr ""
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:88
+msgctxt "AbstractArticleListPage|"
+msgid "Retry"
+msgstr ""
+
 #: src/qml/AbstractFeedEditorPage.qml:35
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Url:"
@@ -60,13 +80,17 @@ msgid "%n day(s)"
 msgid_plural "%n day(s)"
 msgstr[0] ""
 
+#: src/qml/Placeholders/AbstractPlaceholderPage.qml:16
+msgctxt "AbstractPlaceholderPage|"
+msgid "Select an item to view it here"
+msgstr ""
+
 #: src/qml/AddFeedPage.qml:12
 msgctxt "AddFeedPage|"
 msgid "Add Content"
 msgstr ""
 
 #: src/qml/AddFeedPage.qml:24
-#| msgid "Preview..."
 msgctxt "AddFeedPage|"
 msgid "Preview…"
 msgstr ""
@@ -74,6 +98,36 @@ msgstr ""
 #: src/application.cpp:120
 msgctxt "Application|"
 msgid "Syndic"
+msgstr ""
+
+#: src/qml/ArticleList/ArticleListPage.qml:15
+msgctxt "ArticleListPage|"
+msgid "Mark All Read"
+msgstr ""
+
+#: src/qml/ArticleList/ArticleListPage.qml:26
+msgctxt "ArticleListPage|"
+msgid "Clear"
+msgstr ""
+
+#: src/qml/ArticleList/ArticleListPage.qml:38
+msgctxt "ArticleListPage|"
+msgid "Hide Read"
+msgstr ""
+
+#: src/qml/ArticleList/ArticleListPage.qml:47
+msgctxt "ArticleListPage|"
+msgid "Edit…"
+msgstr ""
+
+#: src/qml/ArticleList/ArticleListPage.qml:58
+msgctxt "ArticleListPage|"
+msgid "Refresh"
+msgstr ""
+
+#: src/qml/ArticleList/ArticleListPage.qml:70
+msgctxt "ArticleListPage|"
+msgid "Cancel"
 msgstr ""
 
 #: src/qml/ArticlePage.qml:30
@@ -106,6 +160,11 @@ msgctxt "EditFeedPage|"
 msgid "Delete"
 msgstr ""
 
+#: src/qml/Placeholders/ErrorPlaceholderPage.qml:18
+msgctxt "ErrorPlaceholderPage|"
+msgid "Retry"
+msgstr ""
+
 #: src/feedlistmodel.cpp:163
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
@@ -114,6 +173,11 @@ msgstr ""
 #: src/feedlistmodel.cpp:164
 msgctxt "FeedListModel|special feed name"
 msgid "Starred"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPreviewPage.qml:17
+msgctxt "FeedPreviewPage|"
+msgid "Subscribe"
 msgstr ""
 
 #: src/notificationcontroller.cpp:41
@@ -193,15 +257,18 @@ msgid "OPML Data:"
 msgstr ""
 
 #: src/qml/SettingsPage.qml:120
-#| msgid "Import..."
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr ""
 
 #: src/qml/SettingsPage.qml:133
-#| msgid "Export..."
 msgctxt "SettingsPage|"
 msgid "Export…"
+msgstr ""
+
+#: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
+msgctxt "UpdatingPlaceholderPage|"
+msgid "Update in Progress"
 msgstr ""
 
 #: src/qml/main.qml:80
