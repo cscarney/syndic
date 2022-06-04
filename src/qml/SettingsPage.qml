@@ -63,6 +63,7 @@ Kirigami.ScrollablePage {
         CheckBox {
             id: runInBackground
             text: qsTr("Run in background")
+            visible: !Kirigami.Settings.isMobile
             checked: globalSettings.runInBackground
             Binding {
                 target: globalSettings
