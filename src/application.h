@@ -5,9 +5,17 @@
 
 #ifndef APPLICATION_H
 #define APPLICATION_H
-#include <QApplication>
+#include "cmake-config.h"
 #include <QQmlApplicationEngine>
 #include <memory>
+
+#ifdef Qt5Widgets_FOUND
+#include <QApplication>
+typedef QApplication SyndicApplicationBase;
+#else
+#include <QGuiApplication>
+typedef QGuiApplication SyndicApplicationBase;
+#endif
 
 namespace FeedCore
 {
@@ -16,7 +24,7 @@ class Context;
 class Settings;
 class NotificationController;
 
-class Application : public QApplication
+class Application : public SyndicApplicationBase
 {
 public:
     Application(int &argc, char **argv);

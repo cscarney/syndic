@@ -110,7 +110,7 @@ static void loadEmbeddedFonts()
 #endif
 
 Application::Application(int &argc, char **argv)
-    : QApplication(argc, argv)
+    : SyndicApplicationBase(argc, argv)
     , d{std::make_unique<PrivData>()}
 {
     setOrganizationName("syndic");

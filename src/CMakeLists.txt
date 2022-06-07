@@ -41,7 +41,6 @@ ecm_create_qm_loader(syndic syndic)
 
 target_link_libraries(syndic
     Qt5::Core
-    Qt5::Widgets
     Qt5::Qml
     Qt5::Quick
     Qt5::QuickControls2
@@ -51,6 +50,12 @@ target_link_libraries(syndic
     sqlite
     htmlparser
     )
+
+if (Qt5Widgets_FOUND)
+    target_link_libraries(syndic
+        Qt5::Widgets
+        )
+endif()
 
 if(KF5DBusAddons_FOUND)
     target_link_libraries(syndic

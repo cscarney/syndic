@@ -24,7 +24,7 @@ include(ECMPoQmTools)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 
-find_package(Qt5 COMPONENTS Core Qml Network Widgets Quick QuickControls2 Sql REQUIRED)
+find_package(Qt5 COMPONENTS Core Qml Network Quick QuickControls2 Sql REQUIRED)
 
 find_package(KF5Syndication REQUIRED)
 find_package(KF5Config REQUIRED)
@@ -35,6 +35,8 @@ if (ANDROID)
     find_package(KF5Kirigami2 REQUIRED)
     find_package(OpenSSL)
     find_package(Qt5 COMPONENTS Svg AndroidExtras REQUIRED)
+else()
+    find_package(Qt5Widgets CONFIG QUIET)
 endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Werror -Wno-error=deprecated-declarations ${CMAKE_CXX_FLAGS_DEBUG}")
