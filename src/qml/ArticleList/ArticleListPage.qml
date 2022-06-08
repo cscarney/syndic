@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import QtQml 2.15
 import com.rocksandpaper.syndic 1.0
 import org.kde.kirigami 2.14 as Kirigami
 
 AbstractArticleListPage {
     id: root
     unreadFilter: globalSettings.unreadFilter
+    property bool acceptFeedListAction: false
 
     actions {
         main: Kirigami.Action {
@@ -66,4 +68,14 @@ AbstractArticleListPage {
 
         ]
     }
+
+    function feedListAction() {
+        // ignore the one that created us...
+        if (!acceptFeedListAction) return;
+        clearRead();
+    }
+
+    Component.onCompleted: Qt.callLater(function(){
+        acceptFeedListAction = true;
+    })
 }

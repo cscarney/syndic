@@ -15,7 +15,6 @@ ScrollView {
     property Feed currentlySelectedFeed
     property alias currentIndex: feedList.currentIndex
     signal itemClicked
-    signal reselectedCurrentFeed
 
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
@@ -88,14 +87,7 @@ ScrollView {
                 }
             }
 
-            onClicked: {
-                if (feedList.currentIndex === index) {
-                    reselectedCurrentFeed()
-                } else {
-                    feedList.currentIndex = index;
-                }
-                itemClicked();
-            }
+            onClicked: root.itemClicked()
         }/* delegate */
 
         section.property: "category"
