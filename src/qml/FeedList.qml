@@ -34,13 +34,13 @@ ScrollView {
             sortMode: globalSettings.feedListSort
             onRowsInserted: {
                 if (feedList.currentIndex < 0) {
-                    feedList.currentIndex = -1
-                    currentlySelectedFeed = data(index(first,0), FeedListModel.FeedRole);
+                    Qt.callLater(()=>feedList.currentIndex = first);
                 }
             }
             onRowsRemoved: {
-                feedList.currentIndex = 0;
-                currentlySelectedFeed = data(index(0,0), FeedListModel.FeedRole);
+                Qt.callLater(()=>{
+                    feedList.currentIndex = 0;
+                });
             }
         }
         clip: true
