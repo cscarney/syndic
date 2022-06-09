@@ -26,8 +26,8 @@ Item {
             Layout.preferredHeight: 128
             Layout.alignment: Qt.AlignHCenter
             isMask: true;
-            property var themeColor: Kirigami.Theme.textColor
-            property var alpha: 0.5
+            property color themeColor: Kirigami.Theme.textColor
+            property real alpha: 0.5
             color: Qt.rgba(themeColor.r, themeColor.g, themeColor.b, alpha)
         }
 

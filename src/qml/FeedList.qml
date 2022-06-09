@@ -32,11 +32,12 @@ ScrollView {
         model: FeedListModel{
             context: feedContext
             sortMode: globalSettings.feedListSort
-            onRowsInserted: {
+            onRowsInserted: function(parent,first,last){
                 if (feedList.currentIndex < 0) {
                     Qt.callLater(()=>feedList.currentIndex = first);
                 }
             }
+
             onRowsRemoved: {
                 Qt.callLater(()=>{
                     feedList.currentIndex = 0;

@@ -97,7 +97,7 @@ Kirigami.ScrollablePage {
 
         function pageDownIfNecessary() {
             if (!currentItem) return;
-            var pos = currentItem.y + currentItem.height - contentY;
+            const pos = currentItem.y + currentItem.height - contentY;
             if ( pos >= height) {
                 positionViewAtIndex(currentIndex, ListView.Beginning);
             }
@@ -107,7 +107,7 @@ Kirigami.ScrollablePage {
     onRefreshingChanged: {
         if (refreshing && (model.status === Feed.Idle)) {
             model.requestUpdate();
-            refreshing = Qt.binding(function(){ return isUpdating; });
+            refreshing = Qt.binding(()=>isUpdating);
         }
     }
 
@@ -146,7 +146,7 @@ Kirigami.ScrollablePage {
             suspendAnimations();
         }
         if (articleList.currentItem) {
-            var data = articleList.currentItem.data
+            const data = articleList.currentItem.data
             root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data, nextItem: nextItem, previousItem: previousItem})
             data.article.isRead = true
         } else if (model && automaticOpen) {

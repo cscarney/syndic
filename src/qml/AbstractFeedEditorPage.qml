@@ -92,12 +92,8 @@ Kirigami.ScrollablePage {
                     enabled: updateIntervalCustom.checked
                     value: provisionalFeed.updateInterval / 60
                     from: 1
-                    textFromValue: function(value, locale) {
-                        return qsTr("%n minute(s)", "", value)
-                    }
-                    valueFromText: function(text, locale) {
-                        return +text.replace(/[^\d]/g, "")
-                    }
+                    textFromValue: (value, locale)=>qsTr("%n minute(s)", "", value)
+                    valueFromText: (text, locale)=>+text.replace(/[^\d]/g, "")
                     onValueModified: provisionalFeed.updateInterval = value * 60
                 }
                 onToggled: {
@@ -148,12 +144,8 @@ Kirigami.ScrollablePage {
                     enabled: expireAgeCustom.checked
                     value: provisionalFeed.expireAge / 86400
                     from: 1
-                    textFromValue: function(value, locale) {
-                        return qsTr("%n day(s)", "", value)
-                    }
-                    valueFromText: function(text, locale) {
-                        return +text.replace(/[^\d]/g, "")
-                    }
+                    textFromValue: (value, locale)=>qsTr("%n day(s)", "", value)
+                    valueFromText: (text, locale)=>+text.replace(/[^\d]/g, "")
                     onValueModified: provisionalFeed.expireAge = value * 86400
                 }
                 onToggled: {

@@ -200,8 +200,8 @@ Kirigami.Page {
     }
 
     function pxUpDown(increment) {
-        var topY = scroller.originY - scroller.topMargin;
-        var bottomY = scroller.originY + scroller.contentHeight + scroller.bottomMargin - scroller.height;
+        const topY = scroller.originY - scroller.topMargin;
+        const bottomY = scroller.originY + scroller.contentHeight + scroller.bottomMargin - scroller.height;
         scroller.contentY = Math.max(topY, Math.min(scroller.contentY + increment, bottomY))
     }
 

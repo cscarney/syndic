@@ -18,7 +18,7 @@ AbstractArticleListPage {
             iconName: "list-add"
             enabled: model.status == Feed.Idle
             onTriggered: {
-                var feed = root.feed
+                const feed = root.feed
                 pageRow.clear();
                 feedContext.addFeed(feed);
             }

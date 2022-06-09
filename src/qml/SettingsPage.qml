@@ -46,12 +46,8 @@ Kirigami.ScrollablePage {
                 enabled: updateIntervalEnabled.checked
                 value: globalSettings.updateInterval / 60
                 from: 1
-                textFromValue: function(value, locale) {
-                    return qsTr("%n minute(s)", "", value)
-                }
-                valueFromText: function(text, locale) {
-                    return +text.replace(/[^\d]/g, "")
-                }
+                textFromValue: (value, locale)=>qsTr("%n minute(s)", "", value)
+                valueFromText: (text, locale)=>+text.replace(/[^\d]/g, "")
                 Binding {
                     target: globalSettings
                     property: "updateInterval"
@@ -88,12 +84,8 @@ Kirigami.ScrollablePage {
                 enabled: expireItems.checked
                 value: globalSettings.expireAge / 86400
                 from: 1
-                textFromValue: function(value, locale) {
-                    return qsTr("%n day(s)", "", value)
-                }
-                valueFromText: function(text, locale) {
-                    return +text.replace(/[^\d]/g, "")
-                }
+                textFromValue: (value, locale)=>qsTr("%n day(s)", "", value)
+                valueFromText: (text, locale)=>+text.replace(/[^\d]/g, "")
                 Binding {
                     target: globalSettings
                     property: "expireAge"
@@ -121,7 +113,7 @@ Kirigami.ScrollablePage {
                 text: qsTr("Import…");
                 onClicked: {
                     dialogLoader.sourceComponent = dialogComponent;
-                    var opmlDialog = dialogLoader.item;
+                    const opmlDialog = dialogLoader.item;
                     opmlDialog.selectExisting = true;
                     opmlDialog.acceptedFunc = function() {
                         feedContext.importOpml(opmlDialog.fileUrl);
@@ -134,7 +126,7 @@ Kirigami.ScrollablePage {
                 text: qsTr("Export…")
                 onClicked: {
                     dialogLoader.sourceComponent = dialogComponent;
-                    var opmlDialog = dialogLoader.item;
+                    const opmlDialog = dialogLoader.item;
                     opmlDialog.selectExisting = false;
                     opmlDialog.acceptedFunc = function() {
                         feedContext.exportOpml(opmlDialog.fileUrl);

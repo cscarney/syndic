@@ -160,12 +160,12 @@ ColumnLayout {
                 cursorShape: contentTextEdit.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
                 scrollGestureEnabled: true
                 acceptedButtons: Qt.NoButton
-                onWheel: {
-                        if (wheel.modifiers & Qt.ControlModifier) {
-                            globalSettings.textAdjust += Math.sign(wheel.angleDelta.y);
-                        } else {
-                            wheel.accepted = false
-                        }
+                onWheel: function(wheel){
+                    if (wheel.modifiers & Qt.ControlModifier) {
+                        globalSettings.textAdjust += Math.sign(wheel.angleDelta.y);
+                    } else {
+                        wheel.accepted = false
+                    }
                 }
             }
         }
