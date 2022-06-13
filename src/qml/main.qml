@@ -6,6 +6,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import QtQuick.Window 2.15
 import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.ApplicationWindow {
@@ -172,8 +173,10 @@ Kirigami.ApplicationWindow {
     }
 
     onClosing: {
-        globalSettings.width = width
-        globalSettings.height = height
+        if (root.visibility === Window.Windowed) {
+            globalSettings.width = width
+            globalSettings.height = height
+        }
     }
 
     Component.onCompleted: {
