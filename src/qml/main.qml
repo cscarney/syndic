@@ -14,6 +14,7 @@ Kirigami.ApplicationWindow {
     title: (priv.pageTitle.length>0 ? priv.pageTitle+" - " : "") + Qt.application.displayName
     width: globalSettings.width
     height: globalSettings.height
+    visibility: globalSettings.isMaximized ? Window.Maximized : Window.AutomaticVisibility
     font: Kirigami.Theme.defaultFont
 
     pageStack {
@@ -173,6 +174,7 @@ Kirigami.ApplicationWindow {
     }
 
     onClosing: {
+        globalSettings.isMaximized = (root.visibility === Window.Maximized)
         if (root.visibility === Window.Windowed) {
             globalSettings.width = width
             globalSettings.height = height
