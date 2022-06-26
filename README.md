@@ -14,3 +14,6 @@ Dependencies:
  * KConfig
  * Kirigami
  * KDBusAddons (Optional, desktop only)
+
+## Help Translate
+Want to see Syndic in your native language? Contribute translations from your web browser using [weblate](https://hosted.weblate.org/projects/syndic/app/)!
