@@ -1,9 +1,14 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2022-06-26 18:22+0000\n"
+"Last-Translator: cscarney <ccarney@gmail.com>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/syndic/app/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.13.1-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
@@ -261,7 +266,7 @@ msgstr "Ungelesen"
 #: src/qml/SettingsPage.qml:117
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
-msgstr "OPML-Daten"
+msgstr "OPML-Daten:"
 
 #: src/qml/SettingsPage.qml:120
 msgctxt "SettingsPage|"
