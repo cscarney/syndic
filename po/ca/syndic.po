@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-06-27 05:29+0000\n"
+"PO-Revision-Date: 2022-06-27 16:21+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/syndic/app/ca/>\n"
 "Language: ca\n"
