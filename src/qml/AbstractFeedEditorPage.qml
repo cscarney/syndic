@@ -69,6 +69,7 @@ Kirigami.ScrollablePage {
                 id: updateIntervalGlobal
                 ButtonGroup.group: updateIntervalGroup
                 Kirigami.FormData.label: qsTr("Fetch updates:")
+                //: take the value from application settings
                 text: qsTr("Use Global Setting")
                 checked: provisionalFeed.updateMode === Feed.InheritUpdateMode
                 onToggled: {
