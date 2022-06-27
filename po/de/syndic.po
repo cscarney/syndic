@@ -56,6 +56,7 @@ msgctxt "AbstractFeedEditorPage|"
 msgid "Fetch updates:"
 msgstr "Abholen Aktualisierungen:"
 
+#. take the value from application settings
 #: src/qml/AbstractFeedEditorPage.qml:72 src/qml/AbstractFeedEditorPage.qml:128
 msgctxt "AbstractFeedEditorPage|"
 msgid "Use Global Setting"

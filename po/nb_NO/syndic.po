@@ -58,6 +58,7 @@ msgctxt "AbstractFeedEditorPage|"
 msgid "Fetch updates:"
 msgstr "Hent oppdateringer:"
 
+#. take the value from application settings
 #: src/qml/AbstractFeedEditorPage.qml:72 src/qml/AbstractFeedEditorPage.qml:128
 #, fuzzy
 msgctxt "AbstractFeedEditorPage|"
