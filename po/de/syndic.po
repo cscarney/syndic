@@ -1,9 +1,14 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2022-06-27 13:58+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/syndic/app/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.13.1-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
@@ -12,10 +17,9 @@ msgid "All Read"
 msgstr "Alle gelesen"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
-#, fuzzy
 msgctxt "AbstractArticleListPage|"
 msgid "No Items"
-msgstr "Alle Artikel"
+msgstr "Keine Artikel"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:82
 msgctxt "AbstractArticleListPage|"
@@ -87,7 +91,7 @@ msgstr[1] "%n Tage"
 #: src/qml/Placeholders/AbstractPlaceholderPage.qml:16
 msgctxt "AbstractPlaceholderPage|"
 msgid "Select an item to view it here"
-msgstr ""
+msgstr "Wählen Sie einen Artikel aus, um ihn hier zu sehen"
 
 #: src/qml/AddFeedPage.qml:12
 msgctxt "AddFeedPage|"
@@ -97,7 +101,7 @@ msgstr "Inhalt hinzufügen"
 #: src/qml/AddFeedPage.qml:24
 msgctxt "AddFeedPage|"
 msgid "Preview…"
-msgstr "Vorschau…"
+msgstr "Vorschau …"
 
 #: src/application.cpp:120
 msgctxt "Application|"
@@ -122,7 +126,7 @@ msgstr "Gelesen ausblenden"
 #: src/qml/ArticleList/ArticleListPage.qml:47
 msgctxt "ArticleListPage|"
 msgid "Edit…"
-msgstr "Bearbeiten…"
+msgstr "Bearbeiten …"
 
 #: src/qml/ArticleList/ArticleListPage.qml:58
 msgctxt "ArticleListPage|"
@@ -261,17 +265,17 @@ msgstr "Ungelesen"
 #: src/qml/SettingsPage.qml:117
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
-msgstr "OPML-Daten"
+msgstr "OPML-Daten:"
 
 #: src/qml/SettingsPage.qml:120
 msgctxt "SettingsPage|"
 msgid "Import…"
-msgstr "Importieren…"
+msgstr "Importieren …"
 
 #: src/qml/SettingsPage.qml:133
 msgctxt "SettingsPage|"
 msgid "Export…"
-msgstr "Exportieren…"
+msgstr "Exportieren …"
 
 #: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
 msgctxt "UpdatingPlaceholderPage|"
