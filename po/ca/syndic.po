@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-06-27 13:58+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/syndic/app/de/>\n"
-"Language: de\n"
+"PO-Revision-Date: 2022-06-27 05:29+0000\n"
+"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
+"Language-Team: Catalan <https://hosted.weblate.org/projects/syndic/app/ca/>\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,94 +14,94 @@ msgstr ""
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
 msgctxt "AbstractArticleListPage|"
 msgid "All Read"
-msgstr "Alle gelesen"
+msgstr ""
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
 msgctxt "AbstractArticleListPage|"
 msgid "No Items"
-msgstr "Keine Artikel"
+msgstr "No hi ha cap element"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:82
 msgctxt "AbstractArticleListPage|"
 msgid "Couldn't fetch feed from source"
-msgstr "Nachrichtenquelle konnte nicht abgerufen werden"
+msgstr "No s’ha pogut obtenir el canal de continguts de l’origen"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:88
 msgctxt "AbstractArticleListPage|"
 msgid "Retry"
-msgstr "Nochmal versuchen"
+msgstr "Torna-ho a provar"
 
 #: src/qml/AbstractFeedEditorPage.qml:35
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Url:"
-msgstr "Adresse der Nachrichtenquelle:"
+msgstr "URL del canal de continguts:"
 
 #: src/qml/AbstractFeedEditorPage.qml:43
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Options"
-msgstr "Quelloptionen"
+msgstr "Opcions del canal de continguts"
 
 #: src/qml/AbstractFeedEditorPage.qml:48
 msgctxt "AbstractFeedEditorPage|"
 msgid "Display Name:"
-msgstr "Anzeigename:"
+msgstr "Nom de visualització:"
 
 #: src/qml/AbstractFeedEditorPage.qml:55
 msgctxt "AbstractFeedEditorPage|"
 msgid "Category:"
-msgstr "Kategorie:"
+msgstr "Categoria:"
 
 #: src/qml/AbstractFeedEditorPage.qml:71
 msgctxt "AbstractFeedEditorPage|"
 msgid "Fetch updates:"
-msgstr "Abholen Aktualisierungen:"
+msgstr "Recupera les actualitzacions:"
 
 #: src/qml/AbstractFeedEditorPage.qml:72 src/qml/AbstractFeedEditorPage.qml:128
 msgctxt "AbstractFeedEditorPage|"
 msgid "Use Global Setting"
-msgstr "Globale Einstellung verwenden"
+msgstr "Utilitza el paràmetre global"
 
 #: src/qml/AbstractFeedEditorPage.qml:96
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n minute(s)"
 msgid_plural "%n minute(s)"
-msgstr[0] "%n Minute"
-msgstr[1] "%n Minuten"
+msgstr[0] "%n minut"
+msgstr[1] "%n minuts"
 
 #: src/qml/AbstractFeedEditorPage.qml:113
 #: src/qml/AbstractFeedEditorPage.qml:170
 msgctxt "AbstractFeedEditorPage|"
 msgid "Never"
-msgstr "Niemals"
+msgstr "Mai"
 
 #: src/qml/AbstractFeedEditorPage.qml:127
 msgctxt "AbstractFeedEditorPage|"
 msgid "Delete old items:"
-msgstr "Alte Artikel löschen:"
+msgstr "Suprimeix els elements antics:"
 
 #: src/qml/AbstractFeedEditorPage.qml:152
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n day(s)"
 msgid_plural "%n day(s)"
-msgstr[0] "%n Tag"
-msgstr[1] "%n Tage"
+msgstr[0] "%n dia"
+msgstr[1] "%n dies"
 
 #: src/qml/Placeholders/AbstractPlaceholderPage.qml:16
 msgctxt "AbstractPlaceholderPage|"
 msgid "Select an item to view it here"
-msgstr "Wählen Sie einen Artikel aus, um ihn hier zu sehen"
+msgstr "Seleccioneu un element per a veure’l ací"
 
 #: src/qml/AddFeedPage.qml:12
 msgctxt "AddFeedPage|"
 msgid "Add Content"
-msgstr "Inhalt hinzufügen"
+msgstr "Afegeix contingut"
 
 #: src/qml/AddFeedPage.qml:24
 msgctxt "AddFeedPage|"
 msgid "Preview…"
-msgstr "Vorschau …"
+msgstr "Previsualitza…"
 
 #: src/application.cpp:120
 msgctxt "Application|"
@@ -111,189 +111,189 @@ msgstr "Syndic"
 #: src/qml/ArticleList/ArticleListPage.qml:15
 msgctxt "ArticleListPage|"
 msgid "Mark All Read"
-msgstr "Alle gelesen markieren"
+msgstr "Marca-ho tot com a llegit"
 
 #: src/qml/ArticleList/ArticleListPage.qml:26
 msgctxt "ArticleListPage|"
 msgid "Clear"
-msgstr "Leeren"
+msgstr "Neteja"
 
 #: src/qml/ArticleList/ArticleListPage.qml:38
 msgctxt "ArticleListPage|"
 msgid "Hide Read"
-msgstr "Gelesen ausblenden"
+msgstr "Amaga el llegit"
 
 #: src/qml/ArticleList/ArticleListPage.qml:47
 msgctxt "ArticleListPage|"
 msgid "Edit…"
-msgstr "Bearbeiten …"
+msgstr "Edita…"
 
 #: src/qml/ArticleList/ArticleListPage.qml:58
 msgctxt "ArticleListPage|"
 msgid "Refresh"
-msgstr "Aktualisieren"
+msgstr "Actualitza"
 
 #: src/qml/ArticleList/ArticleListPage.qml:70
 msgctxt "ArticleListPage|"
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr "Cancel·la"
 
 #: src/qml/ArticlePage.qml:30
 msgctxt "ArticlePage|"
 msgid "Open"
-msgstr "Öffnen"
+msgstr "Obre"
 
 #: src/qml/ArticlePage.qml:38
 msgctxt "ArticlePage|"
 msgid "Share"
-msgstr "Veröffentlichen"
+msgstr "Comparteix"
 
 #: src/qml/ArticlePage.qml:45
 msgctxt "ArticlePage|"
 msgid "Starred"
-msgstr "Markiert"
+msgstr "Destacat"
 
 #: src/qml/ArticlePage.qml:54
 msgctxt "ArticlePage|"
 msgid "Keep Unread"
-msgstr "Ungelesen lassen"
+msgstr ""
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
 msgid "Save"
-msgstr "Speichern"
+msgstr "Desa"
 
 #: src/qml/EditFeedPage.qml:30
 msgctxt "EditFeedPage|"
 msgid "Delete"
-msgstr "Löschen"
+msgstr "Suprimeix"
 
 #: src/qml/Placeholders/ErrorPlaceholderPage.qml:18
 msgctxt "ErrorPlaceholderPage|"
 msgid "Retry"
-msgstr "Nochmal versuchen"
+msgstr "Torna-ho a provar"
 
 #: src/feedlistmodel.cpp:163
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
-msgstr "Alle Artikel"
+msgstr "Tots els elements"
 
 #: src/feedlistmodel.cpp:164
 msgctxt "FeedListModel|special feed name"
 msgid "Starred"
-msgstr "Markiert"
+msgstr "Destacat"
 
 #: src/qml/ArticleList/FeedPreviewPage.qml:17
 msgctxt "FeedPreviewPage|"
 msgid "Subscribe"
-msgstr "Abonnieren"
+msgstr "Subscriu-m’hi"
 
 #: src/notificationcontroller.cpp:41
 msgctxt "NotificationController|system tray menu action"
 msgid "Quit"
-msgstr "Beenden"
+msgstr "Surt"
 
 #: src/notificationcontroller.cpp:71
 #, qt-format
 msgctxt "NotificationController|Notification Text"
 msgid "%1 New Item(s)"
 msgid_plural "%1 New Item(s)"
-msgstr[0] "%1 neuen Artikel"
-msgstr[1] "%1 neue Artikel"
+msgstr[0] "%1 element nou"
+msgstr[1] "%1 elements nous"
 
 #: src/qml/SettingsPage.qml:16
 msgctxt "SettingsPage|"
 msgid "Settings"
-msgstr "Einstellungen"
+msgstr "Paràmetres"
 
 #: src/qml/SettingsPage.qml:23
 msgctxt "SettingsPage|"
 msgid "Fetch updates:"
-msgstr "Abholen Aktualisierungen:"
+msgstr "Recupera les actualitzacions:"
 
 #: src/qml/SettingsPage.qml:25
 msgctxt "SettingsPage|"
 msgid "On application start"
-msgstr "Anwendungsstart"
+msgstr "En iniciar l’aplicació"
 
 #: src/qml/SettingsPage.qml:37
 msgctxt "SettingsPage|"
 msgid "Automatically every:"
-msgstr "automatisch alle:"
+msgstr "Automàticament, cada:"
 
 #: src/qml/SettingsPage.qml:50
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n minute(s)"
 msgid_plural "%n minute(s)"
-msgstr[0] "%n Minute"
-msgstr[1] "%n Minuten"
+msgstr[0] "%n minut"
+msgstr[1] "%n minuts"
 
 #: src/qml/SettingsPage.qml:65
 msgctxt "SettingsPage|"
 msgid "Run in background"
-msgstr "Im Hintergrund ausführen"
+msgstr "Executa en segon pla"
 
 #: src/qml/SettingsPage.qml:75
 msgctxt "SettingsPage|"
 msgid "Delete old items:"
-msgstr "Alte Artikel löschen:"
+msgstr "Suprimeix els elements antics:"
 
 #: src/qml/SettingsPage.qml:91
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n day(s)"
 msgid_plural "%n day(s)"
-msgstr[0] "%n Tag"
-msgstr[1] "%n Tage"
+msgstr[0] "%n dia"
+msgstr[1] "%n dies"
 
 #: src/qml/SettingsPage.qml:106
 msgctxt "SettingsPage|"
 msgid "Sort feed list:"
-msgstr "Nachrichtenquellen sortieren:"
+msgstr "Ordena la llista de canals de continguts:"
 
 #: src/qml/SettingsPage.qml:107
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
-msgstr "Alphabetisch"
+msgstr "Alfabèticament"
 
 #: src/qml/SettingsPage.qml:107
 msgctxt "SettingsPage|"
 msgid "Unread First"
-msgstr "Ungelesen"
+msgstr "Primer els elements sense llegir"
 
 #: src/qml/SettingsPage.qml:117
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
-msgstr "OPML-Daten:"
+msgstr "Dades OPML:"
 
 #: src/qml/SettingsPage.qml:120
 msgctxt "SettingsPage|"
 msgid "Import…"
-msgstr "Importieren …"
+msgstr "Importa…"
 
 #: src/qml/SettingsPage.qml:133
 msgctxt "SettingsPage|"
 msgid "Export…"
-msgstr "Exportieren …"
+msgstr "Exporta…"
 
 #: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
 msgctxt "UpdatingPlaceholderPage|"
 msgid "Update in Progress"
-msgstr "Aktualisierung läuft"
+msgstr "Actualització en curs"
 
 #: src/qml/main.qml:80
 msgctxt "main|"
 msgid "Add Content"
-msgstr "Inhalt hinzufügen"
+msgstr "Afegeix contingut"
 
 #: src/qml/main.qml:87
 msgctxt "main|"
 msgid "Settings"
-msgstr "Einstellungen"
+msgstr "Paràmetres"
 
 #: src/qml/main.qml:94
 #, qt-format
 msgctxt "main|"
 msgid "About %1"
-msgstr "Über %1"
+msgstr "Quant al %1"
