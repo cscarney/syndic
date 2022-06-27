@@ -1,289 +1,299 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2022-06-27 13:58+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/syndic/app/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.13.1-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
 msgctxt "AbstractArticleListPage|"
 msgid "All Read"
-msgstr ""
+msgstr "Tutto letto"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
 msgctxt "AbstractArticleListPage|"
 msgid "No Items"
-msgstr ""
+msgstr "Nessun elemento"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:82
 msgctxt "AbstractArticleListPage|"
 msgid "Couldn't fetch feed from source"
-msgstr ""
+msgstr "Impossibile recuperare il flusso dalla fonte"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:88
 msgctxt "AbstractArticleListPage|"
 msgid "Retry"
-msgstr ""
+msgstr "Riprova"
 
 #: src/qml/AbstractFeedEditorPage.qml:35
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Url:"
-msgstr ""
+msgstr "URL del flusso:"
 
 #: src/qml/AbstractFeedEditorPage.qml:43
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Options"
-msgstr ""
+msgstr "Opzioni flusso"
 
 #: src/qml/AbstractFeedEditorPage.qml:48
 msgctxt "AbstractFeedEditorPage|"
 msgid "Display Name:"
-msgstr ""
+msgstr "Nome visualizzato:"
 
 #: src/qml/AbstractFeedEditorPage.qml:55
 msgctxt "AbstractFeedEditorPage|"
 msgid "Category:"
-msgstr ""
+msgstr "Categoria:"
 
 #: src/qml/AbstractFeedEditorPage.qml:71
 msgctxt "AbstractFeedEditorPage|"
 msgid "Fetch updates:"
-msgstr ""
+msgstr "Recupera gli aggiornamenti:"
 
 #: src/qml/AbstractFeedEditorPage.qml:72 src/qml/AbstractFeedEditorPage.qml:128
 msgctxt "AbstractFeedEditorPage|"
 msgid "Use Global Setting"
-msgstr ""
+msgstr "Usa l'impostazione globale"
 
 #: src/qml/AbstractFeedEditorPage.qml:96
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n minute(s)"
 msgid_plural "%n minute(s)"
-msgstr[0] ""
+msgstr[0] "%n minuto"
+msgstr[1] "%n minuti"
 
 #: src/qml/AbstractFeedEditorPage.qml:113
 #: src/qml/AbstractFeedEditorPage.qml:170
 msgctxt "AbstractFeedEditorPage|"
 msgid "Never"
-msgstr ""
+msgstr "Mai"
 
 #: src/qml/AbstractFeedEditorPage.qml:127
 msgctxt "AbstractFeedEditorPage|"
 msgid "Delete old items:"
-msgstr ""
+msgstr "Elimina i vecchi elementi:"
 
 #: src/qml/AbstractFeedEditorPage.qml:152
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n day(s)"
 msgid_plural "%n day(s)"
-msgstr[0] ""
+msgstr[0] "%n giorno"
+msgstr[1] "%n giorni"
 
 #: src/qml/Placeholders/AbstractPlaceholderPage.qml:16
 msgctxt "AbstractPlaceholderPage|"
 msgid "Select an item to view it here"
-msgstr ""
+msgstr "Seleziona un articolo per visualizzarlo qui"
 
 #: src/qml/AddFeedPage.qml:12
 msgctxt "AddFeedPage|"
 msgid "Add Content"
-msgstr ""
+msgstr "Aggiungi contenuto"
 
 #: src/qml/AddFeedPage.qml:24
 msgctxt "AddFeedPage|"
 msgid "Preview…"
-msgstr ""
+msgstr "Anteprima…"
 
 #: src/application.cpp:120
 msgctxt "Application|"
 msgid "Syndic"
-msgstr ""
+msgstr "Syndic"
 
 #: src/qml/ArticleList/ArticleListPage.qml:15
 msgctxt "ArticleListPage|"
 msgid "Mark All Read"
-msgstr ""
+msgstr "Contrassegna tutto come letto"
 
 #: src/qml/ArticleList/ArticleListPage.qml:26
 msgctxt "ArticleListPage|"
 msgid "Clear"
-msgstr ""
+msgstr "Cancella"
 
 #: src/qml/ArticleList/ArticleListPage.qml:38
 msgctxt "ArticleListPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Nascondi i letti"
 
 #: src/qml/ArticleList/ArticleListPage.qml:47
 msgctxt "ArticleListPage|"
 msgid "Edit…"
-msgstr ""
+msgstr "Modifica…"
 
 #: src/qml/ArticleList/ArticleListPage.qml:58
 msgctxt "ArticleListPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Aggiorna"
 
 #: src/qml/ArticleList/ArticleListPage.qml:70
 msgctxt "ArticleListPage|"
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #: src/qml/ArticlePage.qml:30
 msgctxt "ArticlePage|"
 msgid "Open"
-msgstr ""
+msgstr "Apri"
 
 #: src/qml/ArticlePage.qml:38
 msgctxt "ArticlePage|"
 msgid "Share"
-msgstr ""
+msgstr "Condividi"
 
 #: src/qml/ArticlePage.qml:45
 msgctxt "ArticlePage|"
 msgid "Starred"
-msgstr ""
+msgstr "Preferiti"
 
 #: src/qml/ArticlePage.qml:54
 msgctxt "ArticlePage|"
 msgid "Keep Unread"
-msgstr ""
+msgstr "Mantieni non letto"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
 msgid "Save"
-msgstr ""
+msgstr "Salva"
 
 #: src/qml/EditFeedPage.qml:30
 msgctxt "EditFeedPage|"
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: src/qml/Placeholders/ErrorPlaceholderPage.qml:18
 msgctxt "ErrorPlaceholderPage|"
 msgid "Retry"
-msgstr ""
+msgstr "Riprova"
 
 #: src/feedlistmodel.cpp:163
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
-msgstr ""
+msgstr "Tutti gli articoli"
 
 #: src/feedlistmodel.cpp:164
 msgctxt "FeedListModel|special feed name"
 msgid "Starred"
-msgstr ""
+msgstr "Preferito"
 
 #: src/qml/ArticleList/FeedPreviewPage.qml:17
 msgctxt "FeedPreviewPage|"
 msgid "Subscribe"
-msgstr ""
+msgstr "Iscriviti"
 
 #: src/notificationcontroller.cpp:41
 msgctxt "NotificationController|system tray menu action"
 msgid "Quit"
-msgstr ""
+msgstr "Esci"
 
 #: src/notificationcontroller.cpp:71
 #, qt-format
 msgctxt "NotificationController|Notification Text"
 msgid "%1 New Item(s)"
 msgid_plural "%1 New Item(s)"
-msgstr[0] ""
+msgstr[0] "%1 nuovo elemento"
+msgstr[1] "%1 nuovi elementi"
 
 #: src/qml/SettingsPage.qml:16
 msgctxt "SettingsPage|"
 msgid "Settings"
-msgstr ""
+msgstr "Impostazioni"
 
 #: src/qml/SettingsPage.qml:23
 msgctxt "SettingsPage|"
 msgid "Fetch updates:"
-msgstr ""
+msgstr "Recupera gli aggiornamenti:"
 
 #: src/qml/SettingsPage.qml:25
 msgctxt "SettingsPage|"
 msgid "On application start"
-msgstr ""
+msgstr "All'avvio dell'applicazione"
 
 #: src/qml/SettingsPage.qml:37
 msgctxt "SettingsPage|"
 msgid "Automatically every:"
-msgstr ""
+msgstr "Automaticamente ogni:"
 
 #: src/qml/SettingsPage.qml:50
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n minute(s)"
 msgid_plural "%n minute(s)"
-msgstr[0] ""
+msgstr[0] "%n minuto"
+msgstr[1] "%n minuti"
 
 #: src/qml/SettingsPage.qml:65
 msgctxt "SettingsPage|"
 msgid "Run in background"
-msgstr ""
+msgstr "Esegui in sfondo"
 
 #: src/qml/SettingsPage.qml:75
 msgctxt "SettingsPage|"
 msgid "Delete old items:"
-msgstr ""
+msgstr "Elimina i vecchi elementi:"
 
 #: src/qml/SettingsPage.qml:91
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n day(s)"
 msgid_plural "%n day(s)"
-msgstr[0] ""
+msgstr[0] "%n giorno"
+msgstr[1] "%n giorni"
 
 #: src/qml/SettingsPage.qml:106
 msgctxt "SettingsPage|"
 msgid "Sort feed list:"
-msgstr ""
+msgstr "Ordina l'elenco dei flussi:"
 
 #: src/qml/SettingsPage.qml:107
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
-msgstr ""
+msgstr "Alfabetico"
 
 #: src/qml/SettingsPage.qml:107
 msgctxt "SettingsPage|"
 msgid "Unread First"
-msgstr ""
+msgstr "Prima non letti"
 
 #: src/qml/SettingsPage.qml:117
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
-msgstr ""
+msgstr "Dati OPML:"
 
 #: src/qml/SettingsPage.qml:120
 msgctxt "SettingsPage|"
 msgid "Import…"
-msgstr ""
+msgstr "Importa…"
 
 #: src/qml/SettingsPage.qml:133
 msgctxt "SettingsPage|"
 msgid "Export…"
-msgstr ""
+msgstr "Esporta…"
 
 #: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
 msgctxt "UpdatingPlaceholderPage|"
 msgid "Update in Progress"
-msgstr ""
+msgstr "Aggiornamento in corso"
 
 #: src/qml/main.qml:80
 msgctxt "main|"
 msgid "Add Content"
-msgstr ""
+msgstr "Aggiungi contenuto"
 
 #: src/qml/main.qml:87
 msgctxt "main|"
 msgid "Settings"
-msgstr ""
+msgstr "Impostazioni"
 
 #: src/qml/main.qml:94
 #, qt-format
 msgctxt "main|"
 msgid "About %1"
-msgstr ""
+msgstr "Informazioni su %1"
