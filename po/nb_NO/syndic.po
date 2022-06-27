@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-06-27 03:28+0000\n"
+"PO-Revision-Date: 2022-06-27 05:29+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/syndic/"
 "app/nb_NO/>\n"
@@ -201,8 +201,8 @@ msgstr "Avslutt"
 msgctxt "NotificationController|Notification Text"
 msgid "%1 New Item(s)"
 msgid_plural "%1 New Item(s)"
-msgstr[0] "%n nytt element"
-msgstr[1] "%n nye elementer"
+msgstr[0] "%1 nytt element"
+msgstr[1] "%1 nye elementer"
 
 #: src/qml/SettingsPage.qml:16
 msgctxt "SettingsPage|"
