@@ -1,6 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-06-27 13:58+0000\n"
+"Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
+"PO-Revision-Date: 2022-06-27 21:38+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/syndic/app/fr/>\n"
 "Language: fr\n"
@@ -152,7 +153,7 @@ msgstr "Partager"
 #: src/qml/ArticlePage.qml:45
 msgctxt "ArticlePage|"
 msgid "Starred"
-msgstr "Favori"
+msgstr "Favoris"
 
 #: src/qml/ArticlePage.qml:54
 msgctxt "ArticlePage|"
@@ -182,7 +183,7 @@ msgstr "Tous les éléments"
 #: src/feedlistmodel.cpp:164
 msgctxt "FeedListModel|special feed name"
 msgid "Starred"
-msgstr "Favori"
+msgstr "Favoris"
 
 #: src/qml/ArticleList/FeedPreviewPage.qml:17
 msgctxt "FeedPreviewPage|"
