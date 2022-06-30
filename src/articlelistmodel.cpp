@@ -121,6 +121,7 @@ void ArticleListModel::onMergeFinished(Future<ArticleRef> *sender)
             insertAndNotify(indexForItem(d->items, item), item);
         }
     }
+    setStatusFromUpstream();
 }
 
 void ArticleListModel::onItemAdded(ArticleRef const &item)
@@ -135,6 +136,7 @@ void ArticleListModel::removeRead()
     if (!d->unreadFilter) {
         return;
     }
+    setStatus(Feed::Loading);
     auto &items = d->items;
     for (int i = 0; i < items.size(); ++i) {
         if (items.at(i)->isRead()) {
@@ -144,6 +146,7 @@ void ArticleListModel::removeRead()
             --i;
         }
     }
+    setStatusFromUpstream();
 }
 
 void ArticleListModel::setStatus(LoadStatus status)
@@ -163,6 +166,7 @@ void ArticleListModel::insertAndNotify(int index, const ArticleRef &item)
 
 void ArticleListModel::refreshMerge()
 {
+    setStatus(Feed::Loading);
     auto *q = getItems();
     QObject::connect(q, &BaseFuture::finished, this, [this, q] {
         onMergeFinished(q);

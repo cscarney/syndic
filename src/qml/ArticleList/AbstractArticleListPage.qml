@@ -55,6 +55,11 @@ Kirigami.ScrollablePage {
                    articleList.currentIndex = 0;
                else openChild();
            }
+           onRowsAboutToBeRemoved: function(parent, first, last){
+               if (root.currentIndex < first || root.currentIndex > last)
+                   return;
+               root.currentIndex = -1
+           }
        } /* model */
 
         delegate: Kirigami.AbstractListItem {
@@ -118,7 +123,7 @@ Kirigami.ScrollablePage {
     }
 
     function clearRead() {
-        root.currentIndex = model.status === Feed.Idle ? 0 : -1
+        root.currentIndex = -1
         root.model.removeRead()
         articleList.positionViewAtBeginning()
     }
