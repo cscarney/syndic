@@ -5,6 +5,7 @@
 
 #include "provisionalfeed.h"
 #include "article.h"
+#include <QDir>
 #include <Syndication/Image>
 #include <Syndication/Item>
 #include <Syndication/Person>
@@ -15,8 +16,8 @@ class ProvisionalFeed::ArticleImpl : public Article
 public:
     explicit ArticleImpl(const Syndication::ItemPtr &item, Feed *feed, QObject *parent = nullptr);
     void requestContent() final;
-    void setRead(bool isRead) final{};
-    void setStarred(bool isStarred) final{};
+    void setRead(bool /*isRead*/) final{};
+    void setStarred(bool /*isStarred*/) final{};
 
 private:
     Syndication::ItemPtr m_item;
@@ -24,6 +25,7 @@ private:
 
 void ProvisionalFeed::onUrlChanged()
 {
+    syncUrlString();
     updater()->abort();
     m_feed = nullptr;
     emit reset();
@@ -32,6 +34,7 @@ void ProvisionalFeed::onUrlChanged()
 ProvisionalFeed::ProvisionalFeed(QObject *parent)
     : UpdatableFeed(parent)
 {
+    syncUrlString();
     QObject::connect(this, &Feed::urlChanged, this, &ProvisionalFeed::onUrlChanged);
     QObject::connect(this, &ProvisionalFeed::targetFeedChanged, this, [this] {
         updateParams(m_targetFeed);
@@ -101,4 +104,70 @@ ProvisionalFeed::ArticleImpl::ArticleImpl(const Syndication::ItemPtr &item, Feed
     setDate(QDateTime::fromTime_t(item->dateUpdated()));
     auto authors = item->authors();
     setAuthor(authors.isEmpty() ? "" : authors[0]->name());
+}
+
+const QString &ProvisionalFeed::urlString() const
+{
+    return m_urlString;
+}
+
+// This is similar to QUrl::fromUserInput, but we need slightly different behavior
+static QUrl urlFromString(const QString &string)
+{
+    QString trimmedString = string.trimmed();
+
+    if (trimmedString.isEmpty()) {
+        return QUrl();
+    }
+
+    if (QDir::isAbsolutePath(string)) {
+        return QUrl::fromLocalFile(string);
+    }
+
+    const QUrl url(trimmedString, QUrl::TolerantMode);
+    if (url.isValid() && !url.isRelative()) {
+        return url;
+    }
+
+    const QUrl httpsUrl(QLatin1String("https://") + trimmedString, QUrl::TolerantMode);
+    if (httpsUrl.isValid()) {
+        return httpsUrl;
+    }
+
+    return QUrl();
+}
+
+void ProvisionalFeed::setUrlString(const QString &newUrlString)
+{
+    if (m_urlStringStatus == PENDING) {
+        return;
+    }
+    if (m_urlString == newUrlString) {
+        return;
+    }
+    m_urlStringStatus = PENDING;
+    m_urlString = newUrlString;
+    QUrl url = urlFromString(newUrlString);
+    if (url.isValid()) {
+        setUrl(url);
+        m_urlStringStatus = VALID;
+    } else {
+        m_urlStringStatus = INVALID;
+    }
+    emit urlStringChanged();
+}
+
+void ProvisionalFeed::syncUrlString()
+{
+    if (m_urlStringStatus == PENDING) {
+        return;
+    }
+    const QUrl &url = this->url();
+    const QString urlString = url.toString();
+    if (m_urlString == urlString) {
+        return;
+    }
+    m_urlString = urlString;
+    m_urlStringStatus = url.isValid() ? VALID : INVALID;
+    emit urlStringChanged();
 }

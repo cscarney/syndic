@@ -15,3 +15,6 @@ add_executable(testContextValuePropagation tst_testcontextvaluepropagation.cpp)
 add_test(NAME testContextValuePropagation COMMAND testContextValuePropagation)
 target_link_libraries(testContextValuePropagation PRIVATE Qt5::Test feedcore)
 
+add_executable(testProvisionalFeed tst_provisionalFeed.cpp)
+add_test(NAME testProvisionalFeed COMMAND testProvisionalFeed)
+target_link_libraries(testProvisionalFeed PRIVATE Qt5::Test feedcore)

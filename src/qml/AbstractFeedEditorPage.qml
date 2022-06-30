@@ -33,9 +33,10 @@ Kirigami.ScrollablePage {
             TextField {
                 id: urlField
                 Kirigami.FormData.label: qsTr("Feed Url:")
-                text: provisionalFeed.targetFeed ? provisionalFeed.url : ""
+                text: provisionalFeed.urlString
                 onTextChanged: previewOpen = false;
-                onTextEdited: provisionalFeed.url = text
+                onTextEdited: provisionalFeed.urlString = text
+                onEditingFinished: provisionalFeed.syncUrlString();
             }
 
             Item {
