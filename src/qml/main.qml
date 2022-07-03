@@ -15,7 +15,10 @@ Kirigami.ApplicationWindow {
     width: globalSettings.width
     height: globalSettings.height
     visibility: globalSettings.isMaximized ? Window.Maximized : Window.AutomaticVisibility
-    font: Kirigami.Theme.defaultFont
+    font {
+        family: Kirigami.Theme.defaultFont.family
+        pointSize: Kirigami.Theme.defaultFont.pointSize
+    }
 
     pageStack {
         globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
