@@ -85,6 +85,7 @@ StyleData::StyleData(QQmlEngine *engine)
     auto fontScale = QAndroidJniObject::callStaticMethod<jfloat>("com/rocksandpaper/syndic/NativeHelper", "getFontScale");
     QFont font = qGuiApp->font();
     font.setPointSizeF(kUnscaledDefaultFontSize * fontScale);
+    font.resolve(QFont::AllPropertiesResolved);
     qApp->setFont(font);
     font.setPointSizeF(kUnscaledSmallFontSize * fontScale);
     smallFont = font;
