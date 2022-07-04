@@ -13,7 +13,8 @@ int main(int argc, char *argv[])
     Application app(argc, argv);
 
 #ifdef ANDROID
-    QQuickStyle::setStyle("Material");
+    QQuickStyle::setStyle("assets:/MaterialTweaks");
+    QQuickStyle::setFallbackStyle("Material");
 #else
     QQuickStyle::setStyle("org.kde.desktop");
 #endif
