@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-06-27 05:29+0000\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
+"Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
+"PO-Revision-Date: 2022-07-04 08:14+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/syndic/app/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -12,9 +13,10 @@ msgstr ""
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
+#, fuzzy
 msgctxt "AbstractArticleListPage|"
 msgid "All Read"
-msgstr ""
+msgstr "Todo leído"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
 msgctxt "AbstractArticleListPage|"
