@@ -160,7 +160,7 @@ msgstr "Destacado"
 #: src/qml/ArticlePage.qml:54
 msgctxt "ArticlePage|"
 msgid "Keep Unread"
-msgstr ""
+msgstr "Mantener como no leído"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
