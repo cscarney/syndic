@@ -84,6 +84,7 @@ Kirigami.ScrollablePage {
                 id: updateIntervalCustom
                 ButtonGroup.group: updateIntervalGroup
                 checked: provisionalFeed.updateMode === Feed.OverrideUpdateMode
+                text: contentItem.displayText
                 contentItem: SpinBox {
                     id: updateIntervalValue
                     KeyNavigation.backtab: updateIntervalCustom
@@ -136,6 +137,7 @@ Kirigami.ScrollablePage {
                 id: expireAgeCustom
                 ButtonGroup.group: expireAgeGroup
                 checked: provisionalFeed.expireMode === Feed.OverrideUpdateMode
+                text: contentItem.displayText
                 contentItem: SpinBox {
                     id: expireAgeValue
                     anchors {
