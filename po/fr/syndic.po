@@ -155,6 +155,7 @@ msgctxt "ArticlePage|"
 msgid "Starred"
 msgstr "Favoris"
 
+#. as in, don't mark this article as read
 #: src/qml/ArticlePage.qml:54
 msgctxt "ArticlePage|"
 msgid "Keep Unread"
