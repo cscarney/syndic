@@ -57,7 +57,6 @@ Kirigami.ScrollablePage {
            }
            onRowsAboutToBeRemoved: function(parent, first, last){
                // force currentIndex to be updated before we check to see if it was removed
-               // TODO what are the performance implications of this?
                articleList.forceLayout();
                if (root.currentIndex < first || root.currentIndex > last)
                    return;

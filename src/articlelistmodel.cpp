@@ -19,6 +19,65 @@ struct ArticleListModel::PrivData {
     bool active{false};
 };
 
+// helper class for batching row removals
+class ArticleListModel::RowRemoveHelper
+{
+    int first = -1;
+    int last = -1;
+
+    bool extend(int index)
+    {
+        if (isEmpty()) {
+            first = last = index;
+        } else if (index == last + 1) {
+            last = index;
+        } else if (index == first - 1) {
+            first = index;
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    void clear()
+    {
+        first = last = -1;
+    }
+
+    bool isEmpty() const
+    {
+        return first == -1 || last == -1;
+    }
+
+    int flush(ArticleListModel *model)
+    {
+        if (isEmpty()) {
+            return 0;
+        }
+        int length = last - first + 1;
+        model->beginRemoveRows(QModelIndex(), first, last);
+        auto &items = model->d->items;
+        items.erase(items.begin() + first, items.begin() + last + 1);
+        model->endRemoveRows();
+        clear();
+        return length;
+    }
+
+public:
+    template<typename WhereFunc>
+    void removeWhere(ArticleListModel *model, WhereFunc cb)
+    {
+        auto &items = model->d->items;
+        for (int i = 0; i < items.size(); ++i) {
+            if (cb(items.at(i)) && !extend(i)) {
+                i -= flush(model);
+                extend(i);
+            }
+        }
+        flush(model);
+    }
+};
+
 ArticleListModel::ArticleListModel(QObject *parent)
     : QAbstractListModel(parent)
     , d{std::make_unique<PrivData>()}
@@ -137,15 +196,10 @@ void ArticleListModel::removeRead()
         return;
     }
     setStatus(Feed::Loading);
-    auto &items = d->items;
-    for (int i = 0; i < items.size(); ++i) {
-        if (items.at(i)->isRead()) {
-            beginRemoveRows(QModelIndex(), i, i);
-            items.removeAt(i);
-            endRemoveRows();
-            --i;
-        }
-    }
+    RowRemoveHelper helper;
+    helper.removeWhere(this, [](const auto &item) {
+        return item->isRead();
+    });
     setStatusFromUpstream();
 }
 
