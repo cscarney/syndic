@@ -96,5 +96,6 @@ private:
     void onRefreshFinished(FeedCore::Future<FeedCore::ArticleRef> *sender);
     void onMergeFinished(FeedCore::Future<FeedCore::ArticleRef> *sender);
     void onStatusChanged();
+    class RowRemoveHelper;
 };
 #endif // UNREADITEMMODEL_H
