@@ -51,6 +51,7 @@ Kirigami.Page {
             },
 
             Kirigami.Action {
+                //: as in, don't mark this article as read
                 text: qsTr("Keep Unread")
                 iconName: "mail-mark-unread"
                 checkable: true
