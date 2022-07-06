@@ -38,7 +38,6 @@ msgid "Feed Url:"
 msgstr "Informasjonkanals-nettadresse:"
 
 #: src/qml/AbstractFeedEditorPage.qml:43
-#, fuzzy
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Options"
 msgstr "Alternativer for informasjonskanal"
@@ -60,7 +59,6 @@ msgstr "Hent oppdateringer:"
 
 #. take the value from application settings
 #: src/qml/AbstractFeedEditorPage.qml:72 src/qml/AbstractFeedEditorPage.qml:128
-#, fuzzy
 msgctxt "AbstractFeedEditorPage|"
 msgid "Use Global Setting"
 msgstr "Bruk innstillinger for hele programmet"

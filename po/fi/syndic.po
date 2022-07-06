@@ -13,7 +13,6 @@ msgstr ""
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
-#, fuzzy
 msgctxt "AbstractArticleListPage|"
 msgid "All Read"
 msgstr "Kaikki luetut"
@@ -117,7 +116,6 @@ msgid "Mark All Read"
 msgstr ""
 
 #: src/qml/ArticleList/ArticleListPage.qml:26
-#, fuzzy
 msgctxt "ArticleListPage|"
 msgid "Clear"
 msgstr "Poista"
@@ -217,7 +215,6 @@ msgid "Fetch updates:"
 msgstr "Hae päivitykset:"
 
 #: src/qml/SettingsPage.qml:25
-#, fuzzy
 msgctxt "SettingsPage|"
 msgid "On application start"
 msgstr "Sovelluksen alkaessa"
@@ -236,7 +233,6 @@ msgstr[0] "%n minuutti"
 msgstr[1] "%n minuuttia"
 
 #: src/qml/SettingsPage.qml:65
-#, fuzzy
 msgctxt "SettingsPage|"
 msgid "Run in background"
 msgstr "Suorita taustalla"
