@@ -208,7 +208,9 @@ Kirigami.ApplicationWindow {
             pageStack.currentIndex = index-1;
             event.accepted = true;
         } else if (feedList.currentIndex != 0) {
-            feedList.currentIndex = 0;
+            // call later b/c goBack might be called more than once
+            // due to the back button hack above.
+            Qt.callLater(()=>{feedList.currentIndex = 0});
             event.accepted = true
         }
     }
