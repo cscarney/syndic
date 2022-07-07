@@ -111,8 +111,10 @@ Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication:
                 m_db.updateItemContent(*itemId, content);
             }
 
-            // TODO this  sometimes creates an unnecessary item instance
-            getById(*itemId); // push the update into any existing item instance
+            // Update the existing instance of the article
+            if (m_articleFactory.hasInstance(*itemId)) {
+                getById(*itemId);
+            }
 
             op->setResult();
             return;

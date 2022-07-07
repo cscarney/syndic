@@ -27,6 +27,11 @@ public:
         return instance;
     }
 
+    bool hasInstance(KeyType key)
+    {
+        return !m_instances[key].isNull();
+    }
+
 private:
     QHash<KeyType, StorageType> m_instances;
 };
