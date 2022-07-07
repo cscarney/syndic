@@ -1,3 +1,4 @@
+#include "article.h"
 #include "context.h"
 #include "future.h"
 #include "provisionalfeed.h"
@@ -5,6 +6,8 @@
 #include <QCoreApplication>
 #include <QSignalSpy>
 #include <QtTest>
+
+#include "atomFeedTemplate.h"
 
 static constexpr const char *testDbName = "testStoreAndRetrieveFeed.db";
 static constexpr const char *testFeedName = "testName";
@@ -47,6 +50,32 @@ class testStoreAndRetrieveFeed : public QObject
         m_feed->setExpireMode(mode);
         QCoreApplication::processEvents();
         refreshContext();
+    }
+
+    QUrl writeAtomFeedTestXml(const QDateTime &date1, const QDateTime &date2)
+    {
+        constexpr const char *filename = "testatom.xml";
+        QString content = QString(testAtomFeedTemplate).arg(date1.toString(Qt::ISODate)).arg(date2.toString(Qt::ISODate));
+        QString absolutePath = QFileInfo(filename).absoluteFilePath();
+        QFile file(absolutePath);
+        if (!file.open(QIODevice::WriteOnly)) {
+            assert(!"Couldn't open testatom.xml");
+        }
+        file.write(content.toUtf8());
+        file.close();
+        return QUrl::fromLocalFile(absolutePath);
+    }
+
+    QVector<FeedCore::ArticleRef> getArticles(FeedCore::Feed *feed)
+    {
+        auto *articlesFuture = feed->getArticles(true);
+        QVector<FeedCore::ArticleRef> articles;
+        QObject::connect(articlesFuture, &FeedCore::BaseFuture::finished, [articlesFuture, &articles]() {
+            qDebug() << "got articles" << articlesFuture->result();
+            articles = articlesFuture->result();
+        });
+        QSignalSpy(articlesFuture, &FeedCore::BaseFuture::finished).wait();
+        return articles;
     }
 
 private slots:
@@ -159,6 +188,55 @@ private slots:
     {
         setupModifyExpireModeTest(FeedCore::Feed::DisableUpdateMode);
         QVERIFY(m_feed->expireMode() == FeedCore::Feed::DisableUpdateMode);
+    }
+
+    void testStoreArticles()
+    {
+        {
+            QCoreApplication::processEvents();
+            QUrl feedUrl = writeAtomFeedTestXml(QDateTime::currentDateTime(), QDateTime::currentDateTime());
+            m_feed->setUrl(feedUrl);
+            m_feed->updater()->start();
+            QSignalSpy(m_feed, &FeedCore::Feed::statusChanged).wait();
+            QCoreApplication::processEvents();
+        }
+        {
+            refreshContext();
+            auto articles = getArticles(m_feed);
+            QVERIFY(articles.length() == 2);
+        }
+    }
+
+    static bool dateCompare(const QDateTime &d1, const QDateTime &d2)
+    {
+        return (d1.toSecsSinceEpoch() == d2.toSecsSinceEpoch());
+    }
+
+    void testExistingArticlesUpdatedWhenNewContentStored()
+    {
+        {
+            QCoreApplication::processEvents();
+            QUrl feedUrl = writeAtomFeedTestXml(QDateTime::currentDateTime().addSecs(-120), QDateTime::currentDateTime().addSecs(-120));
+            m_feed->setUrl(feedUrl);
+            m_feed->updater()->start();
+            QSignalSpy(m_feed, &FeedCore::Feed::statusChanged).wait();
+            QCoreApplication::processEvents();
+        }
+        {
+            refreshContext();
+            auto articles = getArticles(m_feed);
+            QVERIFY(articles.length() == 2);
+
+            QDateTime newDateTime = QDateTime::currentDateTime();
+
+            QUrl feedUrl = writeAtomFeedTestXml(newDateTime, newDateTime);
+            m_feed->setUrl(feedUrl);
+            m_feed->updater()->start();
+            QSignalSpy(articles.at(0).get(), &FeedCore::Article::dateChanged).wait();
+
+            QVERIFY(dateCompare(articles.at(0)->date(), newDateTime));
+            QVERIFY(dateCompare(articles.at(1)->date(), newDateTime));
+        }
     }
 };
 
