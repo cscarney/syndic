@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2022 Connor Carney <hello@connorcarney.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 set(androidstyleplugin_SRCS
     androidstylepluginfactory.h

@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2022 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #include "feed.h"
 #include "scheduler.h"
 #include <QCoreApplication>

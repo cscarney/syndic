@@ -1,3 +1,8 @@
+/**
+ * SPDX-FileCopyrightText: 2022 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef FEEDCORE_OPMLREADER_H
 #define FEEDCORE_OPMLREADER_H
 #include <QObject>

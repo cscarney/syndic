@@ -1,3 +1,7 @@
+/**
+ * SPDX-FileCopyrightText: 2022 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 import QtQml 2.12
 import QtQuick.Controls.Material 2.12
 
