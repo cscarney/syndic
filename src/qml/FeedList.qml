@@ -27,8 +27,10 @@ ScrollView {
             rightMargin: root.ScrollBar.vertical.visible && !Kirigami.Settings.hasTransientTouchInput ? root.ScrollBar.vertical.width : 0
         }
 
-
         currentIndex: 0
+        clip: true
+        pressDelay: Kirigami.Units.veryShortDuration
+
         model: FeedListModel{
             context: feedContext
             sortMode: globalSettings.feedListSort
@@ -44,7 +46,6 @@ ScrollView {
                 });
             }
         }
-        clip: true
 
         delegate: Kirigami.BasicListItem {
             id: listItem

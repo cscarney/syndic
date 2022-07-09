@@ -44,6 +44,7 @@ Kirigami.ScrollablePage {
         clip: true
         anchors.fill: parent
         currentIndex: -1
+        pressDelay: Kirigami.Units.veryShortDuration
 
         model: ArticleListModel {
            id: feedItemModel
