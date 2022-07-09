@@ -44,7 +44,7 @@ Kirigami.ScrollablePage {
         clip: true
         anchors.fill: parent
         currentIndex: -1
-        pressDelay: Kirigami.Units.veryShortDuration
+        pressDelay: Kirigami.Settings.hasTransientTouchInput ? Kirigami.Units.veryShortDuration : 0
 
         model: ArticleListModel {
            id: feedItemModel
