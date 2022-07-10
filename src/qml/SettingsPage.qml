@@ -94,7 +94,7 @@ Kirigami.ScrollablePage {
             }
         }
 
-        ComboBox {
+        ElasticComboBox {
             id: feedListSort
             Kirigami.FormData.label: qsTr("Sort feed list:");
             model: [qsTr("Alphabetical"), qsTr("Unread First")]

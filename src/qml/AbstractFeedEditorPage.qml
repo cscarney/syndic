@@ -51,7 +51,7 @@ Kirigami.ScrollablePage {
                 onTextEdited: provisionalFeed.name = text
             }
 
-            ComboBox {
+            ElasticComboBox {
                 id: categoryField
                 Kirigami.FormData.label: qsTr("Category:")
                 model: feedContext.getCategories()

@@ -1,7 +1,3 @@
-<!--
-SPDX-FileCopyrightText: 2022 Connor Carney <hello@connorcarney.com>
-SPDX-License-Identifier: GPL-3.0-or-later
--->
 <RCC>
     <qresource prefix="/">
         <file>qtquickcontrols2.conf</file>
@@ -25,5 +21,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
         <file>qml/SettingsPage.qml</file>
         <file>qml/AddFeedPage.qml</file>
         <file>qml/EditFeedPage.qml</file>
+        <file>qml/ElasticComboBox.qml</file>
+        <file>qml/+org.kde.desktop/ElasticComboBox.qml</file>
     </qresource>
 </RCC>
