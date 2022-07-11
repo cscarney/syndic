@@ -5,6 +5,7 @@
 
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
+import QtQuick.Window 2.15
 import org.kde.kirigami 2.7 as Kirigami
 import com.rocksandpaper.syndic 1.0
 
@@ -30,6 +31,21 @@ Kirigami.ScrollablePage {
     title: feed ? feed.name : ""
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Kirigami.Theme.backgroundColor: Kirigami.Theme.alternateBackgroundColor
+
+    // mostly lifted from Kirigami's Page.qml
+    titleDelegate: Kirigami.Heading {
+        text: root.title
+        elide: Text.ElideRight
+        textFormat: Text.PlainText
+        Layout.fillWidth: true
+        Layout.maximumWidth: implicitWidth + 1
+        Layout.minimumWidth: 0
+        maximumLineCount: 1
+        MouseArea {
+            anchors.fill: parent
+            onClicked: clearRead()
+        }
+    }
 
     EmptyFeedOverlay {
         id: emptyOverlay
@@ -126,9 +142,10 @@ Kirigami.ScrollablePage {
     }
 
     function clearRead() {
-        root.currentIndex = -1
-        root.model.removeRead()
-        articleList.positionViewAtBeginning()
+        root.currentIndex = -1; // index will be set by model::onStatusChanged if appropriate
+        root.model.removeRead();
+        articleList.positionViewAtBeginning();
+        articleList.contentY -= articleList.topMargin; // include update indicator
     }
 
     function pushPlaceholder() {
