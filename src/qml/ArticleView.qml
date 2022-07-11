@@ -41,7 +41,7 @@ ColumnLayout {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onPressed: Qt.openUrlExternally(item.article.url)
+            onClicked: Qt.openUrlExternally(item.article.url)
             onContainsMouseChanged: root.hoveredLink = containsMouse ? item.article.url : null
         }
     }
