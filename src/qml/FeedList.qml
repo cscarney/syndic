@@ -63,15 +63,15 @@ ScrollView {
                 Kirigami.Icon {
                     source: "content-loading-symbolic"
                     Layout.preferredHeight: contentItem.height
-                    isMask: true
                     visible: listItem.status === Feed.Updating
+                    selected: listItem.highlighted
                 }
 
                 Kirigami.Icon {
                     source: "dialog-error-symbolic"
                     Layout.preferredHeight: contentItem.height
-                    isMask: true
                     visible: listItem.status === Feed.Error
+                    selected: listItem.highlighted
                 }
 
                 Label {

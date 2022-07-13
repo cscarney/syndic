@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import com.rocksandpaper.syndic.BuildConfig;
 import org.qtproject.qt5.android.QtNative;
 
 public class NativeHelper {
@@ -35,4 +36,6 @@ public class NativeHelper {
           QtNative.activity().getResources().getDisplayMetrics();
       return dm.scaledDensity / dm.density;
     }
+
+    public static int getVersionCode() { return BuildConfig.VERSION_CODE; }
 } 

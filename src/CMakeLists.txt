@@ -91,6 +91,10 @@ if (ANDROID)
         globe
         checkmark
         emblem-shared-symbolic
+        open-menu-symbolic
+        window-close-symbolic
+        tools-report-bug
+        dialog-cancel
         )
 endif()
 

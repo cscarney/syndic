@@ -15,6 +15,7 @@ class AndroidStylePluginTheme : public Kirigami::PlatformTheme
 
 public:
     explicit AndroidStylePluginTheme(QObject *parent = nullptr);
+    QIcon iconFromTheme(const QString &name, const QColor &customColor = Qt::transparent) override;
 
 protected:
     bool event(QEvent *event) override;

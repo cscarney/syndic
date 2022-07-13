@@ -6,6 +6,8 @@ set(androidstyleplugin_SRCS
     androidstylepluginfactory.cpp
     androidstyleplugintheme.h
     androidstyleplugintheme.cpp
+    androidstylepluginiconloader.h
+    androidstylepluginiconloader.cpp
     androidstyleplugin.qrc
     )
 

@@ -5,6 +5,7 @@
 */
 
 #include "androidstyleplugintheme.h"
+#include "androidstylepluginiconloader.h"
 #include <QAndroidJniObject>
 #include <QCache>
 #include <QGuiApplication>
@@ -32,7 +33,7 @@ struct StyleData {
 
     QFont smallFont;
 
-    QCache<QString, QIcon> darkModeIconCache;
+    AndroidStylePluginIconLoader iconLoader;
     QObject *materialHelper{nullptr};
 
     static StyleData *createIfNecessary(QQmlEngine *engine = nullptr);
@@ -89,6 +90,10 @@ StyleData::StyleData(QQmlEngine *engine)
     qApp->setFont(font);
     font.setPointSizeF(kUnscaledSmallFontSize * fontScale);
     smallFont = font;
+
+    QStringList themePaths = QIcon::themeSearchPaths();
+    themePaths.append("assets:/share/icons");
+    QIcon::setThemeSearchPaths(themePaths);
 }
 
 StyleData *StyleData::createIfNecessary(QQmlEngine *engine)
@@ -106,6 +111,14 @@ AndroidStylePluginTheme::AndroidStylePluginTheme(QObject *parent)
     setSmallFont(styleData()->smallFont);
     setDefaultFont(qGuiApp->font());
     setSupportsIconColoring(true);
+}
+
+QIcon AndroidStylePluginTheme::iconFromTheme(const QString &name, const QColor &customColor)
+{
+    if (customColor == Qt::transparent) {
+        return styleData()->iconLoader.getIcon({name, textColor().rgba(), highlightedTextColor().rgba()});
+    }
+    return styleData()->iconLoader.getIcon({name, customColor.rgba(), customColor.rgba()});
 }
 
 bool AndroidStylePluginTheme::event(QEvent *event)
