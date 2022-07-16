@@ -39,7 +39,7 @@ ColumnLayout {
         MouseArea {
             id: titleMouse
             anchors.fill: parent
-            hoverEnabled: true
+            hoverEnabled: !Kirigami.Settings.hasTransientTouchInput
             cursorShape: Qt.PointingHandCursor
             onClicked: Qt.openUrlExternally(item.article.url)
             onContainsMouseChanged: root.hoveredLink = containsMouse ? item.article.url : null
@@ -115,7 +115,7 @@ ColumnLayout {
             MouseArea {
                 id: imageMouse
                 anchors.fill: parent
-                hoverEnabled: true
+                hoverEnabled: !Kirigami.Settings.hasTransientTouchInput
                 cursorShape: href ? Qt.PointingHandCursor : Qt.ArrowCursor
                 onContainsMouseChanged: root.hoveredLink = containsMouse ? href : null
                 onClicked: Qt.openUrlExternally(href)
