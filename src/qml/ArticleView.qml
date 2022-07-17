@@ -25,7 +25,6 @@ ColumnLayout {
     </style>"
 
     Kirigami.Heading {
-        property string linkText: item.article.url
         level: 1
         Layout.fillWidth: true
         text: item.article.title
@@ -127,7 +126,6 @@ ColumnLayout {
         id: textBlockComponent
         TextEdit {
             id: contentTextEdit
-            property string linkText: hoveredLink
             Layout.fillWidth: true
             Layout.topMargin: 20
             textFormat: Text.RichText
@@ -151,7 +149,10 @@ ColumnLayout {
                 Qt.openUrlExternally(root.item.article.resolvedLink(link))
             }
 
-            onHoveredLinkChanged: root.hoveredLink = hoveredLink ? root.item.article.resolvedLink(hoveredLink) : ""
+            // The root hover link gets the most recently changed value over all the views.
+            // We ignore hover link changes caused by touch events, since TextEdit::hoveredLink
+            // *only* responds to touch input in degenerate cases.
+            onHoveredLinkChanged: root.hoveredLink = hoveredLink && !Kirigami.Settings.hasTransientTouchInput ? root.item.article.resolvedLink(hoveredLink) : ""
 
             MouseArea
             {
