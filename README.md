@@ -1,7 +1,7 @@
 # Syndic
 A feed reader for Plasma and Android.
 
-![Screenshot](syndic.png?raw=true)
+![Screenshot](doc/screenshots/syndic-mid.png?raw=true)
 
 ## Build Requirements
 Tools
