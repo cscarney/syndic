@@ -6,10 +6,16 @@ SPDX-License-Identifier: GPL-3.0-or-later
 <component type="desktop-application">
     <id>com.rocksandpaper.syndic</id>
     <name>Syndic</name>
+    <url type="homepage">http://syndic.rocksandpaper.com/</url>
+    <url type="bugtracker">https://github.com/cscarney/syndic/issues</url>
+    <url type="translate">https://hosted.weblate.org/engage/syndic/</url>
     <summary>Convergent RSS/Atom reader</summary>
     <description><p>Convergent RSS/Atom reader</p></description>
-    <metadata_licence>GPL-3.0-or-later</metadata_licence>
+    <metadata_licence>CC-BY-3.0</metadata_licence>
     <project_license>GPL-3.0-or-later</project_license>
-    <developer_name>Connor Carney</developer_name>
+    <content_rating type="oars-1.0" />
+    <releases>
+        <release version="0.9.3" date="2022-07-18" />
+    </releases>
     <launchable type="desktop-id">com.rocksandpaper.syndic.desktop</launchable>
 </component>

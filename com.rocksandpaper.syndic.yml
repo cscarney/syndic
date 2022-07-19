@@ -15,8 +15,6 @@ finish-args:
 - --filesystem=home
 - --talk-name=org.freedesktop.Notifications
 - --talk-name=org.kde.StatusNotifierWatcher
-# HACK work around QSystemTrayIcon brokenness
-- --own-name=org.kde.*
 modules:
 - name: syndic
   buildsystem: cmake-ninja
