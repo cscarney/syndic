@@ -97,6 +97,7 @@ Kirigami.Page {
         ScrollView {
             id: scrollView
             clip: true
+            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
             Flickable {
                 id: scroller
