@@ -18,4 +18,16 @@ SPDX-License-Identifier: GPL-3.0-or-later
         <release version="0.9.3" date="2022-07-18" />
     </releases>
     <launchable type="desktop-id">com.rocksandpaper.syndic.desktop</launchable>
+    <screenshots>
+        <screenshot type="default">
+            <image type="source">http://syndic.rocksandpaper.com/screenshots/syndic-mid.png</image>
+        </screenshot>
+        <screenshot>
+            <image type="source">http://syndic.rocksandpaper.com/screenshots/syndic-wide.png</image>
+        </screenshot>
+        <screenshot>
+            <image type="source">http://syndic.rocksandpaper.com/screenshots/syndic-narrow.png</image>
+        </screenshot>
+    </screenshots>
+    <translation type="qt">syndic</translation>
 </component>
