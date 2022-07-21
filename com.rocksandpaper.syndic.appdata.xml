@@ -11,7 +11,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
     <url type="translate">https://hosted.weblate.org/engage/syndic/</url>
     <summary>Convergent RSS/Atom reader</summary>
     <description><p>Convergent RSS/Atom reader</p></description>
-    <metadata_licence>CC-BY-3.0</metadata_licence>
+    <metadata_license>CC-BY-3.0</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
     <content_rating type="oars-1.0" />
     <releases>
