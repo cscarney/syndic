@@ -240,24 +240,18 @@ void Context::importOpml(const QUrl &url)
         qDebug() << "failed to open file" << url;
         return;
     }
-    QHash<QUrl, Feed *> feedsByUrl;
-    for (Feed *feed : qAsConst(d->feeds)) {
-        feedsByUrl[feed->url()] = feed;
-    }
-    OpmlReader opml(&file);
-    QObject::connect(&opml, &OpmlReader::foundFeed, this, [this, feedsByUrl](const QUrl &url, const QString &name, const QString &category) {
-        ProvisionalFeed feed;
-        feed.setUrl(url);
-        feed.setName(name);
-        feed.setCategory(category);
-        if (feedsByUrl.contains(url)) {
-            feed.setTargetFeed(feedsByUrl.value(url));
-            feed.save();
-        } else {
-            addFeed(&feed);
-        }
-    });
+    OpmlReader opml(&file, d->feeds);
     opml.readAll();
+    if (opml.hasError()) {
+        qDebug() << "failed to import OPML:" << opml.errorString();
+        return;
+    }
+    for (ProvisionalFeed *feed : opml.newFeeds()) {
+        addFeed(feed);
+    }
+    for (ProvisionalFeed *feed : opml.updatedFeeds()) {
+        feed->save();
+    }
     file.close();
 }
 

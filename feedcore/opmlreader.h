@@ -6,22 +6,49 @@
 #ifndef FEEDCORE_OPMLREADER_H
 #define FEEDCORE_OPMLREADER_H
 #include <QObject>
+#include <QSet>
 #include <QXmlStreamReader>
 
 namespace FeedCore
 {
+class Feed;
+class ProvisionalFeed;
 class OpmlReader : public QObject
 {
     Q_OBJECT
 public:
     OpmlReader(QIODevice *device);
-    void readAll();
 
-signals:
-    void foundFeed(const QUrl &url, const QString &text, const QString &category);
+    /**
+     * \warning All of the feed pointers in existingFeeds must remain valid for the life of the reader
+     */
+    OpmlReader(QIODevice *device, const QSet<Feed *> &existingFeeds);
+
+    void readAll();
+    bool hasError() const
+    {
+        return xml.hasError();
+    }
+    QString errorString() const
+    {
+        return xml.errorString();
+    }
+
+    const QSet<ProvisionalFeed *> &newFeeds()
+    {
+        return m_newFeeds;
+    }
+    const QSet<ProvisionalFeed *> &updatedFeeds()
+    {
+        return m_updatedFeeds;
+    }
 
 private:
     QXmlStreamReader xml;
+    QHash<QUrl, Feed *> m_existingFeeds;
+    QSet<ProvisionalFeed *> m_newFeeds;
+    QSet<ProvisionalFeed *> m_updatedFeeds;
+    void foundFeed(const QUrl &xmlUrl, const QString &text, const QString &category);
 };
 }
 

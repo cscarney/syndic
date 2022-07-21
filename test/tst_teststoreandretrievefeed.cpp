@@ -13,6 +13,7 @@
 #include <QtTest>
 
 #include "atomFeedTemplate.h"
+#include "opmlTemplate.h"
 
 static constexpr const char *testDbName = "testStoreAndRetrieveFeed.db";
 static constexpr const char *testFeedName = "testName";
@@ -71,6 +72,20 @@ class testStoreAndRetrieveFeed : public QObject
         return QUrl::fromLocalFile(absolutePath);
     }
 
+    QUrl writeOpml()
+    {
+        constexpr const char *filename = "test.opml";
+        QString absolutePath = QFileInfo(filename).absoluteFilePath();
+        QFile file(absolutePath);
+        file.remove();
+        if (!file.open(QIODevice::WriteOnly)) {
+            assert(!"Couldn't open testatom.xml");
+        }
+        file.write(testOpmlTemplate);
+        file.close();
+        return QUrl::fromLocalFile(absolutePath);
+    }
+
     QVector<FeedCore::ArticleRef> getArticles(FeedCore::Feed *feed)
     {
         auto *articlesFuture = feed->getArticles(true);
@@ -81,6 +96,15 @@ class testStoreAndRetrieveFeed : public QObject
         });
         QSignalSpy(articlesFuture, &FeedCore::BaseFuture::finished).wait();
         return articles;
+    }
+
+    static auto indexFeedsByUrl(const QSet<FeedCore::Feed *> &feeds)
+    {
+        QMap<QUrl, FeedCore::Feed *> result;
+        for (auto *feed : feeds) {
+            result[feed->url()] = feed;
+        }
+        return result;
     }
 
 private slots:
@@ -241,6 +265,30 @@ private slots:
 
             QVERIFY(dateCompare(articles.at(0)->date(), newDateTime));
             QVERIFY(dateCompare(articles.at(1)->date(), newDateTime));
+        }
+    }
+
+    void testAddFeedsFromOpml()
+    {
+        {
+            QUrl opmlUrl = writeOpml();
+            m_context->importOpml(opmlUrl);
+            QCoreApplication::processEvents();
+        }
+        {
+            refreshContext();
+            const QSet<FeedCore::Feed *> &feeds = m_context->getFeeds();
+            QVERIFY(feeds.count() == 5);
+
+            const auto feedsByUrl = indexFeedsByUrl(feeds);
+            QVERIFY(feedsByUrl[QUrl("https://feed-1.example/")]->name() == "Feed 1");
+            QVERIFY(feedsByUrl[QUrl("https://feed-1.example/")]->category().isEmpty());
+            QVERIFY(feedsByUrl[QUrl("https://feed-2.example/")]->name() == "Feed 2");
+            QVERIFY(feedsByUrl[QUrl("https://feed-2.example/")]->category().isEmpty());
+            QVERIFY(feedsByUrl[QUrl("https://feed-3.example/")]->name() == "Feed 3");
+            QVERIFY(feedsByUrl[QUrl("https://feed-3.example/")]->category() == "Category 1");
+            QVERIFY(feedsByUrl[QUrl("https://feed-4.example/")]->name() == "Feed 4");
+            QVERIFY(feedsByUrl[QUrl("https://feed-4.example/")]->category() == "Category 1");
         }
     }
 };
