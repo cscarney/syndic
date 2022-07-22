@@ -84,12 +84,17 @@ private slots:
         feedWithOverrideUpdateMode.setUpdateMode(Feed::OverrideUpdateMode);
         feedWithOverrideUpdateMode.setUpdateInterval(feedUpdateInterval);
 
-        QSignalSpy waitForSignal(m_context, &Context::feedAdded);
-        m_context->addFeed(&feedWithInheritUpdateMode);
-        waitForSignal.wait();
+        {
+            m_context->addFeed(&feedWithInheritUpdateMode);
+            QSignalSpy waitForSignal(&feedWithInheritUpdateMode, &ProvisionalFeed::targetFeedChanged);
+            waitForSignal.wait();
+        }
 
-        m_context->addFeed(&feedWithOverrideUpdateMode);
-        waitForSignal.wait();
+        {
+            m_context->addFeed(&feedWithOverrideUpdateMode);
+            QSignalSpy waitForSignal(&feedWithOverrideUpdateMode, &ProvisionalFeed::targetFeedChanged);
+            waitForSignal.wait();
+        }
 
         QVERIFY(feedWithInheritUpdateMode.updateInterval() == contextUpdateInterval);
         QVERIFY(feedWithOverrideUpdateMode.updateInterval() == feedUpdateInterval);

@@ -86,11 +86,20 @@ const QSet<Feed *> &Context::getFeeds()
     return d->feeds;
 }
 
-void Context::addFeed(Feed *feed)
+void Context::addFeed(ProvisionalFeed *feed)
 {
     Future<Feed *> *q{d->storage->storeFeed(feed)};
-    QObject::connect(q, &BaseFuture::finished, this, [this, q] {
-        registerFeeds(q->result());
+    QObject::connect(q, &BaseFuture::finished, this, [this, q, feed = QPointer(feed)] {
+        const auto &result = q->result();
+        registerFeeds(result);
+        if (!feed.isNull()) {
+            if (q->result().isEmpty()) {
+                // TODO report backend errors
+                emit feed->saveFailed();
+            } else {
+                feed->setTargetFeed(q->result().first());
+            }
+        }
     });
 }
 
