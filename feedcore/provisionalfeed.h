@@ -79,6 +79,7 @@ public:
 signals:
     void targetFeedChanged();
     void urlStringChanged();
+    void saveFailed();
 
 private:
     Feed *m_targetFeed{nullptr};

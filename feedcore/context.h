@@ -73,10 +73,10 @@ public:
      *
      * The feed supplied to this function will usually be a ProvisionalFeed.  The created
      * Feed will be a duplicate of the one you provide; if you need access to the created
-     * Feed object, you should to listen for the feedAdded signal, which will be emitted
-     * asynchronously.
+     * Feed object, you should to listen for ProvisionalFeed::targetFeedChanged and
+     * ProvisionalFeed::saveError.
      */
-    Q_INVOKABLE void addFeed(FeedCore::Feed *feed);
+    Q_INVOKABLE void addFeed(FeedCore::ProvisionalFeed *feed);
 
     /**
      * Get a list of category strings

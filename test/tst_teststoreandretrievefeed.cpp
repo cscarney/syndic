@@ -121,7 +121,7 @@ private slots:
             FeedCore::ProvisionalFeed testFeed;
             testFeed.setUrl(QUrl(testUrl));
             testFeed.setName(testFeedName);
-            QSignalSpy waitForFeed(m_context, &FeedCore::Context::feedAdded);
+            QSignalSpy waitForFeed(&testFeed, &FeedCore::ProvisionalFeed::targetFeedChanged);
             m_context->addFeed(&testFeed);
             QVERIFY(waitForFeed.count() || waitForFeed.wait());
         }
