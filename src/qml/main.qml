@@ -165,6 +165,10 @@ Kirigami.ApplicationWindow {
             // emitted by pages to temporarily suspend the page transition animation
             animationSuspendTimer.start()
         }
+
+        function onNewFeedCreated(feed) {
+            feedList.selectFeed(feed)
+        }
     }
 
     Connections {

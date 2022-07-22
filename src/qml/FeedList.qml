@@ -32,13 +32,9 @@ ScrollView {
         pressDelay: Kirigami.Settings.hasTransientTouchInput ? 120 : 0
 
         model: FeedListModel{
+            id: feedListModel
             context: feedContext
             sortMode: globalSettings.feedListSort
-            onRowsInserted: function(parent,first,last){
-                if (feedList.currentIndex < 0) {
-                    Qt.callLater(()=>feedList.currentIndex = first);
-                }
-            }
 
             onRowsRemoved: {
                 Qt.callLater(()=>{
@@ -113,5 +109,10 @@ ScrollView {
             if (currentItem)
                 root.currentlySelectedFeed = currentItem.feed;
         }
+    }
+
+    function selectFeed(feed) {
+        feedList.forceLayout()
+        feedList.currentIndex = feedListModel.indexOf(feed)
     }
 }
