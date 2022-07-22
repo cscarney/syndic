@@ -182,7 +182,7 @@ Kirigami.ScrollablePage {
             pageRow.currentIndex = Kirigami.ColumnView.index
             pageRow.push("qrc:/qml/ArticleList/FeedPreviewPage.qml",
                          {pageRow: pageRow,
-                             feed: provisionalFeed});
+                             provisionalFeed: provisionalFeed});
             previewOpen = true;
         } else {
             pageRow.pop(this);

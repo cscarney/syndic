@@ -251,6 +251,12 @@ void FeedListModel::setSortMode(FeedListModel::Sort sortMode)
     }
 }
 
+int FeedListModel::indexOf(FeedCore::Feed *feed)
+{
+    int idx = d->feeds.indexOf(feed);
+    return idx < 0 ? idx : idx + SPECIAL_FEED_COUNT;
+}
+
 void FeedListModel::loadFeeds()
 {
     beginResetModel();

@@ -8,8 +8,11 @@ import org.kde.kirigami 2.14 as Kirigami
 
 AbstractArticleListPage {
     id: root
+    property ProvisionalFeed provisionalFeed
+    signal newFeedCreated(Feed newFeed)
     automaticOpen: false
     unreadFilter: false
+    feed: provisionalFeed
 
     actions {
         main: Kirigami.Action {
@@ -18,9 +21,11 @@ AbstractArticleListPage {
             iconName: "list-add"
             enabled: model.status == Feed.Idle
             onTriggered: {
-                const feed = root.feed
-                pageRow.clear();
-                feedContext.addFeed(feed);
+                const provisionalFeed = root.provisionalFeed
+                feedContext.addFeed(provisionalFeed);
+                provisionalFeed.targetFeedChanged.connect(()=>{
+                    newFeedCreated(provisionalFeed.targetFeed)
+                });
             }
         }
     }
