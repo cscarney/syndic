@@ -42,7 +42,7 @@ void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
     }
     const QDateTime &updateTime{nextUpdate(feed)};
     for (auto i = schedule.begin(); i != schedule.end(); ++i) {
-        if (nextUpdate(*i) > updateTime) {
+        if (nextUpdate(*i) >= updateTime) {
             schedule.insert(i, feed);
             return;
         }
@@ -77,12 +77,17 @@ void Scheduler::start(int resolution)
     d->timer.start();
 
     // also update immediately, in case anything was scheduled while we were stopped
-    QTimer::singleShot(0, this, &Scheduler::updateStale);
+    updateStale();
 }
 
 void Scheduler::stop()
 {
     d->timer.stop();
+}
+
+bool Scheduler::isRunning()
+{
+    return d->timer.isActive();
 }
 
 static void updateMany(const QDateTime &timestamp, const QList<Feed::Updater *> &toUpdate)
@@ -127,7 +132,7 @@ void Scheduler::reschedule(Feed *feed, const QDateTime &timestamp)
     if (feed->status() == LoadStatus::Updating) {
         return;
     }
-    if (needsUpdate(feed, timestamp)) {
+    if (isRunning() && needsUpdate(feed, timestamp)) {
         feed->updater()->start();
     } else {
         insertIntoSchedule(d->schedule, feed);
