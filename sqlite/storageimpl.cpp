@@ -8,12 +8,16 @@
 #include "provisionalfeed.h"
 #include "sqlite/articleimpl.h"
 #include "sqlite/feedimpl.h"
+#include <QCoreApplication>
+#include <QEvent>
 #include <QTimer>
 #include <QVector>
 #include <Syndication/Person>
 #include <utility>
 using namespace FeedCore;
 using namespace SqliteStorage;
+
+const int StorageImpl::CommitEvent = QEvent::registerEventType();
 
 void StorageImpl::appendArticleResults(Future<ArticleRef> *op, ItemQuery &q)
 {
@@ -32,6 +36,16 @@ void StorageImpl::onFeedRequestDelete(FeedImpl *feed)
     m_db.deleteItemsForFeed(feedId);
     m_db.deleteFeed(feedId);
     feed->deleteLater();
+}
+
+void StorageImpl::ensureTransaction()
+{
+    if (m_hasTransaction) {
+        return;
+    }
+    m_db.beginTransaction();
+    m_hasTransaction = true;
+    QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>(CommitEvent)), Qt::LowEventPriority);
 }
 
 Future<ArticleRef> *StorageImpl::getAll()
@@ -63,6 +77,13 @@ StorageImpl::StorageImpl(const QString &filePath)
 {
 }
 
+StorageImpl::~StorageImpl()
+{
+    if (m_hasTransaction) {
+        m_db.commitTransaction();
+    }
+}
+
 Future<ArticleRef> *StorageImpl::getById(qint64 id)
 {
     return Future<ArticleRef>::yield(this, [this, id](auto *op) {
@@ -92,7 +113,7 @@ Future<ArticleRef> *StorageImpl::getUnreadByFeed(FeedImpl *feed)
 Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication::ItemPtr &item)
 {
     const qint64 feedId{feed->id()};
-    return Future<ArticleRef>::yield(this, [this, item, feedId](auto *op) {
+    return runInTransaction<ArticleRef>([this, item, feedId](auto *op) {
         const auto &itemId = m_db.selectItemId(feedId, item->id());
         const auto &authors = item->authors();
         const auto &authorName = authors.empty() ? "" : authors[0]->name();
@@ -145,6 +166,7 @@ void StorageImpl::onArticleReadChanged(ArticleImpl *article)
 {
     const qint64 itemId{article->id()};
     const bool isRead{article->isRead()};
+    ensureTransaction();
     m_db.updateItemRead(itemId, isRead);
 }
 
@@ -152,6 +174,7 @@ void StorageImpl::onArticleStarredChanged(ArticleImpl *article)
 {
     const qint64 itemId{article->id()};
     const bool isStarred{article->isStarred()};
+    ensureTransaction();
     m_db.updateItemStarred(itemId, isStarred);
 }
 
@@ -204,7 +227,7 @@ Future<Feed *> *StorageImpl::storeFeed(Feed *feed)
     const QString &category = feed->category();
     const qint64 updateInterval = packFeedUpdateInterval(feed);
     const qint64 expireAge = packFeedExpireAge(feed);
-    return Future<Feed *>::yield(this, [this, url, name, category, updateInterval, expireAge](auto *op) {
+    return runInTransaction<FeedCore::Feed *>([this, url, name, category, updateInterval, expireAge](auto *op) {
         const auto &insertId = m_db.insertFeed(url);
         if (!insertId) {
             op->setResult();
@@ -288,4 +311,15 @@ void StorageImpl::listenForChanges(FeedImpl *feed)
 void StorageImpl::expire(FeedImpl *feed, const QDateTime &olderThan)
 {
     m_db.deleteItemsOlderThan(feed->id(), olderThan);
+}
+
+void StorageImpl::customEvent(QEvent *e)
+{
+    if (e->type() == static_cast<int>(CommitEvent)) {
+        m_db.commitTransaction();
+        m_hasTransaction = false;
+        e->accept();
+    } else {
+        FeedCore::Storage::customEvent(e);
+    }
 }

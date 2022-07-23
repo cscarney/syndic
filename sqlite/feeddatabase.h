@@ -53,6 +53,9 @@ public:
     void updateFeedExpireAge(qint64 feedId, qint64 expireAge);
     void deleteFeed(qint64 feedId);
 
+    void beginTransaction();
+    void commitTransaction();
+
 private:
     QSqlDatabase db();
     QString m_dbName;

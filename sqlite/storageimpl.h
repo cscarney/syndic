@@ -19,6 +19,7 @@ class StorageImpl : public FeedCore::Storage
     Q_OBJECT
 public:
     explicit StorageImpl(const QString &filePath);
+    ~StorageImpl();
     FeedCore::Future<FeedCore::ArticleRef> *getById(qint64 id);
     FeedCore::Future<FeedCore::ArticleRef> *getByFeed(FeedImpl *feedId);
     FeedCore::Future<FeedCore::ArticleRef> *getUnreadByFeed(FeedImpl *feedId);
@@ -35,13 +36,26 @@ public:
     void listenForChanges(FeedImpl *feed);
     void expire(FeedImpl *feed, const QDateTime &olderThan);
 
+protected:
+    void customEvent(QEvent *e) override;
+
 private:
     FeedDatabase m_db;
     FeedCore::ObjectFactory<qint64, FeedImpl> m_feedFactory;
     FeedCore::SharedFactory<qint64, ArticleImpl> m_articleFactory;
+    bool m_hasTransaction{false};
     void appendFeedResults(FeedCore::Future<FeedCore::Feed *> *op, FeedQuery &q);
     void appendArticleResults(FeedCore::Future<FeedCore::ArticleRef> *op, ItemQuery &q);
     void onFeedRequestDelete(FeedImpl *feed);
+    void ensureTransaction();
+    const static int CommitEvent;
+
+    template<typename Payload, typename Func>
+    FeedCore::Future<Payload> *runInTransaction(Func func)
+    {
+        ensureTransaction();
+        return FeedCore::Future<Payload>::yield(this, func);
+    }
 };
 }
 #endif // SQLITE_STORAGEIMPL_H
