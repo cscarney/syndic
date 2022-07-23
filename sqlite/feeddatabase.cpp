@@ -496,4 +496,13 @@ void FeedDatabase::deleteFeed(qint64 feedId)
     }
 }
 
+void FeedDatabase::beginTransaction()
+{
+    db().exec("BEGIN TRANSACTION");
+}
+
+void FeedDatabase::commitTransaction()
+{
+    db().exec("COMMIT TRANSACTION");
+}
 }
