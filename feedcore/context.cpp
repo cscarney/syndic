@@ -249,19 +249,29 @@ void Context::importOpml(const QUrl &url)
         qDebug() << "failed to open file" << url;
         return;
     }
-    OpmlReader opml(&file, d->feeds);
-    opml.readAll();
-    if (opml.hasError()) {
-        qDebug() << "failed to import OPML:" << opml.errorString();
+    QSharedPointer<OpmlReader> opml(new OpmlReader(&file, d->feeds));
+    opml->readAll();
+    file.close();
+
+    if (opml->hasError()) {
+        qDebug() << "failed to import OPML:" << opml->errorString();
         return;
     }
-    for (ProvisionalFeed *feed : opml.newFeeds()) {
-        addFeed(feed);
-    }
-    for (ProvisionalFeed *feed : opml.updatedFeeds()) {
+
+    for (ProvisionalFeed *feed : opml->updatedFeeds()) {
         feed->save();
     }
-    file.close();
+
+    d->updateScheduler->stop();
+    for (ProvisionalFeed *feed : opml->newFeeds()) {
+        auto *q = d->storage->storeFeed(feed);
+        QObject::connect(q, &BaseFuture::finished, this, [this, opml, q] {
+            registerFeeds(q->result());
+        });
+    }
+    QObject::connect(opml.get(), &QObject::destroyed, this, [this] {
+        d->updateScheduler->start();
+    });
 }
 
 bool Context::defaultUpdateEnabled() const
