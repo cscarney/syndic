@@ -49,6 +49,8 @@ public:
      */
     void stop();
 
+    bool isRunning();
+
     /**
      * Perform a one-time update of all stale feeds.
      */
