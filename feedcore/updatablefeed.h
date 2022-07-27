@@ -16,7 +16,7 @@ namespace FeedCore
 class UpdatableFeed : public Feed
 {
 public:
-    virtual Updater *updater() final;
+    Updater *updater() final;
 
 protected:
     explicit UpdatableFeed(QObject *parent);

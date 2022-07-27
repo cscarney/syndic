@@ -124,12 +124,12 @@ static QUrl urlFromString(const QString &string)
         return QUrl::fromLocalFile(string);
     }
 
-    const QUrl url(trimmedString, QUrl::TolerantMode);
+    QUrl url(trimmedString, QUrl::TolerantMode);
     if (url.isValid() && !url.isRelative()) {
         return url;
     }
 
-    const QUrl httpsUrl(QLatin1String("https://") + trimmedString, QUrl::TolerantMode);
+    QUrl httpsUrl(QLatin1String("https://") + trimmedString, QUrl::TolerantMode);
     if (httpsUrl.isValid()) {
         return httpsUrl;
     }

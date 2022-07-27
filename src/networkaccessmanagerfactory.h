@@ -13,8 +13,6 @@ class NetworkAccessManagerFactory : public QQmlNetworkAccessManagerFactory
 public:
     NetworkAccessManagerFactory();
 
-    // QQmlNetworkAccessManagerFactory interface
-public:
     QNetworkAccessManager *create(QObject *parent) override;
 };
 

@@ -17,7 +17,7 @@ class OpmlReader : public QObject
 {
     Q_OBJECT
 public:
-    OpmlReader(QIODevice *device);
+    explicit OpmlReader(QIODevice *device);
 
     /**
      * \warning All of the feed pointers in existingFeeds must remain valid for the life of the reader

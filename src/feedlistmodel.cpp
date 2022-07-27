@@ -103,7 +103,7 @@ public:
     Sort sortMode = Name;
     std::unique_ptr<SortHelper> sortHelper = std::make_unique<NameSortHelper>();
 
-    PrivData(FeedListModel *parent)
+    explicit PrivData(FeedListModel *parent)
         : parent{parent}
     {
     }
@@ -198,9 +198,10 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
 
     case CategoryRole:
         return entry->category();
-    }
 
-    return QVariant();
+    default:
+        return QVariant();
+    }
 }
 
 QHash<int, QByteArray> FeedListModel::roleNames() const

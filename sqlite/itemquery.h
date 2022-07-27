@@ -15,7 +15,7 @@ namespace SqliteStorage
 class ItemQuery : public QSqlQuery
 {
 public:
-    ItemQuery(QSqlDatabase db, const QString &whereClause)
+    ItemQuery(const QSqlDatabase &db, const QString &whereClause)
         : QSqlQuery(db)
     {
         prepare(

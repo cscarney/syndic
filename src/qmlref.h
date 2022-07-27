@@ -57,11 +57,11 @@ public:
     {
         return m_ref.isNull();
     }
-    operator const QSharedPointer<T> &() const
+    operator const QSharedPointer<T> &() const // NOLINT: don't warn about implicit conversion
     {
         return m_ref;
     }
-    operator T *() const
+    operator T *() const // NOLINT: don't warn about implicit conversion
     {
         return m_ref.get();
     }

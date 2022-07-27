@@ -22,7 +22,7 @@ class ContentModel : public QAbstractListModel
      */
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
 public:
-    ContentModel(QObject *parent = nullptr);
+    explicit ContentModel(QObject *parent = nullptr);
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     const QString &text()

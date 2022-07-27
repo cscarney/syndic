@@ -19,7 +19,7 @@ class GumboVisitor
 {
 public:
     explicit GumboVisitor(const QString &input);
-    ~GumboVisitor();
+    virtual ~GumboVisitor();
     GumboVisitor(GumboVisitor &other) = delete;
     void operator=(GumboVisitor &other) = delete;
 
@@ -50,8 +50,8 @@ private:
     {
     }
 
+    const QByteArray m_data;
     GumboOutput *m_gumbo;
-    QByteArray m_data;
     GumboNode *m_root;
     GumboNode *m_node;
     void moveNext();

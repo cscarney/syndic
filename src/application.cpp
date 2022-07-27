@@ -46,7 +46,7 @@ static QString filePath(QString const &fileName)
 {
     QDir appDataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
     if (!appDataDir.mkpath(".")) {
-        qWarning("failed to create data dir");
+        qWarning() << "failed to create data dir";
         appDataDir = QDir(".");
     }
     return appDataDir.filePath(fileName);
@@ -194,10 +194,11 @@ void Application::onLastWindowClosed()
     quit();
 #else
     d->settings.save();
-    if (topLevelWindows().size() > 1) {
+    const QWindowList windows = topLevelWindows();
+    if (windows.size() > 1) {
         // we sometimes get called when dialogs are closed
         // possibly related: https://bugreports.qt.io/browse/QTBUG-80483
-        for (auto *eachWindow : topLevelWindows()) {
+        for (auto *eachWindow : windows) {
             if (eachWindow->visibility() != QWindow::Hidden) {
                 return;
             }

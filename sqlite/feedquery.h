@@ -15,7 +15,7 @@ namespace SqliteStorage
 class FeedQuery : public QSqlQuery
 {
 public:
-    FeedQuery(QSqlDatabase db, const QString &whereClause)
+    FeedQuery(const QSqlDatabase &db, const QString &whereClause)
         : QSqlQuery(db)
     {
         prepare(

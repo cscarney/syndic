@@ -24,7 +24,7 @@ static int getVersion(QSqlDatabase &db)
 {
     QSqlQuery q("PRAGMA user_version", db);
     if (!q.next()) {
-        qWarning("getVersion returned empty set");
+        qCritical() << "getVersion returned empty set";
         return 0;
     }
 
@@ -84,7 +84,7 @@ static void initDatabase(QSqlDatabase &db)
                         "PRAGMA user_version = 1;"});
     }
     if (!success) {
-        qWarning("Database initialization failed!");
+        qCritical() << "Database initialization failed!";
         db.close();
     }
 }
@@ -96,7 +96,7 @@ FeedDatabase::FeedDatabase(const QString &filePath)
     auto db = QSqlDatabase::addDatabase("QSQLITE", m_dbName);
     db.setDatabaseName(filePath);
     if (!db.open()) {
-        qWarning("Failed to open database!");
+        qCritical() << "Failed to open database!";
     } else {
         initDatabase(db);
     }

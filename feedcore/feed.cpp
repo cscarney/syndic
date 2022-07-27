@@ -241,7 +241,7 @@ struct Feed::Updater::PrivData {
     QDateTime updateStartTime;
     QString errorMsg;
     bool active{false};
-    PrivData(Feed *feed)
+    explicit PrivData(Feed *feed)
         : feed(feed){};
 };
 
