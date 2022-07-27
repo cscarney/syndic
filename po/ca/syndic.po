@@ -1,6 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-06-27 05:29+0000\n"
+"Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
+"PO-Revision-Date: 2022-07-27 14:24+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/syndic/app/ca/>\n"
 "Language: ca\n"
@@ -8,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1-dev\n"
+"X-Generator: Weblate 4.14-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
@@ -158,7 +159,7 @@ msgstr "Destacat"
 #: src/qml/ArticlePage.qml:54
 msgctxt "ArticlePage|"
 msgid "Keep Unread"
-msgstr ""
+msgstr "Conserva com a no-llegit"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
