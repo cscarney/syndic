@@ -5,6 +5,7 @@
 
 #ifndef ICONPROVIDER_H
 #define ICONPROVIDER_H
+#include <QMutex>
 #include <QQuickAsyncImageProvider>
 
 namespace FeedCore
@@ -22,8 +23,9 @@ class Context;
  * TODO This class currently also handles icon discovery, but that should probably
  * be moved to core.
  */
-class IconProvider : public QQuickAsyncImageProvider
+class IconProvider : public QObject, public QQuickAsyncImageProvider
 {
+    Q_OBJECT
 public:
     IconProvider();
     ~IconProvider();
@@ -31,8 +33,12 @@ public:
     static void discoverIcon(FeedCore::Feed *feed);
 
 private:
+    class IconImageResponse;
+    class IconImageEntry;
+
     static IconProvider *s_instance;
     QSharedPointer<QNetworkAccessManager> m_nam;
+    QHash<QUrl, IconImageEntry *> m_icons;
 };
 
 #endif // ICONPROVIDER_H

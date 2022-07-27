@@ -15,7 +15,41 @@
 
 namespace
 {
-class IconImageResponse : public QQuickImageResponse
+class IconCache : public QNetworkDiskCache
+{
+public:
+    IconCache();
+    QIODevice *prepare(const QNetworkCacheMetaData &metaData) override;
+    static constexpr const int kReasonableMaxAge = 86400;
+};
+
+IconCache::IconCache()
+{
+    QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QLatin1String("/icons/");
+    setCacheDirectory(cacheDir);
+    setMaximumCacheSize(INT64_MAX); // cache all the icons regardless of size
+}
+
+QIODevice *IconCache::prepare(const QNetworkCacheMetaData &metaData)
+{
+    QNetworkCacheMetaData newMetaData(metaData);
+
+    // make sure that the server's cache expiration isn't unreasonably short
+    QDateTime reasonableExpirationDate = QDateTime::currentDateTime().addSecs(kReasonableMaxAge);
+    if (metaData.expirationDate() < reasonableExpirationDate) {
+        newMetaData.setExpirationDate(reasonableExpirationDate);
+    }
+
+    // store even if the server says not to
+    newMetaData.setSaveToDisk(true);
+
+    return QNetworkDiskCache::prepare(newMetaData);
+}
+
+}
+
+// NB: this class belongs to the requesting thread
+class IconProvider::IconImageResponse : public QQuickImageResponse
 {
 public:
     QImage m_image;
@@ -31,51 +65,92 @@ public:
         return QQuickTextureFactory::textureFactoryForImage(m_image);
     }
 
-    void onNetworkReplyFinished()
+    bool loadImageData(const QByteArray &data)
     {
-        auto *reply = qobject_cast<QNetworkReply *>(QObject::sender());
-        bool success = m_image.loadFromData(reply->readAll());
+        bool success = m_image.loadFromData(data);
         if (!success) {
             m_error = "failed to load image";
         }
-        reply->deleteLater();
         emit finished();
+        return success;
+    }
+
+    void succeed(const QImage &image)
+    {
+        QMetaObject::invokeMethod(this, [this, image] {
+            m_image = image;
+            emit finished();
+        });
+    }
+
+    void fail()
+    {
+        QMetaObject::invokeMethod(this, [this] {
+            m_error = "failed to load image";
+            emit finished();
+        });
     }
 };
 
-class IconCache : public QNetworkDiskCache
+class IconProvider::IconImageEntry : public QObject
 {
+    enum Status { Pending, Success, Error };
+
+    Status m_status{Pending};
+    QImage m_image;
+    QList<IconImageResponse *> m_waitingResponses;
+
 public:
-    IconCache();
-    QIODevice *prepare(const QNetworkCacheMetaData &metaData) override;
-    static constexpr const int kReasonableMaxAge = 86400;
-};
-
-IconCache::IconCache()
-{
-    QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QLatin1String("/icons/");
-    setCacheDirectory(cacheDir);
-}
-
-QIODevice *IconCache::prepare(const QNetworkCacheMetaData &metaData)
-{
-    // make sure that the server's cache expiration isn't unreasonably short
-    QDateTime reasonableExpirationDate = QDateTime::currentDateTime().addSecs(kReasonableMaxAge);
-    if (metaData.expirationDate() < reasonableExpirationDate) {
-        QNetworkCacheMetaData newMetaData(metaData);
-        newMetaData.setExpirationDate(reasonableExpirationDate);
-        return QNetworkDiskCache::prepare(newMetaData);
+    IconImageEntry(QNetworkAccessManager *nam, const QUrl &source, QObject *parent)
+        : QObject(parent)
+    {
+        QNetworkRequest req(source);
+        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
+        QNetworkReply *reply = nam->get(req);
+        QObject::connect(reply, &QNetworkReply::finished, this, [this, reply] {
+            if (reply->error() == QNetworkReply::NoError && m_image.loadFromData(reply->readAll())) {
+                m_status = Success;
+            } else {
+                m_status = Error;
+            }
+            finishWaitingResponses();
+        });
     }
-    return QNetworkDiskCache::prepare(metaData);
-}
 
-}
+    void respond(IconImageResponse *response)
+    {
+        if (m_status == Pending) {
+            m_waitingResponses.append(response);
+        } else {
+            finishResponse(response);
+        }
+    }
+
+private:
+    void finishWaitingResponses()
+    {
+        for (auto *response : qAsConst(m_waitingResponses)) {
+            finishResponse(response);
+        }
+        m_waitingResponses.clear();
+    }
+
+    void finishResponse(IconImageResponse *response)
+    {
+        if (m_status == Success) {
+            response->succeed(m_image);
+        } else {
+            response->fail();
+        }
+    }
+};
 
 IconProvider *IconProvider::s_instance{nullptr};
 
 IconProvider::IconProvider()
     : m_nam{new FeedCore::NetworkAccessManager(new IconCache)}
 {
+    m_nam->setAutoDeleteReplies(true);
     s_instance = this;
 }
 
@@ -89,41 +164,60 @@ IconProvider::~IconProvider()
 QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const QSize & /*requestedSize */)
 {
     auto *response = new IconImageResponse;
-    auto *nam = m_nam.get();
-    QTimer::singleShot(0, nam, [nam, id, response] {
-        QNetworkRequest req(id);
-        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
-        QNetworkReply *reply = nam->get(req);
-        QObject::connect(reply, &QNetworkReply::finished, response, &IconImageResponse::onNetworkReplyFinished);
+    QTimer::singleShot(0, this, [this, id, response] {
+        QUrl url{id};
+        IconImageEntry *&pIcon = m_icons[url];
+        if (pIcon == nullptr) {
+            pIcon = new IconImageEntry(m_nam.get(), url, this);
+        }
+        pIcon->respond(response);
     });
     return response;
 }
 
+// TODO this should be refactored into it's own class, probably in core
 void IconProvider::discoverIcon(FeedCore::Feed *feed)
 {
-    if (feed->link().isEmpty() || s_instance == nullptr) {
+    if (!feed->icon().isEmpty()) {
         return;
     }
-    QTimer::singleShot(0, feed, [feed, nam = s_instance->m_nam] {
-        QUrl iconUrl(feed->link());
-        iconUrl.setPath("/favicon.ico");
-        QNetworkRequest req(iconUrl);
-        QNetworkReply *reply = nam->get(req);
-        QObject::connect(reply, &QNetworkReply::finished, feed, [reply, feed] {
-            if (reply->error() != QNetworkReply::NoError) {
-                // couldn't get file
-                return;
-            }
-            QByteArray data = reply->readAll();
-            QBuffer buffer(&data);
-            buffer.open(QIODevice::ReadOnly);
-            QImageReader reader(&buffer);
-            bool success = reader.canRead();
-            if (success) {
-                feed->setIcon(reply->url());
-            } else {
-                // unreadable image
+
+    if (s_instance == nullptr) {
+        qWarning() << "discoverIcon called before creating an IconProvider";
+    }
+
+    // if we don't have a feed link, wait and see if we get one in the next update
+    if (feed->link().isEmpty()) {
+        auto *context = new QObject(feed);
+        QObject::connect(feed, &FeedCore::Feed::statusChanged, context, [feed, context] {
+            if (feed->status() == FeedCore::Feed::Idle) {
+                if (!feed->link().isEmpty()) {
+                    discoverIcon(feed);
+                }
+                QObject::disconnect(feed, nullptr, context, nullptr);
             }
         });
+        return;
+    }
+
+    QUrl iconUrl(feed->link());
+    iconUrl.setPath("/favicon.ico");
+    QNetworkRequest req(iconUrl);
+    QNetworkReply *reply = s_instance->m_nam->get(req);
+    QObject::connect(reply, &QNetworkReply::finished, feed, [reply, feed] {
+        if (reply->error() != QNetworkReply::NoError) {
+            // couldn't get file
+            return;
+        }
+        QByteArray data = reply->readAll();
+        QBuffer buffer(&data);
+        buffer.open(QIODevice::ReadOnly);
+        QImageReader reader(&buffer);
+        bool success = reader.canRead();
+        if (success) {
+            feed->setIcon(reply->url());
+        } else {
+            // unreadable image
+        }
     });
 }

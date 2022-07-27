@@ -130,9 +130,7 @@ void FeedListModel::PrivData::addItem(Feed *feed)
 void FeedListModel::PrivData::addItem(FeedCore::Feed *feed, int index)
 {
     feeds.insert(index, feed);
-    if (feed->icon().isEmpty()) {
-        IconProvider::discoverIcon(feed);
-    }
+    IconProvider::discoverIcon(feed);
     QObject::connect(feed, &QObject::destroyed, parent, [this, feed] {
         removeItem(feed);
     });
