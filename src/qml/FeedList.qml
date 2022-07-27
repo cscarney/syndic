@@ -30,6 +30,7 @@ ScrollView {
         currentIndex: 0
         clip: true
         pressDelay: Kirigami.Settings.hasTransientTouchInput ? 120 : 0
+        highlightMoveDuration: Kirigami.Units.longDuration
 
         model: FeedListModel{
             id: feedListModel
