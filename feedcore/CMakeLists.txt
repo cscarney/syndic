@@ -16,6 +16,7 @@ set(feedcore_HEADERS
     starreditemsfeed.h
     updatablefeed.h
     opmlreader.h
+    sharedcache.h
     )
     
 set(feedcore_SRCS
@@ -30,6 +31,7 @@ set(feedcore_SRCS
     starreditemsfeed.cpp
     updatablefeed.cpp
     opmlreader.cpp
+    sharedcache.cpp
     )
     
 add_library(feedcore STATIC ${feedcore_SRCS})

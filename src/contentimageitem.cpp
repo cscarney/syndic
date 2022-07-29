@@ -5,6 +5,7 @@
 
 #include "contentimageitem.h"
 
+#include <QBuffer>
 #include <QNetworkReply>
 #include <QQmlEngine>
 #include <QQuickWindow>
@@ -102,7 +103,9 @@ void ContentImageItem::onImageLoadFinished()
         qWarning() << "image load error: " << reply->errorString();
         return;
     }
-    if (!m_image.load(reply, nullptr)) {
+    QByteArray arr = reply->readAll();
+    QBuffer buffer(&arr);
+    if (!m_image.load(&buffer, nullptr)) {
         qWarning() << "invalid image!" << reply->url();
         return;
     }

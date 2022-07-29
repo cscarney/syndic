@@ -5,11 +5,12 @@
 
 #ifndef FEEDCORE_CACHEDNETWORKACCESSMANAGER_H
 #define FEEDCORE_CACHEDNETWORKACCESSMANAGER_H
-
 #include <QNetworkAccessManager>
+#include <memory>
 
 namespace FeedCore
 {
+
 class NetworkAccessManager : public QNetworkAccessManager
 {
 public:
@@ -17,7 +18,16 @@ public:
 
     explicit NetworkAccessManager(QObject *parent = nullptr);
     explicit NetworkAccessManager(QAbstractNetworkCache *cache, QObject *parent = nullptr);
+    ~NetworkAccessManager();
     QNetworkReply *createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData) override;
+
+private:
+    static constexpr const int kMaxSimultaneousLoads = 10;
+    struct PrivData;
+    class DeferredNetworkReply;
+    struct WaitingRequest;
+    std::unique_ptr<PrivData> d;
+    void onFinished();
 };
 }
 

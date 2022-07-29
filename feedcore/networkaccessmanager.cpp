@@ -4,120 +4,163 @@
  */
 
 #include "networkaccessmanager.h"
-#include <QDebug>
-#include <QMutex>
-#include <QNetworkDiskCache>
-#include <QStandardPaths>
+#include "sharedcache.h"
+#include <QNetworkReply>
+#include <QStack>
 using namespace FeedCore;
 
-namespace
-{
-class SharedDiskCache : public QNetworkDiskCache
-{
-public:
-    QMutex mutex;
-    static SharedDiskCache *instance();
-
-private:
-    SharedDiskCache();
-};
-
-/* This shim class allows multiple instances of our NAM to use the same disk cache.
+/* This is an (incomlete) proxy for QNetworkReply that gives us something
+ * to return to the caller when we queue a request for later.
  *
- * This is necessary so that we can safely return instances of our NAM from QNetworkAccessManagerFactory.
+ * The network access manager calls start() with the actual reply when
+ * the request gets dequeued.
  */
-class SharedCacheProxy : public QAbstractNetworkCache
+class NetworkAccessManager::DeferredNetworkReply : public QNetworkReply
 {
+    QNetworkReply *m_reply{nullptr};
+    NetworkAccessManager *m_nam;
+
 public:
-    SharedCacheProxy() = default;
-    QNetworkCacheMetaData metaData(const QUrl &url) override;
-    void updateMetaData(const QNetworkCacheMetaData &metaData) override;
-    QIODevice *data(const QUrl &url) override;
-    bool remove(const QUrl &url) override;
-    qint64 cacheSize() const override;
-    QIODevice *prepare(const QNetworkCacheMetaData &metaData) override;
-    void insert(QIODevice *device) override;
-    void clear() override;
+    explicit DeferredNetworkReply(NetworkAccessManager *parent);
+    ~DeferredNetworkReply();
+    void start(QNetworkReply *reply);
+
+    qint64 readData(char *data, qint64 max) override;
+    void abort() override;
+    bool isSequential() const override;
+    void forwardSignals();
+    void forwardAttribute(QNetworkRequest::Attribute attr);
+    void forwardHeaders();
 };
 
+struct NetworkAccessManager::WaitingRequest {
+    QNetworkAccessManager::Operation op{QNetworkAccessManager::GetOperation};
+    QNetworkRequest req{};
+    QIODevice *outgoingData{nullptr};
+    DeferredNetworkReply *repl{nullptr};
+};
+
+struct NetworkAccessManager::PrivData {
+    NetworkAccessManager *parent;
+    int connectionCount{0};
+    QStack<WaitingRequest> waitingRequests;
+
+    explicit PrivData(NetworkAccessManager *parent)
+        : parent(parent)
+    {
+    }
+    void startWaiting();
+    QNetworkReply *makeRealReply(const WaitingRequest &wr);
+    void removeWaiting(DeferredNetworkReply *reply);
+};
+
+NetworkAccessManager::DeferredNetworkReply::DeferredNetworkReply(NetworkAccessManager *parent)
+    : QNetworkReply(parent)
+    , m_nam(parent)
+{
+    setOpenMode(ReadOnly | Unbuffered);
 }
 
-QNetworkCacheMetaData SharedCacheProxy::metaData(const QUrl &url)
+NetworkAccessManager::DeferredNetworkReply::~DeferredNetworkReply()
 {
-    QMutexLocker lock(&SharedDiskCache::instance()->mutex);
-    return SharedDiskCache::instance()->metaData(url);
+    if (m_reply != nullptr) {
+        m_reply->deleteLater();
+    }
 }
 
-void SharedCacheProxy::updateMetaData(const QNetworkCacheMetaData &metaData)
+void NetworkAccessManager::DeferredNetworkReply::start(QNetworkReply *reply)
 {
-    QMutexLocker lock(&SharedDiskCache::instance()->mutex);
-    SharedDiskCache::instance()->updateMetaData(metaData);
+    m_reply = reply;
+    setOperation(reply->operation());
+    setRequest(reply->request());
+    setUrl(reply->url());
+    forwardSignals();
+
+    QObject::connect(reply, &QNetworkReply::redirected, this, &DeferredNetworkReply::setUrl);
+
+    // handle auto-deleted replies
+    QObject::connect(reply, &QObject::destroyed, this, [this] {
+        m_reply = nullptr;
+        deleteLater();
+    });
 }
 
-QIODevice *SharedCacheProxy::data(const QUrl &url)
+qint64 NetworkAccessManager::DeferredNetworkReply::readData(char *data, qint64 max)
 {
-    QMutexLocker lock(&SharedDiskCache::instance()->mutex);
-    return SharedDiskCache::instance()->data(url);
+    if (m_reply == nullptr || !m_reply->isOpen()) {
+        return 0;
+    }
+    return m_reply->read(data, max);
 }
 
-bool SharedCacheProxy::remove(const QUrl &url)
+void NetworkAccessManager::DeferredNetworkReply::abort()
 {
-    QMutexLocker lock(&SharedDiskCache::instance()->mutex);
-    return SharedDiskCache::instance()->remove(url);
+    if (m_reply == nullptr) {
+        setError(QNetworkReply::OperationCanceledError, "");
+        emit finished();
+        m_nam->d->removeWaiting(this);
+        return;
+    }
+    m_reply->abort();
 }
 
-qint64 SharedCacheProxy::cacheSize() const
+bool NetworkAccessManager::DeferredNetworkReply::isSequential() const
 {
-    QMutexLocker lock(&SharedDiskCache::instance()->mutex);
-    return SharedDiskCache::instance()->cacheSize();
+    if (m_reply == nullptr) {
+        return true;
+    }
+    return m_reply->isSequential();
 }
 
-QIODevice *SharedCacheProxy::prepare(const QNetworkCacheMetaData &metaData)
+void NetworkAccessManager::DeferredNetworkReply::forwardSignals()
 {
-    QMutexLocker lock(&SharedDiskCache::instance()->mutex);
-    return SharedDiskCache::instance()->prepare(metaData);
+    QObject::connect(m_reply, &QNetworkReply::finished, this, &QNetworkReply::finished);
+    QObject::connect(m_reply, &QIODevice::readyRead, this, &QIODevice::readyRead);
+    QObject::connect(m_reply, &QNetworkReply::errorOccurred, this, [this](auto code) {
+        setError(code, m_reply->errorString());
+    });
+    QObject::connect(m_reply, &QNetworkReply::metaDataChanged, this, &DeferredNetworkReply::forwardHeaders);
 }
 
-void SharedCacheProxy::insert(QIODevice *device)
+void NetworkAccessManager::DeferredNetworkReply::forwardAttribute(QNetworkRequest::Attribute attr)
 {
-    QMutexLocker lock(&SharedDiskCache::instance()->mutex);
-    SharedDiskCache::instance()->insert(device);
+    setAttribute(attr, m_reply->attribute(attr));
 }
 
-void SharedCacheProxy::clear()
+void NetworkAccessManager::DeferredNetworkReply::forwardHeaders()
 {
-    QMutexLocker lock(&SharedDiskCache::instance()->mutex);
-    SharedDiskCache::instance()->clear();
-}
+    // this is *slow* but I don't see a way to get only the ones that changed
+    const QList<QByteArray> headers = m_reply->rawHeaderList();
+    for (const QByteArray &headerName : headers) {
+        setRawHeader(headerName, m_reply->rawHeader(headerName));
+    }
 
-SharedDiskCache *SharedDiskCache::instance()
-{
-    static auto *instance = new SharedDiskCache;
-    return instance;
-}
-
-SharedDiskCache::SharedDiskCache()
-{
-    QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-    setCacheDirectory(cacheDir);
+    forwardAttribute(QNetworkRequest::CacheLoadControlAttribute);
+    forwardAttribute(QNetworkRequest::CacheSaveControlAttribute);
+    forwardAttribute(QNetworkRequest::HttpStatusCodeAttribute);
+    forwardAttribute(QNetworkRequest::RedirectionTargetAttribute);
+    forwardAttribute(QNetworkRequest::SourceIsFromCacheAttribute);
 }
 
 NetworkAccessManager *NetworkAccessManager::instance()
 {
-    static auto *singleton = new NetworkAccessManager();
+    static auto *singleton = new NetworkAccessManager(new SharedCache);
     return singleton;
 }
 
 FeedCore::NetworkAccessManager::NetworkAccessManager(QObject *parent)
-    : NetworkAccessManager(new SharedCacheProxy, parent)
+    : NetworkAccessManager(nullptr, parent)
 {
 }
 
 NetworkAccessManager::NetworkAccessManager(QAbstractNetworkCache *cache, QObject *parent)
     : QNetworkAccessManager(parent)
+    , d{std::make_unique<PrivData>(this)}
 {
     setCache(cache);
 }
+
+NetworkAccessManager::~NetworkAccessManager() = default;
 
 QNetworkReply *FeedCore::NetworkAccessManager::createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData)
 {
@@ -125,5 +168,55 @@ QNetworkReply *FeedCore::NetworkAccessManager::createRequest(QNetworkAccessManag
     newRequest.setHeader(QNetworkRequest::UserAgentHeader, "syndic/1.0");
     newRequest.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
     newRequest.setTransferTimeout();
-    return QNetworkAccessManager::createRequest(op, newRequest, outgoingData);
+
+    // We don't want to keep connections open since we make one-shot downloads
+    // from a lot of different servers in rapid succession.
+    newRequest.setRawHeader("Connection", "close");
+
+    if (d->connectionCount < kMaxSimultaneousLoads) {
+        return d->makeRealReply({op, newRequest, outgoingData});
+    }
+    auto *proxyReply = new DeferredNetworkReply(this);
+    d->waitingRequests.push({op, newRequest, outgoingData, proxyReply});
+    return proxyReply;
+}
+
+void NetworkAccessManager::onFinished()
+{
+    d->connectionCount--;
+    d->startWaiting();
+    if (d->connectionCount == 0) {
+        clearConnectionCache();
+    }
+}
+
+void NetworkAccessManager::PrivData::startWaiting()
+{
+    while (connectionCount < NetworkAccessManager::kMaxSimultaneousLoads && !waitingRequests.isEmpty()) {
+        makeRealReply(waitingRequests.pop());
+    }
+}
+
+QNetworkReply *NetworkAccessManager::PrivData::makeRealReply(const WaitingRequest &wr)
+{
+    QNetworkReply *realReply = parent->QNetworkAccessManager::createRequest(wr.op, wr.req, wr.outgoingData);
+    QObject::connect(realReply, &QNetworkReply::finished, parent, &NetworkAccessManager::onFinished);
+    if (wr.repl != nullptr) {
+        wr.repl->start(realReply);
+    }
+    connectionCount++;
+    return realReply;
+}
+
+void NetworkAccessManager::PrivData::removeWaiting(DeferredNetworkReply *reply)
+{
+    QVector<WaitingRequest>::iterator it = std::find_if(waitingRequests.begin(), waitingRequests.end(), [reply](const WaitingRequest &wr) {
+        return wr.repl == reply;
+    });
+    if (it != waitingRequests.end()) {
+        waitingRequests.erase(it);
+        if (parent->autoDeleteReplies() || reply->request().attribute(QNetworkRequest::AutoDeleteReplyOnFinishAttribute).toBool()) {
+            reply->deleteLater();
+        }
+    }
 }
