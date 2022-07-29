@@ -21,13 +21,16 @@ public:
     IconCache();
     QIODevice *prepare(const QNetworkCacheMetaData &metaData) override;
     static constexpr const int kReasonableMaxAge = 86400;
+
+    // enough space for any concievable collection of icons; 1GB should be enough
+    static constexpr const qint64 kVeryLargeCacheSize = 1U << 30U;
 };
 
 IconCache::IconCache()
 {
     QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QLatin1String("/icons/");
     setCacheDirectory(cacheDir);
-    setMaximumCacheSize(INT64_MAX); // cache all the icons regardless of size
+    setMaximumCacheSize(kVeryLargeCacheSize);
 }
 
 QIODevice *IconCache::prepare(const QNetworkCacheMetaData &metaData)
