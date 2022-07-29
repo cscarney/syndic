@@ -65,16 +65,6 @@ public:
         return QQuickTextureFactory::textureFactoryForImage(m_image);
     }
 
-    bool loadImageData(const QByteArray &data)
-    {
-        bool success = m_image.loadFromData(data);
-        if (!success) {
-            m_error = "failed to load image";
-        }
-        emit finished();
-        return success;
-    }
-
     void succeed(const QImage &image)
     {
         QMetaObject::invokeMethod(this, [this, image] {
