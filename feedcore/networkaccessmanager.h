@@ -11,6 +11,19 @@
 namespace FeedCore
 {
 
+/**
+ * A specialized QNetworkAccessManager for bulk updates
+ *
+ * This class supports queuing connections when many resources
+ * are requested simultaneously. Once the connection limit is
+ * hit, it will begin returning DeferredNetworkReply instances,
+ * which will proxy an underlying QNetworkReply when a connection
+ * slot becomes available.
+ *
+ * \warning DeferredNetworkReply does not implement every feature
+ * of the QNetworkReply API. Test before using features that
+ * are not already being used elsewhere in the application.
+ */
 class NetworkAccessManager : public QNetworkAccessManager
 {
 public:
