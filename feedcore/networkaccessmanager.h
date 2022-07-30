@@ -22,7 +22,7 @@ public:
     QNetworkReply *createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData) override;
 
 private:
-    static constexpr const int kMaxSimultaneousLoads = 10;
+    static constexpr const int kMaxSimultaneousLoads = 128;
     struct PrivData;
     class DeferredNetworkReply;
     struct WaitingRequest;
