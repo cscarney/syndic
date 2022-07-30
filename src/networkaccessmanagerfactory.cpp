@@ -5,10 +5,11 @@
 
 #include "networkaccessmanagerfactory.h"
 #include "networkaccessmanager.h"
+#include "sharedcache.h"
 
 NetworkAccessManagerFactory::NetworkAccessManagerFactory() = default;
 
 QNetworkAccessManager *NetworkAccessManagerFactory::create(QObject *parent)
 {
-    return new FeedCore::NetworkAccessManager(parent);
+    return new FeedCore::NetworkAccessManager(new FeedCore::SharedCache, parent);
 }
