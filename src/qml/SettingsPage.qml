@@ -147,7 +147,7 @@ Kirigami.ScrollablePage {
 
             FileDialog {
                 property var acceptedFunc: function(){}
-                onAccepted: acceptedFunc();
+                onAccepted: Qt.callLater(acceptedFunc);
             }
         }
     ]
