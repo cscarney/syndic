@@ -4,27 +4,41 @@
  */
 
 #include "updatablefeed.h"
+#include "feeddiscovery.h"
 #include "networkaccessmanager.h"
 #include <QDebug>
 #include <QNetworkReply>
-#include <Syndication/DataRetriever>
+#include <QPointer>
 #include <Syndication/Image>
-#include <Syndication/Loader>
+#include <Syndication/ParserCollection>
 using namespace FeedCore;
 
 namespace
 {
-class DataRetriever : public Syndication::DataRetriever
+class LoadOperation : public QObject
 {
+    Q_OBJECT
 public:
-    void retrieveData(const QUrl &url) final;
-    int errorCode() const final;
-    void abort() final;
+    void start(const QUrl &url);
+    void abort();
+
+    struct DeleteLater {
+        explicit DeleteLater(LoadOperation *t)
+        {
+            t->deleteLater();
+        }
+    };
+
+signals:
+    void succeeded(const Syndication::FeedPtr &feed, const QUrl &changeUrl, DeleteLater); // NOLINT
+    void failed(const QString &errorString, DeleteLater); // NOLINT
+    void aborted(DeleteLater); // NOLINT
 
 private:
-    QNetworkReply *m_reply{nullptr};
-    void onRedirect(const QUrl &url);
-    void onFinished();
+    QSet<QUrl> m_seenUrls;
+    QPointer<QNetworkReply> m_reply;
+    bool m_isDiscoveredFeed{false};
+    void onReplyFinished();
 };
 }
 
@@ -36,10 +50,11 @@ public:
     void abort() final;
 
 private:
-    Syndication::Loader *m_loader{nullptr};
     UpdatableFeed *m_updatableFeed{nullptr};
-    bool m_sourceIsFeedDiscoveryResult{false};
-    void loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status);
+    QPointer<LoadOperation> m_operation;
+
+    void onSucceeded(const Syndication::FeedPtr &feed, const QUrl &changeUrl);
+    void onFailed(const QString &errorString);
 };
 
 Feed::Updater *UpdatableFeed::updater()
@@ -88,98 +103,87 @@ void UpdatableFeed::UpdaterImpl::run()
         setError(tr("Invalid URL", "error message"));
         return;
     }
-    m_loader = Syndication::Loader::create();
-    QObject::connect(m_loader, &Syndication::Loader::loadingComplete, this, &UpdaterImpl::loadingComplete);
-    m_loader->loadFrom(feed()->url(), new DataRetriever);
+    m_operation = new LoadOperation;
+    QObject::connect(m_operation, &LoadOperation::succeeded, this, &UpdaterImpl::onSucceeded);
+    QObject::connect(m_operation, &LoadOperation::failed, this, &UpdaterImpl::onFailed);
+    QObject::connect(m_operation, &LoadOperation::aborted, this, [this] {
+        aborted();
+    });
+    m_operation->start(feed()->url());
 }
 
 void UpdatableFeed::UpdaterImpl::abort()
 {
-    if (m_loader != nullptr) {
-        m_loader->abort();
+    if (!m_operation.isNull()) {
+        m_operation->abort();
     }
 }
 
-void UpdatableFeed::UpdaterImpl::loadingComplete(Syndication::Loader *loader, const Syndication::FeedPtr &content, Syndication::ErrorCode status)
+void UpdatableFeed::UpdaterImpl::onSucceeded(const Syndication::FeedPtr &feed, const QUrl &changeUrl)
 {
-    m_loader = nullptr;
-    QString errorMessage;
-    switch (status) {
-    case Syndication::Success:
-        m_updatableFeed->updateFromSource(content);
-        finish();
-        return;
-    case Syndication::Aborted:
-        aborted();
-        return;
-    case Syndication::Timeout:
-        errorMessage = tr("Timeout", "error message");
-        break;
-    case Syndication::UnknownHost:
-        errorMessage = tr("Unknown Host", "error message");
-        break;
-    case Syndication::FileNotFound:
-        errorMessage = tr("File Not Found", "error message");
-        break;
-    case Syndication::OtherRetrieverError:
-        errorMessage = tr("Retriever Error", "error message");
-        break;
-    case Syndication::InvalidXml:
-        errorMessage = tr("Invalid XML", "error message");
-        break;
-    case Syndication::XmlNotAccepted:
-        errorMessage = tr("XML Not Accepted", "error message");
-        break;
-    case Syndication::InvalidFormat:
-        errorMessage = tr("Invalid Format", "error message");
-        break;
-    default:
-        errorMessage = tr("Unknown Error", "error message");
+    if (changeUrl.isValid()) {
+        m_updatableFeed->setUrl(changeUrl);
     }
-
-    // try the discovered url
-    if ((!m_sourceIsFeedDiscoveryResult) && loader->discoveredFeedURL().isValid()) {
-        qDebug() << "Discovered alternate source:" << loader->discoveredFeedURL();
-        m_sourceIsFeedDiscoveryResult = true;
-        m_updatableFeed->setUrl(loader->discoveredFeedURL());
-        run();
-    } else {
-        qDebug() << "Error:" << errorMessage;
-        setError(errorMessage);
-    }
+    m_updatableFeed->updateFromSource(feed);
+    finish();
 }
 
-void DataRetriever::retrieveData(const QUrl &url)
+void UpdatableFeed::UpdaterImpl::onFailed(const QString &errorString)
 {
+    qDebug() << "Updater Error:" << errorString;
+    setError(errorString);
+}
+
+void LoadOperation::start(const QUrl &url)
+{
+    if (m_seenUrls.contains(url)) {
+        emit failed("redirect loop", DeleteLater(this));
+    }
+    m_seenUrls << url;
     QNetworkRequest request(url);
     m_reply = NetworkAccessManager::instance()->get(request);
-    QObject::connect(m_reply, &QNetworkReply::finished, this, &DataRetriever::onFinished);
+    QObject::connect(m_reply, &QNetworkReply::finished, this, &LoadOperation::onReplyFinished);
 }
 
-int DataRetriever::errorCode() const
+void LoadOperation::abort()
 {
-    return 0;
-}
-
-void DataRetriever::abort()
-{
-    m_reply->disconnect(this);
     m_reply->abort();
-    m_reply->deleteLater();
 }
 
-void DataRetriever::onFinished()
+void LoadOperation::onReplyFinished()
 {
     m_reply->deleteLater();
-    if (m_reply->error() == QNetworkReply::NoError) {
-        const auto &data = m_reply->readAll();
-        emit dataRetrieved(data, true);
-    } else if (m_reply->error() == QNetworkReply::InsecureRedirectError) {
-        const auto &location = m_reply->header(QNetworkRequest::LocationHeader);
-        qDebug() << "redirecting to" << location;
-        retrieveData(location.toUrl());
-    } else {
-        qDebug() << "Retriever error: " << m_reply->errorString();
-        emit dataRetrieved({}, false);
+    QUrl url = m_reply->url();
+
+    switch (m_reply->error()) {
+    case QNetworkReply::NoError: {
+        QByteArray data = m_reply->readAll();
+        Syndication::FeedPtr feed = Syndication::parserCollection()->parse({data, m_reply->url().toString()});
+        if (feed != nullptr) {
+            QUrl changeUrl = m_isDiscoveredFeed ? url : QUrl();
+            emit succeeded(feed, changeUrl, DeleteLater(this));
+        } else {
+            QUrl discoveredFeed = FeedDiscovery::discoverFeed(url, data);
+            m_isDiscoveredFeed = true;
+            start(discoveredFeed);
+        }
+        break;
+    }
+
+    case QNetworkReply::OperationCanceledError:
+        emit aborted(DeleteLater(this));
+        break;
+
+    case QNetworkReply::InsecureRedirectError: {
+        const QUrl redirect = m_reply->header(QNetworkRequest::LocationHeader).toUrl();
+        qDebug() << "insecure redirect from" << url << "to" << redirect;
+        start(redirect);
+        break;
+    }
+
+    default:
+        emit failed(m_reply->errorString(), DeleteLater(this));
     }
 }
+
+#include "updatablefeed.moc"

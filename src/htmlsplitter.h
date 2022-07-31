@@ -14,7 +14,7 @@ class TextBlock;
 /**
  * Separate text and images into blocks that can be rendered separately.
  */
-class HtmlSplitter : public GumboVisitor
+class HtmlSplitter : public FeedCore::GumboVisitor
 {
 public:
     /**

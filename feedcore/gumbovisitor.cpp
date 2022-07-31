@@ -4,9 +4,15 @@
  */
 
 #include "gumbovisitor.h"
+using namespace FeedCore;
 
 GumboVisitor::GumboVisitor(const QString &input)
-    : m_data{input.toUtf8()}
+    : GumboVisitor(input.toUtf8())
+{
+}
+
+GumboVisitor::GumboVisitor(const QByteArray &utf8Data)
+    : m_data{utf8Data}
     , m_gumbo{gumbo_parse(m_data)}
     , m_root{m_gumbo->root}
     , m_node{m_root}

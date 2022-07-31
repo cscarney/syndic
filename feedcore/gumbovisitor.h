@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef GUMBOVISITOR_H
-#define GUMBOVISITOR_H
+#ifndef FEEDCORE_GUMBOVISITOR_H
+#define FEEDCORE_GUMBOVISITOR_H
 #include "gumbo/gumbo.h"
 #include <QString>
 
+namespace FeedCore
+{
 /**
  * base class for walking an HTML document tree.
  *
@@ -19,6 +21,7 @@ class GumboVisitor
 {
 public:
     explicit GumboVisitor(const QString &input);
+    explicit GumboVisitor(const QByteArray &utf8data);
     virtual ~GumboVisitor();
     GumboVisitor(GumboVisitor &other) = delete;
     void operator=(GumboVisitor &other) = delete;
@@ -39,16 +42,10 @@ public:
     }
 
 private:
-    virtual void visitElementOpen(GumboNode *node)
-    {
-    }
-    virtual void visitText(GumboNode *node)
-    {
-    }
+    virtual void visitElementOpen(GumboNode *node){};
+    virtual void visitText(GumboNode *node){};
     virtual void visitElementClose(GumboNode *node){};
-    virtual void finished()
-    {
-    }
+    virtual void finished(){};
 
     const QByteArray m_data;
     GumboOutput *m_gumbo;
@@ -56,5 +53,6 @@ private:
     GumboNode *m_node;
     void moveNext();
 };
+}
 
-#endif // GUMBOVISITOR_H
+#endif // FEEDCORE_GUMBOVISITOR_H

@@ -17,6 +17,8 @@ set(feedcore_HEADERS
     updatablefeed.h
     opmlreader.h
     sharedcache.h
+    gumbovisitor.h
+    feeddiscovery.h
     )
     
 set(feedcore_SRCS
@@ -32,6 +34,8 @@ set(feedcore_SRCS
     updatablefeed.cpp
     opmlreader.cpp
     sharedcache.cpp
+    gumbovisitor.cpp
+    feeddiscovery.cpp
     )
     
 add_library(feedcore STATIC ${feedcore_SRCS})
@@ -42,4 +46,5 @@ target_link_libraries(feedcore
     Qt5::Sql
     Qt5::Network
     KF5::Syndication
+    htmlparser
 )

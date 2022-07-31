@@ -7,7 +7,6 @@ set(syndic_HEADERS
     qmlref.h
     qmlarticleref.h
     iconprovider.h
-    gumbovisitor.h
     htmlsplitter.h
     contentmodel.h
     notificationcontroller.h
@@ -25,7 +24,6 @@ set(syndic_SRCS
     htmlsplitter.cpp
     contentmodel.cpp
     notificationcontroller.cpp
-    gumbovisitor.cpp
     platformhelper.cpp
     contentimageitem.cpp
     networkaccessmanagerfactory.cpp
