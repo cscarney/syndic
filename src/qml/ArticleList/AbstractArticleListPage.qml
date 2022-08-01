@@ -149,19 +149,24 @@ Kirigami.ScrollablePage {
 
     function openChild() {
         if (!pageRow) return;
-        pageRow.currentIndex = Kirigami.ColumnView.index
-        if (pageRow.wideMode) {
-            suspendAnimations();
-        }
-        if (articleList.currentItem) {
-            const data = articleList.currentItem.data
-            root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data, nextItem: nextItem, previousItem: previousItem})
-            data.article.isRead = true
-        } else if (model && automaticOpen) {
-            pushPlaceholder();
-        } else {
-            root.pageRow.pop(root)
-        }
+
+        // we can get called in the middle of complex property changes, so wait
+        // until everything is in a consistent state before deciding what to open
+        Qt.callLater(()=>{
+            pageRow.currentIndex = Kirigami.ColumnView.index
+            if (pageRow.wideMode) {
+                suspendAnimations();
+            }
+            if (articleList.currentItem) {
+                const data = articleList.currentItem.data
+                root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data, nextItem: nextItem, previousItem: previousItem})
+                data.article.isRead = true
+            } else if (model && automaticOpen) {
+                pushPlaceholder();
+            } else {
+                root.pageRow.pop(root)
+            }
+        })
     }
 
     function nextItem () {
