@@ -50,7 +50,20 @@ ScrollView {
             property var iconName: feed ? feed.icon.toString() : ""
             property var status: feed ? feed.status : Feed.Idle
             property var unreadCount: feed ? feed.unreadCount : 0
-            icon: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
+
+            // TODO this is a workaround for a memory leak in Kirigami.Icon
+            // see https://invent.kde.org/frameworks/kirigami/-/merge_requests/612
+            // using a QtQuick.Image instead of BasicListItem's icon if the
+            // source is going to come from an image provider.
+            icon: iconName.length ? undefined : "feed-subscribe"
+            property Component iconImage: Image {
+                visible: iconName.length > 0
+                width: height
+                source: iconName.length ? "image://feedicons/"+iconName : ""
+                onStatusChanged: if (status==Image.Error) listItem.icon="feed-subscribe"
+            }
+            leading: icon ? null : iconImage.createObject()
+
             label: feed ? feed.name : ""
             separatorVisible: false
             padding: Kirigami.Units.largeSpacing
