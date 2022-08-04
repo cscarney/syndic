@@ -13,13 +13,15 @@
 #include <Syndication/ParserCollection>
 using namespace FeedCore;
 
+constexpr const int kMaxRedirects = 10;
+
 namespace
 {
 class LoadOperation : public QObject
 {
     Q_OBJECT
 public:
-    void start(const QUrl &url);
+    void start(const QUrl &url, const QString &failMessage = QString());
     void abort();
 
     struct DeleteLater {
@@ -134,10 +136,11 @@ void UpdatableFeed::UpdaterImpl::onFailed(const QString &errorString)
     setError(errorString);
 }
 
-void LoadOperation::start(const QUrl &url)
+void LoadOperation::start(const QUrl &url, const QString &failMessage)
 {
-    if (m_seenUrls.contains(url)) {
-        emit failed("redirect loop", DeleteLater(this));
+    if (m_seenUrls.contains(url) || m_seenUrls.count() > kMaxRedirects) {
+        const QString &errorMessage = failMessage.isEmpty() ? "unknown error" : failMessage;
+        emit failed(errorMessage, DeleteLater(this));
     }
     m_seenUrls << url;
     QNetworkRequest request(url);
@@ -165,7 +168,7 @@ void LoadOperation::onReplyFinished()
         } else {
             QUrl discoveredFeed = FeedDiscovery::discoverFeed(url, data);
             m_isDiscoveredFeed = true;
-            start(discoveredFeed);
+            start(discoveredFeed, "couldn't find feed source");
         }
         break;
     }
@@ -177,7 +180,7 @@ void LoadOperation::onReplyFinished()
     case QNetworkReply::InsecureRedirectError: {
         const QUrl redirect = m_reply->header(QNetworkRequest::LocationHeader).toUrl();
         qDebug() << "insecure redirect from" << url << "to" << redirect;
-        start(redirect);
+        start(redirect, "too many redirects");
         break;
     }
 
