@@ -125,6 +125,17 @@ ScrollView {
         }
     }
 
+    Component.onCompleted: {
+        // nested scroll views cause problems so disable them
+        // TODO port away from Kirigami.GlobalDrawer so we don't need to do this
+        let item = root;
+        while ((item = item.parent)) {
+            if (item instanceof Flickable) {
+                item.interactive = false;
+            }
+        }
+    }
+
     function selectFeed(feed) {
         feedList.forceLayout()
         feedList.currentIndex = feedListModel.indexOf(feed)
