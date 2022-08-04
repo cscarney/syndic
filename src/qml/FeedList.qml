@@ -58,11 +58,13 @@ ScrollView {
             icon: iconName.length ? undefined : "feed-subscribe"
             property Component iconImage: Image {
                 visible: iconName.length > 0
-                width: height
+                width: listItem.iconSize
+                fillMode: Image.PreserveAspectFit
                 source: iconName.length ? "image://feedicons/"+iconName : ""
                 onStatusChanged: if (status==Image.Error) listItem.icon="feed-subscribe"
             }
             leading: icon ? null : iconImage.createObject()
+            leadingPadding: listItem.leftPadding
 
             label: feed ? feed.name : ""
             separatorVisible: false
