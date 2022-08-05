@@ -1,5 +1,5 @@
 # Syndic
-Syndic is a simple, responsive feed reader designed for casual browsing. It is designed to adapt to either mouse and touch input, and run well on both desktop and mobile devices. The UI is designed with Plasma Desktop and Android in mind, but it should run in other environments as well.
+Syndic is a simple, responsive feed reader made for casual browsing. It adapts to both mouse and touch input, and runs on both desktop and mobile devices. The UI is designed with Plasma Desktop and Android in mind, but it should run in other environments as well.
 
 ![Screenshot](doc/screenshots/syndic-mid.png?raw=true)
 
