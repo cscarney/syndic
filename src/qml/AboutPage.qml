@@ -13,7 +13,7 @@ Kirigami.AboutPage {
         productName: "syndic",
         componentName: "syndic",
         shortDescription: "Feed Reader",
-        homepage: "http://syndic.rocksandpaper.com/",
+        homepage: "http://syndic.rocksandpaper.com/ ",
         bugAddress: "https://github.com/cscarney/syndic/issues/new",
         version: "1.0",
         otherText: "",
