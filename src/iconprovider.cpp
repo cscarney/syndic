@@ -101,7 +101,11 @@ public:
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
         QNetworkReply *reply = nam->get(req);
         QObject::connect(reply, &QNetworkReply::finished, this, [this, reply] {
-            if (reply->error() == QNetworkReply::NoError && m_image.loadFromData(reply->readAll())) {
+            QImage img;
+            if (reply->error() == QNetworkReply::NoError && img.loadFromData(reply->readAll())) {
+                // store the image in the texture factory's preferred format
+                // so that it doesn't detatch
+                m_image = img.convertToFormat(QImage::Format_ARGB32_Premultiplied);
                 m_status = Success;
             } else {
                 m_status = Error;
