@@ -19,6 +19,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
     <project_license>GPL-3.0-or-later</project_license>
     <content_rating type="oars-1.0" />
     <releases>
+        <release version="1.0rc2" date="2022-08-11" />
         <release version="1.0rc1" date="2022-08-04" />
         <release version="0.9.3" date="2022-07-18" />
     </releases>
