@@ -90,7 +90,7 @@ ScrollView {
                     id: unreadCountLabel
                     visible: listItem.unreadCount !== 0
                     horizontalAlignment: Text.AlignCenter
-                    Layout.rightMargin: background.radius * 2
+                    Layout.rightMargin: background.radius
                     text: listItem.unreadCount
                     leftInset: -background.radius
                     rightInset: -background.radius
