@@ -12,12 +12,14 @@ int main(int argc, char *argv[])
 {
     Application app(argc, argv);
 
+    if (!qEnvironmentVariableIsSet("QT_QUICK_CONTROLS_STYLE")) {
 #ifdef ANDROID
-    QQuickStyle::setStyle("assets:/MaterialTweaks");
-    QQuickStyle::setFallbackStyle("Material");
+        QQuickStyle::setStyle("assets:/MaterialTweaks");
+        QQuickStyle::setFallbackStyle("Material");
 #else
-    QQuickStyle::setStyle("org.kde.desktop");
+        QQuickStyle::setStyle("org.kde.desktop");
 #endif
+    }
 
     app.loadMainWindow();
 
