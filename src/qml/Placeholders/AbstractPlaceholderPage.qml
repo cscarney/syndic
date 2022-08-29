@@ -28,7 +28,6 @@ Kirigami.Page {
             Layout.preferredWidth: 128
             Layout.preferredHeight: 128
             Layout.alignment: Qt.AlignHCenter
-            isMask: true;
             color: Kirigami.Theme.textColor
         }
         Kirigami.Heading {

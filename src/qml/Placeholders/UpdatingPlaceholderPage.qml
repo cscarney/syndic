@@ -6,6 +6,6 @@
 import QtQuick 2.0
 
 AbstractPlaceholderPage {
-    iconName: "content-loading-symbolic"
+    iconName: "content-loading-symbolic-nomask"
     headingText: qsTr("Update in Progress")
 }

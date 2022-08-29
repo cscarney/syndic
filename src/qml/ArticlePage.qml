@@ -36,7 +36,7 @@ Kirigami.Page {
         contextualActions: [
             Kirigami.Action {
                 text: qsTr("Share")
-                iconName: "emblem-shared-symbolic"
+                iconName: "emblem-shared-symbolic-nomask"
                 displayHint: Kirigami.DisplayHint.AlwaysHide
                 onTriggered: platformHelper.share(item.article.url);
             },
@@ -46,7 +46,7 @@ Kirigami.Page {
                 checkable: true
                 checked: item.article.isStarred
                 onCheckedChanged: item.article.isStarred = checked
-                iconName: checked ? "starred-symbolic" : "non-starred-symbolic"
+                iconName: checked ? "starred-symbolic-nomask" : "non-starred-symbolic-nomask"
                 displayHint: Kirigami.DisplayHint.IconOnly
             },
 
