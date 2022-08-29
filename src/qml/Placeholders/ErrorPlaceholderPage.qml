@@ -9,7 +9,7 @@ import org.kde.kirigami 2.7 as Kirigami
 AbstractPlaceholderPage {
     property var model;
 
-    iconName: "dialog-error-symbolic"
+    iconName: "dialog-error-symbolic-nomask"
     headingText: "Error Updating Feed"
     descriptionText: "This feed is currently offline"
 

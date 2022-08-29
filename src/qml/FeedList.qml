@@ -73,14 +73,14 @@ ScrollView {
             rightPadding: Kirigami.Units.smallSpacing
             trailing: RowLayout {
                 Kirigami.Icon {
-                    source: "content-loading-symbolic"
+                    source: "content-loading-symbolic-nomask"
                     Layout.preferredHeight: contentItem.height
                     visible: listItem.status === Feed.Updating
                     selected: listItem.highlighted
                 }
 
                 Kirigami.Icon {
-                    source: "dialog-error-symbolic"
+                    source: "dialog-error-symbolic-nomask"
                     Layout.preferredHeight: contentItem.height
                     visible: listItem.status === Feed.Error
                     selected: listItem.highlighted
