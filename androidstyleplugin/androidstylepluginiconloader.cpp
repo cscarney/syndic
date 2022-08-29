@@ -58,7 +58,7 @@ QIcon AndroidStylePluginIconLoader::loadIcon(const IconQuery &q)
 QString AndroidStylePluginIconLoader::getSvg(const QString &iconName, const QColor &color)
 {
     const QString colorString = color.name();
-    const QString iconPath = m_modifiedIconDir.absoluteFilePath(QLatin1String("%1/%2.svg").arg(colorString).arg(iconName));
+    QString iconPath = m_modifiedIconDir.absoluteFilePath(QLatin1String("%1/%2.svg").arg(colorString).arg(iconName));
     if (QFileInfo::exists(iconPath)) {
         return iconPath;
     }
@@ -129,49 +129,51 @@ bool AndroidStylePluginIconLoader::copySvg(const QString &iconName, const QStrin
     return QFile::copy(sourcePath, destPath);
 }
 
-QString AndroidStylePluginIconLoader::findSourceForName(const QString &iconName)
+static bool fallbackName(QString &name)
 {
-    // did we already find this before?
-    if (m_iconNameIndex.contains(iconName)) {
-        return m_iconNameIndex[iconName];
+    int splitPos = name.lastIndexOf('-');
+    if (splitPos <= 0) {
+        return false;
     }
-    qDebug() << "searching for icon (slow):" << iconName;
-    QDir curDir;
-    QString findName = QLatin1String("%1.svg").arg(iconName);
-    QString outName;
-    for (const QString &path : QIcon::themeSearchPaths()) {
-        curDir.setPath(path);
-        if (findSourceForName(iconName, findName, curDir, outName)) {
-            break;
-        }
-    }
-    return outName;
+    name = name.mid(0, splitPos);
+    return true;
 }
 
-bool AndroidStylePluginIconLoader::findSourceForName(const QString &iconName, const QString &findName, QDir &curDir, QString &outName)
+QString AndroidStylePluginIconLoader::findSourceForName(const QString &iconName)
 {
-    // this does not implement anything like the XDG icon theme spec,
-    // but it's close enough for our purposes.  It's slow, but we should
-    // only hit it on the first run unless there are icons missing from
-    // the package.
-    for (const QFileInfo &candidate : curDir.entryInfoList()) {
-        if (candidate.fileName() == findName) {
-            outName = candidate.absoluteFilePath();
-            m_iconNameIndex.insert(iconName, outName);
-            return true;
-        }
+    if (m_iconNameIndex.isEmpty()) {
+        indexIconTheme();
+    }
 
+    QString namePart{iconName};
+    do {
+        if (m_iconNameIndex.contains(namePart)) {
+            return m_iconNameIndex[namePart];
+        }
+    } while (fallbackName(namePart));
+    return QString();
+}
+
+void AndroidStylePluginIconLoader::indexIconTheme()
+{
+    QDir curDir;
+    const QStringList themeSearchPaths = QIcon::themeSearchPaths();
+    for (const QString &path : themeSearchPaths) {
+        curDir.setPath(path);
+        indexIconDir(curDir);
+    }
+}
+
+void AndroidStylePluginIconLoader::indexIconDir(QDir &curDir)
+{
+    const QFileInfoList dirEntries = curDir.entryInfoList();
+    for (const QFileInfo &candidate : dirEntries) {
         if (candidate.isDir()) {
             curDir.cd(candidate.fileName());
-            if (findSourceForName(iconName, findName, curDir, outName)) {
-                return true;
-            }
+            indexIconDir(curDir);
             curDir.cd("..");
         } else if (candidate.suffix() == "svg") {
-            // this is not the one we're looking for, but remember it in case
-            // we need to look it up later
             m_iconNameIndex.insert(candidate.baseName(), candidate.absoluteFilePath());
         }
     }
-    return false;
 }

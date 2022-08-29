@@ -39,7 +39,9 @@ private:
     bool makeSvg(const QString &iconPath, const QString &iconName, const QString &colorString);
     bool copySvg(const QString &iconName, const QString &destPath);
     QString findSourceForName(const QString &iconName);
-    bool findSourceForName(const QString &iconName, const QString &findName, QDir &curDir, QString &outName);
+
+    void indexIconTheme();
+    void indexIconDir(QDir &curDir);
 };
 
 inline uint qHash(const AndroidStylePluginIconLoader::IconQuery &q)
