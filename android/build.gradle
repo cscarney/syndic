@@ -81,6 +81,8 @@ android {
         // but we don't need the styles because we aren't
         // actually displaying any of those controls.
         exclude 'lib/*/libqml_QtQuick_Controls_Styles_*'
+
+        exclude 'lib/*/libQt5RemoteObjects_*.so'
     }
 
     // Do not compress Qt binary resources file
