@@ -35,6 +35,9 @@ public:
 signals:
     void textChanged();
 
+protected:
+    void customEvent(QEvent *event) override;
+
 private:
     QString m_text;
     QVector<ContentBlock *> m_blocks;
