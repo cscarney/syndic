@@ -23,5 +23,8 @@
         <file>qml/EditFeedPage.qml</file>
         <file>qml/ElasticComboBox.qml</file>
         <file>qml/+org.kde.desktop/ElasticComboBox.qml</file>
+        <file>qml/oldkirigami/ScrollablePage.qml</file>
+        <file>qml/oldkirigami/RefreshableScrollView.qml</file>
+        <file>qml/oldkirigami/KScrollView.qml</file>
     </qresource>
 </RCC>

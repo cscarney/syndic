@@ -7,8 +7,9 @@ import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.7 as Kirigami
 import com.rocksandpaper.syndic 1.0
+import '../oldkirigami' as OK
 
-Kirigami.ScrollablePage {
+OK.ScrollablePage {
     id: root
 
     property var feed
