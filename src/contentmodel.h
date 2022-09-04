@@ -7,6 +7,7 @@
 #define CONTENTMODEL_H
 #include "htmlsplitter.h"
 #include <QAbstractListModel>
+#include <memory>
 
 /**
  * Renders an HTML document as a list of alternating text and image blocks.
@@ -23,6 +24,7 @@ class ContentModel : public QAbstractListModel
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
 public:
     explicit ContentModel(QObject *parent = nullptr);
+    ~ContentModel() override;
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     const QString &text()
@@ -39,8 +41,10 @@ protected:
     void customEvent(QEvent *event) override;
 
 private:
+    class ParseJob;
     QString m_text;
     QVector<ContentBlock *> m_blocks;
+    std::unique_ptr<ParseJob> m_job;
 };
 
 #endif // CONTENTMODEL_H
