@@ -76,6 +76,8 @@ ColumnLayout {
     }
 
     Repeater {
+        id: contentRepeater
+
         model: ContentModel {
             text: root.text
         }
@@ -86,6 +88,12 @@ ColumnLayout {
             Layout.preferredHeight: item.Layout.preferredHeight
             Layout.preferredWidth: item.Layout.preferredWidth
             Layout.topMargin: item.Layout.topMargin
+
+            // Load blocks asynchronously, in order, hiding them until they're ready
+            asynchronous: true
+            active: index===0 || contentRepeater.itemAt(index-1).status===Loader.Ready
+            visible: status===Loader.Ready
+
             sourceComponent: switch (block.delegateName) {
                   case "ImageBlock":
                       return imageBlockComponent;
