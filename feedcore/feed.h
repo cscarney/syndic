@@ -86,6 +86,13 @@ class Feed : public QObject
     Q_PROPERTY(int expireAge READ expireAge WRITE setExpireAge NOTIFY expireAgeChanged)
 
     /**
+     * A mask containing the options for this feed.
+     *
+     * Available flags are found in the FeedFlags enum.
+     */
+    Q_PROPERTY(int flags READ flags WRITE setFlags NOTIFY flagsChanged)
+
+    /**
      * The Updater instance that should be used to update this feed.
      */
     Q_PROPERTY(FeedCore::Feed::Updater *updater READ updater CONSTANT);
@@ -115,6 +122,11 @@ public:
         DisableUpdateMode, /** < Disable automatic updates */
     };
     Q_ENUM(UpdateMode)
+
+    enum FeedFlags {
+        UseReadableContentFlag = 1 /** < always use web content from readability */
+    };
+    Q_FLAGS(FeedFlags)
 
     ~Feed();
 
@@ -165,6 +177,8 @@ public:
     void setExpireMode(UpdateMode expireMode);
     void setExpireAge(qint64 expireAge);
     qint64 expireAge();
+    void setFlags(int flags);
+    int flags() const;
 
 signals:
     /**
@@ -199,6 +213,7 @@ signals:
     void updateIntervalChanged();
     void expireModeChanged();
     void expireAgeChanged();
+    void flagsChanged();
 
 protected:
     explicit Feed(QObject *parent = nullptr);
