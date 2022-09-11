@@ -70,13 +70,33 @@ FeedCore::UpdatableFeed::UpdatableFeed(QObject *parent)
 {
 }
 
+static inline bool hasImageUrl(const Syndication::ImagePtr &image)
+{
+    return !(image.isNull() || image->url().isEmpty());
+}
+
+static inline QUrl getIconUrl(const Syndication::FeedPtr &feed, const QUrl &feedUrl)
+{
+    const Syndication::ImagePtr icon = feed->icon();
+    if (hasImageUrl(icon)) {
+        return feedUrl.resolved(icon->url());
+    }
+
+    const Syndication::ImagePtr image = feed->image();
+    if (hasImageUrl(image)) {
+        return feedUrl.resolved(image->url());
+    }
+
+    return QUrl();
+}
+
 void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
 {
     if (name().isEmpty()) {
         setName(feed->title());
     }
     setLink(feed->link());
-    setIcon(feed->icon()->url());
+    setIcon(getIconUrl(feed, url()));
     const auto &items = feed->items();
     time_t expireTime = 0;
     if ((expireAge() > 0) && (expireMode() != DisableUpdateMode)) {
