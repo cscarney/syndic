@@ -7,13 +7,17 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.14 as Kirigami
+import com.rocksandpaper.syndic 1.0
 
 Kirigami.Page {
     id: root
     property alias item: articleView.item
+    property alias isReadable: readableAction.checked
     property var nextItem: function() {}
     property var previousItem: function() {}
     signal suspendAnimations;
+    property bool inProgress: false;
+    property bool defaultReadable: item.article ? item.article.feed.flags & Feed.UseReadableContentFlag : false
 
     topPadding: 0
     bottomPadding: 0
@@ -58,14 +62,27 @@ Kirigami.Page {
                 checked: false
                 onCheckedChanged: item.article.isRead = !checked
                 displayHint: Kirigami.DisplayHint.AlwaysHide
+            },
+
+            Kirigami.Action {
+                id: readableAction
+                text: qsTr("Show Web Content");
+                visible: feedContext.supportsReadability();
+                checkable: true
+                checked: defaultReadable
+                displayHint: Kirigami.DisplayHint.AlwaysHide
             }
+
         ]
     }
 
     Connections {
         target: item.article
-        function onGotContent(content) {
-            articleView.text = content;
+        function onGotContent(content, type) {
+            if (root.isReadable == (type===Article.ReadableContent)) {
+                root.inProgress = false;
+                articleView.text = content;
+            }
         }
     }
 
@@ -149,6 +166,19 @@ Kirigami.Page {
         anchors.right: parent.right
     }
 
+    BusyIndicator {
+        id: loadingContentIndicator
+        anchors.centerIn: parent
+        visible: root.inProgress && !spinnerDelayTimer.running
+    }
+
+    Timer {
+        id: spinnerDelayTimer;
+        interval: Kirigami.Units.humanMoment;
+        running: root.inProgress
+    }
+
+
     Keys.onPressed: {
         switch (event.key) {
         case Qt.Key_Space:
@@ -198,7 +228,17 @@ Kirigami.Page {
     }
 
     Component.onCompleted: {
-        item.article.requestContent();
+        requestContent();
+        root.isReadableChanged.connect(requestContent)
+    }
+
+    function requestContent() {
+        root.inProgress = true;
+        if (root.isReadable) {
+            item.article.requestReadableContent(feedContext);
+        } else {
+            item.article.requestContent();
+        }
     }
 
     function pxUpDown(increment) {

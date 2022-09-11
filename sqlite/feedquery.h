@@ -20,7 +20,7 @@ public:
     {
         prepare(
             "SELECT Feed.id, Feed.displayName, Feed.category, Feed.url, Feed.link, Feed.icon, "
-            "COUNT(Item.id), updateInterval, lastUpdate, expireAge "
+            "COUNT(Item.id), updateInterval, lastUpdate, expireAge, flags "
             "FROM Feed LEFT JOIN Item ON Item.feed=Feed.id AND Item.isRead=false "
             "WHERE "
             + whereClause + " GROUP BY Feed.id");
@@ -64,6 +64,10 @@ public:
     qint64 expireAge() const
     {
         return value(9).toLongLong();
+    }
+    int flags() const
+    {
+        return value(10).toInt();
     }
 };
 }

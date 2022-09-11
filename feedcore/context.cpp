@@ -7,6 +7,7 @@
 #include "future.h"
 #include "opmlreader.h"
 #include "provisionalfeed.h"
+#include "readability/qreadablereadability.h"
 #include "scheduler.h"
 #include "storage.h"
 #include <QDebug>
@@ -25,6 +26,7 @@ struct Context::PrivData {
     qint64 expireAge{0};
     Scheduler *updateScheduler;
     QNetworkConfigurationManager ncm;
+    Readability *readability{nullptr};
 
     PrivData(Storage *storage, Context *parent);
     void configureUpdates(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime()) const;
@@ -272,6 +274,20 @@ void Context::importOpml(const QUrl &url)
     QObject::connect(opml.get(), &QObject::destroyed, this, [this] {
         d->updateScheduler->start();
     });
+}
+
+bool Context::supportsReadability()
+{
+    return QReadableReadability::isSupported();
+}
+
+Readability *Context::getReadability()
+{
+    if (supportsReadability() && d->readability == nullptr) {
+        d->readability = new QReadableReadability();
+        d->readability->setParent(this);
+    }
+    return d->readability;
 }
 
 bool Context::defaultUpdateEnabled() const

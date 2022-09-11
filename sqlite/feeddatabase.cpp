@@ -55,7 +55,8 @@ static void initDatabase(QSqlDatabase &db)
 {
     const auto &v = getVersion(db);
     bool success = true;
-    if (v == 0) {
+    switch (v) {
+    case 0:
         success = exec(db,
                        {"CREATE TABLE Feed("
                         "id INTEGER PRIMARY KEY,"
@@ -82,6 +83,26 @@ static void initDatabase(QSqlDatabase &db)
                         "UNIQUE(feed,localId));",
 
                         "PRAGMA user_version = 1;"});
+        // fall through
+
+    case 1:
+        success = success
+            && exec(db,
+                    {"ALTER TABLE Item "
+                     "ADD COLUMN readableContent TEXT;",
+
+                     "ALTER TABLE Feed "
+                     "ADD COLUMN flags INTEGER;",
+
+                     "PRAGMA user_version = 2;"});
+        break;
+
+    case 2:
+        break;
+
+    default:
+        // database is newer than we support
+        success = false;
     }
     if (!success) {
         qCritical() << "Database initialization failed!";
@@ -192,6 +213,21 @@ QString FeedDatabase::selectItemContent(qint64 id)
     return q.value(0).toString();
 }
 
+QString FeedDatabase::selectItemReadableContent(qint64 id)
+{
+    QSqlQuery q(db());
+    q.prepare("SELECT readableContent FROM Item WHERE id=:id AND readableContent IS NOT NULL LIMIT 1");
+    q.bindValue(":id", id);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in selectItemReadableContent: " << q.lastError().text();
+        return QString();
+    }
+    if (!q.next()) {
+        return QString();
+    }
+    return q.value(0).toString();
+}
+
 std::optional<qint64> FeedDatabase::selectItemId(qint64 feedId, const QString &localId)
 {
     QSqlQuery q(db());
@@ -281,6 +317,20 @@ void FeedDatabase::updateItemContent(qint64 id, const QString &content)
     q.bindValue(":id", id);
     if (!q.exec()) {
         qWarning() << "SQL Error in updateItemContent: " + q.lastError().text();
+    }
+}
+
+void FeedDatabase::updateItemReadableContent(qint64 id, const QString &readableContent)
+{
+    QSqlQuery q(db());
+    q.prepare(
+        "UPDATE Item SET "
+        "readableContent=:readableContent "
+        "WHERE id=:id;");
+    q.bindValue(":readableContent", readableContent);
+    q.bindValue(":id", id);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in updateItemReadableContent: " + q.lastError().text();
     }
 }
 
@@ -483,6 +533,20 @@ void FeedDatabase::updateFeedExpireAge(qint64 feedId, qint64 expireAge)
     q.bindValue(":id", feedId);
     if (!q.exec()) {
         qWarning() << "SQL Error in updateFeedExpireAge: " << q.lastError().text();
+    }
+}
+
+void FeedDatabase::updateFeedFlags(qint64 feedId, int flags)
+{
+    QSqlQuery q(db());
+    q.prepare(
+        "UPDATE Feed SET "
+        "flags=:flags "
+        "WHERE id=:id");
+    q.bindValue(":flags", flags);
+    q.bindValue(":id", feedId);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in updateFeedFlags: " << q.lastError().text();
     }
 }
 

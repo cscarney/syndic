@@ -20,6 +20,7 @@ struct Feed::PrivData {
     UpdateMode expireMode{InheritUpdateMode};
     qint64 expireAge{0};
     QDateTime lastUpdate;
+    int flags;
 };
 
 Feed::Feed(QObject *parent)
@@ -199,6 +200,19 @@ qint64 Feed::expireAge()
     return d->expireAge;
 }
 
+void Feed::setFlags(int flags)
+{
+    if (flags != d->flags) {
+        d->flags = flags;
+        emit flagsChanged();
+    }
+}
+
+int Feed::flags() const
+{
+    return d->flags;
+}
+
 void Feed::updateParams(Feed *other)
 {
     if (other == nullptr) {
@@ -211,6 +225,7 @@ void Feed::updateParams(Feed *other)
     setUpdateMode(other->updateMode());
     setExpireAge(other->expireAge());
     setExpireMode(other->expireMode());
+    setFlags(other->flags());
 }
 
 bool Feed::editable()

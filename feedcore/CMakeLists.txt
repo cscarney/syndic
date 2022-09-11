@@ -19,6 +19,9 @@ set(feedcore_HEADERS
     sharedcache.h
     gumbovisitor.h
     feeddiscovery.h
+    readability/readability.h
+    readability/qprocessreadability.h
+    readability/qreadablereadability.h
     )
     
 set(feedcore_SRCS
@@ -36,6 +39,8 @@ set(feedcore_SRCS
     sharedcache.cpp
     gumbovisitor.cpp
     feeddiscovery.cpp
+    readability/qprocessreadability.cpp
+    readability/qreadablereadability.cpp
     )
     
 add_library(feedcore STATIC ${feedcore_SRCS})

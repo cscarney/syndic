@@ -162,6 +162,24 @@ FeedCore::Future<QString> *StorageImpl::getContent(ArticleImpl *article)
     });
 }
 
+FeedCore::Future<QString> *StorageImpl::getReadableContent(ArticleImpl *article)
+{
+    qint64 id = article->id();
+    return Future<QString>::yield(this, [this, id](auto *op) {
+        QString readableContent = m_db.selectItemReadableContent(id);
+        if (!readableContent.isEmpty()) {
+            op->appendResult(readableContent);
+        }
+    });
+}
+
+void StorageImpl::cacheReadableContent(ArticleImpl *article, const QString &readableContent)
+{
+    const qint64 itemId{article->id()};
+    ensureTransaction();
+    m_db.updateItemReadableContent(itemId, readableContent);
+}
+
 void StorageImpl::onArticleReadChanged(ArticleImpl *article)
 {
     const qint64 itemId{article->id()};
@@ -302,6 +320,9 @@ void StorageImpl::listenForChanges(FeedImpl *feed)
     });
     QObject::connect(feed, &Feed::iconChanged, this, [this, feed] {
         m_db.updateFeedIcon(feed->id(), feed->icon().toString());
+    });
+    QObject::connect(feed, &Feed::flagsChanged, this, [this, feed] {
+        m_db.updateFeedFlags(feed->id(), feed->flags());
     });
     QObject::connect(feed, &Feed::deleteRequested, this, [this, feed] {
         onFeedRequestDelete(feed);
