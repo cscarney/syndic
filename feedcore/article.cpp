@@ -4,7 +4,10 @@
  */
 
 #include "article.h"
+#include "context.h"
 #include "feed.h"
+#include "readability/readability.h"
+
 using namespace FeedCore;
 
 Article::Article(Feed *feed, QObject *parent)
@@ -48,6 +51,52 @@ void Article::setUrl(const QUrl &url)
 Feed *Article::feed() const
 {
     return m_feed;
+}
+
+void Article::requestReadableContent(Readability *readability)
+{
+    if (readability == nullptr) {
+        requestContent();
+        return;
+    }
+
+    struct Connections {
+        QMetaObject::Connection success;
+        QMetaObject::Connection error;
+        void disconnect() const
+        {
+            QObject::disconnect(success);
+            QObject::disconnect(error);
+        }
+    };
+    auto connections = std::make_shared<Connections>();
+    QString urlString = url().toString();
+
+    connections->success = QObject::connect(readability, &Readability::finishedFetching, this, [this, connections, urlString](auto gotUrl, auto content) {
+        if (gotUrl == urlString) {
+            emit gotContent(content, ReadableContent);
+            cacheReadableContent(content);
+            connections->disconnect();
+        }
+    });
+
+    connections->error = QObject::connect(readability, &Readability::errorFetching, this, [this, connections, urlString](auto errorUrl) {
+        if (errorUrl == urlString) {
+            requestContent();
+            connections->disconnect();
+        }
+    });
+
+    readability->fetch(urlString);
+}
+
+void Article::requestReadableContent(Context *context)
+{
+    requestReadableContent(context->getReadability());
+}
+
+void Article::cacheReadableContent(const QString & /* readableContent */)
+{
 }
 
 void Article::setRead(bool isRead)

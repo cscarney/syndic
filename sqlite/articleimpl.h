@@ -22,6 +22,8 @@ public:
     qint64 id() const;
     void updateFromQuery(const ItemQuery &q);
     void requestContent() final;
+    void requestReadableContent(FeedCore::Readability *readability) final;
+    void cacheReadableContent(const QString &readableContent) final;
 
 private:
     ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const ItemQuery &q);

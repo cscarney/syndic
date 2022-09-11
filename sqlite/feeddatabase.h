@@ -29,12 +29,14 @@ public:
     ItemQuery selectItem(qint64 id);
     ItemQuery selectItem(qint64 feed, const QString &localId);
     QString selectItemContent(qint64 id);
+    QString selectItemReadableContent(qint64 id);
     std::optional<qint64> selectItemId(qint64 feedId, const QString &localId);
     std::optional<qint64>
     insertItem(qint64 feedId, const QString &localId, const QString &title, const QString &author, time_t date, const QUrl &url, const QString &content);
     void updateItemHeaders(qint64 id, const QString &title, const QString &author, const QUrl &url);
     void updateItemDate(qint64 id, time_t date);
     void updateItemContent(qint64 id, const QString &content);
+    void updateItemReadableContent(qint64 id, const QString &readableContent);
     void updateItemRead(qint64 id, bool isRead);
     void updateItemStarred(qint64 id, bool isStarred);
     void deleteItemsForFeed(qint64 feedId);
@@ -51,6 +53,7 @@ public:
     void updateFeedUpdateInterval(qint64 feedId, qint64 updateInterval);
     void updateFeedLastUpdate(qint64 feedId, const QDateTime &lastUpdated);
     void updateFeedExpireAge(qint64 feedId, qint64 expireAge);
+    void updateFeedFlags(qint64 feedId, int flags);
     void deleteFeed(qint64 feedId);
 
     void beginTransaction();

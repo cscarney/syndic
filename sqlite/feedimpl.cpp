@@ -59,6 +59,7 @@ void FeedImpl::updateFromQuery(const FeedQuery &query)
     setLastUpdate(query.lastUpdate());
     unpackUpdateInterval(query.updateInterval());
     unpackExpireAge(query.expireAge());
+    setFlags(query.flags());
 }
 
 Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)
