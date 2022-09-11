@@ -105,16 +105,19 @@ void ContentModel::setText(const QString &text)
     if (m_text != text) {
         m_text = text;
 
+        for (auto *block : qAsConst(m_blocks)) {
+            block->deleteLater();
+        }
+        beginResetModel();
+        m_blocks.clear();
+        endResetModel();
+
         if (!m_text.isEmpty()) {
             m_job = std::make_unique<ParseJob>(this, text);
             QCoreApplication::removePostedEvents(this, kAddBlockEventType);
             QThreadPool::globalInstance()->start(m_job.get());
         }
 
-        beginResetModel();
-        qDeleteAll(m_blocks);
-        m_blocks.clear();
-        endResetModel();
         emit textChanged();
     }
 }
