@@ -16,6 +16,7 @@ namespace FeedCore
 class Storage;
 class Feed;
 class ProvisionalFeed;
+class Readability;
 
 /**
  * A Context object represents an entire collection of feeds.
@@ -133,6 +134,10 @@ public:
      * local file.
      */
     Q_INVOKABLE void importOpml(const QUrl &url);
+
+    Q_INVOKABLE static bool supportsReadability();
+
+    Readability *getReadability();
 
     bool defaultUpdateEnabled() const;
     void setDefaultUpdateEnabled(bool defaultUpdateEnabled);

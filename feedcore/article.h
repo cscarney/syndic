@@ -13,6 +13,8 @@
 namespace FeedCore
 {
 class Feed;
+class Context;
+class Readability;
 
 /**
  * Abstract class for stored articles.
@@ -57,6 +59,9 @@ class Article : public QObject
     Q_PROPERTY(QUrl url READ url NOTIFY urlChanged);
 
 public:
+    enum ContentType { FeedContent, ReadableContent };
+    Q_ENUM(ContentType);
+
     Feed *feed() const;
 
     /**
@@ -65,6 +70,30 @@ public:
      * The gotContent signal will be emitted with the requested content, possibly asyncronously.
      */
     Q_INVOKABLE virtual void requestContent() = 0;
+
+    /**
+     * Requests the content of the article's linked web page.
+     *
+     * The article url will be loaded from the web and processed by readability tool if it is
+     * available.  The gotContent signal will be emitted with the readable content, possibly
+     * asyncronously.
+     */
+    virtual void requestReadableContent(FeedCore::Readability *readability);
+
+    /**
+     * Requestes the content of the article's linked web page.
+     *
+     * This overload uses the readability implementation provided by \a context
+     */
+    Q_INVOKABLE void requestReadableContent(FeedCore::Context *context);
+
+    /**
+     * Called by the base implementation of requestReadableContent when
+     * readability successfully extracts web content.
+     *
+     * The base implementation does nothing.
+     */
+    virtual void cacheReadableContent(const QString &readableContent);
 
     /**
      * Resolves a link relative to the article page
@@ -105,7 +134,7 @@ signals:
     void urlChanged();
     void readStatusChanged();
     void starredChanged();
-    void gotContent(const QString &content);
+    void gotContent(const QString &content, FeedCore::Article::ContentType type = FeedContent);
 
 protected:
     explicit Article(Feed *feed, QObject *parent = nullptr);

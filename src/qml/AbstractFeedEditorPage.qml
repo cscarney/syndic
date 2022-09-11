@@ -66,6 +66,19 @@ Kirigami.ScrollablePage {
                 }
             }
 
+            CheckBox {
+                text: qsTr("Always load web content")
+                checked: provisionalFeed.flags & Feed.UseReadableContentFlag
+                visible: feedContext.supportsReadability()
+                onToggled: {
+                    if (checked) {
+                        provisionalFeed.flags |= Feed.UseReadableContentFlag
+                    } else {
+                        provisionalFeed.flags &= ~Feed.UseReadableContentFlag
+                    }
+                }
+            }
+
             Kirigami.Separator{}
 
             RadioButton {
