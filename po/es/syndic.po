@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2022-07-04 08:14+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"PO-Revision-Date: 2022-10-17 22:51+0000\n"
+"Last-Translator: Eduardo Malaspina <vaio0@swismail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/syndic/app/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1-dev\n"
+"X-Generator: Weblate 4.15-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
@@ -55,7 +55,7 @@ msgstr "Categoría:"
 #: src/qml/AbstractFeedEditorPage.qml:70
 msgctxt "AbstractFeedEditorPage|"
 msgid "Always load web content"
-msgstr ""
+msgstr "Cargar siempre el contenido de la web"
 
 #: src/qml/AbstractFeedEditorPage.qml:87
 msgctxt "AbstractFeedEditorPage|"
@@ -164,7 +164,7 @@ msgstr "Mantener como no leído"
 #: src/qml/ArticlePage.qml:69
 msgctxt "ArticlePage|"
 msgid "Show Web Content"
-msgstr ""
+msgstr "Mostrar contenido web"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
