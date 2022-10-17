@@ -22,12 +22,12 @@ msgctxt "AbstractArticleListPage|"
 msgid "No Items"
 msgstr "Öğe Yok"
 
-#: src/qml/ArticleList/AbstractArticleListPage.qml:82
+#: src/qml/ArticleList/AbstractArticleListPage.qml:90
 msgctxt "AbstractArticleListPage|"
 msgid "Couldn't fetch feed from source"
 msgstr "Besleme kaynaktan alınamadı"
 
-#: src/qml/ArticleList/AbstractArticleListPage.qml:88
+#: src/qml/ArticleList/AbstractArticleListPage.qml:96
 msgctxt "AbstractArticleListPage|"
 msgid "Retry"
 msgstr "Yeniden Dene"
@@ -37,33 +37,38 @@ msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Url:"
 msgstr "Besleme URL:"
 
-#: src/qml/AbstractFeedEditorPage.qml:43
+#: src/qml/AbstractFeedEditorPage.qml:46
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Options"
 msgstr "Besleme Seçenekleri"
 
-#: src/qml/AbstractFeedEditorPage.qml:48
+#: src/qml/AbstractFeedEditorPage.qml:51
 msgctxt "AbstractFeedEditorPage|"
 msgid "Display Name:"
 msgstr "Görünen Ad:"
 
-#: src/qml/AbstractFeedEditorPage.qml:55
+#: src/qml/AbstractFeedEditorPage.qml:58
 msgctxt "AbstractFeedEditorPage|"
 msgid "Category:"
 msgstr "Kategori:"
 
-#: src/qml/AbstractFeedEditorPage.qml:71
+#: src/qml/AbstractFeedEditorPage.qml:70
+msgctxt "AbstractFeedEditorPage|"
+msgid "Always load web content"
+msgstr ""
+
+#: src/qml/AbstractFeedEditorPage.qml:87
 msgctxt "AbstractFeedEditorPage|"
 msgid "Fetch updates:"
 msgstr "Güncellemeleri al:"
 
 #. take the value from application settings
-#: src/qml/AbstractFeedEditorPage.qml:72 src/qml/AbstractFeedEditorPage.qml:128
+#: src/qml/AbstractFeedEditorPage.qml:89 src/qml/AbstractFeedEditorPage.qml:142
 msgctxt "AbstractFeedEditorPage|"
 msgid "Use Global Setting"
 msgstr "Genel Ayarı Kullan"
 
-#: src/qml/AbstractFeedEditorPage.qml:96
+#: src/qml/AbstractFeedEditorPage.qml:113
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n minute(s)"
@@ -71,18 +76,18 @@ msgid_plural "%n minute(s)"
 msgstr[0] "%n dakika"
 msgstr[1] "%n dakika"
 
-#: src/qml/AbstractFeedEditorPage.qml:113
-#: src/qml/AbstractFeedEditorPage.qml:170
+#: src/qml/AbstractFeedEditorPage.qml:127
+#: src/qml/AbstractFeedEditorPage.qml:181
 msgctxt "AbstractFeedEditorPage|"
 msgid "Never"
 msgstr "Asla"
 
-#: src/qml/AbstractFeedEditorPage.qml:127
+#: src/qml/AbstractFeedEditorPage.qml:141
 msgctxt "AbstractFeedEditorPage|"
 msgid "Delete old items:"
 msgstr "Eski ögeleri sil:"
 
-#: src/qml/AbstractFeedEditorPage.qml:152
+#: src/qml/AbstractFeedEditorPage.qml:166
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n day(s)"
@@ -110,56 +115,56 @@ msgctxt "Application|"
 msgid "Syndic"
 msgstr "Syndic"
 
-#: src/qml/ArticleList/ArticleListPage.qml:15
+#: src/qml/ArticleList/ArticleListPage.qml:17
 msgctxt "ArticleListPage|"
 msgid "Mark All Read"
 msgstr "Tümünü Okundu Olarak İşaretle"
 
-#: src/qml/ArticleList/ArticleListPage.qml:26
-msgctxt "ArticleListPage|"
-msgid "Clear"
-msgstr "Temizle"
-
-#: src/qml/ArticleList/ArticleListPage.qml:38
+#: src/qml/ArticleList/ArticleListPage.qml:28
 msgctxt "ArticleListPage|"
 msgid "Hide Read"
 msgstr "Okunmuşları Gizle"
 
-#: src/qml/ArticleList/ArticleListPage.qml:47
+#: src/qml/ArticleList/ArticleListPage.qml:37
 msgctxt "ArticleListPage|"
 msgid "Edit…"
 msgstr "Düzenle…"
 
-#: src/qml/ArticleList/ArticleListPage.qml:58
+#: src/qml/ArticleList/ArticleListPage.qml:48
 msgctxt "ArticleListPage|"
 msgid "Refresh"
 msgstr "Yenile"
 
-#: src/qml/ArticleList/ArticleListPage.qml:70
+#: src/qml/ArticleList/ArticleListPage.qml:60
 msgctxt "ArticleListPage|"
 msgid "Cancel"
 msgstr "İptal Et"
 
-#: src/qml/ArticlePage.qml:30
+#: src/qml/ArticlePage.qml:34
 msgctxt "ArticlePage|"
 msgid "Open"
 msgstr "Aç"
 
-#: src/qml/ArticlePage.qml:38
+#: src/qml/ArticlePage.qml:42
 msgctxt "ArticlePage|"
 msgid "Share"
 msgstr "Paylaş"
 
-#: src/qml/ArticlePage.qml:45
+#: src/qml/ArticlePage.qml:49
 msgctxt "ArticlePage|"
 msgid "Starred"
 msgstr "Yıldızlı"
 
 #. as in, don't mark this article as read
-#: src/qml/ArticlePage.qml:54
+#: src/qml/ArticlePage.qml:59
 msgctxt "ArticlePage|"
 msgid "Keep Unread"
 msgstr "Okunmamış Tut"
+
+#: src/qml/ArticlePage.qml:69
+msgctxt "ArticlePage|"
+msgid "Show Web Content"
+msgstr ""
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
@@ -176,17 +181,17 @@ msgctxt "ErrorPlaceholderPage|"
 msgid "Retry"
 msgstr "Yeniden Dene"
 
-#: src/feedlistmodel.cpp:163
+#: src/feedlistmodel.cpp:161
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
 msgstr "Tüm Ögeler"
 
-#: src/feedlistmodel.cpp:164
+#: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred"
 msgstr "Yıldızlı"
 
-#: src/qml/ArticleList/FeedPreviewPage.qml:17
+#: src/qml/ArticleList/FeedPreviewPage.qml:20
 msgctxt "FeedPreviewPage|"
 msgid "Subscribe"
 msgstr "Abone Ol"
@@ -224,7 +229,7 @@ msgctxt "SettingsPage|"
 msgid "Automatically every:"
 msgstr "Her x dakikada bir kendiliğinden:"
 
-#: src/qml/SettingsPage.qml:50
+#: src/qml/SettingsPage.qml:49
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n minute(s)"
@@ -232,17 +237,17 @@ msgid_plural "%n minute(s)"
 msgstr[0] "%n dakika"
 msgstr[1] "%n dakika"
 
-#: src/qml/SettingsPage.qml:65
+#: src/qml/SettingsPage.qml:61
 msgctxt "SettingsPage|"
 msgid "Run in background"
 msgstr "Arka planda çalış"
 
-#: src/qml/SettingsPage.qml:75
+#: src/qml/SettingsPage.qml:72
 msgctxt "SettingsPage|"
 msgid "Delete old items:"
 msgstr "Eski ögeleri sil:"
 
-#: src/qml/SettingsPage.qml:91
+#: src/qml/SettingsPage.qml:87
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n day(s)"
@@ -250,32 +255,32 @@ msgid_plural "%n day(s)"
 msgstr[0] "%n gün"
 msgstr[1] "%n gün"
 
-#: src/qml/SettingsPage.qml:106
+#: src/qml/SettingsPage.qml:99
 msgctxt "SettingsPage|"
 msgid "Sort feed list:"
 msgstr "Besleme listesini sırala:"
 
-#: src/qml/SettingsPage.qml:107
+#: src/qml/SettingsPage.qml:100
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
 msgstr "Alfabetik"
 
-#: src/qml/SettingsPage.qml:107
+#: src/qml/SettingsPage.qml:100
 msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr "Önce Okunmamışlar"
 
-#: src/qml/SettingsPage.qml:117
+#: src/qml/SettingsPage.qml:110
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr "OPML Verisi:"
 
-#: src/qml/SettingsPage.qml:120
+#: src/qml/SettingsPage.qml:113
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr "İçe Aktar…"
 
-#: src/qml/SettingsPage.qml:133
+#: src/qml/SettingsPage.qml:126
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "Dışa Aktar…"
@@ -285,18 +290,22 @@ msgctxt "UpdatingPlaceholderPage|"
 msgid "Update in Progress"
 msgstr "Güncelleniyor"
 
-#: src/qml/main.qml:80
+#: src/qml/main.qml:89
 msgctxt "main|"
 msgid "Add Content"
 msgstr "İçerik Ekle"
 
-#: src/qml/main.qml:87
+#: src/qml/main.qml:96
 msgctxt "main|"
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: src/qml/main.qml:94
+#: src/qml/main.qml:103
 #, qt-format
 msgctxt "main|"
 msgid "About %1"
 msgstr "%1 Hakkında"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Clear"
+#~ msgstr "Temizle"
