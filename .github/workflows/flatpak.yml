@@ -1,0 +1,37 @@
+name: Build Flatpak
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*.*"]
+
+env:
+  FLATPAK_IDENTIFIER: com.rocksandpaper.syndic
+  FLATPAK_OUTPUT: com.rocksandpaper.syndic.flatpak
+  FLATPAK_MANIFEST: com.rocksandpaper.syndic.yml
+
+jobs:
+  build-flatpak:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup flatpak-builder
+      run: |
+        sudo apt-get -y install flatpak-builder
+        flatpak remote-add --user flathub https://flathub.org/repo/flathub.flatpakrepo
+        flatpak-builder --user --install-deps-from=flathub --install-deps-only . com.rocksandpaper.syndic.yml
+
+    - name: Build
+      run: flatpak-builder --arch=x86_64 --repo=repo --force-clean flatpak ${FLATPAK_MANIFEST}
+
+    - name: Build Bundle
+      run: flatpak build-bundle --arch=x86_64 repo ${FLATPAK_OUTPUT} ${FLATPAK_IDENTIFIER}
+
+    - name: Export artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.FLATPAK_OUTPUT }}
+        path: ${{ env.FLATPAK_OUTPUT }}
+      
