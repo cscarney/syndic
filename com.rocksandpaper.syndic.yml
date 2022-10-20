@@ -16,6 +16,15 @@ finish-args:
 - --talk-name=org.freedesktop.Notifications
 - --talk-name=org.kde.StatusNotifierWatcher
 modules:
+
+# qreadable is currently necessary for showing web content
+- name: qreadable
+  buildsystem: cmake-ninja
+  sources:
+  - type: git
+    url: 'https://invent.kde.org/ccarney/qreadable.git'
+    branch: master
+
 - name: syndic
   buildsystem: cmake-ninja
   sources:

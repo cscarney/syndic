@@ -1,0 +1,33 @@
+name: Autotests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master", "v1-series" ]
+  pull_request:
+    branches: [ "master", "v1-series" ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Dependencies"
+      run: sudo apt-get -y install cmake extra-cmake-modules libkf5config-dev libkf5dbusaddons-dev libkf5syndication-dev qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev qttools5-dev
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}}
+      
