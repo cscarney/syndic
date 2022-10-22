@@ -99,14 +99,17 @@ void ContentImageItem::onImageLoadFinished()
     QNetworkReply *reply = m_reply;
     m_reply = nullptr;
     reply->deleteLater();
-    if (reply->error() != QNetworkReply::NoError) {
-        qWarning() << "image load error: " << reply->errorString();
+    QNetworkReply::NetworkError error = reply->error();
+    if (error == QNetworkReply::OperationCanceledError) {
+        return;
+    } else if (error != QNetworkReply::NoError) {
+        qDebug() << "image download failed:" << reply->url() << reply->errorString();
         return;
     }
     QByteArray arr = reply->readAll();
     QBuffer buffer(&arr);
     if (!m_image.load(&buffer, nullptr)) {
-        qWarning() << "invalid image!" << reply->url();
+        qDebug() << "invalid image:" << reply->url();
         return;
     }
     setFlag(QQuickItem::ItemHasContents, true);
