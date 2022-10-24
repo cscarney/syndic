@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2022-08-08 20:33+0000\n"
+"PO-Revision-Date: 2022-10-24 17:39+0000\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/syndic/app/tr/>\n"
 "Language: tr\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
@@ -55,7 +55,7 @@ msgstr "Kategori:"
 #: src/qml/AbstractFeedEditorPage.qml:70
 msgctxt "AbstractFeedEditorPage|"
 msgid "Always load web content"
-msgstr ""
+msgstr "Web içeriğini her zaman yükle"
 
 #: src/qml/AbstractFeedEditorPage.qml:87
 msgctxt "AbstractFeedEditorPage|"
@@ -164,7 +164,7 @@ msgstr "Okunmamış Tut"
 #: src/qml/ArticlePage.qml:69
 msgctxt "ArticlePage|"
 msgid "Show Web Content"
-msgstr ""
+msgstr "Web İçeriğini Göster"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
