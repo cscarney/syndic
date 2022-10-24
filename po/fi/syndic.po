@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2022-06-27 21:38+0000\n"
+"PO-Revision-Date: 2022-10-24 17:39+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/syndic/app/fi/>\n"
 "Language: fi\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
@@ -55,7 +55,7 @@ msgstr "Kategoria:"
 #: src/qml/AbstractFeedEditorPage.qml:70
 msgctxt "AbstractFeedEditorPage|"
 msgid "Always load web content"
-msgstr ""
+msgstr "Lataa aina verkkosisältöä"
 
 #: src/qml/AbstractFeedEditorPage.qml:87
 msgctxt "AbstractFeedEditorPage|"
@@ -118,12 +118,12 @@ msgstr "Syndic"
 #: src/qml/ArticleList/ArticleListPage.qml:17
 msgctxt "ArticleListPage|"
 msgid "Mark All Read"
-msgstr ""
+msgstr "Merkitse kaikki luetuiksi"
 
 #: src/qml/ArticleList/ArticleListPage.qml:28
 msgctxt "ArticleListPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Piilota luetut"
 
 #: src/qml/ArticleList/ArticleListPage.qml:37
 msgctxt "ArticleListPage|"
@@ -159,12 +159,12 @@ msgstr ""
 #: src/qml/ArticlePage.qml:59
 msgctxt "ArticlePage|"
 msgid "Keep Unread"
-msgstr ""
+msgstr "Pidä lukemattomana"
 
 #: src/qml/ArticlePage.qml:69
 msgctxt "ArticlePage|"
 msgid "Show Web Content"
-msgstr ""
+msgstr "Näytä verkkosisältö"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
@@ -189,7 +189,7 @@ msgstr "Kaikki kohteet"
 #: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred"
-msgstr ""
+msgstr "Tähdellä merkitty"
 
 #: src/qml/ArticleList/FeedPreviewPage.qml:20
 msgctxt "FeedPreviewPage|"

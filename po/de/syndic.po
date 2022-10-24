@@ -1,6 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-06-27 13:58+0000\n"
+"Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
+"PO-Revision-Date: 2022-10-24 17:39+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/syndic/app/de/>\n"
 "Language: de\n"
@@ -8,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
@@ -54,7 +55,7 @@ msgstr "Kategorie:"
 #: src/qml/AbstractFeedEditorPage.qml:70
 msgctxt "AbstractFeedEditorPage|"
 msgid "Always load web content"
-msgstr ""
+msgstr "Webinhalte immer laden"
 
 #: src/qml/AbstractFeedEditorPage.qml:87
 msgctxt "AbstractFeedEditorPage|"
@@ -163,7 +164,7 @@ msgstr "Ungelesen lassen"
 #: src/qml/ArticlePage.qml:69
 msgctxt "ArticlePage|"
 msgid "Show Web Content"
-msgstr ""
+msgstr "Webinhalte anzeigen"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
