@@ -79,7 +79,7 @@ Kirigami.Page {
     Connections {
         target: item.article
         function onGotContent(content, type) {
-            if (root.isReadable == (type===Article.ReadableContent)) {
+            if (root.isReadable || (type===Article.FeedContent)) {
                 root.inProgress = false;
                 articleView.text = content;
             }
