@@ -29,7 +29,7 @@ ColumnLayout {
             pointSize: Kirigami.Theme.defaultFont.pointSize
         }
         color: textColor
-        textFormat: Text.RichText
+        textFormat: Text.StyledText
     }
 
     RowLayout {
