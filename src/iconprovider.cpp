@@ -87,58 +87,108 @@ public:
 
 class IconProvider::IconImageEntry : public QObject
 {
-    enum Status { Pending, Success, Error };
+    class IImpl
+    {
+    public:
+        virtual ~IImpl() = default;
+        virtual void respond(IconImageResponse *response) = 0;
+        virtual void finish(IImpl * /* replacement */)
+        {
+        }
+    };
 
-    Status m_status{Pending};
-    QImage m_image;
-    QList<IconImageResponse *> m_waitingResponses;
+    class PendingImpl : public IImpl
+    {
+        QList<IconImageResponse *> m_waitingResponses;
+        void respond(IconImageResponse *response) override
+        {
+            m_waitingResponses << response;
+        }
+
+        void finish(IImpl *replacement) override
+        {
+            for (IconImageResponse *r : qAsConst(m_waitingResponses)) {
+                replacement->respond(r);
+            }
+        }
+    };
+
+    class ImageImpl : public IImpl
+    {
+        QImage m_image;
+
+        void respond(IconImageResponse *response) override
+        {
+            response->succeed(m_image);
+        }
+
+    public:
+        explicit ImageImpl(const QImage &img)
+            // store the image in the texture factory's preferred format
+            // so that it doesn't detatch when we create the texture factory
+            : m_image{img.convertToFormat(QImage::Format_ARGB32_Premultiplied)}
+        {
+        }
+    };
+
+    class RedirectImpl : public IImpl
+    {
+        QPointer<IconImageEntry> m_redirectTarget;
+        void respond(IconImageResponse *response) override
+        {
+            if (m_redirectTarget.isNull()) {
+                qWarning() << "Redirect target entry was destroyed.  This should never happen.";
+                response->fail();
+            }
+            m_redirectTarget->respond(response);
+        }
+
+    public:
+        explicit RedirectImpl(IconImageEntry *target)
+            : m_redirectTarget{target}
+        {
+        }
+    };
+
+    class FailImpl : public IImpl
+    {
+        void respond(IconImageResponse *response) override
+        {
+            response->fail();
+        }
+    };
+
+    std::unique_ptr<IImpl> d;
 
 public:
     IconImageEntry(QNetworkAccessManager *nam, const QUrl &source, QObject *parent)
         : QObject(parent)
+        , d{std::make_unique<PendingImpl>()}
     {
         QNetworkRequest req(source);
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
+        req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
         QNetworkReply *reply = nam->get(req);
         QObject::connect(reply, &QNetworkReply::finished, this, [this, reply] {
             QImage img;
-            if (reply->error() == QNetworkReply::NoError && img.loadFromData(reply->readAll())) {
-                // store the image in the texture factory's preferred format
-                // so that it doesn't detatch
-                m_image = img.convertToFormat(QImage::Format_ARGB32_Premultiplied);
-                m_status = Success;
+            QUrl redirectTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+            IImpl *newImpl{nullptr};
+
+            if (redirectTarget.isValid()) {
+                newImpl = new RedirectImpl(s_instance->getEntry(redirectTarget));
+            } else if (reply->error() == QNetworkReply::NoError && img.loadFromData(reply->readAll())) {
+                newImpl = new ImageImpl(img);
             } else {
-                m_status = Error;
+                newImpl = new FailImpl;
             }
-            finishWaitingResponses();
+            d->finish(newImpl);
+            d.reset(newImpl);
         });
     }
 
     void respond(IconImageResponse *response)
     {
-        if (m_status == Pending) {
-            m_waitingResponses.append(response);
-        } else {
-            finishResponse(response);
-        }
-    }
-
-private:
-    void finishWaitingResponses()
-    {
-        for (auto *response : qAsConst(m_waitingResponses)) {
-            finishResponse(response);
-        }
-        m_waitingResponses.clear();
-    }
-
-    void finishResponse(IconImageResponse *response)
-    {
-        if (m_status == Success) {
-            response->succeed(m_image);
-        } else {
-            response->fail();
-        }
+        d->respond(response);
     }
 };
 
@@ -163,11 +213,7 @@ QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const
     auto *response = new IconImageResponse;
     QTimer::singleShot(0, this, [this, id, response] {
         QUrl url{id};
-        IconImageEntry *&pIcon = m_icons[url];
-        if (pIcon == nullptr) {
-            pIcon = new IconImageEntry(m_nam.get(), url, this);
-        }
-        pIcon->respond(response);
+        getEntry(url)->respond(response);
     });
     return response;
 }
@@ -217,4 +263,13 @@ void IconProvider::discoverIcon(FeedCore::Feed *feed)
             // unreadable image
         }
     });
+}
+
+IconProvider::IconImageEntry *IconProvider::getEntry(const QUrl &url)
+{
+    IconImageEntry *&pIcon = m_icons[url];
+    if (pIcon == nullptr) {
+        pIcon = new IconImageEntry(m_nam.get(), url, this);
+    }
+    return pIcon;
 }

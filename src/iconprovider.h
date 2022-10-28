@@ -35,6 +35,7 @@ public:
 private:
     class IconImageResponse;
     class IconImageEntry;
+    IconImageEntry *getEntry(const QUrl &url);
 
     static IconProvider *s_instance;
     QSharedPointer<QNetworkAccessManager> m_nam;

@@ -162,11 +162,18 @@ NetworkAccessManager::NetworkAccessManager(QAbstractNetworkCache *cache, QObject
 
 NetworkAccessManager::~NetworkAccessManager() = default;
 
+static void setDefaultAttribute(QNetworkRequest &req, QNetworkRequest::Attribute attrName, QVariant attrVal)
+{
+    if (!req.attribute(attrName).isValid()) {
+        req.setAttribute(attrName, attrVal);
+    }
+}
+
 QNetworkReply *FeedCore::NetworkAccessManager::createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData)
 {
     QNetworkRequest newRequest(request);
     newRequest.setHeader(QNetworkRequest::UserAgentHeader, "syndic/1.0");
-    newRequest.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
+    setDefaultAttribute(newRequest, QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
     newRequest.setTransferTimeout();
 
     // We don't want to keep connections open since we make one-shot downloads
