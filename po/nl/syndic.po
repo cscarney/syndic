@@ -1,0 +1,307 @@
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
+"PO-Revision-Date: 2022-11-03 16:27+0000\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/syndic/app/nl/>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
+"X-Qt-Contexts: true\n"
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:39
+msgctxt "AbstractArticleListPage|"
+msgid "All Read"
+msgstr "Alles is gelezen"
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:39
+msgctxt "AbstractArticleListPage|"
+msgid "No Items"
+msgstr "Geen items"
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:90
+msgctxt "AbstractArticleListPage|"
+msgid "Couldn't fetch feed from source"
+msgstr "De feed kan niet worden opgehaald"
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:96
+msgctxt "AbstractArticleListPage|"
+msgid "Retry"
+msgstr "Opnieuw proberen"
+
+#: src/qml/AbstractFeedEditorPage.qml:35
+msgctxt "AbstractFeedEditorPage|"
+msgid "Feed Url:"
+msgstr "Feed-url:"
+
+#: src/qml/AbstractFeedEditorPage.qml:46
+msgctxt "AbstractFeedEditorPage|"
+msgid "Feed Options"
+msgstr "Feedopties"
+
+#: src/qml/AbstractFeedEditorPage.qml:51
+msgctxt "AbstractFeedEditorPage|"
+msgid "Display Name:"
+msgstr "Weergavenaam:"
+
+#: src/qml/AbstractFeedEditorPage.qml:58
+msgctxt "AbstractFeedEditorPage|"
+msgid "Category:"
+msgstr "Categorie:"
+
+#: src/qml/AbstractFeedEditorPage.qml:70
+msgctxt "AbstractFeedEditorPage|"
+msgid "Always load web content"
+msgstr "Webinhoud altijd laden"
+
+#: src/qml/AbstractFeedEditorPage.qml:87
+msgctxt "AbstractFeedEditorPage|"
+msgid "Fetch updates:"
+msgstr "Bijwerktussenpoos:"
+
+#. take the value from application settings
+#: src/qml/AbstractFeedEditorPage.qml:89 src/qml/AbstractFeedEditorPage.qml:142
+msgctxt "AbstractFeedEditorPage|"
+msgid "Use Global Setting"
+msgstr "Algemene instelling gebruiken"
+
+#: src/qml/AbstractFeedEditorPage.qml:113
+#, qt-format
+msgctxt "AbstractFeedEditorPage|"
+msgid "%n minute(s)"
+msgid_plural "%n minute(s)"
+msgstr[0] "%n minuut"
+msgstr[1] "%n minuten"
+
+#: src/qml/AbstractFeedEditorPage.qml:127
+#: src/qml/AbstractFeedEditorPage.qml:181
+msgctxt "AbstractFeedEditorPage|"
+msgid "Never"
+msgstr "Nooit"
+
+#: src/qml/AbstractFeedEditorPage.qml:141
+msgctxt "AbstractFeedEditorPage|"
+msgid "Delete old items:"
+msgstr "Oude items verwijderen na:"
+
+#: src/qml/AbstractFeedEditorPage.qml:166
+#, qt-format
+msgctxt "AbstractFeedEditorPage|"
+msgid "%n day(s)"
+msgid_plural "%n day(s)"
+msgstr[0] "%n dag"
+msgstr[1] "%n dagen"
+
+#: src/qml/Placeholders/AbstractPlaceholderPage.qml:16
+msgctxt "AbstractPlaceholderPage|"
+msgid "Select an item to view it here"
+msgstr "Kies een te bekijken item"
+
+#: src/qml/AddFeedPage.qml:12
+msgctxt "AddFeedPage|"
+msgid "Add Content"
+msgstr "Feed toevoegen"
+
+#: src/qml/AddFeedPage.qml:24
+msgctxt "AddFeedPage|"
+msgid "Preview…"
+msgstr "Voorvertonen…"
+
+#: src/application.cpp:120
+msgctxt "Application|"
+msgid "Syndic"
+msgstr "Syndic"
+
+#: src/qml/ArticleList/ArticleListPage.qml:17
+msgctxt "ArticleListPage|"
+msgid "Mark All Read"
+msgstr "Alles markeren als gelezen"
+
+#: src/qml/ArticleList/ArticleListPage.qml:28
+msgctxt "ArticleListPage|"
+msgid "Hide Read"
+msgstr "Gelezen items verbergen"
+
+#: src/qml/ArticleList/ArticleListPage.qml:37
+msgctxt "ArticleListPage|"
+msgid "Edit…"
+msgstr "Bewerken…"
+
+#: src/qml/ArticleList/ArticleListPage.qml:48
+msgctxt "ArticleListPage|"
+msgid "Refresh"
+msgstr "Bijwerken"
+
+#: src/qml/ArticleList/ArticleListPage.qml:60
+msgctxt "ArticleListPage|"
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: src/qml/ArticlePage.qml:34
+msgctxt "ArticlePage|"
+msgid "Open"
+msgstr "Openen"
+
+#: src/qml/ArticlePage.qml:42
+msgctxt "ArticlePage|"
+msgid "Share"
+msgstr "Delen"
+
+#: src/qml/ArticlePage.qml:49
+msgctxt "ArticlePage|"
+msgid "Starred"
+msgstr "Favorieten"
+
+#. as in, don't mark this article as read
+#: src/qml/ArticlePage.qml:59
+msgctxt "ArticlePage|"
+msgid "Keep Unread"
+msgstr "Niet als gelezen markeren"
+
+#: src/qml/ArticlePage.qml:69
+msgctxt "ArticlePage|"
+msgid "Show Web Content"
+msgstr "Webinhoud tonen"
+
+#: src/qml/EditFeedPage.qml:21
+msgctxt "EditFeedPage|"
+msgid "Save"
+msgstr "Opslaan"
+
+#: src/qml/EditFeedPage.qml:30
+msgctxt "EditFeedPage|"
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: src/qml/Placeholders/ErrorPlaceholderPage.qml:18
+msgctxt "ErrorPlaceholderPage|"
+msgid "Retry"
+msgstr "Opnieuw proberen"
+
+#: src/feedlistmodel.cpp:161
+msgctxt "FeedListModel|special feed name"
+msgid "All Items"
+msgstr "Alle items"
+
+#: src/feedlistmodel.cpp:162
+msgctxt "FeedListModel|special feed name"
+msgid "Starred"
+msgstr "Favorieten"
+
+#: src/qml/ArticleList/FeedPreviewPage.qml:20
+msgctxt "FeedPreviewPage|"
+msgid "Subscribe"
+msgstr "Abonneren"
+
+#: src/notificationcontroller.cpp:41
+msgctxt "NotificationController|system tray menu action"
+msgid "Quit"
+msgstr "Afsluiten"
+
+#: src/notificationcontroller.cpp:71
+#, qt-format
+msgctxt "NotificationController|Notification Text"
+msgid "%1 New Item(s)"
+msgid_plural "%1 New Item(s)"
+msgstr[0] "%1 nieuw item"
+msgstr[1] "%1 nieuwe items"
+
+#: src/qml/SettingsPage.qml:16
+msgctxt "SettingsPage|"
+msgid "Settings"
+msgstr "Instellingen"
+
+#: src/qml/SettingsPage.qml:23
+msgctxt "SettingsPage|"
+msgid "Fetch updates:"
+msgstr "Bijwerken:"
+
+#: src/qml/SettingsPage.qml:25
+msgctxt "SettingsPage|"
+msgid "On application start"
+msgstr "Na opstarten"
+
+#: src/qml/SettingsPage.qml:37
+msgctxt "SettingsPage|"
+msgid "Automatically every:"
+msgstr "Elke"
+
+#: src/qml/SettingsPage.qml:49
+#, qt-format
+msgctxt "SettingsPage|"
+msgid "%n minute(s)"
+msgid_plural "%n minute(s)"
+msgstr[0] "%n minuut"
+msgstr[1] "%n minuten"
+
+#: src/qml/SettingsPage.qml:61
+msgctxt "SettingsPage|"
+msgid "Run in background"
+msgstr "Uitvoeren op achtergrond"
+
+#: src/qml/SettingsPage.qml:72
+msgctxt "SettingsPage|"
+msgid "Delete old items:"
+msgstr "Oude items verwijderen, elke"
+
+#: src/qml/SettingsPage.qml:87
+#, qt-format
+msgctxt "SettingsPage|"
+msgid "%n day(s)"
+msgid_plural "%n day(s)"
+msgstr[0] "%n dag"
+msgstr[1] "%n dagen"
+
+#: src/qml/SettingsPage.qml:99
+msgctxt "SettingsPage|"
+msgid "Sort feed list:"
+msgstr "Feedlijst sorteren op"
+
+#: src/qml/SettingsPage.qml:100
+msgctxt "SettingsPage|"
+msgid "Alphabetical"
+msgstr "Alfabetische volgorde"
+
+#: src/qml/SettingsPage.qml:100
+msgctxt "SettingsPage|"
+msgid "Unread First"
+msgstr "Ongelezen bovenaan"
+
+#: src/qml/SettingsPage.qml:110
+msgctxt "SettingsPage|"
+msgid "OPML Data:"
+msgstr "OPML-gegevens:"
+
+#: src/qml/SettingsPage.qml:113
+msgctxt "SettingsPage|"
+msgid "Import…"
+msgstr "Importeren…"
+
+#: src/qml/SettingsPage.qml:126
+msgctxt "SettingsPage|"
+msgid "Export…"
+msgstr "Exporteren…"
+
+#: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
+msgctxt "UpdatingPlaceholderPage|"
+msgid "Update in Progress"
+msgstr "Bezig met bijwerken…"
+
+#: src/qml/main.qml:89
+msgctxt "main|"
+msgid "Add Content"
+msgstr "Feed toevoegen"
+
+#: src/qml/main.qml:96
+msgctxt "main|"
+msgid "Settings"
+msgstr "Instellingen"
+
+#: src/qml/main.qml:103
+#, qt-format
+msgctxt "main|"
+msgid "About %1"
+msgstr "Over %1"
