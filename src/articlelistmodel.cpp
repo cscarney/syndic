@@ -15,7 +15,7 @@ struct ArticleListModel::PrivData {
     Feed *feed{};
     QList<QmlArticleRef> items;
     bool unreadFilter{false};
-    LoadStatus status{LoadStatus::Idle};
+    LoadStatus status{LoadStatus::Loading};
     bool active{false};
 };
 

@@ -35,7 +35,7 @@ OK.ScrollablePage {
     EmptyFeedOverlay {
         id: emptyOverlay
         anchors.fill: parent
-        visible: articleList.count == 0
+        visible: (articleList.count == 0) && (feedItemModel.status !== Feed.Loading)
         icon: unreadFilter ? "checkmark" : "com.rocksandpaper.syndic.feed-empty"
         text: unreadFilter ? qsTr("All Read") : qsTr("No Items")
     }
