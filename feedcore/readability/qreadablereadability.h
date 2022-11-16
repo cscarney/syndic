@@ -5,21 +5,25 @@
 #ifndef FEEDCORE_QREADABLEREADABILITY_H
 #define FEEDCORE_QREADABLEREADABILITY_H
 
-#include "qprocessreadability.h"
+#include "readability.h"
+
+namespace QReadable
+{
+class Readable;
+}
 
 namespace FeedCore
 {
-class QReadableReadability : public QProcessReadability
+
+class QReadableReadability : public Readability
 {
-    Q_OBJECT
 public:
     QReadableReadability();
     virtual ~QReadableReadability() = default;
-    static bool isSupported();
+    void fetch(const QString &url) override;
 
-protected:
-    QString program() const override;
-    QStringList arguments(const QString &url) const override;
+private:
+    QReadable::Readable *m_readable{nullptr};
 };
 }
 

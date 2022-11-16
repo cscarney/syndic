@@ -67,7 +67,6 @@ Kirigami.Page {
             Kirigami.Action {
                 id: readableAction
                 text: qsTr("Show Web Content");
-                visible: feedContext.supportsReadability();
                 checkable: true
                 checked: defaultReadable
                 displayHint: Kirigami.DisplayHint.AlwaysHide

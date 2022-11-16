@@ -20,7 +20,6 @@ set(feedcore_HEADERS
     gumbovisitor.h
     feeddiscovery.h
     readability/readability.h
-    readability/qprocessreadability.h
     readability/qreadablereadability.h
     )
     
@@ -39,7 +38,6 @@ set(feedcore_SRCS
     sharedcache.cpp
     gumbovisitor.cpp
     feeddiscovery.cpp
-    readability/qprocessreadability.cpp
     readability/qreadablereadability.cpp
     )
     
@@ -51,5 +49,6 @@ target_link_libraries(feedcore
     Qt5::Sql
     Qt5::Network
     KF5::Syndication
+    QReadable::libqreadable
     htmlparser
 )
