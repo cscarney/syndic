@@ -7,6 +7,7 @@
 #include "context.h"
 #include "feed.h"
 #include "readability/readability.h"
+#include "readability/readabilityresult.h"
 
 using namespace FeedCore;
 
@@ -60,34 +61,14 @@ void Article::requestReadableContent(Readability *readability)
         return;
     }
 
-    struct Connections {
-        QMetaObject::Connection success;
-        QMetaObject::Connection error;
-        void disconnect() const
-        {
-            QObject::disconnect(success);
-            QObject::disconnect(error);
-        }
-    };
-    auto connections = std::make_shared<Connections>();
-    QString urlString = url().toString();
-
-    connections->success = QObject::connect(readability, &Readability::finishedFetching, this, [this, connections, urlString](auto gotUrl, auto content) {
-        if (gotUrl == urlString) {
-            emit gotContent(content, ReadableContent);
-            cacheReadableContent(content);
-            connections->disconnect();
-        }
+    ReadabilityResult *result = readability->fetch(url());
+    QObject::connect(result, &ReadabilityResult::finished, this, [this](auto content) {
+        emit gotContent(content, ReadableContent);
+        cacheReadableContent(content);
     });
-
-    connections->error = QObject::connect(readability, &Readability::errorFetching, this, [this, connections, urlString](auto errorUrl) {
-        if (errorUrl == urlString) {
-            requestContent();
-            connections->disconnect();
-        }
+    QObject::connect(result, &ReadabilityResult::error, this, [this]() {
+        requestContent();
     });
-
-    readability->fetch(urlString);
 }
 
 void Article::requestReadableContent(Context *context)
