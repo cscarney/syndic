@@ -276,14 +276,9 @@ void Context::importOpml(const QUrl &url)
     });
 }
 
-bool Context::supportsReadability()
-{
-    return QReadableReadability::isSupported();
-}
-
 Readability *Context::getReadability()
 {
-    if (supportsReadability() && d->readability == nullptr) {
+    if (d->readability == nullptr) {
         d->readability = new QReadableReadability();
         d->readability->setParent(this);
     }

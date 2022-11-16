@@ -135,8 +135,6 @@ public:
      */
     Q_INVOKABLE void importOpml(const QUrl &url);
 
-    Q_INVOKABLE static bool supportsReadability();
-
     Readability *getReadability();
 
     bool defaultUpdateEnabled() const;
