@@ -20,10 +20,12 @@ class QReadableReadability : public Readability
 public:
     QReadableReadability();
     virtual ~QReadableReadability() = default;
-    void fetch(const QString &url) override;
+    ReadabilityResult *fetch(const QUrl &url) override;
 
 private:
     QReadable::Readable *m_readable{nullptr};
+    class Result;
+    QString parse(const QString &rawHtml, const QUrl &url);
 };
 }
 
