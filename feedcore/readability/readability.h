@@ -11,18 +11,14 @@ class QString;
 
 namespace FeedCore
 {
+class ReadabilityResult;
 class Readability : public QObject
 {
     Q_OBJECT
 public:
     virtual ~Readability() = default;
 
-    virtual void fetch(const QString &url) = 0;
-
-Q_SIGNALS:
-    void startedFetching(const QString &url);
-    void finishedFetching(const QString &url, QString readable);
-    void errorFetching(const QString &url);
+    virtual ReadabilityResult *fetch(const QUrl &url) = 0;
 };
 }
 

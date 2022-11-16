@@ -20,6 +20,7 @@ set(feedcore_HEADERS
     gumbovisitor.h
     feeddiscovery.h
     readability/readability.h
+    readability/readabilityresult.h
     readability/qreadablereadability.h
     )
     
