@@ -4,39 +4,34 @@
  */
 
 #include "qreadablereadability.h"
-
+#include "networkaccessmanager.h"
 #include <QDebug>
-#include <QProcess>
-#include <QStandardPaths>
+#include <QNetworkReply>
 #include <QString>
-#include <QStringList>
+
+#include <qreadable/readable.h>
 
 using namespace FeedCore;
 
-static const QString executableName = QStringLiteral("qreadable");
-
 QReadableReadability::QReadableReadability()
+    : m_readable{new QReadable::Readable(this)}
 {
-    // we shouldn't be creating this class unless we already checked for qreadable
-    bool available = isSupported();
-    if (Q_UNLIKELY(!available)) {
-        qWarning() << "Creating instance of QReadableReadability when qreadable is not available";
-    }
-    setAvailable(available);
 }
 
-bool QReadableReadability::isSupported()
+void QReadableReadability::fetch(const QString &url)
 {
-    static const bool supported = !QStandardPaths::findExecutable(executableName).isEmpty();
-    return supported;
-}
-
-QString QReadableReadability::program() const
-{
-    return executableName;
-}
-
-QStringList QReadableReadability::arguments(const QString &url) const
-{
-    return {url};
+    auto *nam = NetworkAccessManager::instance();
+    QNetworkRequest req(url);
+    auto *reply = nam->get(req);
+    emit startedFetching(url);
+    QObject::connect(reply, &QNetworkReply::finished, this, [this, url, reply] {
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray data = reply->readAll();
+            QString rawHtml(data);
+            QString readableHtml = m_readable->parse(rawHtml, reply->url());
+            emit finishedFetching(url, readableHtml);
+        } else {
+            emit errorFetching(url);
+        }
+    });
 }
