@@ -7,6 +7,7 @@ import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.7 as Kirigami
 import com.rocksandpaper.syndic 1.0
+import '..'
 
 Kirigami.ScrollablePage {
     id: root
@@ -66,6 +67,7 @@ Kirigami.ScrollablePage {
        } /* model */
 
         delegate: Kirigami.AbstractListItem {
+            id: listItem
             width: articleList.width
             text: ref.article.headline
             padding: 10
@@ -74,7 +76,16 @@ Kirigami.ScrollablePage {
             // which causes ListView to instantiate a very large number of delegates.
             height: implicitHeight
 
-            contentItem: ArticleListEntry { }
+            contentItem: ToggleItem {
+                id: toggleItem
+                trueDelegate: ArticleListEntry {
+                    isRead: true
+                }
+                falseDelegate: ArticleListEntry {
+                    isRead: false
+                }
+                value: ref.article.isRead
+            }
             property var data: ref
             onClicked: {
                 if (articleList.currentIndex !== model.index) {

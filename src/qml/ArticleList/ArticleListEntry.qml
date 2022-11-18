@@ -10,10 +10,11 @@ import org.kde.kirigami 2.7 as Kirigami
 
 ColumnLayout {
     id: root
-    property color textColor: parent.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor;
+    property bool isRead: false
+    property color textColor: highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor;
 
     spacing: 5
-    implicitHeight: headlineText.height + details.height + spacing
+    height: headlineText.height + details.height + spacing
 
     Label {
         id: headlineText
@@ -25,7 +26,7 @@ ColumnLayout {
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
         font {
-            weight: ref.article.isRead ? Font.ExtraLight : Font.Bold
+            weight: isRead ? Font.ExtraLight : Font.Bold
             pointSize: Kirigami.Theme.defaultFont.pointSize
         }
         color: textColor

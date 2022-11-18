@@ -18,6 +18,7 @@
 #endif
 
 #include "articlelistmodel.h"
+#include "basetoggleitem.h"
 #include "contentimageitem.h"
 #include "contentmodel.h"
 #include "context.h"
@@ -66,6 +67,7 @@ static void registerQmlTypes()
     qmlRegisterType<FeedCore::ProvisionalFeed>("com.rocksandpaper.syndic", 1, 0, "ProvisionalFeed");
     qmlRegisterType<ContentModel>("com.rocksandpaper.syndic", 1, 0, "ContentModel");
     qmlRegisterType<ContentImageItem>("com.rocksandpaper.syndic", 1, 0, "ContentImage");
+    qmlRegisterType<BaseToggleItem>("com.rocksandpaper.syndic.templates", 1, 0, "ToggleItem");
     qmlRegisterUncreatableType<FeedCore::Feed::Updater>("com.rocksandpaper.syndic", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<FeedCore::Context>("com.rocksandpaper.syndic", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<FeedCore::Feed>("com.rocksandpaper.syndic", 1, 0, "Feed", "obtained from cpp model");
