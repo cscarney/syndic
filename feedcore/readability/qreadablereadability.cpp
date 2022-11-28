@@ -8,7 +8,9 @@
 #include "readabilityresult.h"
 #include <QDebug>
 #include <QNetworkReply>
+#include <QPointer>
 #include <QString>
+#include <QThread>
 
 #include <qreadable/readable.h>
 
@@ -17,13 +19,13 @@ using namespace FeedCore;
 class QReadableReadability::Result : public ReadabilityResult
 {
     QNetworkReply *m_reply;
-    QReadableReadability *m_readability;
+    QReadableReadability *m_parent;
 
 public:
     Result(QReadableReadability *parent, QNetworkReply *reply)
         : ReadabilityResult(parent)
         , m_reply{reply}
-        , m_readability{parent}
+        , m_parent{parent}
     {
         reply->setParent(this);
         QObject::connect(reply, &QNetworkReply::finished, this, &Result::onNetworkReplyFinished);
@@ -31,21 +33,55 @@ public:
 
     void onNetworkReplyFinished()
     {
-        deleteLater();
         if (m_reply->error() != QNetworkReply::NoError) {
             emit error();
+            deleteLater();
             return;
         }
         QByteArray data = m_reply->readAll();
         QString rawHtml(data);
-        QString readableHtml = m_readability->parse(rawHtml, m_reply->url());
+        m_parent->parse(rawHtml, m_reply->url(), this);
+    }
+
+    // NB: Executes on worker thread
+    void onGotReadabilityResult(const QString &readableHtml)
+    {
         emit finished(readableHtml);
+        deleteLater();
+    }
+};
+
+class QReadableReadability::Worker : public QObject
+{
+    QReadable::Readable *m_readable{nullptr};
+
+public:
+    void parse(const QString &rawHtml, const QUrl &url, Result *result)
+    {
+        if (m_readable == nullptr) {
+            m_readable = new QReadable::Readable(this);
+        }
+        QString readableHtml = m_readable->parse(rawHtml, url);
+        QMetaObject::invokeMethod(result, [result, readableHtml] {
+            result->onGotReadabilityResult(readableHtml);
+        });
     }
 };
 
 QReadableReadability::QReadableReadability()
-    : m_readable{new QReadable::Readable(this)}
+    : m_thread{new QThread(this)}
+    , m_worker{new Worker()}
 {
+    m_thread->start();
+    m_thread->setPriority(QThread::LowestPriority);
+    m_worker->moveToThread(m_thread);
+    QObject::connect(m_thread, &QThread::finished, m_worker, &QObject::deleteLater);
+}
+
+QReadableReadability::~QReadableReadability()
+{
+    m_thread->quit();
+    m_thread->wait();
 }
 
 ReadabilityResult *QReadableReadability::fetch(const QUrl &url)
@@ -56,7 +92,9 @@ ReadabilityResult *QReadableReadability::fetch(const QUrl &url)
     return new Result(this, reply);
 }
 
-QString QReadableReadability::parse(const QString &rawHtml, const QUrl &url)
+void QReadableReadability::parse(const QString &rawHtml, const QUrl &url, Result *result)
 {
-    return m_readable->parse(rawHtml, url);
+    QMetaObject::invokeMethod(m_worker, [worker = m_worker, rawHtml, url, result] {
+        worker->parse(rawHtml, url, result);
+    });
 }
