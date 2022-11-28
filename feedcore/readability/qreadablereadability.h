@@ -19,13 +19,15 @@ class QReadableReadability : public Readability
 {
 public:
     QReadableReadability();
-    virtual ~QReadableReadability() = default;
+    virtual ~QReadableReadability();
     ReadabilityResult *fetch(const QUrl &url) override;
 
 private:
-    QReadable::Readable *m_readable{nullptr};
+    class Worker;
     class Result;
-    QString parse(const QString &rawHtml, const QUrl &url);
+    QThread *m_thread{nullptr};
+    Worker *m_worker{nullptr};
+    void parse(const QString &rawHtml, const QUrl &url, Result *result);
 };
 }
 
