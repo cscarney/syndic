@@ -69,6 +69,7 @@ Kirigami.ApplicationWindow {
                 Layout.preferredHeight: drawer.height
                 onCurrentlySelectedFeedChanged:
                     if (currentlySelectedFeed) pushFeed(currentlySelectedFeed)
+
                 onItemClicked: {
                     if (pageStack.items[0] && pageStack.items[0].feedListAction) {
                         pageStack.items[0].feedListAction();
@@ -219,9 +220,13 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    function pushRoot(pageUrl, pageProps) {
+        pageStack.currentIndex = 0;
+        pageStack[pageStack.depth ? "replace" : "push"](pageUrl, pageProps)
+    }
+
     function pushFeed(feed) {
-        pageStack.clear()
-        pageStack.push("qrc:/qml/ArticleList/ArticleListPage.qml",
+        pushRoot("qrc:/qml/ArticleList/ArticleListPage.qml",
                        {pageRow: pageStack,
                            feed: feed})
     }
@@ -229,7 +234,6 @@ Kirigami.ApplicationWindow {
     function pushUtilityPage(pageUrl, pageProps) {
         feedList.currentIndex = -1
         feedList.currentlySelectedFeed = null
-        pageStack.clear()
-        pageStack.push(pageUrl, pageProps)
+        pushRoot(pageUrl, pageProps)
     }
 }
