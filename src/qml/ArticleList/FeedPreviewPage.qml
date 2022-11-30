@@ -24,6 +24,7 @@ AbstractArticleListPage {
                 const provisionalFeed = root.provisionalFeed
                 feedContext.addFeed(provisionalFeed);
                 provisionalFeed.targetFeedChanged.connect(()=>{
+                    pageRow.currentIndex = root.Kirigami.ColumnView.index
                     newFeedCreated(provisionalFeed.targetFeed)
                 });
             }
