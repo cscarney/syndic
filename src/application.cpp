@@ -118,6 +118,7 @@ Application::Application(int &argc, char **argv)
     setApplicationName("syndic");
     setDesktopFileName("com.rocksandpaper.syndic.desktop");
     setApplicationDisplayName(tr("Syndic"));
+    setWindowIcon(QIcon::fromTheme("com.rocksandpaper.syndic"));
 
 #ifdef KF5DBusAddons_FOUND
     d->service = new KDBusService(KDBusService::Unique, this);
