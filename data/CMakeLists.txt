@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 set(icons 
-    icons/sc-apps-syndic.svg
+    icons/sc-apps-com.rocksandpaper.syndic.svg
     icons/sc-status-com.rocksandpaper.syndic.feed-empty.svg)
 message(${icons})
 ecm_install_icons(ICONS ${icons} DESTINATION share/icons THEME hicolor)
