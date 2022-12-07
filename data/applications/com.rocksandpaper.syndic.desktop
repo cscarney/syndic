@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Syndic
 GenericName=News Reader
-Icon=syndic
+Icon=com.rocksandpaper.syndic
 Exec=syndic
 Type=Application
 Categories=Network;News;Feed;

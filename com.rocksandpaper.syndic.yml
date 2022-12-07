@@ -5,7 +5,6 @@ runtime: org.kde.Platform
 runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: syndic
-rename-icon: syndic
 finish-args:
 - --share=network
 - --share=ipc
