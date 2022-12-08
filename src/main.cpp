@@ -10,6 +10,10 @@ using namespace FeedCore;
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_PROCESSOR_ARM_64
+    // HACK readability breaks the arm64 jit, so disable it
+    qputenv("QV4_FORCE_INTERPRETER", "1");
+#endif
     Application app(argc, argv);
 
 #ifdef ANDROID
