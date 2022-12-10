@@ -93,6 +93,7 @@ if (ANDROID)
         window-close-symbolic
         tools-report-bug
         dialog-cancel
+        view-readermode
         )
 endif()
 
