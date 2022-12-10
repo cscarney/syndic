@@ -66,6 +66,7 @@ Kirigami.Page {
 
             Kirigami.Action {
                 id: readableAction
+                iconName: "view-readermode"
                 text: qsTr("Show Web Content");
                 checkable: true
                 checked: defaultReadable
