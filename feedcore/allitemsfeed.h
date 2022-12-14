@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_ALLITEMSFEED_H
-#define FEEDCORE_ALLITEMSFEED_H
+#pragma once
 #include "feed.h"
 #include <QSet>
 
@@ -35,5 +34,3 @@ private:
     void onFeedDestroyed(FeedCore::Feed *sender);
 };
 }
-
-#endif // FEEDCORE_ALLITEMSFEED_H

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef QMLREF_H
-#define QMLREF_H
+#pragma once
 #include <QQmlEngine>
 #include <QSharedPointer>
 
@@ -69,5 +68,3 @@ public:
 private:
     QSharedPointer<T> m_ref;
 };
-
-#endif // QMLREF_H

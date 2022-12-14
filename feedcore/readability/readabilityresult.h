@@ -2,8 +2,7 @@
  * SPDX-FileCopyrightText: 2022 Connor Carney <hello@connorcarney.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-#ifndef FEEDCORE_READABILITYRESULT_H
-#define FEEDCORE_READABILITYRESULT_H
+#pragma once
 #include <QObject>
 
 namespace FeedCore
@@ -20,5 +19,3 @@ signals:
     void error();
 };
 }
-
-#endif // FEEDCORE_READABILITYRESULT_H

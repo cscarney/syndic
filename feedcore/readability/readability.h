@@ -2,8 +2,7 @@
  * SPDX-FileCopyrightText: 2022 Connor Carney <hello@connorcarney.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-#ifndef FEEDCORE_READABILITY_H
-#define FEEDCORE_READABILITY_H
+#pragma once
 
 #include <QObject>
 
@@ -21,5 +20,3 @@ public:
     virtual ReadabilityResult *fetch(const QUrl &url) = 0;
 };
 }
-
-#endif

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_FUTURE_H
-#define FEEDCORE_FUTURE_H
+#pragma once
 #include "articleref.h"
 #include <QObject>
 #include <QTimer>
@@ -65,4 +64,3 @@ private:
     QVector<T> m_result;
 };
 }
-#endif // FEEDCORE_FUTURE_H

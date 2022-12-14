@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_SCHEDULER_H
-#define FEEDCORE_SCHEDULER_H
+#pragma once
 #include "feed.h"
 #include "future.h"
 #include <QDateTime>
@@ -70,4 +69,3 @@ private:
     void onNetworkStateChanged();
 };
 }
-#endif // FEEDCORE_SCHEDULER_H

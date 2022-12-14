@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_FEED_H
-#define FEEDCORE_FEED_H
+#pragma once
 #include "future.h"
 #include <QDateTime>
 #include <QObject>
@@ -303,4 +302,3 @@ private:
 typedef Feed::LoadStatus LoadStatus;
 
 }
-#endif // FEEDCORE_FEED_H

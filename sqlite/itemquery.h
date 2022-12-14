@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SQLITE_ITEMQUERY_H
-#define SQLITE_ITEMQUERY_H
+#pragma once
 #include <QDateTime>
 #include <QSqlQuery>
 #include <QUrl>
@@ -62,4 +61,3 @@ public:
     }
 };
 }
-#endif // SQLITE_ITEMQUERY_H

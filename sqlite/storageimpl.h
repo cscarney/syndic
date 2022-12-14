@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SQLITE_STORAGEIMPL_H
-#define SQLITE_STORAGEIMPL_H
+#pragma once
 #include "factory.h"
 #include "feeddatabase.h"
 #include "storage.h"
@@ -60,4 +59,3 @@ private:
     }
 };
 }
-#endif // SQLITE_STORAGEIMPL_H

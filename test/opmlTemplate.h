@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef OPMLTEMPLATE_H
-#define OPMLTEMPLATE_H
+#pragma once
 
 static constexpr const char *testOpmlTemplate = R"(<?xml version="1.0" encoding="UTF-8"?>
 <opml version="1.0">
@@ -19,5 +18,3 @@ static constexpr const char *testOpmlTemplate = R"(<?xml version="1.0" encoding=
     </body>
 </opml>
 )";
-
-#endif // OPMLTEMPLATE_H

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_ARTICLEREF_H
-#define FEEDCORE_ARTICLEREF_H
+#pragma once
 #include <QSharedPointer>
 
 namespace FeedCore
@@ -12,4 +11,3 @@ namespace FeedCore
 class Article;
 typedef QSharedPointer<Article> ArticleRef;
 }
-#endif // FEEDCORE_ARTICLEREF_H
