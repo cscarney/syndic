@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef NOTIFICATIONCONTROLLER_H
-#define NOTIFICATIONCONTROLLER_H
+#pragma once
 
 #include "feed.h"
 #include <QObject>
@@ -34,5 +33,3 @@ private:
     void onArticleAdded(const FeedCore::ArticleRef &article);
     void postNotification() const;
 };
-
-#endif // NOTIFICATIONCONTROLLER_H

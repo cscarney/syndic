@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_GUMBOVISITOR_H
-#define FEEDCORE_GUMBOVISITOR_H
+#pragma once
 #include "gumbo/gumbo.h"
 #include <QString>
 
@@ -54,5 +53,3 @@ private:
     void moveNext();
 };
 }
-
-#endif // FEEDCORE_GUMBOVISITOR_H

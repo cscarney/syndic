@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SQLITE_FEEDIMPL_H
-#define SQLITE_FEEDIMPL_H
+#pragma once
 #include "factory.h"
 #include "updatablefeed.h"
 class QSqlQuery;
@@ -43,4 +42,3 @@ private:
     friend FeedCore::ObjectFactory<qint64, FeedImpl>;
 };
 }
-#endif // SQLITE_FEEDIMPL_H

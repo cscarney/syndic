@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_STORAGE_H
-#define FEEDCORE_STORAGE_H
+#pragma once
 #include "future.h"
 #include <QObject>
 #include <Syndication/Feed>
@@ -27,4 +26,3 @@ public:
     virtual Future<Feed *> *storeFeed(Feed *feed) = 0;
 };
 }
-#endif // FEEDCORE_STORAGE_H

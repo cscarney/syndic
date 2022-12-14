@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDLISTMODEL_H
-#define FEEDLISTMODEL_H
+#pragma once
 #include "articleref.h"
 #include "future.h"
 #include <QAbstractListModel>
@@ -65,5 +64,3 @@ class FeedSortNotifier : public QObject
 signals:
     void feedSortValueChanged(FeedCore::Feed *feed);
 };
-
-#endif // FEEDLISTMODEL_H

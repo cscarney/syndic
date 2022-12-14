@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_CONTEXT_H
-#define FEEDCORE_CONTEXT_H
+#pragma once
 #include "future.h"
 #include <QObject>
 #include <QUrl>
@@ -171,4 +170,3 @@ private:
     void registerFeeds(const QVector<Feed *> &feeds);
 };
 }
-#endif // FEEDCORE_CONTEXT_H

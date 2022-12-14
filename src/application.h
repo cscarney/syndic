@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#pragma once
 #include "cmake-config.h"
 #include <QQmlApplicationEngine>
 #include <memory>
@@ -47,5 +46,3 @@ private:
     void syncExpireAge();
     void startNotifications();
 };
-
-#endif // APPLICATION_H

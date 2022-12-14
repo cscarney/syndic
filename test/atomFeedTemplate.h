@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ATOMFEEDTEMPLATE_H
-#define ATOMFEEDTEMPLATE_H
+#pragma once
 
 static constexpr const char *testAtomFeedTemplate = R"(<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -35,5 +34,3 @@ static constexpr const char *testAtomFeedTemplate = R"(<?xml version="1.0" encod
 
 </feed>
 )";
-
-#endif // ATOMFEEDTEMPLATE_H

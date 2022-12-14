@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef UNREADITEMMODEL_H
-#define UNREADITEMMODEL_H
+#pragma once
+
 #include "articleref.h"
 #include "feed.h"
 #include "future.h"
@@ -98,4 +98,3 @@ private:
     void onStatusChanged();
     class RowRemoveHelper;
 };
-#endif // UNREADITEMMODEL_H
