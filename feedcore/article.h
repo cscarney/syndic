@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_ARTICLE_H
-#define FEEDCORE_ARTICLE_H
+#pragma once
 #include <QDateTime>
 #include <QObject>
 #include <QPointer>
@@ -153,5 +152,3 @@ private:
     bool m_starred{false};
 };
 }
-
-#endif // FEEDCORE_ARTICLE_H

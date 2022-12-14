@@ -4,8 +4,7 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef ANDROIDSTYLEPLUGINFACTORY_H
-#define ANDROIDSTYLEPLUGINFACTORY_H
+#pragma once
 
 #include <Kirigami2/KirigamiPluginFactory>
 
@@ -19,5 +18,3 @@ public:
     explicit AndroidStylePluginFactory(QObject *parent = nullptr);
     Kirigami::PlatformTheme *createPlatformTheme(QObject *parent) override;
 };
-
-#endif

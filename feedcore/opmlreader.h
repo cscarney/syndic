@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_OPMLREADER_H
-#define FEEDCORE_OPMLREADER_H
+#pragma once
 #include <QObject>
 #include <QSet>
 #include <QXmlStreamReader>
@@ -51,5 +50,3 @@ private:
     void foundFeed(const QUrl &xmlUrl, const QString &text, const QString &category);
 };
 }
-
-#endif // FEEDCORE_OPMLREADER_H

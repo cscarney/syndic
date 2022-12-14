@@ -4,8 +4,7 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef ANDROIDSTYLEPLUGINICONLOADER_H
-#define ANDROIDSTYLEPLUGINICONLOADER_H
+#pragma once
 #include <QCache>
 #include <QColor>
 #include <QDir>
@@ -48,5 +47,3 @@ inline uint qHash(const AndroidStylePluginIconLoader::IconQuery &q)
 {
     return qHash(q.name, qHash(q.baseColor, qHash(q.highlightColor)));
 }
-
-#endif // ANDROIDSTYLEPLUGINICONLOADER_H

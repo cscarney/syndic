@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_CACHEDNETWORKACCESSMANAGER_H
-#define FEEDCORE_CACHEDNETWORKACCESSMANAGER_H
+#pragma once
 #include <QNetworkAccessManager>
 #include <memory>
 
@@ -43,5 +42,3 @@ private:
     void onFinished();
 };
 }
-
-#endif // FEEDCORE_CACHEDNETWORKACCESSMANAGER_H

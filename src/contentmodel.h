@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef CONTENTMODEL_H
-#define CONTENTMODEL_H
+#pragma once
 #include "htmlsplitter.h"
 #include <QAbstractListModel>
 #include <memory>
@@ -46,5 +45,3 @@ private:
     QVector<ContentBlock *> m_blocks;
     std::unique_ptr<ParseJob> m_job;
 };
-
-#endif // CONTENTMODEL_H

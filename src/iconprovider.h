@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ICONPROVIDER_H
-#define ICONPROVIDER_H
+#pragma once
 #include <QMutex>
 #include <QQuickAsyncImageProvider>
 
@@ -41,5 +40,3 @@ private:
     QSharedPointer<QNetworkAccessManager> m_nam;
     QHash<QUrl, IconImageEntry *> m_icons;
 };
-
-#endif // ICONPROVIDER_H

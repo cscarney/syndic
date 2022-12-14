@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SQLITE_FEEDDATABASE_H
-#define SQLITE_FEEDDATABASE_H
+#pragma once
 #include "sqlite/feedquery.h"
 #include "sqlite/itemquery.h"
 #include <QDateTime>
@@ -65,5 +64,3 @@ private:
 };
 
 }
-
-#endif // SQLITE_FEEDDATABASE_H

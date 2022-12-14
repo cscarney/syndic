@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef PLATFORMHELPER_H
-#define PLATFORMHELPER_H
+#pragma once
 
 #include <QObject>
 #include <QUrl>
@@ -16,5 +15,3 @@ public:
     explicit PlatformHelper(QObject *parent = nullptr);
     Q_INVOKABLE static void share(const QUrl &url);
 };
-
-#endif // PLATFORMHELPER_H

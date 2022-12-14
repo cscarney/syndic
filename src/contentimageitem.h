@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef CONTENTIMAGEITEM_H
-#define CONTENTIMAGEITEM_H
+#pragma once
 #include <QImage>
 #include <QQuickItem>
 class QNetworkReply;
@@ -48,5 +47,3 @@ private:
     void cancelImageLoad();
     void onImageLoadFinished();
 };
-
-#endif // CONTENTIMAGEITEM_H

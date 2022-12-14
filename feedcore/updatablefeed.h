@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef UPDATABLEFEED_H
-#define UPDATABLEFEED_H
+#pragma once
 #include "feed.h"
 #include <Syndication/Feed>
 #include <Syndication/Item>
@@ -54,5 +53,3 @@ private:
 };
 
 }
-
-#endif // UPDATABLEFEED_H

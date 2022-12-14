@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_STARREDITEMSFEED_H
-#define FEEDCORE_STARREDITEMSFEED_H
+#pragma once
 #include "feed.h"
 namespace FeedCore
 {
@@ -27,5 +26,3 @@ private:
     class StarredUpdater;
 };
 }
-
-#endif // FEEDCORE_STARREDITEMSFEED_H

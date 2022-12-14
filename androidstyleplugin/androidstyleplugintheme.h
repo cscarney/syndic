@@ -4,8 +4,7 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef ANDROIDSTYLEPLUGINTHEME_H
-#define ANDROIDSTYLEPLUGINTHEME_H
+#pragma once
 
 #include <Kirigami2/PlatformTheme>
 
@@ -23,5 +22,3 @@ protected:
 private:
     void updateColors();
 };
-
-#endif

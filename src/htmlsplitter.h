@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef HTMLSPLITTER_H
-#define HTMLSPLITTER_H
+#pragma once
 #include "gumbovisitor.h"
 #include <QObject>
 #include <QUrl>
@@ -89,5 +88,3 @@ private:
     QString m_title;
     friend HtmlSplitter;
 };
-
-#endif // HTMLSPLITTER_H

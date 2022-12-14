@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_PROVISIONALFEED_H
-#define FEEDCORE_PROVISIONALFEED_H
+#pragma once
 #include "factory.h"
 #include "future.h"
 #include "updatablefeed.h"
@@ -95,4 +94,3 @@ private:
     void expire(const QDateTime & /*olderThan*/) final{};
 };
 }
-#endif // FEEDCORE_PROVISIONALFEED_H

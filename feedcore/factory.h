@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FEEDCORE_UNIQUEFACTORY_H
-#define FEEDCORE_UNIQUEFACTORY_H
+#pragma once
 #include <QHash>
 #include <QPointer>
 #include <QWeakPointer>
@@ -43,4 +42,3 @@ template<typename KeyType, typename ValueType>
 using ObjectFactory = Factory<KeyType, ValueType, QPointer<ValueType>, ValueType *>;
 
 }
-#endif // FEEDCORE_UNIQUEFACTORY_H

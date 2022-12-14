@@ -2,8 +2,7 @@
  * SPDX-FileCopyrightText: 2022 Connor Carney <hello@connorcarney.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-#ifndef FEEDCORE_QREADABLEREADABILITY_H
-#define FEEDCORE_QREADABLEREADABILITY_H
+#pragma once
 
 #include "readability.h"
 
@@ -30,5 +29,3 @@ private:
     void parse(const QString &rawHtml, const QUrl &url, Result *result);
 };
 }
-
-#endif

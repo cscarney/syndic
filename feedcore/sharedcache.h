@@ -2,8 +2,7 @@
  * SPDX-FileCopyrightText: 2022 Connor Carney <hello@connorcarney.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-#ifndef FEEDCORE_SHAREDCACHE_H
-#define FEEDCORE_SHAREDCACHE_H
+#pragma once
 
 #include <QAbstractNetworkCache>
 
@@ -32,5 +31,3 @@ public:
 };
 
 }
-
-#endif // SHAREDCACHE_H

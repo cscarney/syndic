@@ -1,5 +1,4 @@
-#ifndef FEEDCORE_FEEDDISCOVERY_H
-#define FEEDCORE_FEEDDISCOVERY_H
+#pragma once
 
 #include "gumbovisitor.h"
 #include <QUrl>
@@ -23,5 +22,3 @@ private:
 };
 
 }
-
-#endif // FEEDCORE_FEEDDISCOVERY_H
