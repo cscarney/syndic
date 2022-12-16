@@ -47,6 +47,11 @@ public:
     {
         m_result << result;
     };
+    void finish()
+    {
+        emit finished();
+        delete this;
+    }
 
     template<typename Callable>
     static Future<T> *yield(QObject *context, Callable call)
@@ -54,8 +59,7 @@ public:
         auto *op = new Future<T>;
         QTimer::singleShot(0, context, [op, call] {
             call(op);
-            emit op->finished();
-            delete op;
+            op->finish();
         });
         return op;
     }

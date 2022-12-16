@@ -58,6 +58,7 @@ add_subdirectory(3rdparty/gumbo)
 add_subdirectory(data)
 add_subdirectory(feedcore)
 add_subdirectory(sqlite)
+add_subdirectory(ttrss)
 add_subdirectory(src)
 
 ecm_install_po_files_as_qm(po)

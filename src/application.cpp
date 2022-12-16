@@ -30,6 +30,7 @@
 #include "qmlarticleref.h"
 #include "settings.h"
 #include "sqlite/storageimpl.h"
+#include "ttrss/storageimpl.h"
 
 struct Application::PrivData {
     FeedCore::Context *context{nullptr};
@@ -52,11 +53,25 @@ static QString filePath(QString const &fileName)
     return appDataDir.filePath(fileName);
 }
 
+static FeedCore::Storage *createStorage()
+{
+    QString storageName = qEnvironmentVariable("SYNDIC_STORAGE");
+    if (storageName == "ttrss") {
+        auto *storage = new TTRSS::StorageImpl();
+        QString endpoint = qEnvironmentVariable("SYNDIC_TTRSS_ENDPOINT");
+        QString username = qEnvironmentVariable("SYNDIC_TTRSS_USERNAME");
+        QString password = qEnvironmentVariable("SYNDIC_TTRSS_PASSWORD");
+        storage->client().configure(QUrl(endpoint), username, password);
+        return storage;
+    }
+    QString dbPath = filePath("feeds.db");
+    return new SqliteStorage::StorageImpl(dbPath);
+}
+
 static FeedCore::Context *createContext(QObject *parent = nullptr)
 {
-    QString dbPath = filePath("feeds.db");
-    auto *fm = new SqliteStorage::StorageImpl(dbPath); // ownership passes to context
-    return new FeedCore::Context(fm, parent);
+    auto *storage = createStorage();
+    return new FeedCore::Context(storage, parent);
 }
 
 static void registerQmlTypes()

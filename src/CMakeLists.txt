@@ -46,6 +46,7 @@ target_link_libraries(syndic
     KF5::ConfigGui
     feedcore
     sqlite
+    ttrss
     htmlparser
     )
 
