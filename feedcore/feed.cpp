@@ -20,7 +20,7 @@ struct Feed::PrivData {
     UpdateMode expireMode{InheritUpdateMode};
     qint64 expireAge{0};
     QDateTime lastUpdate;
-    int flags;
+    int flags{0};
 };
 
 Feed::Feed(QObject *parent)
