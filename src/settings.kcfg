@@ -27,6 +27,9 @@ SPDX-License-Identifier: GPL-3.0-or-later
         <entry name="expireAge" type="Int">
             <default>2592000</default>
         </entry>
+        <entry name="prefetchContent" type="Bool">
+            <default>false</default>
+        </entry>
     </group>
     <group name="MainWindow">
         <entry name="width" type="Int">
