@@ -44,5 +44,6 @@ private:
     void syncAutomaticUpdates();
     void syncDefaultUpdateInterval();
     void syncExpireAge();
+    void syncPrefetchContent();
     void startNotifications();
 };

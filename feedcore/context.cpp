@@ -27,6 +27,7 @@ struct Context::PrivData {
     Scheduler *updateScheduler;
     QNetworkConfigurationManager ncm;
     Readability *readability{nullptr};
+    bool prefetchContent{false};
 
     PrivData(Storage *storage, Context *parent);
     void configureUpdates(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime()) const;
@@ -332,4 +333,17 @@ void Context::registerFeeds(const QVector<Feed *> &feeds)
     }
 }
 
+bool Context::prefetchContent() const
+{
+    return d->prefetchContent;
+}
+
+void Context::setPrefetchContent(bool newPrefetchContent)
+{
+    if (d->prefetchContent == newPrefetchContent) {
+        return;
+    }
+    d->prefetchContent = newPrefetchContent;
+    emit prefetchContentChanged();
+}
 }

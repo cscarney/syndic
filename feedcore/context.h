@@ -46,6 +46,9 @@ class Context : public QObject
      * disables item expiration.  The default is 0.
      */
     Q_PROPERTY(qint64 expireAge READ expireAge WRITE setExpireAge NOTIFY expireAgeChanged)
+
+    Q_PROPERTY(bool prefetchContent READ prefetchContent WRITE setPrefetchContent NOTIFY prefetchContentChanged)
+
 public:
     /**
      *  Create a context from a storage backend.
@@ -142,11 +145,14 @@ public:
     void setDefaultUpdateInterval(qint64 defaultUpdateInterval);
     qint64 expireAge();
     void setExpireAge(qint64 expireAge);
+    bool prefetchContent() const;
+    void setPrefetchContent(bool newPrefetchContent);
 
 signals:
     void defaultUpdateEnabledChanged();
     void defaultUpdateIntervalChanged();
     void expireAgeChanged();
+    void prefetchContentChanged();
 
     /**
      * Emitted when a feed is added to the context.  This may be a newly-created
