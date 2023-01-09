@@ -69,6 +69,26 @@ Kirigami.ScrollablePage {
         }
 
         RowLayout {
+            CheckBox {
+                id: prefetchContent
+                text: qsTr("Download web content for offline viewing")
+                checked: globalSettings.prefetchContent
+                Binding {
+                    target: globalSettings
+                    property: "prefetchContent"
+                    value: prefetchContent.checked
+                }
+            }
+            Button {
+                icon.name: "help-contextual"
+                flat: true
+                ToolTip.text: qsTr("Some web servers may not support this feature.")
+                ToolTip.visible: pressed || hovered
+                ToolTip.delay: pressed ? -1 : Kirigami.Units.toolTipDelay
+            }
+        }
+
+        RowLayout {
             Kirigami.FormData.label: qsTr("Delete old items:")
             CheckBox {
                 id: expireItems

@@ -232,6 +232,9 @@ void Application::bindContextPropertiesToSettings()
     QObject::connect(settings(), &Settings::expireItemsChanged, this, &Application::syncExpireAge);
     QObject::connect(settings(), &Settings::expireAgeChanged, this, &Application::syncExpireAge);
 
+    syncPrefetchContent();
+    QObject::connect(settings(), &Settings::prefetchContentChanged, this, &Application::syncPrefetchContent);
+
     if (d->settings.updateOnStart()) {
         QObject::connect(d->context, &FeedCore::Context::feedListPopulated, d->context, &FeedCore::Context::requestUpdate);
     }
@@ -250,4 +253,9 @@ void Application::syncDefaultUpdateInterval()
 void Application::syncExpireAge()
 {
     d->context->setExpireAge(d->settings.expireItems() ? d->settings.expireAge() : 0);
+}
+
+void Application::syncPrefetchContent()
+{
+    d->context->setPrefetchContent(d->settings.prefetchContent());
 }
