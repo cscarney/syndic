@@ -41,7 +41,7 @@ NotificationController::NotificationController(FeedCore::Context *context, QObje
     d->trayMenu->addAction(tr("Quit", "system tray menu action"), this, [] {
         QCoreApplication::quit();
     });
-    d->trayIcon = new QSystemTrayIcon(QIcon::fromTheme("rss"), this);
+    d->trayIcon = new QSystemTrayIcon(QIcon::fromTheme("com.rocksandpaper.syndic.tray-icon-symbolic"), this);
     d->trayIcon->setContextMenu(d->trayMenu.get());
     QObject::connect(d->trayIcon, &QSystemTrayIcon::activated, this, &NotificationController::activate);
     d->trayIcon->setToolTip(QGuiApplication::applicationDisplayName());
