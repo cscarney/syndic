@@ -19,7 +19,7 @@ jobs:
 
     - name: Setup flatpak-builder
       run: |
-        sudo apt-get -y install flatpak-builder
+        sudo apt-get update && sudo apt-get -y install flatpak-builder
         flatpak remote-add --user flathub https://flathub.org/repo/flathub.flatpakrepo
         flatpak-builder --user --install-deps-from=flathub --install-deps-only . com.rocksandpaper.syndic.yml
 
