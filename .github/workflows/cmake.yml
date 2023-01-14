@@ -22,7 +22,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install Dependencies
-      run: sudo apt-get -y install cmake extra-cmake-modules libkf5config-dev libkf5dbusaddons-dev libkf5syndication-dev qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev qttools5-dev
+      run: sudo apt-get update && sudo apt-get -y install cmake extra-cmake-modules libkf5config-dev libkf5dbusaddons-dev libkf5syndication-dev qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev qttools5-dev
 
     - name: Cache QReadable
       id: cache-qreadable
