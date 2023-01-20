@@ -31,6 +31,7 @@ public:
     FeedCore::Context *context();
     Settings *settings();
     void loadMainWindow();
+    void startBackgroundNotifier();
 
 private:
     struct PrivData;

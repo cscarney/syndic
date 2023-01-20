@@ -5,6 +5,8 @@
 
 #include "application.h"
 #include "cmake-config.h"
+#include <QCommandLineOption>
+#include <QCommandLineParser>
 #include <QQuickStyle>
 using namespace FeedCore;
 
@@ -23,7 +25,17 @@ int main(int argc, char *argv[])
     QQuickStyle::setStyle("org.kde.desktop");
 #endif
 
-    app.loadMainWindow();
+    {
+        QCommandLineParser commandLine;
+        commandLine.addOption(QCommandLineOption("background"));
+        commandLine.process(app);
+
+        if (commandLine.isSet("background")) {
+            app.startBackgroundNotifier();
+        } else {
+            app.loadMainWindow();
+        }
+    }
 
     int result = Application::exec();
     return result;
