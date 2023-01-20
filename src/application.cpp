@@ -165,6 +165,12 @@ void Application::loadMainWindow()
     activateMainWindow();
 }
 
+void Application::startBackgroundNotifier()
+{
+    d->notifier = std::make_unique<NotificationController>(d->context);
+    QObject::connect(d->notifier.get(), &NotificationController::activate, this, &Application::loadMainWindow);
+}
+
 void Application::activateMainWindow()
 {
     const auto rootObjects = d->engine->rootObjects();
@@ -210,8 +216,7 @@ void Application::onLastWindowClosed()
         return;
     }
     unloadEngine();
-    d->notifier = std::make_unique<NotificationController>(d->context);
-    QObject::connect(d->notifier.get(), &NotificationController::activate, this, &Application::loadMainWindow);
+    startBackgroundNotifier();
 #endif
 }
 
