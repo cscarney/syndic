@@ -243,6 +243,10 @@ void Application::bindContextPropertiesToSettings()
     if (d->settings.updateOnStart()) {
         QObject::connect(d->context, &FeedCore::Context::feedListPopulated, d->context, &FeedCore::Context::requestUpdate);
     }
+
+    QObject::connect(settings(), &Settings::runInBackgroundChanged, this, [this] {
+        PlatformHelper::configureBackgroundService(settings()->runInBackground());
+    });
 }
 
 void Application::syncAutomaticUpdates()
