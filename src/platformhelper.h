@@ -14,4 +14,5 @@ class PlatformHelper : public QObject
 public:
     explicit PlatformHelper(QObject *parent = nullptr);
     Q_INVOKABLE static void share(const QUrl &url);
+    static void configureBackgroundService(bool enabled);
 };
