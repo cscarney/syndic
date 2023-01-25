@@ -57,18 +57,18 @@ msgctxt "AbstractFeedEditorPage|"
 msgid "Always load web content"
 msgstr "Webinhalte immer laden"
 
-#: src/qml/AbstractFeedEditorPage.qml:87
+#: src/qml/AbstractFeedEditorPage.qml:86
 msgctxt "AbstractFeedEditorPage|"
 msgid "Fetch updates:"
 msgstr "Abholen Aktualisierungen:"
 
 #. take the value from application settings
-#: src/qml/AbstractFeedEditorPage.qml:89 src/qml/AbstractFeedEditorPage.qml:142
+#: src/qml/AbstractFeedEditorPage.qml:88 src/qml/AbstractFeedEditorPage.qml:141
 msgctxt "AbstractFeedEditorPage|"
 msgid "Use Global Setting"
 msgstr "Globale Einstellung verwenden"
 
-#: src/qml/AbstractFeedEditorPage.qml:113
+#: src/qml/AbstractFeedEditorPage.qml:112
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n minute(s)"
@@ -76,18 +76,18 @@ msgid_plural "%n minute(s)"
 msgstr[0] "%n Minute"
 msgstr[1] "%n Minuten"
 
-#: src/qml/AbstractFeedEditorPage.qml:127
-#: src/qml/AbstractFeedEditorPage.qml:181
+#: src/qml/AbstractFeedEditorPage.qml:126
+#: src/qml/AbstractFeedEditorPage.qml:180
 msgctxt "AbstractFeedEditorPage|"
 msgid "Never"
 msgstr "Niemals"
 
-#: src/qml/AbstractFeedEditorPage.qml:141
+#: src/qml/AbstractFeedEditorPage.qml:140
 msgctxt "AbstractFeedEditorPage|"
 msgid "Delete old items:"
 msgstr "Alte Artikel löschen:"
 
-#: src/qml/AbstractFeedEditorPage.qml:166
+#: src/qml/AbstractFeedEditorPage.qml:165
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n day(s)"
@@ -161,7 +161,7 @@ msgctxt "ArticlePage|"
 msgid "Keep Unread"
 msgstr "Ungelesen lassen"
 
-#: src/qml/ArticlePage.qml:69
+#: src/qml/ArticlePage.qml:70
 msgctxt "ArticlePage|"
 msgid "Show Web Content"
 msgstr "Webinhalte anzeigen"
@@ -242,12 +242,22 @@ msgctxt "SettingsPage|"
 msgid "Run in background"
 msgstr "Im Hintergrund ausführen"
 
-#: src/qml/SettingsPage.qml:72
+#: src/qml/SettingsPage.qml:74
+msgctxt "SettingsPage|"
+msgid "Download web content for offline viewing"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:85
+msgctxt "SettingsPage|"
+msgid "Some web servers may not support this feature."
+msgstr ""
+
+#: src/qml/SettingsPage.qml:92
 msgctxt "SettingsPage|"
 msgid "Delete old items:"
 msgstr "Alte Artikel löschen:"
 
-#: src/qml/SettingsPage.qml:87
+#: src/qml/SettingsPage.qml:107
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n day(s)"
@@ -255,32 +265,32 @@ msgid_plural "%n day(s)"
 msgstr[0] "%n Tag"
 msgstr[1] "%n Tage"
 
-#: src/qml/SettingsPage.qml:99
+#: src/qml/SettingsPage.qml:119
 msgctxt "SettingsPage|"
 msgid "Sort feed list:"
 msgstr "Nachrichtenquellen sortieren:"
 
-#: src/qml/SettingsPage.qml:100
+#: src/qml/SettingsPage.qml:120
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
 msgstr "Alphabetisch"
 
-#: src/qml/SettingsPage.qml:100
+#: src/qml/SettingsPage.qml:120
 msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr "Ungelesen"
 
-#: src/qml/SettingsPage.qml:110
+#: src/qml/SettingsPage.qml:130
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr "OPML-Daten:"
 
-#: src/qml/SettingsPage.qml:113
+#: src/qml/SettingsPage.qml:133
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr "Importieren …"
 
-#: src/qml/SettingsPage.qml:126
+#: src/qml/SettingsPage.qml:146
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "Exportieren …"
@@ -290,17 +300,17 @@ msgctxt "UpdatingPlaceholderPage|"
 msgid "Update in Progress"
 msgstr "Aktualisierung läuft"
 
-#: src/qml/main.qml:89
+#: src/qml/main.qml:90
 msgctxt "main|"
 msgid "Add Content"
 msgstr "Inhalt hinzufügen"
 
-#: src/qml/main.qml:96
+#: src/qml/main.qml:97
 msgctxt "main|"
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: src/qml/main.qml:103
+#: src/qml/main.qml:104
 #, qt-format
 msgctxt "main|"
 msgid "About %1"
