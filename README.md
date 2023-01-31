@@ -13,9 +13,11 @@ Syndic is a simple, responsive feed reader made for casual browsing. It adapts t
 
 If you are looking to build a current, stable version of, you should build from the [v1-series branch](https://github.com/cscarney/syndic/tree/v1-series), or from a [release tag](https://github.com/cscarney/syndic/tags).
 
-Required dependencies are Cmake, ECM, Qt5 (Core, Network, Qml, Quick, QQC2, Sql), KF5 (Syndication, Config, Kirigami). KF5DbusAddons and Qt Widgets are recommended on for desktop builds. Android builds additionally require OpenSSL and Qt AndroidExtras.
+You will need to install [QReadable](https://invent.kde.org/ccarney/qreadable) before building from source. You can build it yourself or install the `qreadable` package from the [Syndic PPA](https://launchpad.net/~cscarney/+archive/ubuntu/syndic).
 
-On Ubuntu/Debian, you can install all of the required dependencies with:
+Other required dependencies are Cmake, ECM, Qt5 (Core, Network, Qml, Quick, QQC2, Sql), KF5 (Syndication, Config, Kirigami). KF5DbusAddons and Qt Widgets are recommended on for desktop builds. Android builds additionally require OpenSSL and Qt AndroidExtras.
+
+On Ubuntu/Debian, you can install these dependencies with:
 
     apt install kirigami-dev cmake extra-cmake-modules libkf5config-dev libkf5dbusaddons-dev libkf5syndication-dev qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev qttools5-dev
 
