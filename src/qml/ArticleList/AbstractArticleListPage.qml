@@ -69,6 +69,7 @@ Kirigami.ScrollablePage {
             width: articleList.width
             text: ref.article.headline
             padding: 10
+            separatorVisible: true
 
             // if we don't override this then AbstractListItem sets the height to 0 when the ListView is hidden,
             // which causes ListView to instantiate a very large number of delegates.
