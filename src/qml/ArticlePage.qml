@@ -6,6 +6,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import QtQuick.Window 2.15
 import org.kde.kirigami 2.14 as Kirigami
 import com.rocksandpaper.syndic 1.0
 
@@ -16,7 +17,6 @@ Kirigami.Page {
     property alias showExpandedByline: articleView.showExpandedByline
     property var nextItem: function() {}
     property var previousItem: function() {}
-    signal suspendAnimations;
     property bool inProgress: false;
     property bool defaultReadable: item.article ? item.article.feed.flags & Feed.UseReadableContentFlag : false
 
@@ -104,7 +104,7 @@ Kirigami.Page {
                 target: swipeView.contentItem
                 function onMovementEnded() {
                     if (previousItemSentinel.SwipeView.isCurrentItem) {
-                        suspendAnimations();
+                        root.Window.window.suspendAnimations();
                         previousItem();
                     }
                 }
@@ -151,7 +151,7 @@ Kirigami.Page {
                 target: swipeView.contentItem
                 function onMovementEnded() {
                     if (nextItemSentinel.SwipeView.isCurrentItem) {
-                        suspendAnimations();
+                        root.Window.window.suspendAnimations();
                         nextItem();
                     }
                 }
@@ -186,18 +186,18 @@ Kirigami.Page {
             if (!scroller.atYEnd) {
                 pageUpDown(0.9);
             } else {
-                suspendAnimations();
+                root.Window.window.suspendAnimations();
                 nextItem();
             }
             break;
 
         case Qt.Key_Left:
-            suspendAnimations();
+            root.Window.window.suspendAnimations();
             previousItem();
             break;
 
         case Qt.Key_Right:
-            suspendAnimations();
+            root.Window.window.suspendAnimations();
             nextItem();
             break;
 

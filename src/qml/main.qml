@@ -195,15 +195,6 @@ Kirigami.ApplicationWindow {
         function onBackRequested(event) {
             priv.goBack(event);
         }
-
-        function onSuspendAnimations() {
-            // emitted by pages to temporarily suspend the page transition animation
-            animationSuspendTimer.start()
-        }
-
-        function onNewFeedCreated(feed) {
-            selectFeed(feed)
-        }
     }
 
     Connections {
@@ -240,5 +231,9 @@ Kirigami.ApplicationWindow {
 
     function selectFeed(feed) {
         feedList.selectFeed(feed);
+    }
+
+    function suspendAnimations() {
+        animationSuspendTimer.start();
     }
 }
