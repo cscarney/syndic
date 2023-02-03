@@ -4,12 +4,12 @@
  */
 
 import com.rocksandpaper.syndic 1.0
+import QtQuick.Window 2.15
 import org.kde.kirigami 2.14 as Kirigami
 
 AbstractArticleListPage {
     id: root
     property ProvisionalFeed provisionalFeed
-    signal newFeedCreated(Feed newFeed)
     automaticOpen: false
     unreadFilter: false
     feed: provisionalFeed
@@ -24,8 +24,10 @@ AbstractArticleListPage {
                 const provisionalFeed = root.provisionalFeed
                 feedContext.addFeed(provisionalFeed);
                 provisionalFeed.targetFeedChanged.connect(()=>{
-                    pageRow.currentIndex = root.Kirigami.ColumnView.index
-                    newFeedCreated(provisionalFeed.targetFeed)
+                    const w = root.Window.window;
+                    if (w && w.selectFeed) {
+                        w.selectFeed(provisionalFeed.targetFeed);
+                    }
                 });
             }
         }
