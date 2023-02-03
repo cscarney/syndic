@@ -13,6 +13,7 @@ Kirigami.Page {
     id: root
     property alias item: articleView.item
     property alias isReadable: readableAction.checked
+    property alias showExpandedByline: articleView.showExpandedByline
     property var nextItem: function() {}
     property var previousItem: function() {}
     signal suspendAnimations;

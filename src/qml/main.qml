@@ -168,7 +168,7 @@ Kirigami.ApplicationWindow {
         }
 
         function onNewFeedCreated(feed) {
-            feedList.selectFeed(feed)
+            selectFeed(feed)
         }
     }
 
@@ -235,5 +235,9 @@ Kirigami.ApplicationWindow {
         feedList.currentIndex = -1
         feedList.currentlySelectedFeed = null
         pushRoot(pageUrl, pageProps)
+    }
+
+    function selectFeed(feed) {
+        feedList.selectFeed(feed);
     }
 }
