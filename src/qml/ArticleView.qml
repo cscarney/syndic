@@ -6,6 +6,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import QtQuick.Window 2.15
 import org.kde.kirigami 2.7 as Kirigami
 import com.rocksandpaper.syndic 1.0
 
@@ -14,6 +15,7 @@ ColumnLayout {
     property var item
     property string text: ""
     property string hoveredLink
+    property bool showExpandedByline: false
 
     readonly property string textStyle: "<style>
     * {
@@ -47,8 +49,9 @@ ColumnLayout {
 
     RowLayout {
         Label {
+            property string expandedByline: item.article.author + ", <a href=\"syndic-feed-link:\">" + item.article.feed.name + "</a>"
             Layout.fillWidth: true
-            text: item.article.author + ", " + item.article.feed.name
+            text: showExpandedByline ? expandedByline : item.article.author
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
@@ -57,6 +60,13 @@ ColumnLayout {
             font {
                 italic: true
                 weight: Font.Light
+            }
+
+            onLinkActivated: (link)=>{
+                const w = Window.window;
+                if (w && w.selectFeed) {
+                    w.selectFeed(item.article.feed);
+                }
             }
         }
 
