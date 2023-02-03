@@ -68,7 +68,7 @@ Kirigami.ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.preferredHeight: drawer.height
                 onCurrentlySelectedFeedChanged:
-                    if (currentlySelectedFeed) pushFeed(currentlySelectedFeed)
+                    if (currentlySelectedFeed) priv.pushFeed(currentlySelectedFeed)
 
                 onItemClicked: {
                     if (pageStack.items[0] && pageStack.items[0].feedListAction) {
@@ -90,21 +90,21 @@ Kirigami.ApplicationWindow {
                 text: qsTr("Add Content")
                 iconName: "list-add"
                 onTriggered: {
-                    pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
+                    priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
                 }
             },
             Kirigami.Action {
                 text: qsTr("Settings")
                 iconName: "settings-configure"
                 onTriggered: {
-                    pushUtilityPage("qrc:/qml/SettingsPage.qml")
+                    priv.pushUtilityPage("qrc:/qml/SettingsPage.qml")
                 }
             },
             Kirigami.Action {
                 text: qsTr("About %1").arg(Qt.application.displayName)
                 iconName: "help-about"
                 onTriggered: {
-                    pushUtilityPage("qrc:/qml/AboutPage.qml")
+                    priv.pushUtilityPage("qrc:/qml/AboutPage.qml")
                 }
             }
         ]
@@ -147,6 +147,40 @@ Kirigami.ApplicationWindow {
         property real feedListProportion: 0.23
         property bool isFirstPage: pageStack.firstVisibleItem === pageStack.items[0]
         property string pageTitle: pageStack.firstVisibleItem ? pageStack.firstVisibleItem.title : ""
+
+        function goBack(event) {
+            // go back to the first non-visible page (rather than the
+            // default back behavior, which just moves the focus
+            // one column to the left)
+            const index = pageStack.firstVisibleItem.Kirigami.ColumnView.index;
+            if (index > 0) {
+                pageStack.currentIndex = index-1;
+                event.accepted = true;
+            } else if (feedList.currentIndex != 0) {
+                // call later b/c goBack might be called more than once
+                // due to the back button hack above.
+                Qt.callLater(()=>{feedList.currentIndex = 0});
+                event.accepted = true
+            }
+        }
+
+        function pushRoot(pageUrl, pageProps) {
+            pageStack.currentIndex = 0;
+            pageStack[pageStack.depth ? "replace" : "push"](pageUrl, pageProps)
+        }
+
+        function pushFeed(feed) {
+            priv.pushRoot("qrc:/qml/ArticleList/ArticleListPage.qml",
+                           {pageRow: pageStack,
+                               feed: feed})
+        }
+
+        function pushUtilityPage(pageUrl, pageProps) {
+            feedList.currentIndex = -1
+            feedList.currentlySelectedFeed = null
+            priv.pushRoot(pageUrl, pageProps)
+        }
+
     }
 
     Timer {
@@ -159,7 +193,7 @@ Kirigami.ApplicationWindow {
         ignoreUnknownSignals: true
 
         function onBackRequested(event) {
-            root.goBack(event);
+            priv.goBack(event);
         }
 
         function onSuspendAnimations() {
@@ -176,7 +210,7 @@ Kirigami.ApplicationWindow {
         target: feedContext
         function onFeedListPopulated(nFeeds) {
             if (nFeeds === 0) {
-                pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
+                priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
             }
         }
     }
@@ -199,42 +233,9 @@ Kirigami.ApplicationWindow {
         // To avoid this, we call goBack again with the key event.
         pageStack.Keys.released.connect(function(event) {
             if (event.key === Qt.Key_Back) {
-                goBack(event);
+                priv.goBack(event);
             }
         });
-    }
-
-    function goBack(event) {
-        // go back to the first non-visible page (rather than the
-        // default back behavior, which just moves the focus
-        // one column to the left)
-        const index = pageStack.firstVisibleItem.Kirigami.ColumnView.index;
-        if (index > 0) {
-            pageStack.currentIndex = index-1;
-            event.accepted = true;
-        } else if (feedList.currentIndex != 0) {
-            // call later b/c goBack might be called more than once
-            // due to the back button hack above.
-            Qt.callLater(()=>{feedList.currentIndex = 0});
-            event.accepted = true
-        }
-    }
-
-    function pushRoot(pageUrl, pageProps) {
-        pageStack.currentIndex = 0;
-        pageStack[pageStack.depth ? "replace" : "push"](pageUrl, pageProps)
-    }
-
-    function pushFeed(feed) {
-        pushRoot("qrc:/qml/ArticleList/ArticleListPage.qml",
-                       {pageRow: pageStack,
-                           feed: feed})
-    }
-
-    function pushUtilityPage(pageUrl, pageProps) {
-        feedList.currentIndex = -1
-        feedList.currentlySelectedFeed = null
-        pushRoot(pageUrl, pageProps)
     }
 
     function selectFeed(feed) {
