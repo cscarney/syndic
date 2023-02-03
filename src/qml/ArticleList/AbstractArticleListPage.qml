@@ -160,7 +160,8 @@ Kirigami.ScrollablePage {
             }
             if (articleList.currentItem) {
                 const data = articleList.currentItem.data
-                root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data, nextItem: nextItem, previousItem: previousItem})
+                const showExpandedByline = (data.article.feed !== root.feed)
+                root.pageRow.push("qrc:/qml/ArticlePage.qml", {item: data, nextItem: nextItem, previousItem: previousItem, showExpandedByline: showExpandedByline})
                 data.article.isRead = true
             } else if (model && automaticOpen) {
                 pushPlaceholder();
