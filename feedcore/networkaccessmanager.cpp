@@ -192,9 +192,6 @@ void NetworkAccessManager::onFinished()
 {
     d->connectionCount--;
     d->startWaiting();
-    if (d->connectionCount == 0) {
-        clearConnectionCache();
-    }
 }
 
 void NetworkAccessManager::PrivData::startWaiting()
