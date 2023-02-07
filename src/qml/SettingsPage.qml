@@ -126,6 +126,18 @@ Kirigami.ScrollablePage {
             }
         }
 
+        ElasticComboBox {
+            id: articleFont
+            Kirigami.FormData.label: qsTr("Article font:")
+            model: ["", ...Qt.fontFamilies()]
+            onEditTextChanged: {
+                globalSettings.bodyFont = editText
+            }
+            Component.onCompleted: {
+                currentIndex = indexOfValue(globalSettings.bodyFont);
+            }
+        }
+
         RowLayout {
             Kirigami.FormData.label: qsTr("OPML Data:")
 
