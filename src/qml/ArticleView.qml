@@ -149,7 +149,7 @@ ColumnLayout {
             textFormat: Text.RichText
             text: textStyle + modelBlock.text
             font.pointSize: Math.max(fontMetrics.font.pointSize + globalSettings.textAdjust, 6)
-            font.family: "serif"
+            font.family: globalSettings.bodyFont || "serif"
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignTop
             wrapMode: Text.Wrap
