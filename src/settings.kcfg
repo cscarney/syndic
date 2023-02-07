@@ -54,5 +54,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
             </choices>
             <default>UnreadCount</default>
         </entry>
+        <entry name="bodyFont" type="String">
+            <default></default>
+        </entry>
     </group>
 </kcfg>
