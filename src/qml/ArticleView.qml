@@ -149,7 +149,7 @@ ColumnLayout {
             textFormat: Text.RichText
             text: textStyle + modelBlock.text
             font.pointSize: Math.max(fontMetrics.font.pointSize + globalSettings.textAdjust, 6)
-            font.family: globalSettings.bodyFont || "serif"
+            font.family: globalSettings.bodyFont || Kirigami.Theme.defaultFont.family
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignTop
             wrapMode: Text.Wrap

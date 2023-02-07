@@ -129,12 +129,20 @@ Kirigami.ScrollablePage {
         ElasticComboBox {
             id: articleFont
             Kirigami.FormData.label: qsTr("Article font:")
-            model: ["", ...Qt.fontFamilies()]
-            onEditTextChanged: {
-                globalSettings.bodyFont = editText
+            model: [qsTr("Use system font", "entry in font list"), "serif", ...Qt.fontFamilies()]
+            onActivated: {
+                if (currentIndex == 0) {
+                    globalSettings.bodyFont = "";
+                } else {
+                    globalSettings.bodyFont = currentText
+                }
             }
             Component.onCompleted: {
-                currentIndex = indexOfValue(globalSettings.bodyFont);
+                if (!globalSettings.bodyFont) {
+                    currentIndex = 0;
+                } else {
+                    currentIndex = find(globalSettings.bodyFont);
+                }
             }
         }
 
