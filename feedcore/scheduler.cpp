@@ -133,7 +133,7 @@ void Scheduler::reschedule(Feed *feed, const QDateTime &timestamp)
         return;
     }
     if (isRunning() && needsUpdate(feed, timestamp)) {
-        feed->updater()->start();
+        feed->updater()->start(timestamp);
     } else {
         insertIntoSchedule(d->schedule, feed);
     }

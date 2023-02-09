@@ -64,7 +64,7 @@ private slots:
         const int updateInterval = 5;
         staleFeed.setLastUpdate(lastUpdate);
         staleFeed.setUpdateInterval(updateInterval);
-        QDateTime timestamp = QDateTime::currentDateTime();
+        QDateTime timestamp = QDateTime::currentDateTime().addSecs(-1);
         scheduler->start();
         scheduler->schedule(&staleFeed, timestamp);
         QVERIFY(staleFeed.status() == FeedCore::Feed::Updating);
