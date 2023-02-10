@@ -74,6 +74,7 @@ if (ANDROID)
         list-add
         settings-configure
         help-about
+        help-contextual
         feed-subscribe
         content-loading-symbolic
         dialog-error-symbolic
