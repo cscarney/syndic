@@ -61,6 +61,11 @@ void ContentImageItem::setSource(const QUrl &src)
     emit sourceChanged(m_src);
 }
 
+ContentImageItem::LoadStatus ContentImageItem::loadStatus()
+{
+    return m_loadStatus;
+}
+
 void ContentImageItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
@@ -101,15 +106,21 @@ void ContentImageItem::onImageLoadFinished()
     reply->deleteLater();
     QNetworkReply::NetworkError error = reply->error();
     if (error == QNetworkReply::OperationCanceledError) {
-        return;
-    } else if (error != QNetworkReply::NoError) {
-        qDebug() << "image download failed:" << reply->url() << reply->errorString();
+        setLoadStatus(Cancelled);
         return;
     }
+
+    if (error != QNetworkReply::NoError) {
+        qDebug() << "image download failed:" << reply->url() << reply->errorString();
+        setLoadStatus(Error);
+        return;
+    }
+
     QByteArray arr = reply->readAll();
     QBuffer buffer(&arr);
     if (!m_image.load(&buffer, nullptr)) {
         qDebug() << "invalid image:" << reply->url();
+        setLoadStatus(Error);
         return;
     }
     setFlag(QQuickItem::ItemHasContents, true);
@@ -117,4 +128,14 @@ void ContentImageItem::onImageLoadFinished()
     setImplicitHeight(m_image.height());
     m_needsUpdate = true;
     polish();
+    setLoadStatus(Complete);
+}
+
+void ContentImageItem::setLoadStatus(LoadStatus v)
+{
+    if (m_loadStatus == v) {
+        return;
+    }
+    m_loadStatus = v;
+    emit loadStatusChanged();
 }

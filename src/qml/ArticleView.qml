@@ -118,16 +118,51 @@ ColumnLayout {
 
     Component {
         id: imageBlockComponent
-        ContentImage {
+
+        Item {
             property string href: modelBlock.resolvedHref(root.item.article.url);
-            property real scaleToFit: Math.min(root.width, implicitWidth) / implicitWidth
-            source: modelBlock.resolvedSrc(root.item.article.url);
-            Layout.preferredWidth: implicitWidth * scaleToFit
-            Layout.preferredHeight: implicitHeight * scaleToFit
+            property real scaleToFit: Math.min(root.width, image.implicitWidth) / image.implicitWidth
+
+            Layout.preferredWidth: image.loadStatus===ContentImage.Complete ? image.implicitWidth * scaleToFit : Kirigami.Units.iconSizes.small * 4
+            Layout.preferredHeight: image.loadStatus===ContentImage.Complete ? image.implicitHeight * scaleToFit : Kirigami.Units.iconSizes.small * 3
             Layout.alignment: Qt.AlignHCenter
             ToolTip.text: modelBlock.title || ""
             ToolTip.visible: (ToolTip.text != "") && (imageMouse.containsMouse || imageMouse.pressed)
             ToolTip.delay: Kirigami.Units.toolTipDelay
+            ContentImage {
+                id: image
+                anchors.fill: parent
+                source: modelBlock.resolvedSrc(root.item.article.url);
+                opacity: loadStatus===ContentImage.Complete ? 1 : 0
+
+                Behavior on opacity {
+                    enabled: !longLoadTimer.running
+                    NumberAnimation {
+                        duration: Kirigami.Units.shortDuration
+                        easing.type: Easing.OutCubic
+                    }
+                }
+            }
+
+            Item {
+                id: loadingImagePlaceholder
+                anchors.fill: parent
+                visible: image.loadStatus===ContentImage.Loading || image.loadStatus===ContentImage.Error
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
+                    border.color: Kirigami.Theme.textColor
+                    border.width: 1
+                }
+
+                Kirigami.Icon {
+                    source: image.loadStatus===ContentImage.Loading ? "content-loading-symbolic-nomask" : "dialog-error-symbolic-nomask"
+                    anchors.centerIn: parent
+                    height: Kirigami.Units.iconSizes.small
+                    width: height
+                }
+            }
 
             MouseArea {
                 id: imageMouse
@@ -136,6 +171,30 @@ ColumnLayout {
                 cursorShape: href ? Qt.PointingHandCursor : Qt.ArrowCursor
                 onContainsMouseChanged: root.hoveredLink = containsMouse ? href : null
                 onClicked: Qt.openUrlExternally(href)
+            }
+
+            /* Don't animate in the image if it loads quickly enough to
+                be percieved as part of the page loading event */
+            Timer {
+                id: longLoadTimer
+                interval: 250
+                running: true
+            }
+
+            Behavior on Layout.preferredHeight {
+                enabled: !longLoadTimer.running
+                NumberAnimation {
+                    duration: Kirigami.Units.shortDuration
+                    easing.type: Easing.OutCubic
+                }
+            }
+
+            Behavior on Layout.preferredWidth {
+                enabled: !longLoadTimer.running
+                NumberAnimation {
+                    duration: Kirigami.Units.shortDuration
+                    easing.type: Easing.OutCubic
+                }
             }
         }
     }
