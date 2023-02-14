@@ -120,11 +120,12 @@ ColumnLayout {
         id: imageBlockComponent
 
         Item {
+            id: imageBlock
             property string href: modelBlock.resolvedHref(root.item.article.url);
             property real scaleToFit: Math.min(root.width, image.implicitWidth) / image.implicitWidth
 
-            Layout.preferredWidth: image.loadStatus===ContentImage.Complete ? image.implicitWidth * scaleToFit : Kirigami.Units.iconSizes.small * 4
-            Layout.preferredHeight: image.loadStatus===ContentImage.Complete ? image.implicitHeight * scaleToFit : Kirigami.Units.iconSizes.small * 3
+            Layout.preferredWidth: Kirigami.Units.iconSizes.small * 4
+            Layout.preferredHeight: Kirigami.Units.iconSizes.small * 3
             Layout.alignment: Qt.AlignHCenter
             ToolTip.text: modelBlock.title || ""
             ToolTip.visible: (ToolTip.text != "") && (imageMouse.containsMouse || imageMouse.pressed)
@@ -133,21 +134,12 @@ ColumnLayout {
                 id: image
                 anchors.fill: parent
                 source: modelBlock.resolvedSrc(root.item.article.url);
-                opacity: loadStatus===ContentImage.Complete ? 1 : 0
-
-                Behavior on opacity {
-                    enabled: !longLoadTimer.running
-                    NumberAnimation {
-                        duration: Kirigami.Units.shortDuration
-                        easing.type: Easing.OutCubic
-                    }
-                }
+                opacity: 0
             }
 
             Item {
                 id: loadingImagePlaceholder
                 anchors.fill: parent
-                visible: image.loadStatus===ContentImage.Loading || image.loadStatus===ContentImage.Error
 
                 Rectangle {
                     anchors.fill: parent
@@ -173,29 +165,47 @@ ColumnLayout {
                 onClicked: Qt.openUrlExternally(href)
             }
 
-            /* Don't animate in the image if it loads quickly enough to
-                be percieved as part of the page loading event */
+            /* Skip the load transition if the image loads quickly enough
+               to be percieved as part of the page loading. */
             Timer {
                 id: longLoadTimer
                 interval: 250
                 running: true
             }
 
-            Behavior on Layout.preferredHeight {
-                enabled: !longLoadTimer.running
-                NumberAnimation {
-                    duration: Kirigami.Units.shortDuration
-                    easing.type: Easing.OutCubic
+            states: [
+                State {
+                    name: "imageLoaded"
+                    when: image.loadStatus===ContentImage.Complete
+                    PropertyChanges {
+                        target: imageBlock
+                        Layout.preferredWidth: image.implicitWidth * scaleToFit
+                        Layout.preferredHeight: image.implicitHeight * scaleToFit
+                    }
+                    PropertyChanges {
+                        target: image
+                        opacity: 1
+                    }
+                    PropertyChanges {
+                        target: loadingImagePlaceholder
+                        visible: false
+                    }
                 }
-            }
 
-            Behavior on Layout.preferredWidth {
-                enabled: !longLoadTimer.running
-                NumberAnimation {
-                    duration: Kirigami.Units.shortDuration
-                    easing.type: Easing.OutCubic
+            ]
+
+            transitions: [
+                Transition {
+                    to: "imageLoaded"
+                    enabled: !longLoadTimer.running
+                    NumberAnimation {
+                        properties: "Layout.preferredWidth,Layout.preferredHeight,opacity"
+                        duration: Kirigami.Units.shortDuration
+                        easing.type: Easing.OutCubic
+                    }
                 }
-            }
+
+            ]
         }
     }
 
