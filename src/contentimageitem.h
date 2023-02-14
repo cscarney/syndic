@@ -23,15 +23,25 @@ class ContentImageItem : public QQuickItem
      * The url to load the image from
      */
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+
+    /**
+     * Whether the image has loaded sucessfully
+     */
+    Q_PROPERTY(ContentImageItem::LoadStatus loadStatus READ loadStatus NOTIFY loadStatusChanged)
 public:
+    enum LoadStatus { Loading, Complete, Cancelled, Error };
+    Q_ENUM(LoadStatus);
+
     explicit ContentImageItem(QQuickItem *parent = nullptr);
     ~ContentImageItem();
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *data) override;
     QUrl source() const;
     void setSource(const QUrl &src);
+    LoadStatus loadStatus();
 
 signals:
     void sourceChanged(QUrl src);
+    void loadStatusChanged();
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
@@ -42,8 +52,10 @@ private:
     QImage m_image;
     bool m_needsUpdate{false};
     QNetworkReply *m_reply{nullptr};
+    LoadStatus m_loadStatus{Loading};
 
     void beginImageLoad();
     void cancelImageLoad();
     void onImageLoadFinished();
+    void setLoadStatus(LoadStatus v);
 };
