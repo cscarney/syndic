@@ -169,7 +169,7 @@ ColumnLayout {
                to be percieved as part of the page loading. */
             Timer {
                 id: longLoadTimer
-                interval: 250
+                interval: 1000
                 running: true
             }
 
