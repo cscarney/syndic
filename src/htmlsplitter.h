@@ -6,6 +6,7 @@
 #pragma once
 #include "gumbovisitor.h"
 #include <QObject>
+#include <QSize>
 #include <QUrl>
 
 class ContentBlock;
@@ -76,6 +77,7 @@ class ImageBlock : public ContentBlock
 {
     Q_OBJECT
     Q_PROPERTY(QString title MEMBER m_title CONSTANT)
+    Q_PROPERTY(QSize sizeHint MEMBER m_sizeHint CONSTANT)
 public:
     explicit ImageBlock(QString src, QObject *parent = nullptr);
     const QString &delegateName() const override;
@@ -86,5 +88,6 @@ private:
     QString m_src;
     QString m_href;
     QString m_title;
+    QSize m_sizeHint;
     friend HtmlSplitter;
 };
