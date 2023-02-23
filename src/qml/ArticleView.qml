@@ -122,10 +122,13 @@ ColumnLayout {
         Item {
             id: imageBlock
             property string href: modelBlock.resolvedHref(root.item.article.url);
-            property real scaleToFit: Math.min(root.width, image.implicitWidth) / image.implicitWidth
+            property real scaleToFit: Math.min(root.width, implicitWidth) / implicitWidth
 
-            Layout.preferredWidth: Kirigami.Units.iconSizes.small * 4
-            Layout.preferredHeight: Kirigami.Units.iconSizes.small * 3
+            implicitWidth: modelBlock.sizeHint.width || Kirigami.Units.iconSizes.small * 4
+            implicitHeight: modelBlock.sizeHint.height || (modelBlock.sizeHint.width ? modelBlock.sizeHint.width * 0.6 : Kirigami.Units.iconSizes.small * 3)
+
+            Layout.preferredWidth: implicitWidth * scaleToFit
+            Layout.preferredHeight: implicitHeight * scaleToFit
             Layout.alignment: Qt.AlignHCenter
             ToolTip.text: modelBlock.title || ""
             ToolTip.visible: (ToolTip.text != "") && (imageMouse.containsMouse || imageMouse.pressed)
@@ -169,7 +172,7 @@ ColumnLayout {
                to be percieved as part of the page loading. */
             Timer {
                 id: longLoadTimer
-                interval: 1000
+                interval: 250
                 running: true
             }
 
@@ -179,8 +182,8 @@ ColumnLayout {
                     when: image.loadStatus===ContentImage.Complete
                     PropertyChanges {
                         target: imageBlock
-                        Layout.preferredWidth: image.implicitWidth * scaleToFit
-                        Layout.preferredHeight: image.implicitHeight * scaleToFit
+                        implicitWidth: modelBlock.sizeHint.width || image.implicitWidth
+                        implicitHeight: modelBlock.sizeHint.height || (modelBlock.sizeHint.width ? modelBlock.sizeHint.width * (image.implicitHeight/image.implicitWidth) : image.implicitHeight)
                     }
                     PropertyChanges {
                         target: image
@@ -199,7 +202,7 @@ ColumnLayout {
                     to: "imageLoaded"
                     enabled: !longLoadTimer.running
                     NumberAnimation {
-                        properties: "Layout.preferredWidth,Layout.preferredHeight,opacity"
+                        properties: "implicitWidth,implicitHeight,opacity"
                         duration: Kirigami.Units.shortDuration
                         easing.type: Easing.OutCubic
                     }
