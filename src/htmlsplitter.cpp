@@ -168,6 +168,18 @@ void HtmlSplitter::closeTextBlock(GumboNode *currentNode)
     m_currentTextBlock = nullptr;
 }
 
+static QSize getImageSize(GumboElement &el)
+{
+    QSize result{0, 0};
+    if (GumboAttribute *heightAttr = gumbo_get_attribute(&el.attributes, "height")) {
+        result.setHeight(strtol(heightAttr->value, nullptr, 10));
+    }
+    if (GumboAttribute *widthAttr = gumbo_get_attribute(&el.attributes, "width")) {
+        result.setWidth(strtol(widthAttr->value, nullptr, 10));
+    }
+    return result;
+}
+
 void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
 {
     assert(node->type == GUMBO_NODE_ELEMENT);
@@ -178,14 +190,12 @@ void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
     if (srcAttr == nullptr) {
         return;
     }
-    GumboAttribute *heightAttr = gumbo_get_attribute(&element.attributes, "height");
-    if (heightAttr != nullptr) {
-        long int height = strtol(heightAttr->value, nullptr, 10);
-        if (height < heightLimit) {
-            ensureTextBlock();
-            m_currentTextBlock->appendText(tag);
-            return;
-        }
+
+    QSize sizeHint = getImageSize(element);
+    if (auto h = sizeHint.height(); h && h < heightLimit) {
+        ensureTextBlock();
+        m_currentTextBlock->appendText(tag);
+        return;
     }
 
     closeTextBlock(node->parent);
@@ -197,6 +207,7 @@ void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
     if (titleAttr != nullptr) {
         image->m_title = titleAttr->value;
     }
+    image->m_sizeHint = sizeHint;
     m_blocks.push_back(image);
 }
 
