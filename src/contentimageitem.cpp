@@ -26,11 +26,8 @@ ContentImageItem::~ContentImageItem()
 
 QSGNode *ContentImageItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData * /* data */)
 {
-    if (!m_needsUpdate) {
-        return node;
-    }
     auto *imageNode = static_cast<QSGImageNode *>(node);
-    if (imageNode == nullptr) {
+    if (m_needsUpdate) {
         imageNode = window()->createImageNode();
         auto *texture = window()->createTextureFromImage(m_image);
         imageNode->setFiltering(QSGTexture::Linear);
@@ -69,7 +66,6 @@ ContentImageItem::LoadStatus ContentImageItem::loadStatus()
 void ContentImageItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
-    m_needsUpdate = true;
 }
 
 void ContentImageItem::updatePolish()
@@ -126,9 +122,9 @@ void ContentImageItem::onImageLoadFinished()
     setFlag(QQuickItem::ItemHasContents, true);
     setImplicitWidth(m_image.width());
     setImplicitHeight(m_image.height());
-    m_needsUpdate = true;
-    polish();
     setLoadStatus(Complete);
+    m_needsUpdate = true;
+    update();
 }
 
 void ContentImageItem::setLoadStatus(LoadStatus v)
