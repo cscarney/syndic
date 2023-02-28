@@ -72,6 +72,23 @@ public:
     const QSet<Feed *> &getFeeds();
 
     /**
+     * Request a filtered set of feeds matching the given category.
+     *
+     * The resulting set is generated on each call, so the caller should
+     * cache it when possible.
+     */
+    QSet<Feed *> getCategoryFeeds(const QString &category);
+
+    /**
+     * Create a new category feed.
+     *
+     * The caller assumes ownership of the returned object. This function
+     * is primarily meant to be called from QML. From C++, it's preferable
+     * to create a FeedCore::CategoryFeed directly.
+     */
+    Q_INVOKABLE FeedCore::Feed *createCategoryFeed(const QString &category);
+
+    /**
      * Create a new feed in the Context's storage object.
      *
      * The feed supplied to this function will usually be a ProvisionalFeed.  The created

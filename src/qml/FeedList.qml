@@ -109,6 +109,10 @@ ScrollView {
             label: section
             topPadding: padding * 2
             bottomPadding: padding * 2
+            onClicked: {
+                currentIndex = -1
+                root.currentlySelectedFeed = feedContext.createCategoryFeed(section);
+            }
         }
 
         move: Transition {
