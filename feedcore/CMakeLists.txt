@@ -9,7 +9,9 @@ set(feedcore_HEADERS
     future.h
     context.h
     scheduler.h
+    aggregatefeed.h
     allitemsfeed.h
+    categoryfeed.h
     factory.h
     provisionalfeed.h
     networkaccessmanager.h
@@ -30,7 +32,9 @@ set(feedcore_SRCS
     article.cpp
     context.cpp
     scheduler.cpp
+    aggregatefeed.cpp
     allitemsfeed.cpp
+    categoryfeed.cpp
     provisionalfeed.cpp
     networkaccessmanager.cpp
     starreditemsfeed.cpp
