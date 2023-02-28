@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 #include "context.h"
+#include "categoryfeed.h"
 #include "feed.h"
 #include "future.h"
 #include "opmlreader.h"
@@ -87,6 +88,22 @@ void Context::PrivData::configureExpiration(Feed *feed) const
 const QSet<Feed *> &Context::getFeeds()
 {
     return d->feeds;
+}
+
+QSet<Feed *> Context::getCategoryFeeds(const QString &category)
+{
+    QSet<Feed *> result;
+    for (auto *f : std::as_const(d->feeds)) {
+        if (f->category() == category) {
+            result << f;
+        }
+    }
+    return result;
+}
+
+Feed *Context::createCategoryFeed(const QString &category)
+{
+    return new CategoryFeed(this, category);
 }
 
 void Context::addFeed(ProvisionalFeed *feed)
