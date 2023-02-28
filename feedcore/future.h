@@ -54,13 +54,58 @@ public:
         auto *op = new Future<T>;
         QTimer::singleShot(0, context, [op, call] {
             call(op);
-            emit op->finished();
-            delete op;
+            op->finish();
         });
         return op;
     }
 
+protected:
+    void finish()
+    {
+        emit finished();
+        delete this;
+    }
+
 private:
     QVector<T> m_result;
+};
+
+template<typename T>
+class UnionFuture : public Future<T>
+{
+public:
+    void addFuture(Future<T> *f)
+    {
+        m_pending++;
+        QObject::connect(f, &BaseFuture::finished, this, [this, f] {
+            m_pending--;
+            for (auto i : f->result()) {
+                this->appendResult(i);
+            }
+            if (!m_pending) {
+                this->finish();
+            }
+        });
+    }
+
+    template<typename Callable>
+    static UnionFuture<T> *create(Callable call)
+    {
+        auto *op = new UnionFuture<T>;
+        call(op);
+        op->scheduleIfEmpty();
+        return op;
+    }
+
+private:
+    int m_pending{0};
+    UnionFuture() = default;
+
+    void scheduleIfEmpty()
+    {
+        if (!m_pending) {
+            QTimer::singleShot(0, this, &UnionFuture<T>::finish);
+        }
+    }
 };
 }
