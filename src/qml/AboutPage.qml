@@ -15,7 +15,7 @@ Kirigami.AboutPage {
         shortDescription: "Feed Reader",
         homepage: "http://syndic.rocksandpaper.com/ ",
         bugAddress: "https://github.com/cscarney/syndic/issues/new",
-        version: "1.2.1",
+        version: "1.3",
         otherText: "",
         authors: [
             {
