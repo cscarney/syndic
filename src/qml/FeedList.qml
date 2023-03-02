@@ -112,6 +112,7 @@ ScrollView {
             onClicked: {
                 currentIndex = -1
                 root.currentlySelectedFeed = feedContext.createCategoryFeed(section);
+                root.itemClicked();
             }
         }
 
