@@ -20,6 +20,8 @@ set(feedcore_HEADERS
     sharedcache.h
     gumbovisitor.h
     feeddiscovery.h
+    automation/automationengine.h
+    automation/automationrule.h
     readability/readability.h
     readability/readabilityresult.h
     readability/qreadablereadability.h
@@ -41,6 +43,8 @@ set(feedcore_SRCS
     sharedcache.cpp
     gumbovisitor.cpp
     feeddiscovery.cpp
+    automation/automationengine.cpp
+    automation/automationrule.cpp
     readability/qreadablereadability.cpp
     )
     
