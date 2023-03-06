@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 #include "context.h"
+#include "automation/automationengine.h"
 #include "categoryfeed.h"
 #include "feed.h"
 #include "future.h"
@@ -60,6 +61,7 @@ Context::Context(Storage *storage, QObject *parent)
     QObject::connect(getFeeds, &BaseFuture::finished, this, [this, getFeeds] {
         populateFeeds(getFeeds->result());
     });
+    AutomationEngine::fromDefaultConfigFile(this);
     d->updateScheduler->start();
 }
 
