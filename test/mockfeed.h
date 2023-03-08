@@ -1,5 +1,7 @@
 #pragma once
+#include "articleref.h"
 #include "feed.h"
+#include <QVector>
 
 class MockFeed : public FeedCore::Feed
 {
@@ -17,6 +19,7 @@ public:
         using Feed::Updater::Updater;
     };
     Updater m_updater;
+    QVector<FeedCore::ArticleRef> m_articles;
 
     Feed::Updater *updater() override
     {
@@ -25,7 +28,9 @@ public:
 
     FeedCore::Future<FeedCore::ArticleRef> *getArticles(bool /*unreadFilter*/) override
     {
-        Q_UNREACHABLE();
+        return FeedCore::Future<FeedCore::ArticleRef>::yield(this, [this](auto *op) {
+            op->setResult(QVector<FeedCore::ArticleRef>(m_articles));
+        });
     }
 
     MockFeed()

@@ -4,6 +4,7 @@
  */
 
 #pragma once
+#include "articleref.h"
 #include <QDateTime>
 #include <QObject>
 #include <QPointer>
@@ -152,3 +153,5 @@ private:
     bool m_starred{false};
 };
 }
+
+Q_DECLARE_METATYPE(FeedCore::ArticleRef)
