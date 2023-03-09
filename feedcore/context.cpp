@@ -29,11 +29,25 @@ struct Context::PrivData {
     QNetworkConfigurationManager ncm;
     Readability *readability{nullptr};
     bool prefetchContent{false};
+    QWeakPointer<Feed> allItemsFeed{nullptr};
 
     PrivData(Storage *storage, Context *parent);
     void configureUpdates(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime()) const;
     void configureExpiration(Feed *feed) const;
 };
+
+namespace
+{
+class AllItemsFeed : public AggregateFeed
+{
+public:
+    AllItemsFeed(Context *context, QObject *parent = nullptr);
+    Future<ArticleRef> *getArticles(bool unreadFilter) final;
+
+private:
+    Context *m_context{nullptr};
+};
+}
 
 Context::Context(Storage *storage, QObject *parent)
     : QObject(parent)
@@ -88,6 +102,16 @@ void Context::PrivData::configureExpiration(Feed *feed) const
 const QSet<Feed *> &Context::getFeeds()
 {
     return d->feeds;
+}
+
+QSharedPointer<Feed> Context::allItemsFeed()
+{
+    QSharedPointer<Feed> result = d->allItemsFeed;
+    if (!result) {
+        result.reset(new AllItemsFeed(this));
+        d->allItemsFeed = result;
+    }
+    return result;
 }
 
 QSet<Feed *> Context::getCategoryFeeds(const QString &category)
@@ -362,5 +386,20 @@ void Context::setPrefetchContent(bool newPrefetchContent)
     }
     d->prefetchContent = newPrefetchContent;
     emit prefetchContentChanged();
+}
+
+AllItemsFeed::AllItemsFeed(Context *context, QObject *parent)
+    : AggregateFeed(parent)
+    , m_context{context}
+{
+    for (const auto &feed : context->getFeeds()) {
+        addFeed(feed);
+    }
+    QObject::connect(context, &Context::feedAdded, this, &AllItemsFeed::addFeed);
+}
+
+Future<ArticleRef> *AllItemsFeed::getArticles(bool unreadFilter)
+{
+    return m_context->getArticles(unreadFilter);
 }
 }

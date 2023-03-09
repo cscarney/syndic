@@ -4,10 +4,8 @@
  */
 
 #include "feedlistmodel.h"
-#include "allitemsfeed.h"
 #include "context.h"
 #include "iconprovider.h"
-#include "networkaccessmanager.h"
 #include "starreditemsfeed.h"
 #include <QPointer>
 #include <QString>
@@ -97,7 +95,7 @@ class FeedListModel::PrivData
 public:
     FeedListModel *parent;
     Context *context = nullptr;
-    AllItemsFeed *allItems = nullptr;
+    QSharedPointer<Feed> allItems = nullptr;
     StarredItemsFeed *starredItems = nullptr;
     QVector<FeedCore::Feed *> feeds;
     Sort sortMode = Name;
@@ -158,7 +156,8 @@ void FeedListModel::setContext(FeedCore::Context *context)
 {
     d->context = context;
     if (context != nullptr) {
-        d->allItems = new AllItemsFeed(d->context, tr("All Items", "special feed name"), this);
+        d->allItems = d->context->allItemsFeed();
+        d->allItems->setName(tr("All Items", "special feed name"));
         d->starredItems = new StarredItemsFeed(d->context, tr("Starred", "special feed name"), this);
     }
     emit contextChanged();
@@ -183,7 +182,7 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
     FeedCore::Feed *entry{nullptr};
     switch (indexRow) {
     case ALL_ITEMS_IDX:
-        entry = d->allItems;
+        entry = d->allItems.get();
         break;
     case STARRED_ITEMS_IDX:
         entry = d->starredItems;
