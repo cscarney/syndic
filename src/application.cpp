@@ -221,8 +221,8 @@ void Application::onLastWindowClosed()
         quit();
         return;
     }
-    unloadEngine();
     startBackgroundNotifier();
+    unloadEngine();
 #endif
 }
 

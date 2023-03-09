@@ -4,7 +4,6 @@
  */
 
 #include "notificationcontroller.h"
-#include "allitemsfeed.h"
 #include "article.h"
 #include "cmake-config.h"
 #include "context.h"
@@ -19,8 +18,8 @@
 using namespace FeedCore;
 
 struct NotificationController::PrivData {
-    FeedCore::Feed *feed{nullptr};
-    int counter{0};
+  QSharedPointer<Feed> feed{nullptr};
+  int counter{0};
 
 #ifdef HAVE_SYSTEM_TRAY
     std::unique_ptr<QMenu> trayMenu;
@@ -32,9 +31,11 @@ NotificationController::NotificationController(FeedCore::Context *context, QObje
     : QObject(parent)
     , d{std::make_unique<PrivData>()}
 {
-    d->feed = new AllItemsFeed(context, "", this);
-    QObject::connect(d->feed, &Feed::statusChanged, this, &NotificationController::onStatusChanged);
-    QObject::connect(d->feed, &Feed::articleAdded, this, &NotificationController::onArticleAdded);
+    d->feed = context->allItemsFeed();
+    QObject::connect(d->feed.get(), &Feed::statusChanged, this,
+                     &NotificationController::onStatusChanged);
+    QObject::connect(d->feed.get(), &Feed::articleAdded, this,
+                     &NotificationController::onArticleAdded);
 
 #ifdef HAVE_SYSTEM_TRAY
     d->trayMenu = std::make_unique<QMenu>();
