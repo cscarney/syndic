@@ -4,6 +4,7 @@
  */
 
 #pragma once
+#include "aggregatefeed.h"
 #include "future.h"
 #include <QObject>
 #include <QUrl>
@@ -16,6 +17,8 @@ class Storage;
 class Feed;
 class ProvisionalFeed;
 class Readability;
+
+class Context;
 
 /**
  * A Context object represents an entire collection of feeds.
@@ -70,6 +73,16 @@ public:
      * function.
      */
     const QSet<Feed *> &getFeeds();
+
+    /**
+     * Returns a shared instance of AllItemsFeed for this context.
+     *
+     * The resulting instance is created the first time the function
+     * is called and is owned by the context. Using the shared instance
+     * is preferred if you don't need custom settings for the feed
+     * (name, etc.).
+     */
+    QSharedPointer<Feed> allItemsFeed();
 
     /**
      * Request a filtered set of feeds matching the given category.

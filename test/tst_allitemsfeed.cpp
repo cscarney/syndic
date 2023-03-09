@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "allitemsfeed.h"
 #include "context.h"
 #include "mockarticle.h"
 #include "mockstorage.h"
@@ -12,13 +11,11 @@
 #include <QtTest>
 using namespace FeedCore;
 
-constexpr const char *kTestAllItemsFeedName = "test all items feed name";
-
 class testAllItemsFeed : public QObject
 {
     Q_OBJECT
+    QSharedPointer<Feed> m_allItemsFeed;
     QPointer<MockStorage> m_mockStorage;
-    QScopedPointer<AllItemsFeed> m_allItemsFeed;
     QScopedPointer<MockFeed> m_mockFeed1;
     QScopedPointer<MockFeed> m_mockFeed2;
     QScopedPointer<FeedCore::Context> m_context;
@@ -43,7 +40,7 @@ private slots:
         m_mockStorage->m_feeds = {m_mockFeed1.get(), m_mockFeed2.get()};
         m_context.reset(new Context(m_mockStorage));
 
-        m_allItemsFeed.reset(new AllItemsFeed(m_context.get(), kTestAllItemsFeedName));
+        m_allItemsFeed = m_context->allItemsFeed();
 
         QSignalSpy waitForFeedListPopulated(m_context.get(), &Context::feedListPopulated);
         waitForFeedListPopulated.wait();
@@ -52,7 +49,6 @@ private slots:
     void cleanup()
     {
         m_context.reset();
-        m_allItemsFeed.reset();
         m_mockFeed1.reset();
         m_mockFeed2.reset();
     }
