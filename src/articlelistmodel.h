@@ -86,15 +86,17 @@ signals:
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
-    FeedCore::Future<FeedCore::ArticleRef> *getItems();
+
+    template<typename Callback>
+    void getItems(Callback cb);
     void setStatusFromUpstream();
     void setStatus(FeedCore::LoadStatus status);
     void refresh();
     void onItemAdded(const FeedCore::ArticleRef &item);
     void insertAndNotify(int index, const FeedCore::ArticleRef &item);
     void refreshMerge();
-    void onRefreshFinished(FeedCore::Future<FeedCore::ArticleRef> *sender);
-    void onMergeFinished(FeedCore::Future<FeedCore::ArticleRef> *sender);
+    void onRefreshFinished(const QVector<FeedCore::ArticleRef> &result);
+    void onMergeFinished(const QVector<FeedCore::ArticleRef> &result);
     void onStatusChanged();
     class RowRemoveHelper;
 };
