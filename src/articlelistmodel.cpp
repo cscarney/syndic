@@ -112,9 +112,8 @@ LoadStatus ArticleListModel::status()
 void ArticleListModel::refresh()
 {
     setStatus(LoadStatus::Loading);
-    auto *q = getItems();
-    QObject::connect(q, &BaseFuture::finished, this, [this, q] {
-        onRefreshFinished(q);
+    getItems([this](auto result) {
+        onRefreshFinished(result);
     });
 }
 
@@ -149,11 +148,11 @@ void ArticleListModel::componentComplete()
     });
 }
 
-void ArticleListModel::onRefreshFinished(Future<ArticleRef> *sender)
+void ArticleListModel::onRefreshFinished(const QVector<ArticleRef> &result)
 {
     beginResetModel();
     d->items = {};
-    for (const ArticleRef &i : sender->result()) {
+    for (const ArticleRef &i : result) {
         d->items.append(QmlArticleRef(i));
     }
     endResetModel();
@@ -171,11 +170,11 @@ static int indexForItem(const QList<QmlArticleRef> &list, const ArticleRef &item
     return it - list.constBegin();
 }
 
-void ArticleListModel::onMergeFinished(Future<ArticleRef> *sender)
+void ArticleListModel::onMergeFinished(const QVector<ArticleRef> &result)
 {
     auto &items = d->items;
     QSet<Article *> knownItems(items.constBegin(), items.constEnd());
-    for (const auto &item : sender->result()) {
+    for (const auto &item : result) {
         if (!knownItems.contains(item.get())) {
             insertAndNotify(indexForItem(d->items, item), item);
         }
@@ -221,9 +220,8 @@ void ArticleListModel::insertAndNotify(int index, const ArticleRef &item)
 void ArticleListModel::refreshMerge()
 {
     setStatus(Feed::Loading);
-    auto *q = getItems();
-    QObject::connect(q, &BaseFuture::finished, this, [this, q] {
-        onMergeFinished(q);
+    getItems([this](auto result) {
+        onMergeFinished(result);
     });
 }
 
@@ -276,12 +274,19 @@ void ArticleListModel::requestUpdate()
     removeRead();
 }
 
-Future<ArticleRef> *ArticleListModel::getItems()
+template<typename Callback>
+void ArticleListModel::getItems(Callback cb)
 {
-    if (d->feed == nullptr) {
-        return Future<ArticleRef>::yield(this, [](auto /*unused*/) {});
+    if (!d->feed) {
+        cb(QVector<ArticleRef>{});
+        return;
     }
-    return d->feed->getArticles(unreadFilter());
+    Future<ArticleRef> *q = d->feed->getArticles(unreadFilter());
+    QObject::connect(q, &BaseFuture::finished, this, [cb, q] {
+        QVector result = q->result();
+        std::sort(result.begin(), result.end(), &compareDatesDescending);
+        cb(result);
+    });
 }
 
 void ArticleListModel::setStatusFromUpstream()
