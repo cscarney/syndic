@@ -77,17 +77,23 @@ class ImageBlock : public ContentBlock
 {
     Q_OBJECT
     Q_PROPERTY(QString title MEMBER m_title CONSTANT)
-    Q_PROPERTY(QSize sizeHint MEMBER m_sizeHint CONSTANT)
+    Q_PROPERTY(QSize size MEMBER m_size CONSTANT)
+    Q_PROPERTY(QSize sizeGuess READ sizeGuess CONSTANT)
+    Q_PROPERTY(float aspectRatio READ aspectRatio CONSTANT)
+
 public:
     explicit ImageBlock(QString src, QObject *parent = nullptr);
     const QString &delegateName() const override;
     Q_INVOKABLE QString resolvedSrc(const QUrl &base);
     Q_INVOKABLE QString resolvedHref(const QUrl &base);
+    float aspectRatio();
+    QSize sizeGuess();
 
 private:
     QString m_src;
     QString m_href;
     QString m_title;
-    QSize m_sizeHint;
+    QSize m_size{0, 0};
+    QSize m_sizeGuess;
     friend HtmlSplitter;
 };
