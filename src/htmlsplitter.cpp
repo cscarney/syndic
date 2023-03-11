@@ -4,12 +4,15 @@
  */
 
 #include "htmlsplitter.h"
-#include "qdebug.h"
 #include <QRegularExpression>
 #include <cstdlib>
 #include <utility>
 
-static constexpr const int heightLimit = 36;
+/* don't create image blocks for images that are smaller than this; just display them inline with the text */
+static constexpr const int kHeightLimit = 36;
+
+/* parse numeric attributes in base 10 */
+static constexpr const int kNumericAttributeBase = 10;
 
 HtmlSplitter::HtmlSplitter(const QString &input, QObject *blockParent)
     : GumboVisitor(input)
@@ -174,10 +177,10 @@ static QSize getImageSize(GumboElement &el)
 {
     QSize result{0, 0};
     if (GumboAttribute *heightAttr = gumbo_get_attribute(&el.attributes, "height")) {
-        result.setHeight(strtol(heightAttr->value, nullptr, 10));
+        result.setHeight(strtol(heightAttr->value, nullptr, kNumericAttributeBase));
     }
     if (GumboAttribute *widthAttr = gumbo_get_attribute(&el.attributes, "width")) {
-        result.setWidth(strtol(widthAttr->value, nullptr, 10));
+        result.setWidth(strtol(widthAttr->value, nullptr, kNumericAttributeBase));
     }
     return result;
 }
@@ -194,7 +197,7 @@ void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
     }
 
     QSize size = getImageSize(element);
-    if (auto h = size.height(); h && h < heightLimit) {
+    if (auto h = size.height(); h && h < kHeightLimit) {
         ensureTextBlock();
         m_currentTextBlock->appendText(tag);
         return;
@@ -265,9 +268,8 @@ QSize ImageBlock::sizeGuess()
     if (!match.hasMatch()) {
         m_sizeGuess = {0, 0};
     } else {
-        constexpr const int kImageDimensionBase = 10;
-        m_sizeGuess = {static_cast<int>(std::stol(match.captured(1).toLatin1().data(), nullptr, kImageDimensionBase)),
-                       static_cast<int>(std::stol(match.captured(2).toLatin1().data(), nullptr, kImageDimensionBase))};
+        m_sizeGuess = {static_cast<int>(std::stol(match.captured(1).toLatin1().data(), nullptr, kNumericAttributeBase)),
+                       static_cast<int>(std::stol(match.captured(2).toLatin1().data(), nullptr, kNumericAttributeBase))};
     }
     return m_sizeGuess;
 }
