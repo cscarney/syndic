@@ -124,8 +124,8 @@ ColumnLayout {
             property string href: modelBlock.resolvedHref(root.item.article.url);
             property real scaleToFit: Math.min(root.width, implicitWidth) / implicitWidth
 
-            implicitWidth: modelBlock.sizeHint.width || Kirigami.Units.iconSizes.small * 4
-            implicitHeight: modelBlock.sizeHint.height || (modelBlock.sizeHint.width ? modelBlock.sizeHint.width * 0.6 : Kirigami.Units.iconSizes.small * 3)
+            implicitWidth: modelBlock.size.width || modelBlock.sizeGuess.width || Kirigami.Units.iconSizes.small * 4
+            implicitHeight: modelBlock.size.height || (implicitWidth / modelBlock.aspectRatio)
 
             Layout.preferredWidth: implicitWidth * scaleToFit
             Layout.preferredHeight: implicitHeight * scaleToFit
@@ -182,8 +182,8 @@ ColumnLayout {
                     when: image.loadStatus===ContentImage.Complete
                     PropertyChanges {
                         target: imageBlock
-                        implicitWidth: modelBlock.sizeHint.width || image.implicitWidth
-                        implicitHeight: modelBlock.sizeHint.height || (modelBlock.sizeHint.width ? modelBlock.sizeHint.width * (image.implicitHeight/image.implicitWidth) : image.implicitHeight)
+                        implicitWidth: modelBlock.size.width || image.implicitWidth
+                        implicitHeight: modelBlock.size.width ? modelBlock.size.width * (image.implicitHeight/image.implicitWidth) : image.implicitHeight
                     }
                     PropertyChanges {
                         target: image

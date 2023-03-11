@@ -4,6 +4,8 @@
  */
 
 #include "htmlsplitter.h"
+#include "qdebug.h"
+#include <QRegularExpression>
 #include <cstdlib>
 #include <utility>
 
@@ -191,8 +193,8 @@ void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
         return;
     }
 
-    QSize sizeHint = getImageSize(element);
-    if (auto h = sizeHint.height(); h && h < heightLimit) {
+    QSize size = getImageSize(element);
+    if (auto h = size.height(); h && h < heightLimit) {
         ensureTextBlock();
         m_currentTextBlock->appendText(tag);
         return;
@@ -207,7 +209,8 @@ void HtmlSplitter::createImageBlock(GumboNode *node, const QString &tag)
     if (titleAttr != nullptr) {
         image->m_title = titleAttr->value;
     }
-    image->m_sizeHint = sizeHint;
+
+    image->m_size = size;
     m_blocks.push_back(image);
 }
 
@@ -234,6 +237,39 @@ QString ImageBlock::resolvedHref(const QUrl &base)
         return QString();
     }
     return base.resolved(m_href).toString();
+}
+
+float ImageBlock::aspectRatio()
+{
+    if (m_size.height() && m_size.width()) {
+        return m_size.width() / float(m_size.height());
+    }
+
+    if (m_sizeGuess.height() && m_sizeGuess.width()) {
+        return m_sizeGuess.width() / float(m_sizeGuess.height());
+    }
+
+    constexpr const float kDefaultAspectRatio = 5 / 3.0F;
+    return kDefaultAspectRatio;
+}
+
+QSize ImageBlock::sizeGuess()
+{
+    if (m_sizeGuess.isValid()) {
+        return m_sizeGuess;
+    }
+
+    static QRegularExpression extractSize("([1-9]\\d{1,3})x([1-9]\\d{1,3})");
+    QRegularExpressionMatch match;
+    m_src.lastIndexOf(extractSize, -1, &match);
+    if (!match.hasMatch()) {
+        m_sizeGuess = {0, 0};
+    } else {
+        constexpr const int kImageDimensionBase = 10;
+        m_sizeGuess = {static_cast<int>(std::stol(match.captured(1).toLatin1().data(), nullptr, kImageDimensionBase)),
+                       static_cast<int>(std::stol(match.captured(2).toLatin1().data(), nullptr, kImageDimensionBase))};
+    }
+    return m_sizeGuess;
 }
 
 const QString &TextBlock::delegateName() const
