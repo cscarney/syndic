@@ -274,6 +274,14 @@ void ArticleListModel::requestUpdate()
     removeRead();
 }
 
+static void removeReadArticles(QVector<ArticleRef> &v)
+{
+    auto *it = std::remove_if(v.begin(), v.end(), [](const ArticleRef &i) {
+        return i->isRead();
+    });
+    v.erase(it, v.end());
+}
+
 template<typename Callback>
 void ArticleListModel::getItems(Callback cb)
 {
@@ -282,8 +290,11 @@ void ArticleListModel::getItems(Callback cb)
         return;
     }
     Future<ArticleRef> *q = d->feed->getArticles(unreadFilter());
-    QObject::connect(q, &BaseFuture::finished, this, [cb, q] {
+    QObject::connect(q, &BaseFuture::finished, this, [this, cb, q] {
         QVector result = q->result();
+        if (unreadFilter()) {
+            removeReadArticles(result);
+        }
         std::sort(result.begin(), result.end(), &compareDatesDescending);
         cb(result);
     });
