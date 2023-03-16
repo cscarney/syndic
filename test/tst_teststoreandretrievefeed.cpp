@@ -58,10 +58,10 @@ class testStoreAndRetrieveFeed : public QObject
         refreshContext();
     }
 
-    QUrl writeAtomFeedTestXml(const QDateTime &date1, const QDateTime &date2)
+    QUrl writeAtomFeedTestXml(const QString &title1, const QDateTime &date1, const QString &title2, const QDateTime &date2)
     {
         constexpr const char *filename = "testatom.xml";
-        QString content = QString(testAtomFeedTemplate).arg(date1.toString(Qt::ISODate)).arg(date2.toString(Qt::ISODate));
+        QString content = QString(testAtomFeedTemplate).arg(title1, date1.toString(Qt::ISODate), title2, date2.toString(Qt::ISODate));
         QString absolutePath = QFileInfo(filename).absoluteFilePath();
         QFile file(absolutePath);
         if (!file.open(QIODevice::WriteOnly)) {
@@ -70,6 +70,11 @@ class testStoreAndRetrieveFeed : public QObject
         file.write(content.toUtf8());
         file.close();
         return QUrl::fromLocalFile(absolutePath);
+    }
+
+    QUrl writeAtomFeedTestXml(const QDateTime &date1, const QDateTime &date2)
+    {
+        return writeAtomFeedTestXml("Title 1", date1, "Title 2", date2);
     }
 
     QUrl writeOpml()
@@ -105,6 +110,11 @@ class testStoreAndRetrieveFeed : public QObject
             result[feed->url()] = feed;
         }
         return result;
+    }
+
+    static bool dateCompare(const QDateTime &d1, const QDateTime &d2)
+    {
+        return (d1.toSecsSinceEpoch() == d2.toSecsSinceEpoch());
     }
 
 private slots:
@@ -236,11 +246,6 @@ private slots:
         }
     }
 
-    static bool dateCompare(const QDateTime &d1, const QDateTime &d2)
-    {
-        return (d1.toSecsSinceEpoch() == d2.toSecsSinceEpoch());
-    }
-
     void testExistingArticlesUpdatedWhenNewContentStored()
     {
         {
@@ -289,6 +294,45 @@ private slots:
             QVERIFY(feedsByUrl[QUrl("https://feed-3.example/")]->category() == "Category 1");
             QVERIFY(feedsByUrl[QUrl("https://feed-4.example/")]->name() == "Feed 4");
             QVERIFY(feedsByUrl[QUrl("https://feed-4.example/")]->category() == "Category 1");
+        }
+    }
+
+    void testArticleWithNoTitleUsesDate()
+    {
+        QDateTime testDateTime = QDateTime::currentDateTime();
+        {
+            QCoreApplication::processEvents();
+            QUrl feedUrl = writeAtomFeedTestXml("", testDateTime, "", testDateTime);
+            m_feed->setUrl(feedUrl);
+            m_feed->updater()->start();
+            QSignalSpy(m_feed, &FeedCore::Feed::statusChanged).wait();
+            QCoreApplication::processEvents();
+        }
+        {
+            refreshContext();
+            auto articles = getArticles(m_feed);
+            QVERIFY(articles.length() == 2);
+            QLocale currentLocale;
+            QVERIFY(articles[0]->title() == currentLocale.toString(testDateTime.date()));
+        }
+    }
+
+    void testArticleWithNoAuthorUsesFeedName()
+    {
+        {
+            QCoreApplication::processEvents();
+            QUrl feedUrl = writeAtomFeedTestXml(QDateTime::currentDateTime(), QDateTime::currentDateTime());
+            m_feed->setUrl(feedUrl);
+            m_feed->updater()->start();
+            QSignalSpy(m_feed, &FeedCore::Feed::statusChanged).wait();
+            QCoreApplication::processEvents();
+        }
+        {
+            refreshContext();
+            auto articles = getArticles(m_feed);
+            QVERIFY(articles.length() == 2);
+            qDebug() << articles[0]->author() << m_feed->name();
+            QVERIFY(articles[0]->author() == m_feed->name());
         }
     }
 };
