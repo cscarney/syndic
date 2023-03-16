@@ -151,6 +151,8 @@ private:
     QUrl m_url;
     bool m_readStatus{false};
     bool m_starred{false};
+
+    void setDefaultTitle();
 };
 }
 
