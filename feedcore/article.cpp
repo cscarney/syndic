@@ -8,18 +8,24 @@
 #include "feed.h"
 #include "readability/readability.h"
 #include "readability/readabilityresult.h"
+#include <QLocale>
 
 using namespace FeedCore;
 
 Article::Article(Feed *feed, QObject *parent)
     : QObject(parent)
     , m_feed(feed)
+    , m_author(feed->name())
 {
 }
 
 void Article::setTitle(const QString &title)
 {
-    if (m_title != title) {
+    if (title.isEmpty() && m_date.isValid()) {
+        QLocale l;
+        m_title = l.toString(m_date.date());
+        emit titleChanged();
+    } else if (m_title != title) {
         m_title = title;
         emit titleChanged();
     }
@@ -28,7 +34,11 @@ void Article::setTitle(const QString &title)
 void Article::setAuthor(const QString &author)
 {
     if (m_author != author) {
-        m_author = author;
+        if (author.isEmpty()) {
+            m_author = m_feed->name();
+        } else {
+            m_author = author;
+        }
         emit authorChanged();
     }
 }
@@ -38,6 +48,10 @@ void Article::setDate(const QDateTime &date)
     if (m_date != date) {
         m_date = date;
         emit dateChanged();
+
+        if (m_title.isEmpty()) {
+            setTitle(QString());
+        }
     }
 }
 
