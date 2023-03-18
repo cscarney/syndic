@@ -15,12 +15,12 @@ msgctxt "AbstractArticleListPage|"
 msgid "No Items"
 msgstr ""
 
-#: src/qml/ArticleList/AbstractArticleListPage.qml:90
+#: src/qml/ArticleList/AbstractArticleListPage.qml:91
 msgctxt "AbstractArticleListPage|"
 msgid "Couldn't fetch feed from source"
 msgstr ""
 
-#: src/qml/ArticleList/AbstractArticleListPage.qml:96
+#: src/qml/ArticleList/AbstractArticleListPage.qml:97
 msgctxt "AbstractArticleListPage|"
 msgid "Retry"
 msgstr ""
@@ -131,30 +131,35 @@ msgctxt "ArticleListPage|"
 msgid "Cancel"
 msgstr ""
 
-#: src/qml/ArticlePage.qml:34
+#: src/qml/ArticlePage.qml:35
 msgctxt "ArticlePage|"
 msgid "Open"
 msgstr ""
 
-#: src/qml/ArticlePage.qml:42
+#: src/qml/ArticlePage.qml:43
 msgctxt "ArticlePage|"
 msgid "Share"
 msgstr ""
 
-#: src/qml/ArticlePage.qml:49
+#: src/qml/ArticlePage.qml:50
 msgctxt "ArticlePage|"
 msgid "Starred"
 msgstr ""
 
 #. as in, don't mark this article as read
-#: src/qml/ArticlePage.qml:59
+#: src/qml/ArticlePage.qml:60
 msgctxt "ArticlePage|"
 msgid "Keep Unread"
 msgstr ""
 
-#: src/qml/ArticlePage.qml:70
+#: src/qml/ArticlePage.qml:71
 msgctxt "ArticlePage|"
 msgid "Show Web Content"
+msgstr ""
+
+#: src/qml/ArticlePage.qml:79
+msgctxt "ArticlePage|"
+msgid "Reload Web Content"
 msgstr ""
 
 #: src/qml/EditFeedPage.qml:21
@@ -172,12 +177,12 @@ msgctxt "ErrorPlaceholderPage|"
 msgid "Retry"
 msgstr ""
 
-#: src/feedlistmodel.cpp:161
+#: src/feedlistmodel.cpp:160
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
 msgstr ""
 
-#: src/feedlistmodel.cpp:162
+#: src/feedlistmodel.cpp:161
 msgctxt "FeedListModel|special feed name"
 msgid "Starred"
 msgstr ""
@@ -187,12 +192,12 @@ msgctxt "FeedPreviewPage|"
 msgid "Subscribe"
 msgstr ""
 
-#: src/notificationcontroller.cpp:41
+#: src/notificationcontroller.cpp:40
 msgctxt "NotificationController|system tray menu action"
 msgid "Quit"
 msgstr ""
 
-#: src/notificationcontroller.cpp:71
+#: src/notificationcontroller.cpp:70
 #, qt-format
 msgctxt "NotificationController|Notification Text"
 msgid "%1 New Item(s)"
@@ -268,17 +273,27 @@ msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:130
+#: src/qml/SettingsPage.qml:131
+msgctxt "SettingsPage|"
+msgid "Article font:"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:132
+msgctxt "SettingsPage|entry in font list"
+msgid "Use system font"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:150
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:133
+#: src/qml/SettingsPage.qml:153
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:146
+#: src/qml/SettingsPage.qml:166
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr ""
