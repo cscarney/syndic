@@ -118,7 +118,13 @@ Application::Application(int &argc, char **argv)
     setApplicationName("syndic");
     setDesktopFileName("com.rocksandpaper.syndic.desktop");
     setApplicationDisplayName(tr("Syndic"));
+
+#ifdef ANDROID
+    // use the complete file name because the theme isn't loaded yet
+    setWindowIcon(QIcon("assets:/share/icons/hicolor/scalable/apps/com.rocksandpaper.syndic.svg"));
+#else
     setWindowIcon(QIcon::fromTheme("com.rocksandpaper.syndic"));
+#endif
 
 #ifdef KF5DBusAddons_FOUND
     d->service = new KDBusService(KDBusService::Unique, this);
