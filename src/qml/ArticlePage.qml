@@ -72,6 +72,15 @@ Kirigami.Page {
                 checkable: true
                 checked: defaultReadable
                 displayHint: Kirigami.DisplayHint.AlwaysHide
+            },
+
+            Kirigami.Action {
+                id: refreshReadableAction
+                text: qsTr("Reload Web Content")
+                iconName: "view-refresh"
+                visible: isReadable
+                displayHint: Kirigami.DisplayHint.AlwaysHide
+                onTriggered: refreshReadable()
             }
 
         ]
@@ -233,13 +242,18 @@ Kirigami.Page {
         root.isReadableChanged.connect(requestContent)
     }
 
-    function requestContent() {
+    function requestContent(forceReload) {
         root.inProgress = true;
         if (root.isReadable) {
-            item.article.requestReadableContent(feedContext);
+            item.article.requestReadableContent(feedContext, !!forceReload);
         } else {
             item.article.requestContent();
         }
+    }
+
+    function refreshReadable() {
+        articleView.text = "";
+        requestContent(true);
     }
 
     function pxUpDown(increment) {
