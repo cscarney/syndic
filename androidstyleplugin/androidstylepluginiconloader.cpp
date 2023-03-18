@@ -173,7 +173,7 @@ void AndroidStylePluginIconLoader::indexIconDir(QDir &curDir)
             indexIconDir(curDir);
             curDir.cd("..");
         } else if (candidate.suffix() == "svg") {
-            m_iconNameIndex.insert(candidate.baseName(), candidate.absoluteFilePath());
+            m_iconNameIndex.insert(candidate.completeBaseName(), candidate.absoluteFilePath());
         }
     }
 }
