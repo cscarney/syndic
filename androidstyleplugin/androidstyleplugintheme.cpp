@@ -6,7 +6,6 @@
 
 #include "androidstyleplugintheme.h"
 #include "androidstylepluginiconloader.h"
-#include <QAndroidJniEnvironment>
 #include <QAndroidJniObject>
 #include <QCache>
 #include <QGuiApplication>
@@ -38,7 +37,6 @@ struct StyleData {
     QObject *materialHelper{nullptr};
 
     static StyleData *createIfNecessary(QQmlEngine *engine = nullptr);
-    void loadStyle();
 
 private:
     StyleData(QQmlEngine *engine);
@@ -55,32 +53,11 @@ constexpr const float kUnscaledDefaultFontSize = 16;
 constexpr const float kUnscaledSmallFontSize = 14;
 }
 
-extern "C" {
-// TODO remove this once we can handle activity recreation
-void syndic_android_refreshStyle(JNIEnv *, jobject)
-{
-    AndroidStylePluginTheme::refreshInstances();
-}
-}
-
 StyleData::StyleData(QQmlEngine *engine)
 {
     QQmlComponent materialHelperComponent(engine, QUrl("qrc:/qml/materialhelper.qml"));
     materialHelper = materialHelperComponent.create();
-    loadStyle();
 
-    QStringList themePaths = QIcon::themeSearchPaths();
-    themePaths.append("assets:/share/icons");
-    QIcon::setThemeSearchPaths(themePaths);
-
-    QAndroidJniEnvironment env;
-    JNINativeMethod nativeMethod = {"refreshStyle", "()V", (void*)syndic_android_refreshStyle};
-    jclass c = env->FindClass("com/rocksandpaper/syndic/SyndicActivity");
-    env->RegisterNatives(c, &nativeMethod, 1);
-}
-
-void StyleData::loadStyle()
-{
     accentColor = QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_ACCENT);
     QRgb floatingBackgroundColor =
         QAndroidJniObject::callStaticMethod<jint>("com/rocksandpaper/syndic/NativeHelper", "getColor", "(I)I", COLOR_BACKGROUND_FLOATING);
@@ -113,6 +90,10 @@ void StyleData::loadStyle()
     qApp->setFont(font);
     font.setPointSizeF(kUnscaledSmallFontSize * fontScale);
     smallFont = font;
+
+    QStringList themePaths = QIcon::themeSearchPaths();
+    themePaths.append("assets:/share/icons");
+    QIcon::setThemeSearchPaths(themePaths);
 }
 
 StyleData *StyleData::createIfNecessary(QQmlEngine *engine)
@@ -121,21 +102,15 @@ StyleData *StyleData::createIfNecessary(QQmlEngine *engine)
     return styleData;
 }
 
-static QSet<AndroidStylePluginTheme *> themeInstances;
-
 AndroidStylePluginTheme::AndroidStylePluginTheme(QObject *parent)
     : Kirigami::PlatformTheme(parent)
 {
     Q_INIT_RESOURCE(androidstyleplugin);
-    themeInstances.insert(this);
     StyleData::createIfNecessary(qmlEngine(parent));
-    refresh();
+    updateColors();
+    setSmallFont(styleData()->smallFont);
+    setDefaultFont(qGuiApp->font());
     setSupportsIconColoring(true);
-}
-
-AndroidStylePluginTheme::~AndroidStylePluginTheme()
-{
-    themeInstances.remove(this);
 }
 
 QIcon AndroidStylePluginTheme::iconFromTheme(const QString &name, const QColor &customColor)
@@ -144,14 +119,6 @@ QIcon AndroidStylePluginTheme::iconFromTheme(const QString &name, const QColor &
         return styleData()->iconLoader.getIcon({name, textColor().rgba(), highlightedTextColor().rgba()});
     }
     return styleData()->iconLoader.getIcon({name, customColor.rgba(), customColor.rgba()});
-}
-
-void AndroidStylePluginTheme::refreshInstances()
-{
-    styleData()->loadStyle();
-    for(auto *instance : std::as_const(themeInstances)) {
-        instance->refresh();
-    }
 }
 
 bool AndroidStylePluginTheme::event(QEvent *event)
@@ -163,13 +130,6 @@ bool AndroidStylePluginTheme::event(QEvent *event)
         updateColors();
     }
     return PlatformTheme::event(event);
-}
-
-void AndroidStylePluginTheme::refresh()
-{
-    updateColors();
-    setSmallFont(styleData()->smallFont);
-    setDefaultFont(qGuiApp->font());
 }
 
 void AndroidStylePluginTheme::updateColors()
