@@ -5,6 +5,7 @@
 */
 
 #pragma once
+
 #include <Kirigami2/PlatformTheme>
 
 class AndroidStylePluginTheme : public Kirigami::PlatformTheme
@@ -13,14 +14,11 @@ class AndroidStylePluginTheme : public Kirigami::PlatformTheme
 
 public:
     explicit AndroidStylePluginTheme(QObject *parent = nullptr);
-    ~AndroidStylePluginTheme();
     QIcon iconFromTheme(const QString &name, const QColor &customColor = Qt::transparent) override;
-    static void refreshInstances();
 
 protected:
     bool event(QEvent *event) override;
 
 private:
-    void refresh();
     void updateColors();
 };
