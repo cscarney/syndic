@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2023-01-25 21:08+0000\n"
+"PO-Revision-Date: 2023-03-21 00:42+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/syndic/app/es/>\n"
 "Language: es\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.16.2-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
@@ -169,7 +169,7 @@ msgstr "Mostrar contenido web"
 #: src/qml/ArticlePage.qml:79
 msgctxt "ArticlePage|"
 msgid "Reload Web Content"
-msgstr ""
+msgstr "Recargar el contenido de la web"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
@@ -288,12 +288,12 @@ msgstr "Elementos sin leer primero"
 #: src/qml/SettingsPage.qml:131
 msgctxt "SettingsPage|"
 msgid "Article font:"
-msgstr ""
+msgstr "Fuente del artículo:"
 
 #: src/qml/SettingsPage.qml:132
 msgctxt "SettingsPage|entry in font list"
 msgid "Use system font"
-msgstr ""
+msgstr "Utilizar la fuente del sistema"
 
 #: src/qml/SettingsPage.qml:150
 msgctxt "SettingsPage|"
