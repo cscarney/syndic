@@ -1,17 +1,17 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2023-02-06 08:38+0000\n"
+"PO-Revision-Date: 2023-03-25 12:37+0000\n"
 "Last-Translator: Milo Ivir <mail@milotype.de>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/syndic/app/hr/"
-">\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/syndic/app/hr/>"
+"\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.17-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:39
@@ -173,7 +173,7 @@ msgstr "Prikaži web sadržaj"
 #: src/qml/ArticlePage.qml:79
 msgctxt "ArticlePage|"
 msgid "Reload Web Content"
-msgstr ""
+msgstr "Ponovo učitaj web sadržaj"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
@@ -295,12 +295,12 @@ msgstr "Najprije nepročitane"
 #: src/qml/SettingsPage.qml:131
 msgctxt "SettingsPage|"
 msgid "Article font:"
-msgstr ""
+msgstr "Font članka:"
 
 #: src/qml/SettingsPage.qml:132
 msgctxt "SettingsPage|entry in font list"
 msgid "Use system font"
-msgstr ""
+msgstr "Koristi font sustava"
 
 #: src/qml/SettingsPage.qml:150
 msgctxt "SettingsPage|"
