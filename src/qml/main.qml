@@ -114,7 +114,7 @@ Kirigami.ApplicationWindow {
         states: [
             State {
                 name: "portrait"
-                when: width < height
+                when: priv.columnCount===1
                 PropertyChanges {
                     target: priv
                     itemListProportion: 1
@@ -128,7 +128,7 @@ Kirigami.ApplicationWindow {
 
             State {
                 name: "widescreen"
-                when: (!Kirigami.Settings.isMobile) && (width > (height *1.6))
+                when: priv.columnCount===3
                 PropertyChanges {
                     target: priv
                     feedListProportion: 0.15
@@ -143,6 +143,11 @@ Kirigami.ApplicationWindow {
 
     QtObject {
         id: priv
+        property int columnCount: globalSettings.columnCount ? globalSettings.columnCount :
+                                    width < height ? 1 :
+                                    (!Kirigami.Settings.isMobile) && (width > (height * 1.6)) ? 3 : 2
+
+
         property real itemListProportion:  0.38
         property real feedListProportion: 0.23
         property bool isFirstPage: pageStack.firstVisibleItem === pageStack.items[0]
