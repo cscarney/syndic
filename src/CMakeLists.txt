@@ -14,6 +14,7 @@ set(syndic_HEADERS
     contentimageitem.h
     application.h
     networkaccessmanagerfactory.h
+    rowwindowproxymodel.h
     )
 
 set(syndic_SRCS
@@ -27,6 +28,7 @@ set(syndic_SRCS
     platformhelper.cpp
     contentimageitem.cpp
     networkaccessmanagerfactory.cpp
+    rowwindowproxymodel.cpp
     application.cpp
     main.cpp
     resources.qrc
