@@ -46,7 +46,6 @@ ScrollView {
             if (root.isReadable || (type===Article.FeedContent)) {
                 root.inProgress = false;
                 articleView.text = content;
-                console.log("set content to " + content)
             }
         }
     }
