@@ -12,13 +12,14 @@ import com.rocksandpaper.syndic 1.0
 
 Kirigami.Page {
     id: root
-    property alias item: articleView.item
+    property var item
     property alias isReadable: readableAction.checked
-    property alias showExpandedByline: articleView.showExpandedByline
+    property bool showExpandedByline: false
     property var nextItem: function() {}
     property var previousItem: function() {}
     property bool inProgress: false;
     property bool defaultReadable: item.article ? item.article.feed.flags & Feed.UseReadableContentFlag : false
+    property string hoveredLink: swipeView.currentItem ? swipeView.currentItem.hoveredLink || "" : ""
 
     topPadding: 0
     bottomPadding: 0
@@ -86,16 +87,6 @@ Kirigami.Page {
         ]
     }
 
-    Connections {
-        target: item.article
-        function onGotContent(content, type) {
-            if (root.isReadable || (type===Article.FeedContent)) {
-                root.inProgress = false;
-                articleView.text = content;
-            }
-        }
-    }
-
     /* HACK this SwipeView contains sentinel items that will result in the current
       page being unloaded.  It would be better to bind to the ArticleListModel
       to a single instance of ArticlePage and sync the SwipeView with the article
@@ -104,7 +95,6 @@ Kirigami.Page {
         id: swipeView
         clip: true
         anchors.fill: parent
-        currentIndex: 1
         interactive: Kirigami.Settings.hasTransientTouchInput
 
         Item {
@@ -121,36 +111,13 @@ Kirigami.Page {
         }
 
 
-        ScrollView {
-            id: scrollView
-            clip: true
-            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-
-            Flickable {
-                id: scroller
-                anchors.fill: parent
-                Keys.forwardTo: [root]
-
-                contentWidth: root.width - leftMargin - rightMargin
-                contentHeight: articleView.height + bottomMargin + topMargin
-                clip: true
-                flickableDirection: Flickable.AutoFlickIfNeeded
-                topMargin: Kirigami.Units.gridUnit
-                bottomMargin: Kirigami.Units.gridUnit
-                leftMargin: Kirigami.Units.gridUnit * 1.6
-                rightMargin: Kirigami.Units.gridUnit * 1.6
-                ArticleView {
-                    id: articleView
-                    width: scroller.contentWidth
-                }
-
-                Behavior on contentY {
-                    id: animateScroll
-                    NumberAnimation {
-                        duration: Kirigami.Units.shortDuration
-                        easing.type: Easing.OutExpo
-                    }
-                }
+        Repeater {
+            model: 1
+            delegate: ArticlePageSwipeViewItem {
+                item: root.item
+                isReadable: root.isReadable
+                showExpandedByline: root.showExpandedByline
+                Component.onCompleted: swipeView.currentIndex = this.SwipeView.index
             }
         }
 
@@ -170,7 +137,7 @@ Kirigami.Page {
 
     OverlayMessage {
         id: hoveredLinkToolTip
-        text: articleView.hoveredLink
+        text: root.hoveredLink
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
@@ -235,34 +202,5 @@ Kirigami.Page {
             return;
         }
         event.accepted = true
-    }
-
-    Component.onCompleted: {
-        requestContent();
-        root.isReadableChanged.connect(requestContent)
-    }
-
-    function requestContent(forceReload) {
-        root.inProgress = true;
-        if (root.isReadable) {
-            item.article.requestReadableContent(feedContext, !!forceReload);
-        } else {
-            item.article.requestContent();
-        }
-    }
-
-    function refreshReadable() {
-        articleView.text = "";
-        requestContent(true);
-    }
-
-    function pxUpDown(increment) {
-        const topY = scroller.originY - scroller.topMargin;
-        const bottomY = scroller.originY + scroller.contentHeight + scroller.bottomMargin - scroller.height;
-        scroller.contentY = Math.max(topY, Math.min(scroller.contentY + increment, bottomY))
-    }
-
-    function pageUpDown(increment) {
-        pxUpDown(increment * scroller.height)
     }
 }
