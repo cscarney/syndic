@@ -19,7 +19,7 @@ ScrollView {
         anchors.fill: parent
         Keys.forwardTo: [root]
 
-        contentWidth: root.width - leftMargin - rightMargin
+        contentWidth: root.width - leftMargin - rightMargin - 1
         contentHeight: articleView.height + bottomMargin + topMargin
         clip: true
         flickableDirection: Flickable.AutoFlickIfNeeded
