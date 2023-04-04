@@ -23,5 +23,6 @@
         <file>qml/EditFeedPage.qml</file>
         <file>qml/ElasticComboBox.qml</file>
         <file>qml/+org.kde.desktop/ElasticComboBox.qml</file>
+        <file>qml/ArticlePageSwipeViewItem.qml</file>
     </qresource>
 </RCC>

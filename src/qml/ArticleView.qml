@@ -12,7 +12,7 @@ import com.rocksandpaper.syndic 1.0
 
 ColumnLayout {
     id: root
-    property var item
+    required property var item
     property string text: ""
     property string hoveredLink
     property bool showExpandedByline: false
