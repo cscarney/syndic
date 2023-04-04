@@ -20,6 +20,25 @@ Kirigami.ScrollablePage {
     property bool isUpdating: model.status === Feed.Updating
     property bool unreadFilter: true
     property bool automaticOpen: pageRow && (pageRow.defaultColumnWidth * 2 < pageRow.width)
+    property string childPage: {
+        if (articleList.currentItem) {
+            return "qrc:/qml/ArticlePage.qml"
+        } else if (model && automaticOpen) {
+            switch(model.status) {
+            case Feed.Loading:
+                return ""
+            case Feed.Updating:
+                return "qrc:/qml/Placeholders/UpdatingPlaceholderPage.qml";
+            case Feed.Error:
+                return "qrc:/qml/Placeholders/ErrorPlaceholderPage.qml";
+            default:
+                return "qrc:/qml/Placeholders/EmptyFeedPlaceholderPage.qml";
+            }
+        } else {
+            return "";
+        }
+    }
+
     supportsRefreshing: true
     refreshing: isUpdating
 
@@ -39,6 +58,25 @@ Kirigami.ScrollablePage {
         text: unreadFilter ? qsTr("All Read") : qsTr("No Items")
     }
 
+    Timer {
+        id: pageOpenTimer
+        interval: 1
+        onTriggered: {
+            if (!pageRow) {
+                return;
+            }
+            if (pageRow.wideMode) {
+                root.Window.window.suspendAnimations();
+            }
+            pageRow.currentIndex = root.Kirigami.ColumnView.index
+            if (childPage) {
+                root.pageRow.push(childPage, {model: feedItemModel, parentList: articleList, nextItem: nextItem, previousItem: previousItem})
+            } else {
+                root.pageRow.pop(root);
+            }
+        }
+    }
+
     ListView {
         id: articleList
         clip: true
@@ -54,7 +92,6 @@ Kirigami.ScrollablePage {
                if (articleList.currentItem || !automaticOpen) return;
                if ((model.status === Feed.Idle) && (model.rowCount() > 0))
                    articleList.currentIndex = 0;
-               else openChild();
            }
            onRowsAboutToBeRemoved: function(parent, first, last){
                // force currentIndex to be updated before we check to see if it was removed
@@ -81,7 +118,7 @@ Kirigami.ScrollablePage {
                 if (articleList.currentIndex !== model.index) {
                     articleList.currentIndex = model.index
                 } else {
-                    articleList.currentItemChanged()
+                    pageRow.currentIndex = root.Kirigami.ColumnView.index + 1
                 }
             }
         } /*  delegate */
@@ -102,8 +139,6 @@ Kirigami.ScrollablePage {
             ]
         }
 
-        onCurrentItemChanged: openChild();
-
         function pageDownIfNecessary() {
             if (!currentItem) return;
             const pos = currentItem.y + currentItem.height - contentY;
@@ -120,54 +155,12 @@ Kirigami.ScrollablePage {
         }
     }
 
-    onAutomaticOpenChanged: {
-        if (automaticOpen &&  pageRow.lastItem === root) {
-            openChild()
-        }
-    }
+    onChildPageChanged: pageOpenTimer.start()
 
     function clearRead() {
         root.currentIndex = -1
         root.model.removeRead()
         articleList.positionViewAtBeginning()
-    }
-
-    function pushPlaceholder() {
-        switch(model.status) {
-        case Feed.Loading:
-            // just wait for the load...
-            break;
-        case Feed.Updating:
-            root.pageRow.push("qrc:/qml/Placeholders/UpdatingPlaceholderPage.qml");
-            break;
-        case Feed.Error:
-            root.pageRow.push("qrc:/qml/Placeholders/ErrorPlaceholderPage.qml", {model:model});
-            break;
-        default:
-            root.pageRow.push("qrc:/qml/Placeholders/EmptyFeedPlaceholderPage.qml");
-        }
-    }
-
-    function openChild() {
-        if (!pageRow) return;
-
-        // we can get called in the middle of complex property changes, so wait
-        // until everything is in a consistent state before deciding what to open
-        Qt.callLater(()=>{
-            pageRow.currentIndex = Kirigami.ColumnView.index
-            if (pageRow.wideMode) {
-                root.Window.window.suspendAnimations();
-            }
-            if (articleList.currentItem) {
-                const data = articleList.currentItem.data
-                root.pageRow.push("qrc:/qml/ArticlePage.qml", {parentList: articleList, nextItem: nextItem, previousItem: previousItem})
-                data.article.isRead = true
-            } else if (model && automaticOpen) {
-                pushPlaceholder();
-            } else {
-                root.pageRow.pop(root)
-            }
-        })
     }
 
     function nextItem () {

@@ -61,7 +61,7 @@ Kirigami.Page {
                 text: qsTr("Keep Unread")
                 iconName: "mail-mark-unread"
                 checkable: true
-                checked: item ? item.article.isRead : false
+                checked: item ? !item.article.isRead : true
                 enabled: item ? true : false
                 onTriggered: item.article.isRead = !checked
                 displayHint: Kirigami.DisplayHint.AlwaysHide
@@ -116,7 +116,7 @@ Kirigami.Page {
             implicitWidth: swipeView.width || 1
         }
 
-        onMovementEnded: {
+        onCurrentIndexChanged: {
             if (swipeView.currentIndex < parentList.currentIndex) {
                 previousItem();
             } else if (swipeView.currentIndex > parentList.currentIndex) {
@@ -146,6 +146,12 @@ Kirigami.Page {
         running: root.inProgress
     }
 
+
+    onItemChanged: {
+        if (item) {
+            item.article.isRead = true;
+        }
+    }
 
     Keys.onPressed: {
         if (!root.item) {
