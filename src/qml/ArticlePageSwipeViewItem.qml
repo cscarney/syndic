@@ -4,11 +4,12 @@ import org.kde.kirigami 2.14 as Kirigami
 import com.rocksandpaper.syndic 1.0
 
 ScrollView {
-    id: scrollView
+    id: root
+    required property var item
     property alias showExpandedByline: articleView.showExpandedByline
     property alias hoveredLink: articleView.hoveredLink
-    property alias item: articleView.item
-    property bool isReadable: false
+    property bool isReadable: item.article ? item.article.feed.flags & Feed.UseReadableContentFlag : false
+    property bool inProgress: false
 
     clip: true
     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
@@ -28,6 +29,7 @@ ScrollView {
         rightMargin: Kirigami.Units.gridUnit * 1.6
         ArticleView {
             id: articleView
+            item: root.item
             width: scroller.contentWidth
         }
 

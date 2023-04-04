@@ -12,14 +12,12 @@ import com.rocksandpaper.syndic 1.0
 
 Kirigami.Page {
     id: root
-    property var item
-    property alias isReadable: readableAction.checked
-    property bool showExpandedByline: false
+    required property var parentList
     property var nextItem: function() {}
     property var previousItem: function() {}
-    property bool inProgress: false;
-    property bool defaultReadable: item.article ? item.article.feed.flags & Feed.UseReadableContentFlag : false
-    property string hoveredLink: swipeView.currentItem ? swipeView.currentItem.hoveredLink || "" : ""
+    readonly property bool inProgress: swipeView.currentItem ? !!swipeView.currentItem.inProgress : false;
+    readonly property string hoveredLink: swipeView.currentItem ? swipeView.currentItem.hoveredLink || "" : ""
+    readonly property var item: swipeView.currentItem ? swipeView.currentItem.item : null;
 
     topPadding: 0
     bottomPadding: 0
@@ -28,7 +26,7 @@ Kirigami.Page {
     Kirigami.Theme.inherit: false
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Layout.fillWidth: true
-    title:  item.article.title || ""
+    title: item ? item.article.title || "" : ""
     titleDelegate: Item { }
 
     actions {
@@ -44,14 +42,16 @@ Kirigami.Page {
                 text: qsTr("Share")
                 iconName: "emblem-shared-symbolic-nomask"
                 displayHint: Kirigami.DisplayHint.AlwaysHide
+                enabled: !!item
                 onTriggered: platformHelper.share(item.article.url);
             },
 
             Kirigami.Action {
                 text: qsTr("Starred")
                 checkable: true
-                checked: item.article.isStarred
-                onCheckedChanged: item.article.isStarred = checked
+                checked: item ? item.article.isStarred : false
+                enabled: !!item
+                onTriggered: item.article.isStarred = checked
                 iconName: checked ? "starred-symbolic-nomask" : "non-starred-symbolic-nomask"
                 displayHint: Kirigami.DisplayHint.IconOnly
             },
@@ -61,8 +61,9 @@ Kirigami.Page {
                 text: qsTr("Keep Unread")
                 iconName: "mail-mark-unread"
                 checkable: true
-                checked: false
-                onCheckedChanged: item.article.isRead = !checked
+                checked: item ? item.article.isRead : false
+                enabled: item ? true : false
+                onTriggered: item.article.isRead = !checked
                 displayHint: Kirigami.DisplayHint.AlwaysHide
             },
 
@@ -71,68 +72,58 @@ Kirigami.Page {
                 iconName: "view-readermode"
                 text: qsTr("Show Web Content");
                 checkable: true
-                checked: defaultReadable
+                checked: swipeView.currentItem ? swipeView.currentItem.isReadable : false
+                enabled: swipeView.currentItem ? true : false
                 displayHint: Kirigami.DisplayHint.AlwaysHide
+                onTriggered: {
+                    if (swipeView.currentItem) {
+                        swipeView.currentItem.isReadable = !swipeView.currentItem.isReadable;
+                    }
+                }
             },
 
             Kirigami.Action {
                 id: refreshReadableAction
                 text: qsTr("Reload Web Content")
                 iconName: "view-refresh"
-                visible: isReadable
+                visible: swipeView.currentItem && readableAction.checked
                 displayHint: Kirigami.DisplayHint.AlwaysHide
-                onTriggered: refreshReadable()
+                onTriggered: swipeView.currentItem.refreshReadable()
             }
 
         ]
     }
 
-    /* HACK this SwipeView contains sentinel items that will result in the current
-      page being unloaded.  It would be better to bind to the ArticleListModel
-      to a single instance of ArticlePage and sync the SwipeView with the article
-      list. */
-    SwipeView {
+    ListView {
         id: swipeView
         clip: true
         anchors.fill: parent
         interactive: Kirigami.Settings.hasTransientTouchInput
+        orientation: ListView.Horizontal
+        highlightMoveDuration: 0
 
-        Item {
-            id: previousItemSentinel
-            Connections {
-                target: swipeView.contentItem
-                function onMovementEnded() {
-                    if (previousItemSentinel.SwipeView.isCurrentItem) {
-                        root.Window.window.suspendAnimations();
-                        previousItem();
-                    }
-                }
+        model: parentList.model
+        currentIndex: parentList.currentIndex
+        snapMode: ListView.SnapOneItem
+        highlightRangeMode: ListView.StrictlyEnforceRange
+
+        delegate: ArticlePageSwipeViewItem {
+            required property var ref
+            item: ref
+            showExpandedByline: (ref.article.feed !== swipeView.model.feed)
+            Keys.forwardTo: [root]
+            implicitHeight: swipeView.height || 1
+            implicitWidth: swipeView.width || 1
+        }
+
+        onMovementEnded: {
+            if (swipeView.currentIndex < parentList.currentIndex) {
+                previousItem();
+            } else if (swipeView.currentIndex > parentList.currentIndex) {
+                nextItem();
             }
         }
 
-
-        Repeater {
-            model: 1
-            delegate: ArticlePageSwipeViewItem {
-                item: root.item
-                isReadable: root.isReadable
-                showExpandedByline: root.showExpandedByline
-                Component.onCompleted: swipeView.currentIndex = this.SwipeView.index
-            }
-        }
-
-        Item {
-            id: nextItemSentinel
-            Connections {
-                target: swipeView.contentItem
-                function onMovementEnded() {
-                    if (nextItemSentinel.SwipeView.isCurrentItem) {
-                        root.Window.window.suspendAnimations();
-                        nextItem();
-                    }
-                }
-            }
-        }
     }
 
     OverlayMessage {
@@ -157,10 +148,14 @@ Kirigami.Page {
 
 
     Keys.onPressed: {
+        if (!root.item) {
+            return;
+        }
+
         switch (event.key) {
         case Qt.Key_Space:
             if (!scroller.atYEnd) {
-                pageUpDown(0.9);
+                swipeView.currentItem.pageUpDown(0.9);
             } else {
                 root.Window.window.suspendAnimations();
                 nextItem();
@@ -178,19 +173,19 @@ Kirigami.Page {
             break;
 
         case Qt.Key_Up:
-            pxUpDown(Kirigami.Units.gridUnit * -2);
+            swipeView.currentItem.pxUpDown(Kirigami.Units.gridUnit * -2);
             break;
 
         case Qt.Key_Down:
-            pxUpDown(Kirigami.Units.gridUnit * 2);
+            swipeView.currentItem.pxUpDown(Kirigami.Units.gridUnit * 2);
             break;
 
         case Qt.Key_PageUp:
-            pageUpDown(-0.9);
+            swipeView.currentItem.pageUpDown(-0.9);
             break;
 
         case Qt.Key_PageDown:
-            pageUpDown(0.9);
+            swipeView.currentItem.pageUpDown(0.9);
             break;
 
         case Qt.Key_Return:
