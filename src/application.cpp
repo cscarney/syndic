@@ -5,7 +5,6 @@
 
 #include "application.h"
 #include "cmake-config.h"
-#include "rowwindowproxymodel.h"
 #include <QDebug>
 #include <QDir>
 #include <QDirIterator>
@@ -67,7 +66,6 @@ static void registerQmlTypes()
     qmlRegisterType<FeedCore::ProvisionalFeed>("com.rocksandpaper.syndic", 1, 0, "ProvisionalFeed");
     qmlRegisterType<ContentModel>("com.rocksandpaper.syndic", 1, 0, "ContentModel");
     qmlRegisterType<ContentImageItem>("com.rocksandpaper.syndic", 1, 0, "ContentImage");
-    qmlRegisterType<RowWindowProxyModel>("com.rocksandpaper.syndic", 1, 0, "RowWindowProxyModel");
     qmlRegisterUncreatableType<FeedCore::Feed::Updater>("com.rocksandpaper.syndic", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<FeedCore::Context>("com.rocksandpaper.syndic", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<FeedCore::Feed>("com.rocksandpaper.syndic", 1, 0, "Feed", "obtained from cpp model");
