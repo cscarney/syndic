@@ -19,7 +19,7 @@ ScrollView {
         anchors.fill: parent
         Keys.forwardTo: [root]
 
-        contentWidth: root.width - leftMargin - rightMargin - 1
+        contentWidth: root.width - leftMargin - rightMargin
         contentHeight: articleView.height + bottomMargin + topMargin
         clip: true
         flickableDirection: Flickable.AutoFlickIfNeeded
@@ -55,6 +55,11 @@ ScrollView {
     Component.onCompleted: {
         requestContent();
         root.isReadableChanged.connect(requestContent)
+
+        // The margins can get squeezed out of the viewport while the
+        // size bindings are being evaluated during delegate creation,
+        // fix that here
+        scroller.returnToBounds()
     }
 
     function requestContent(forceReload) {
