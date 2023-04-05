@@ -67,7 +67,7 @@ void NotificationController::onArticleAdded(const ArticleRef &article)
 
 void NotificationController::postNotification() const
 {
-    QString notificationText{tr("%1 New Item(s)", "Notification Text", d->counter).arg(d->counter)};
+    QString notificationText{tr("%1 New Item(s)", "Notification Text", d->counter)};
 #ifdef HAVE_SYSTEM_TRAY
     d->trayIcon->setToolTip(notificationText);
 #endif
