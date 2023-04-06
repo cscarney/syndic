@@ -62,7 +62,7 @@ public:
     Q_INVOKABLE void markAllRead();
 
     /**
-     * If unreadFilter is true, this re-filters the list.  Otherwise it is a no-op.
+     * If unreadFilter is true, this re-filters the list.
      */
     Q_INVOKABLE void removeRead();
 
