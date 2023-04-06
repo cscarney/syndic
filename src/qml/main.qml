@@ -64,9 +64,10 @@ Kirigami.ApplicationWindow {
 
             FeedList {
                 id: feedList
+                interactive: false
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                Layout.preferredHeight: drawer.height
+                Layout.minimumHeight: contentHeight
                 onCurrentlySelectedFeedChanged:
                     if (currentlySelectedFeed) priv.pushFeed(currentlySelectedFeed)
 
