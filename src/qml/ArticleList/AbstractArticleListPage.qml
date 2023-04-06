@@ -50,14 +50,6 @@ Kirigami.ScrollablePage {
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Kirigami.Theme.backgroundColor: Kirigami.Theme.alternateBackgroundColor
 
-    EmptyFeedOverlay {
-        id: emptyOverlay
-        anchors.fill: parent
-        visible: (articleList.count == 0) && (feedItemModel.status !== Feed.Loading)
-        icon: unreadFilter ? "checkmark" : "com.rocksandpaper.syndic.feed-empty"
-        text: unreadFilter ? qsTr("All Read") : qsTr("No Items")
-    }
-
     Timer {
         id: pageOpenTimer
         interval: 1
@@ -137,6 +129,14 @@ Kirigami.ScrollablePage {
                     }
                 }
             ]
+        }
+
+        EmptyFeedOverlay {
+            id: emptyOverlay
+            anchors.fill: parent
+            visible: (articleList.count == 0) && (feedItemModel.status !== Feed.Loading)
+            icon: unreadFilter ? "checkmark" : "com.rocksandpaper.syndic.feed-empty"
+            text: unreadFilter ? qsTr("All Read") : qsTr("No Items")
         }
 
         function pageDownIfNecessary() {
