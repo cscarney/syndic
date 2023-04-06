@@ -191,14 +191,13 @@ void ArticleListModel::onItemAdded(ArticleRef const &item)
 
 void ArticleListModel::removeRead()
 {
-    if (!d->unreadFilter) {
-        return;
-    }
     setStatus(Feed::Loading);
-    RowRemoveHelper helper;
-    helper.removeWhere(this, [](const auto &item) {
-        return item->isRead();
-    });
+    if (d->unreadFilter) {
+        RowRemoveHelper helper;
+        helper.removeWhere(this, [](const auto &item) {
+            return item->isRead();
+        });
+    }
     setStatusFromUpstream();
 }
 
