@@ -52,7 +52,7 @@ Kirigami.ScrollablePage {
 
     Timer {
         id: pageOpenTimer
-        interval: 1
+        interval: 0
         onTriggered: {
             if (!pageRow) {
                 return;
