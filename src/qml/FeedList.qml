@@ -74,8 +74,6 @@ ListView {
         }
 
         onClicked: root.itemClicked()
-
-        Component.onCompleted: console.log("created "+feed.name)
     }/* delegate */
 
     section.property: "category"
