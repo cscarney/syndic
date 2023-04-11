@@ -5,9 +5,10 @@
 
 import QtQuick 2.0
 import org.kde.kirigami 2.7 as Kirigami
+import com.rocksandpaper.syndic 1.0
 
 AbstractPlaceholderPage {
-    property var model;
+    required property ArticleListModel model;
 
     iconName: "dialog-error-symbolic-nomask"
     headingText: "Error Updating Feed"
