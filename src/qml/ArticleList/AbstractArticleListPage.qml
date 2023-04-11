@@ -95,6 +95,9 @@ Kirigami.ScrollablePage {
        } /* model */
 
         delegate: Kirigami.AbstractListItem {
+            id: articleListItem
+            required property var ref
+            required property int index // needed by Kirigami
             width: articleList.width
             text: ref.article.headline
             padding: 10
@@ -104,11 +107,12 @@ Kirigami.ScrollablePage {
             // which causes ListView to instantiate a very large number of delegates.
             height: implicitHeight
 
-            contentItem: ArticleListEntry { }
-            property var data: ref
+            contentItem: ArticleListEntry {
+                article: ref.article
+            }
             onClicked: {
-                if (articleList.currentIndex !== model.index) {
-                    articleList.currentIndex = model.index
+                if (articleList.currentIndex !== articleListItem.index) {
+                    articleList.currentIndex = articleListItem.index
                 } else {
                     pageRow.currentIndex = root.Kirigami.ColumnView.index + 1
                 }

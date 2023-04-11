@@ -17,7 +17,7 @@ Kirigami.Page {
     property var previousItem: function() {}
     readonly property bool inProgress: swipeView.currentItem ? !!swipeView.currentItem.inProgress : false;
     readonly property string hoveredLink: swipeView.currentItem ? swipeView.currentItem.hoveredLink || "" : ""
-    readonly property var item: swipeView.currentItem ? swipeView.currentItem.item : null;
+    readonly property Article currentArticle: swipeView.currentItem ? swipeView.currentItem.article : null;
 
     topPadding: 0
     bottomPadding: 0
@@ -26,14 +26,14 @@ Kirigami.Page {
     Kirigami.Theme.inherit: false
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Layout.fillWidth: true
-    title: item ? item.article.title || "" : ""
+    title: currentArticle ? currentArticle.title || "" : ""
     titleDelegate: Item { }
 
     actions {
         main: Kirigami.Action {
             text: qsTr("Open")
             iconName: "globe"
-            onTriggered: Qt.openUrlExternally(item.article.url);
+            onTriggered: Qt.openUrlExternally(currentArticle.url);
             displayHint: Kirigami.Settings.isMobile ? Kirigami.DisplayHint.IconOnly : Kirigami.DisplayHint.NoPreference
         }
 
@@ -42,16 +42,16 @@ Kirigami.Page {
                 text: qsTr("Share")
                 iconName: "emblem-shared-symbolic-nomask"
                 displayHint: Kirigami.DisplayHint.AlwaysHide
-                enabled: !!item
-                onTriggered: platformHelper.share(item.article.url);
+                enabled: !!currentArticle
+                onTriggered: platformHelper.share(currentArticle.url);
             },
 
             Kirigami.Action {
                 text: qsTr("Starred")
                 checkable: true
-                checked: item ? item.article.isStarred : false
-                enabled: !!item
-                onTriggered: item.article.isStarred = checked
+                checked: currentArticle ? currentArticle.isStarred : false
+                enabled: !!currentArticle
+                onTriggered: currentArticle.isStarred = checked
                 iconName: checked ? "starred-symbolic-nomask" : "non-starred-symbolic-nomask"
                 displayHint: Kirigami.DisplayHint.IconOnly
             },
@@ -61,9 +61,9 @@ Kirigami.Page {
                 text: qsTr("Keep Unread")
                 iconName: "mail-mark-unread"
                 checkable: true
-                checked: item ? !item.article.isRead : true
-                enabled: item ? true : false
-                onTriggered: item.article.isRead = !checked
+                checked: currentArticle ? !currentArticle.isRead : true
+                enabled: !!currentArticle
+                onTriggered: currentArticle.isRead = !checked
                 displayHint: Kirigami.DisplayHint.AlwaysHide
             },
 
@@ -109,7 +109,7 @@ Kirigami.Page {
 
         delegate: ArticlePageSwipeViewItem {
             required property var ref
-            item: ref
+            article: ref.article
             showExpandedByline: (ref.article.feed !== swipeView.model.feed)
             Keys.forwardTo: [root]
             implicitHeight: swipeView.height || 1
@@ -147,20 +147,20 @@ Kirigami.Page {
     }
 
 
-    onItemChanged: {
-        if (item) {
-            item.article.isRead = true;
+    onCurrentArticleChanged: {
+        if (currentArticle) {
+            currentArticle.isRead = true;
         }
     }
 
     Keys.onPressed: {
-        if (!root.item) {
+        if (!root.currentArticle) {
             return;
         }
 
         switch (event.key) {
         case Qt.Key_Space:
-            if (!scroller.atYEnd) {
+            if (!swipeView.currentItem.atYEnd) {
                 swipeView.currentItem.pageUpDown(0.9);
             } else {
                 root.Window.window.suspendAnimations();
@@ -196,7 +196,7 @@ Kirigami.Page {
 
         case Qt.Key_Return:
         case Qt.Key_Enter:
-            Qt.openUrlExternally(item.article.url);
+            Qt.openUrlExternally(currentArticle.url);
             break;
 
         default:

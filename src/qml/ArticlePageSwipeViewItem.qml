@@ -5,11 +5,12 @@ import com.rocksandpaper.syndic 1.0
 
 ScrollView {
     id: root
-    required property var item
+    required property Article article
     property alias showExpandedByline: articleView.showExpandedByline
     property alias hoveredLink: articleView.hoveredLink
-    property bool isReadable: item.article ? item.article.feed.flags & Feed.UseReadableContentFlag : false
+    property bool isReadable: root.article ? root.article.feed.flags & Feed.UseReadableContentFlag : false
     property bool inProgress: false
+    property alias atYEnd: scroller.atYEnd
 
     clip: true
     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
@@ -29,7 +30,7 @@ ScrollView {
         rightMargin: Kirigami.Units.gridUnit * 1.6
         ArticleView {
             id: articleView
-            item: root.item
+            article: root.article
             width: scroller.contentWidth
         }
 
@@ -43,7 +44,7 @@ ScrollView {
     }
 
     Connections {
-        target: item.article
+        target: root.article
         function onGotContent(content, type) {
             if (root.isReadable || (type===Article.FeedContent)) {
                 root.inProgress = false;
@@ -65,9 +66,9 @@ ScrollView {
     function requestContent(forceReload) {
         root.inProgress = true;
         if (root.isReadable) {
-            item.article.requestReadableContent(feedContext, !!forceReload);
+            root.article.requestReadableContent(feedContext, !!forceReload);
         } else {
-            item.article.requestContent();
+            root.article.requestContent();
         }
     }
 
