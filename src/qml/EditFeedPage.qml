@@ -9,7 +9,7 @@ import com.rocksandpaper.syndic 1.0
 
 AbstractFeedEditorPage {
     id: root
-    property Feed targetFeed;
+    required property Feed targetFeed;
     property var onDone: function(){}
 
     provisionalFeed: ProvisionalFeed {
