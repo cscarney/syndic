@@ -62,7 +62,7 @@ Kirigami.ScrollablePage {
             }
             pageRow.currentIndex = root.Kirigami.ColumnView.index
             if (childPage) {
-                root.pageRow.push(childPage, {model: feedItemModel, parentList: articleList, nextItem: nextItem, previousItem: previousItem})
+                root.pageRow.push(childPage, {model: feedItemModel, parentList: articleList})
             } else {
                 root.pageRow.pop(root);
             }
@@ -166,10 +166,4 @@ Kirigami.ScrollablePage {
         root.model.removeRead()
         articleList.positionViewAtBeginning()
     }
-
-    function nextItem () {
-        articleList.currentIndex++;
-        articleList.pageDownIfNecessary();
-    }
-    function previousItem () { articleList.currentIndex-- }
 }

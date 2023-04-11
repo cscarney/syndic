@@ -13,8 +13,6 @@ import com.rocksandpaper.syndic 1.0
 Kirigami.Page {
     id: root
     required property var parentList
-    property var nextItem: function() {}
-    property var previousItem: function() {}
     readonly property bool inProgress: swipeView.currentItem ? !!swipeView.currentItem.inProgress : false;
     readonly property string hoveredLink: swipeView.currentItem ? swipeView.currentItem.hoveredLink || "" : ""
     readonly property Article currentArticle: swipeView.currentItem ? swipeView.currentItem.article : null;
@@ -204,4 +202,10 @@ Kirigami.Page {
         }
         event.accepted = true
     }
+
+    function nextItem () {
+        parentList.currentIndex++;
+        parentList.pageDownIfNecessary();
+    }
+    function previousItem () { parentList.currentIndex-- }
 }
