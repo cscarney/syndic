@@ -12,7 +12,7 @@ import com.rocksandpaper.syndic 1.0
 
 Kirigami.Page {
     id: root
-    required property var parentList
+    required property ListView parentList
     readonly property bool inProgress: swipeView.currentItem ? !!swipeView.currentItem.inProgress : false;
     readonly property string hoveredLink: swipeView.currentItem ? swipeView.currentItem.hoveredLink || "" : ""
     readonly property Article currentArticle: swipeView.currentItem ? swipeView.currentItem.article : null;

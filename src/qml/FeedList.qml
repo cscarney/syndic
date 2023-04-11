@@ -35,11 +35,11 @@ ListView {
         id: listItem
         required property int index
         required property var feed
-        property var iconName: feed ? feed.icon.toString() : ""
-        property var status: feed ? feed.status : Feed.Idle
-        property var unreadCount: feed ? feed.unreadCount : 0
+        property string iconName: feed.icon.toString()
+        property int status: feed.status
+        property int unreadCount: feed.unreadCount
         icon: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
-        label: feed ? feed.name : ""
+        label: feed.name
         separatorVisible: false
         padding: Kirigami.Units.largeSpacing
         leftPadding: Kirigami.Units.smallSpacing
