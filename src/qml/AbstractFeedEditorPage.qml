@@ -11,9 +11,7 @@ import com.rocksandpaper.syndic 1.0
 
 Kirigami.ScrollablePage {
     id: root
-    required property Item pageRow
     required property ProvisionalFeed provisionalFeed
-    property bool previewOpen: false
 
     ButtonGroup {
         id: expireAgeGroup
@@ -36,7 +34,6 @@ Kirigami.ScrollablePage {
                 text: provisionalFeed.urlString
                 onTextEdited: {
                     provisionalFeed.urlString = text;
-                    previewOpen = false;
                 }
                 onEditingFinished: provisionalFeed.syncUrlString();
             }
@@ -185,18 +182,6 @@ Kirigami.ScrollablePage {
                     }
                 }
             }
-        }
-    }
-
-    onPreviewOpenChanged: {
-        if (previewOpen) {
-            provisionalFeed.updater.start()
-            pageRow.currentIndex = Kirigami.ColumnView.index
-            pageRow.push("qrc:/qml/ArticleList/FeedPreviewPage.qml",
-                         {provisionalFeed: provisionalFeed});
-            previewOpen = true;
-        } else {
-            pageRow.pop(this);
         }
     }
 
