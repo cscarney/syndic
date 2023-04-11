@@ -8,6 +8,9 @@ import org.kde.kirigami 2.7 as Kirigami
 import com.rocksandpaper.syndic 1.0
 
 AbstractFeedEditorPage {
+    id: root
+    required property Item pageRow
+    property bool previewOpen: false
     property bool keepDrawerOpen: true
     title: qsTr("Add Content")
 
@@ -16,6 +19,10 @@ AbstractFeedEditorPage {
         updateInterval: globalSettings.updateInterval
         expireMode: Feed.InheritUpdateMode
         expireAge: globalSettings.expireAge
+
+        onUrlStringChanged: {
+            previewOpen = false
+        }
     }
 
     actions {
@@ -26,6 +33,19 @@ AbstractFeedEditorPage {
             checkable: true
             checked: previewOpen
             onToggled: previewOpen = checked
+        }
+    }
+
+    onPreviewOpenChanged: {
+        if (previewOpen) {
+            provisionalFeed.updater.start()
+            pageRow.currentIndex = Kirigami.ColumnView.index
+            pageRow.push("qrc:/qml/ArticleList/FeedPreviewPage.qml",
+                         {provisionalFeed: root.provisionalFeed,
+                          pageRow: root.pageRow});
+            previewOpen = true;
+        } else {
+            pageRow.pop(this);
         }
     }
 
