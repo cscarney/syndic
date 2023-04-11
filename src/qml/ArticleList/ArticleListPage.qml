@@ -40,7 +40,7 @@ AbstractArticleListPage {
                 visible: feed && feed.editable
                 onTriggered: {
                     pageRow.pop(root)
-                    pageRow.push("qrc:/qml/EditFeedPage.qml", {targetFeed: feed, onDone:root.childPageChanged});
+                    pageRow.push("qrc:/qml/EditFeedPage.qml", {targetFeed: feed, pageRow: root.pageRow, onDone:root.childPageChanged});
                 }
             },
 

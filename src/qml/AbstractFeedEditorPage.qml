@@ -11,8 +11,8 @@ import com.rocksandpaper.syndic 1.0
 
 Kirigami.ScrollablePage {
     id: root
-    property Item pageRow;
-    property ProvisionalFeed provisionalFeed
+    required property Item pageRow
+    required property ProvisionalFeed provisionalFeed
     property bool previewOpen: false
 
     ButtonGroup {
@@ -193,8 +193,7 @@ Kirigami.ScrollablePage {
             provisionalFeed.updater.start()
             pageRow.currentIndex = Kirigami.ColumnView.index
             pageRow.push("qrc:/qml/ArticleList/FeedPreviewPage.qml",
-                         {pageRow: pageRow,
-                             provisionalFeed: provisionalFeed});
+                         {provisionalFeed: provisionalFeed});
             previewOpen = true;
         } else {
             pageRow.pop(this);
