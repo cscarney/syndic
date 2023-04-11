@@ -13,14 +13,14 @@ import '../oldkirigami' as OK
 OK.ScrollablePage {
     id: root
 
-    property var feed
-    property var pageRow: null
+    required property Feed feed
+    required property Item pageRow
     property alias model: articleList.model
     property alias count: articleList.count
     property alias currentIndex: articleList.currentIndex
     property bool isUpdating: model.status === Feed.Updating
     property bool unreadFilter: true
-    property bool automaticOpen: pageRow && (pageRow.defaultColumnWidth * 2 < pageRow.width)
+    property bool automaticOpen: pageRow.defaultColumnWidth * 2 < pageRow.width
     property string childPage: {
         if (articleList.currentItem) {
             return "qrc:/qml/ArticlePage.qml"
@@ -55,9 +55,6 @@ OK.ScrollablePage {
         id: pageOpenTimer
         interval: 1
         onTriggered: {
-            if (!pageRow) {
-                return;
-            }
             if (pageRow.wideMode) {
                 root.Window.window.suspendAnimations();
             }
