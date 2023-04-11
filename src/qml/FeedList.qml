@@ -33,7 +33,8 @@ ListView {
 
     delegate: Kirigami.BasicListItem {
         id: listItem
-        property var feed: model.feed
+        required property int index
+        required property var feed
         property var iconName: feed ? feed.icon.toString() : ""
         property var status: feed ? feed.status : Feed.Idle
         property var unreadCount: feed ? feed.unreadCount : 0
@@ -78,6 +79,7 @@ ListView {
 
     section.property: "category"
     section.delegate: Kirigami.ListSectionHeader {
+        required property string section
         label: section
         topPadding: padding * 2
         bottomPadding: padding * 2

@@ -12,7 +12,7 @@ import com.rocksandpaper.syndic 1.0
 
 ColumnLayout {
     id: root
-    required property var item
+    required property Article article
     property string text: ""
     property string hoveredLink
     property bool showExpandedByline: false
@@ -29,7 +29,7 @@ ColumnLayout {
     Kirigami.Heading {
         level: 1
         Layout.fillWidth: true
-        text: item.article.title
+        text: root.article.title
         elide: Text.ElideRight
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
@@ -42,16 +42,16 @@ ColumnLayout {
             anchors.fill: parent
             hoverEnabled: !Kirigami.Settings.hasTransientTouchInput
             cursorShape: Qt.PointingHandCursor
-            onClicked: Qt.openUrlExternally(item.article.url)
-            onContainsMouseChanged: root.hoveredLink = containsMouse ? item.article.url : null
+            onClicked: Qt.openUrlExternally(root.article.url)
+            onContainsMouseChanged: root.hoveredLink = containsMouse ? root.article.url : null
         }
     }
 
     RowLayout {
         Label {
-            property string expandedByline: item.article.author + ", <a href=\"syndic-feed-link:\">" + item.article.feed.name + "</a>"
+            property string expandedByline: root.article.author + ", <a href=\"syndic-feed-link:\">" + root.article.feed.name + "</a>"
             Layout.fillWidth: true
-            text: showExpandedByline ? expandedByline : item.article.author
+            text: showExpandedByline ? expandedByline : root.article.author
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
@@ -65,14 +65,14 @@ ColumnLayout {
             onLinkActivated: (link)=>{
                 const w = Window.window;
                 if (w && w.selectFeed) {
-                    w.selectFeed(item.article.feed);
+                    w.selectFeed(root.article.feed);
                 }
             }
         }
 
         Label {
             Layout.alignment: Qt.AlignRight
-            text: Qt.formatDate(item.article.date)
+            text: Qt.formatDate(root.article.date)
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignRight
             verticalAlignment: Text.AlignVCenter
@@ -93,18 +93,22 @@ ColumnLayout {
         }
 
         delegate: Loader {
-            Layout.fillWidth: item.Layout.fillWidth
-            Layout.alignment: item.Layout.alignment
-            Layout.preferredHeight: item.Layout.preferredHeight
-            Layout.preferredWidth: item.Layout.preferredWidth
-            Layout.topMargin: item.Layout.topMargin
+            id: loader
+            required property int index
+            required property var model
+            property var modelBlock: model.block
+            Layout.fillWidth: loader.item.Layout.fillWidth
+            Layout.alignment: loader.item.Layout.alignment
+            Layout.preferredHeight: loader.item.Layout.preferredHeight
+            Layout.preferredWidth: loader.item.Layout.preferredWidth
+            Layout.topMargin: loader.item.Layout.topMargin
 
             // Load blocks asynchronously, in order, hiding them until they're ready
             asynchronous: true
             active: index===0 || contentRepeater.itemAt(index-1).status===Loader.Ready
             visible: status===Loader.Ready
 
-            sourceComponent: switch (block.delegateName) {
+            sourceComponent: switch (loader.modelBlock.delegateName) {
                   case "ImageBlock":
                       return imageBlockComponent;
                   case "TextBlock":
@@ -112,7 +116,6 @@ ColumnLayout {
                   default:
                       return undefined;
             }
-            property var modelBlock: block
         }
     }
 
@@ -121,7 +124,7 @@ ColumnLayout {
 
         Item {
             id: imageBlock
-            property string href: modelBlock.resolvedHref(root.item.article.url);
+            property string href: modelBlock.resolvedHref(root.article.url);
             property real scaleToFit: Math.min(root.width, implicitWidth) / implicitWidth
 
             implicitWidth: modelBlock.size.width || modelBlock.sizeGuess.width || Kirigami.Units.iconSizes.small * 4
@@ -136,7 +139,7 @@ ColumnLayout {
             ContentImage {
                 id: image
                 anchors.fill: parent
-                source: modelBlock.resolvedSrc(root.item.article.url);
+                source: modelBlock.resolvedSrc(root.article.url);
                 opacity: 0
             }
 
@@ -230,19 +233,19 @@ ColumnLayout {
             color: Kirigami.Theme.textColor
             selectedTextColor: Kirigami.Theme.highlightedTextColor
             selectionColor: Kirigami.Theme.highlightColor
-            baseUrl: root.item.article.url
+            baseUrl: root.article.url
 
             // native rendering is glitchy with selection highlight
             renderType: Text.QtRendering
 
             onLinkActivated: function(link){
-                Qt.openUrlExternally(root.item.article.resolvedLink(link))
+                Qt.openUrlExternally(root.article.resolvedLink(link))
             }
 
             // The root hover link gets the most recently changed value over all the views.
             // We ignore hover link changes caused by touch events, since TextEdit::hoveredLink
             // *only* responds to touch input in degenerate cases.
-            onHoveredLinkChanged: root.hoveredLink = hoveredLink && !Kirigami.Settings.hasTransientTouchInput ? root.item.article.resolvedLink(hoveredLink) : ""
+            onHoveredLinkChanged: root.hoveredLink = hoveredLink && !Kirigami.Settings.hasTransientTouchInput ? root.article.resolvedLink(hoveredLink) : ""
 
             MouseArea
             {

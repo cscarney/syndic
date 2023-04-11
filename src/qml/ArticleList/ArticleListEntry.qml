@@ -7,9 +7,11 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.7 as Kirigami
+import com.rocksandpaper.syndic 1.0
 
 ColumnLayout {
     id: root
+    required property Article article
     property color textColor: parent.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor;
 
     spacing: 5
@@ -18,14 +20,14 @@ ColumnLayout {
     Label {
         id: headlineText
         Layout.fillWidth: parent
-        text: ref.article.title
+        text: article.title
         maximumLineCount: 2
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
         font {
-            weight: ref.article.isRead ? Font.ExtraLight : Font.Bold
+            weight: article.isRead ? Font.ExtraLight : Font.Bold
             pointSize: Kirigami.Theme.defaultFont.pointSize
         }
         color: textColor
@@ -36,7 +38,7 @@ ColumnLayout {
         id: details
         Label {
             Layout.fillWidth: true
-            text: ref.article.author
+            text: article.author
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
@@ -52,7 +54,7 @@ ColumnLayout {
 
         Label {
             Layout.alignment: Qt.AlignRight
-            text: Qt.formatDate(ref.article.date)
+            text: Qt.formatDate(article.date)
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignRight
             verticalAlignment: Text.AlignVCenter
