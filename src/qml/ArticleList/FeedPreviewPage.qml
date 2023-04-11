@@ -9,7 +9,7 @@ import org.kde.kirigami 2.14 as Kirigami
 
 AbstractArticleListPage {
     id: root
-    property ProvisionalFeed provisionalFeed
+    required property ProvisionalFeed provisionalFeed
     automaticOpen: false
     unreadFilter: false
     feed: provisionalFeed
