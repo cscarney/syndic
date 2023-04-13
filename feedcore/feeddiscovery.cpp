@@ -28,7 +28,7 @@ FeedDiscovery::FeedDiscovery(const QUrl &url, const QByteArray &html)
 
 static bool looksLikeFeed(const QString &href)
 {
-    return (href.endsWith(".xml") || href.endsWith(".rdf") || href.endsWith(".rss") || href.endsWith("/feed"));
+    return (href.endsWith(".xml") || href.endsWith(".rdf") || href.endsWith(".rss") || href.endsWith("/feed") || href.contains("//feeds."));
 }
 
 static QString getAttrString(const GumboElement &element, const char *nameString)
