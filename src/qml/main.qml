@@ -207,7 +207,8 @@ Kirigami.ApplicationWindow {
         target: feedContext
         function onFeedListPopulated(nFeeds) {
             if (nFeeds === 0) {
-                priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
+                // call later to avoid pushing into an incomplete pageRow
+                Qt.callLater(()=>priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack}))
             }
         }
     }
