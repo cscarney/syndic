@@ -14,11 +14,11 @@ AbstractPlaceholderPage {
     headingText: "Error Updating Feed"
     descriptionText: "This feed is currently offline"
 
-    actions {
-        main: Kirigami.Action {
+    actions: [
+        Kirigami.Action {
             text: qsTr("Retry")
             iconName: "view-refresh"
             onTriggered: model.requestUpdate()
         }
-    }
+    ]
 }

@@ -16,21 +16,21 @@ AbstractFeedEditorPage {
         targetFeed: root.targetFeed
     }
 
-    actions {
-        main: Kirigami.Action {
+    actions: [
+        Kirigami.Action {
             text: qsTr("Save")
             iconName: "checkmark"
             onTriggered: {
                 provisionalFeed.save();
                 onDone();
             }
-        }
+        },
 
-        left: Kirigami.Action {
+        Kirigami.Action {
             text: qsTr("Delete")
             iconName: "delete"
             onTriggered: targetFeed.requestDelete();
             displayHint: Kirigami.DisplayHint.AlwaysHide
         }
-    }
+    ]
 }
