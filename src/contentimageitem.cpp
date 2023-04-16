@@ -73,7 +73,7 @@ void ContentImageItem::updatePolish()
     QQuickItem::updatePolish();
 }
 
-void ContentImageItem::beginImageLoad(ImageLoadFlags flags)
+void ContentImageItem::beginImageLoad()
 {
     if (m_reply != nullptr) {
         cancelImageLoad();
@@ -81,9 +81,6 @@ void ContentImageItem::beginImageLoad(ImageLoadFlags flags)
     QNetworkAccessManager *nam{qmlEngine(this)->networkAccessManager()};
     QNetworkRequest req(m_src);
     req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
-    if (flags & UseHttp2Flag) {
-        req.setAttribute(QNetworkRequest::Http2AllowedAttribute, true);
-    }
     m_reply = nam->get(req);
     QObject::connect(m_reply, &QNetworkReply::finished, this, &ContentImageItem::onImageLoadFinished);
 }
@@ -98,13 +95,6 @@ void ContentImageItem::cancelImageLoad()
     m_reply = nullptr;
 }
 
-static inline bool mightBeCloudflareInterstitial(QNetworkReply *reply, QNetworkReply::NetworkError err)
-{
-    return (err == QNetworkReply::ContentAccessDenied || err == QNetworkReply::ServiceUnavailableError)
-        && !reply->request().attribute(QNetworkRequest::Http2AllowedAttribute).toBool()
-        && QString(reply->rawHeader("Server")).contains("cloudflare", Qt::CaseInsensitive);
-}
-
 void ContentImageItem::onImageLoadFinished()
 {
     QNetworkReply *reply = m_reply;
@@ -113,15 +103,6 @@ void ContentImageItem::onImageLoadFinished()
     QNetworkReply::NetworkError error = reply->error();
     if (error == QNetworkReply::OperationCanceledError) {
         setLoadStatus(Cancelled);
-        return;
-    }
-
-    // Overly-agressive cloudflare settings sometimes produce challenge pages for HTTP/1.1 image requests
-    // TODO Qt6 enables HTTP/2 by default; we might not need this anymore once we drop Qt6 support
-    if (mightBeCloudflareInterstitial(reply, error)) {
-        qDebug() << QStringLiteral("Possible cloudflare challenge page for %1. Trying with HTTP/2, if this works you should complain to the server admin.")
-                        .arg(reply->url().toString());
-        beginImageLoad(UseHttp2Flag);
         return;
     }
 
