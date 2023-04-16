@@ -38,7 +38,7 @@ ListView {
         property string iconName: feed.icon.toString()
         property int status: feed.status
         property int unreadCount: feed.unreadCount
-        icon: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
+        icon.source: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
         label: feed.name
         separatorVisible: false
         padding: Kirigami.Units.largeSpacing
