@@ -22,7 +22,7 @@ add_library(sqlite STATIC ${sqlite_SRCS})
 
 target_link_libraries(sqlite
     feedcore
-    Qt5::Core
-    Qt5::Sql
-    KF5::Syndication
+    Qt6::Core
+    Qt6::Sql
+    KF6::Syndication
 )

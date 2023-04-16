@@ -275,7 +275,7 @@ void ArticleListModel::requestUpdate()
 
 static void removeReadArticles(QVector<ArticleRef> &v)
 {
-    auto *it = std::remove_if(v.begin(), v.end(), [](const ArticleRef &i) {
+    auto it = std::remove_if(v.begin(), v.end(), [](const ArticleRef &i) {
         return i->isRead();
     });
     v.erase(it, v.end());

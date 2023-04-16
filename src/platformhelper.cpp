@@ -45,7 +45,7 @@ void PlatformHelper::share(const QUrl &url)
 
 void PlatformHelper::configureBackgroundService(bool enabled)
 {
-#ifdef KF5DBusAddons_FOUND
+#ifdef KF6DBusAddons_FOUND
     QDBusInterface backgroundPortal("org.freedesktop.portal.Desktop", "/org/freedesktop/portal/desktop", "org.freedesktop.portal.Background");
     if (!backgroundPortal.isValid()) {
         qDebug() << "Not configuring autostart because background portal wasn't available";

@@ -268,7 +268,7 @@ void FeedListModel::loadFeeds()
 
 void FeedListModel::onFeedAdded(FeedCore::Feed *feed)
 {
-    const auto *it = std::lower_bound(d->feeds.constBegin(), d->feeds.constEnd(), feed, d->sortHelper->comparator);
+    const auto it = std::lower_bound(d->feeds.constBegin(), d->feeds.constEnd(), feed, d->sortHelper->comparator);
     const int index = int(it - d->feeds.constBegin());
     const int row = index + SPECIAL_FEED_COUNT;
     beginInsertRows(QModelIndex(), row, row);

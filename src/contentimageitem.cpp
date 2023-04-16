@@ -63,9 +63,9 @@ ContentImageItem::LoadStatus ContentImageItem::loadStatus()
     return m_loadStatus;
 }
 
-void ContentImageItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+void ContentImageItem::geometryChange(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
-    QQuickItem::geometryChanged(newGeometry, oldGeometry);
+    QQuickItem::geometryChange(newGeometry, oldGeometry);
 }
 
 void ContentImageItem::updatePolish()
@@ -117,7 +117,7 @@ void ContentImageItem::onImageLoadFinished()
     }
 
     // Overly-agressive cloudflare settings sometimes produce challenge pages for HTTP/1.1 image requests
-    // TODO Qt6 enables HTTP/2 by default; we might not need this anymore once we drop Qt5 support
+    // TODO Qt6 enables HTTP/2 by default; we might not need this anymore once we drop Qt6 support
     if (mightBeCloudflareInterstitial(reply, error)) {
         qDebug() << QStringLiteral("Possible cloudflare challenge page for %1. Trying with HTTP/2, if this works you should complain to the server admin.")
                         .arg(reply->url().toString());

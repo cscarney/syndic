@@ -13,7 +13,7 @@
 #include <QStandardPaths>
 #include <QWindow>
 
-#ifdef KF5DBusAddons_FOUND
+#ifdef KF6DBusAddons_FOUND
 #include <KDBusService>
 #endif
 
@@ -37,7 +37,7 @@ struct Application::PrivData {
     std::unique_ptr<QQmlApplicationEngine> engine;
     std::unique_ptr<NotificationController> notifier;
 
-#ifdef KF5DBusAddons_FOUND
+#ifdef KF6DBusAddons_FOUND
     KDBusService *service{nullptr};
 #endif
 };
@@ -126,7 +126,7 @@ Application::Application(int &argc, char **argv)
     setWindowIcon(QIcon::fromTheme("com.rocksandpaper.syndic"));
 #endif
 
-#ifdef KF5DBusAddons_FOUND
+#ifdef KF6DBusAddons_FOUND
     d->service = new KDBusService(KDBusService::Unique, this);
     QObject::connect(d->service, &KDBusService::activateRequested, this, &Application::onActivateRequested);
 #endif

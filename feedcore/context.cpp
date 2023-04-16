@@ -14,7 +14,6 @@
 #include "storage.h"
 #include <QDebug>
 #include <QFile>
-#include <QNetworkConfigurationManager>
 #include <QSet>
 
 namespace FeedCore
@@ -27,7 +26,6 @@ struct Context::PrivData {
     qint64 updateInterval{0};
     qint64 expireAge{0};
     Scheduler *updateScheduler;
-    QNetworkConfigurationManager ncm;
     Readability *readability{nullptr};
     bool prefetchContent{false};
     QWeakPointer<Feed> allItemsFeed{nullptr};
@@ -54,8 +52,11 @@ Context::Context(Storage *storage, QObject *parent)
     : QObject(parent)
     , d{std::make_unique<PrivData>(storage, this)}
 {
+    // TODO Qt6 migrate
+    /*
     QObject::connect(&d->ncm, &QNetworkConfigurationManager::configurationAdded, d->updateScheduler, &Scheduler::clearErrors);
     QObject::connect(&d->ncm, &QNetworkConfigurationManager::configurationChanged, d->updateScheduler, &Scheduler::clearErrors);
+    */
 
     Future<Feed *> *getFeeds{d->storage->getFeeds()};
     QObject::connect(getFeeds, &BaseFuture::finished, this, [this, getFeeds] {

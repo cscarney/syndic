@@ -138,7 +138,7 @@ void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
     const auto &items = feed->items();
     time_t expireTime = 0;
     if ((expireAge() > 0) && (expireMode() != DisableUpdateMode)) {
-        expireTime = updater()->updateStartTime().toTime_t() - expireAge();
+        expireTime = updater()->updateStartTime().toSecsSinceEpoch() - expireAge();
     }
     for (const auto &item : items) {
         const auto &dateUpdated = item->dateUpdated();
@@ -147,7 +147,7 @@ void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
         }
     }
     if (expireTime > 0) {
-        expire(QDateTime::fromTime_t(expireTime));
+        expire(QDateTime::fromSecsSinceEpoch(expireTime));
     }
 }
 

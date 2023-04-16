@@ -101,7 +101,7 @@ ProvisionalFeed::ArticleImpl::ArticleImpl(const Syndication::ItemPtr &item, Feed
 {
     setTitle(item->title());
     setUrl(item->link());
-    setDate(QDateTime::fromTime_t(item->dateUpdated()));
+    setDate(QDateTime::fromSecsSinceEpoch(item->dateUpdated()));
     auto authors = item->authors();
     setAuthor(authors.isEmpty() ? "" : authors[0]->name());
 }

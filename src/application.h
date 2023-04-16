@@ -8,7 +8,7 @@
 #include <QQmlApplicationEngine>
 #include <memory>
 
-#ifdef Qt5Widgets_FOUND
+#ifdef Qt6Widgets_FOUND
 #include <QApplication>
 typedef QApplication SyndicApplicationBase;
 #else
