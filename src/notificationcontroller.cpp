@@ -8,7 +8,7 @@
 #include "cmake-config.h"
 #include "context.h"
 
-#ifdef Qt5Widgets_FOUND
+#ifdef Qt6Widgets_FOUND
 #define HAVE_SYSTEM_TRAY
 #include <QGuiApplication>
 #include <QMenu>

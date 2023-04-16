@@ -38,7 +38,7 @@ void OpmlReader::readAll()
         xml.readNext();
         if (xml.isStartElement()) {
             QXmlStreamAttributes attrs{xml.attributes()};
-            if (xml.name() == "outline") {
+            if (xml.name() == QStringLiteral("outline")) {
                 if (!attrs.hasAttribute("xmlUrl")) {
                     openElements.append(ElementType::Category);
                     categories.append(attrs.value("text").toString());

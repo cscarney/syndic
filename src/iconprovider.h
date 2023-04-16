@@ -10,7 +10,6 @@
 namespace FeedCore
 {
 class Feed;
-class Context;
 }
 
 /**
@@ -22,7 +21,7 @@ class Context;
  * TODO This class currently also handles icon discovery, but that should probably
  * be moved to core.
  */
-class IconProvider : public QObject, public QQuickAsyncImageProvider
+class IconProvider : public QQuickAsyncImageProvider
 {
     Q_OBJECT
 public:

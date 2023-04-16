@@ -52,10 +52,10 @@ add_library(feedcore STATIC ${feedcore_SRCS})
 ecm_create_qm_loader(feedcore feedcore)
 
 target_link_libraries(feedcore
-    Qt5::Core
-    Qt5::Sql
-    Qt5::Network
-    KF5::Syndication
+    Qt6::Core
+    Qt6::Sql
+    Qt6::Network
+    KF6::Syndication
     QReadable::libqreadable
     htmlparser
 )
