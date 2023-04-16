@@ -5,13 +5,13 @@
 
 #pragma once
 #include "articleref.h"
+#include "context.h"
 #include "future.h"
 #include <QAbstractListModel>
 #include <QQmlParserStatus>
 #include <memory>
 namespace FeedCore
 {
-class Context;
 class Feed;
 }
 

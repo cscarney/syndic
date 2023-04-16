@@ -15,11 +15,11 @@ If you are looking to build a current, stable version of, you should build from 
 
 You will need to install [QReadable](https://invent.kde.org/ccarney/qreadable) before building from source. You can build it yourself or install the `qreadable` package from the [Syndic PPA](https://launchpad.net/~cscarney/+archive/ubuntu/syndic).
 
-Other required dependencies are Cmake, ECM, Qt5 (Core, Network, Qml, Quick, QQC2, Sql), KF5 (Syndication, Config, Kirigami). KF5DbusAddons and Qt Widgets are recommended on for desktop builds. Android builds additionally require OpenSSL and Qt AndroidExtras.
+Other required dependencies are Cmake, ECM, Qt6 (Core, Network, Qml, Quick, QQC2, Sql), KF6 (Syndication, Config, Kirigami). KF6DbusAddons and Qt Widgets are recommended on for desktop builds. Android builds additionally require OpenSSL and Qt AndroidExtras.
 
 On Ubuntu/Debian, you can install these dependencies with:
 
-    apt install kirigami-dev cmake extra-cmake-modules libkf5config-dev libkf5dbusaddons-dev libkf5syndication-dev qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev qttools5-dev
+    apt install kirigami-dev cmake extra-cmake-modules libkf6config-dev libkf6dbusaddons-dev libkf6syndication-dev qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev qttools5-dev
 
 Once all of the dependencies are installed you can build using the normal CMake commands:
 
@@ -32,7 +32,7 @@ Once all of the dependencies are installed you can build using the normal CMake 
 
 [Cross Compiling for Android](https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html#cross-compiling-for-android) is beyond the scope of this readme, but in general, you should use the [ECM Android Toolchain](https://api.kde.org/ecm/toolchain/Android.html) with `-DQTANDROID_EXPORTED_TARGET=syndic -DANDROID_APK_DIR=/path/to/source/android` and then make the `create-apk-syndic` target. 
 
-You MUST build Qt with the [KDE Patch Collection](https://community.kde.org/Qt5PatchCollection) when targeting android, as there are critical bugs in the current (5.15.4 as of this writing) open source Qt release that WILL cause crashes.
+You MUST build Qt with the [KDE Patch Collection](https://community.kde.org/Qt6PatchCollection) when targeting android, as there are critical bugs in the current (5.15.4 as of this writing) open source Qt release that WILL cause crashes.
 
 ## Help Translate
 Want to see Syndic in your native language? Contribute translations from your web browser using [weblate](https://hosted.weblate.org/projects/syndic/app/)!

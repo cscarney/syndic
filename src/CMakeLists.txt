@@ -38,35 +38,35 @@ kconfig_add_kcfg_files(syndic settings.kcfgc GENERATE_MOC)
 ecm_create_qm_loader(syndic syndic)
 
 target_link_libraries(syndic
-    Qt5::Core
-    Qt5::Qml
-    Qt5::Quick
-    Qt5::QuickControls2
-    KF5::Syndication
-    KF5::ConfigGui
+    Qt6::Core
+    Qt6::Qml
+    Qt6::Quick
+    Qt6::QuickControls2
+    KF6::Syndication
+    KF6::ConfigGui
     feedcore
     sqlite
     htmlparser
     )
 
-if (Qt5Widgets_FOUND)
+if (Qt6Widgets_FOUND)
     target_link_libraries(syndic
-        Qt5::Widgets
+        Qt6::Widgets
         )
 endif()
 
-if(KF5DBusAddons_FOUND)
+if(KF6DBusAddons_FOUND)
     target_link_libraries(syndic
-        KF5::DBusAddons
+        KF6::DBusAddons
         )
 endif()
 
 if (ANDROID)
     target_link_libraries(syndic
-        KF5::Kirigami2
+        KF6::Kirigami2
         OpenSSL::SSL
-        Qt5::Svg
-        Qt5::AndroidExtras
+        Qt6::Svg
+        Qt6::AndroidExtras
         )
 
     kirigami_package_breeze_icons(

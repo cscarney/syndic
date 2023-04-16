@@ -5,7 +5,6 @@
 
 #include "scheduler.h"
 #include "feed.h"
-#include <QNetworkConfigurationManager>
 #include <QSet>
 
 namespace FeedCore
