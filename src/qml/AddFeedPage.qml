@@ -25,8 +25,8 @@ AbstractFeedEditorPage {
         }
     }
 
-    actions {
-        main: Kirigami.Action {
+    actions: [
+        Kirigami.Action {
             id: previewAction
             text: qsTr("Preview…")
             iconName: "document-preview"
@@ -34,7 +34,7 @@ AbstractFeedEditorPage {
             checked: previewOpen
             onToggled: previewOpen = checked
         }
-    }
+    ]
 
     onPreviewOpenChanged: {
         if (previewOpen) {

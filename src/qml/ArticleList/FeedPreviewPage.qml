@@ -14,8 +14,8 @@ AbstractArticleListPage {
     unreadFilter: false
     feed: provisionalFeed
 
-    actions {
-        main: Kirigami.Action {
+    actions: [
+        Kirigami.Action {
             id: saveAction
             text: qsTr("Subscribe")
             iconName: "list-add"
@@ -31,5 +31,5 @@ AbstractArticleListPage {
                 });
             }
         }
-    }
+    ]
 }

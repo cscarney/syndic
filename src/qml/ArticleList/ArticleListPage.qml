@@ -12,8 +12,8 @@ AbstractArticleListPage {
     unreadFilter: globalSettings.unreadFilter
     property bool acceptFeedListAction: false
 
-    actions {
-        main: Kirigami.Action {
+    actions: [
+        Kirigami.Action {
             text: qsTr("Mark All Read")
             iconName: "checkmark"
             enabled: root.feed && root.feed.unreadCount > 0
@@ -21,53 +21,50 @@ AbstractArticleListPage {
                 root.model.markAllRead();
             }
             displayHint: Kirigami.DisplayHint.KeepVisible
-        }
+        },
 
-        contextualActions: [
-            Kirigami.Action {
-                 text: qsTr("Hide Read")
-                 iconName: "view-filter"
-                 checkable: true
-                 checked: globalSettings.unreadFilter
-                 displayHint: Kirigami.DisplayHint.AlwaysHide
-                 onCheckedChanged: globalSettings.unreadFilter = checked
-             },
+        Kirigami.Action {
+             text: qsTr("Hide Read")
+             iconName: "view-filter"
+             checkable: true
+             checked: globalSettings.unreadFilter
+             displayHint: Kirigami.DisplayHint.AlwaysHide
+             onCheckedChanged: globalSettings.unreadFilter = checked
+         },
 
-            Kirigami.Action {
-                text: qsTr("Edit…")
-                iconName: "document-edit"
-                displayHint: Kirigami.DisplayHint.AlwaysHide
-                visible: feed && feed.editable
-                onTriggered: {
-                    pageRow.pop(root)
-                    pageRow.push("qrc:/qml/EditFeedPage.qml", {targetFeed: feed, pageRow: root.pageRow, onDone:root.childPageChanged});
-                }
-            },
-
-            Kirigami.Action {
-                text: qsTr("Refresh")
-                iconName: "view-refresh"
-                displayHint: Kirigami.DisplayHint.AlwaysHide
-                enabled: feed && feed.status!=Feed.Updating
-                visible: !cancelAction.visible
-                onTriggered: {
-                    root.model.requestUpdate();
-                }
-            },
-
-            Kirigami.Action {
-                id: cancelAction
-                text: qsTr("Cancel")
-                iconName: "dialog-cancel"
-                displayHint: Kirigami.DisplayHint.AlwaysHide
-                visible: feed && feed.status===Feed.Updating
-                onTriggered: {
-                    feed.updater.abort()
-                }
+        Kirigami.Action {
+            text: qsTr("Edit…")
+            iconName: "document-edit"
+            displayHint: Kirigami.DisplayHint.AlwaysHide
+            visible: feed && feed.editable
+            onTriggered: {
+                pageRow.pop(root)
+                pageRow.push("qrc:/qml/EditFeedPage.qml", {targetFeed: feed, pageRow: root.pageRow, onDone:root.childPageChanged});
             }
+        },
 
-        ]
-    }
+        Kirigami.Action {
+            text: qsTr("Refresh")
+            iconName: "view-refresh"
+            displayHint: Kirigami.DisplayHint.AlwaysHide
+            enabled: feed && feed.status!=Feed.Updating
+            visible: !cancelAction.visible
+            onTriggered: {
+                root.model.requestUpdate();
+            }
+        },
+
+        Kirigami.Action {
+            id: cancelAction
+            text: qsTr("Cancel")
+            iconName: "dialog-cancel"
+            displayHint: Kirigami.DisplayHint.AlwaysHide
+            visible: feed && feed.status===Feed.Updating
+            onTriggered: {
+                feed.updater.abort()
+            }
+        }
+    ]
 
     function feedListAction() {
         // ignore the one that created us...

@@ -27,70 +27,67 @@ Kirigami.Page {
     title: currentArticle ? currentArticle.title || "" : ""
     titleDelegate: Item { }
 
-    actions {
-        main: Kirigami.Action {
+    actions: [
+        Kirigami.Action {
             text: qsTr("Open")
             iconName: "globe"
             onTriggered: Qt.openUrlExternally(currentArticle.url);
             displayHint: Kirigami.Settings.isMobile ? Kirigami.DisplayHint.IconOnly : Kirigami.DisplayHint.NoPreference
-        }
+        },
 
-        contextualActions: [
-            Kirigami.Action {
-                text: qsTr("Share")
-                iconName: "emblem-shared-symbolic-nomask"
-                displayHint: Kirigami.DisplayHint.AlwaysHide
-                enabled: !!currentArticle
-                onTriggered: platformHelper.share(currentArticle.url);
-            },
+        Kirigami.Action {
+            text: qsTr("Share")
+            iconName: "emblem-shared-symbolic-nomask"
+            displayHint: Kirigami.DisplayHint.AlwaysHide
+            enabled: !!currentArticle
+            onTriggered: platformHelper.share(currentArticle.url);
+        },
 
-            Kirigami.Action {
-                text: qsTr("Starred")
-                checkable: true
-                checked: currentArticle ? currentArticle.isStarred : false
-                enabled: !!currentArticle
-                onTriggered: currentArticle.isStarred = checked
-                iconName: checked ? "starred-symbolic-nomask" : "non-starred-symbolic-nomask"
-                displayHint: Kirigami.DisplayHint.IconOnly
-            },
+        Kirigami.Action {
+            text: qsTr("Starred")
+            checkable: true
+            checked: currentArticle ? currentArticle.isStarred : false
+            enabled: !!currentArticle
+            onTriggered: currentArticle.isStarred = checked
+            iconName: checked ? "starred-symbolic-nomask" : "non-starred-symbolic-nomask"
+            displayHint: Kirigami.DisplayHint.IconOnly
+        },
 
-            Kirigami.Action {
-                //: as in, don't mark this article as read
-                text: qsTr("Keep Unread")
-                iconName: "mail-mark-unread"
-                checkable: true
-                checked: currentArticle ? !currentArticle.isRead : true
-                enabled: !!currentArticle
-                onTriggered: currentArticle.isRead = !checked
-                displayHint: Kirigami.DisplayHint.AlwaysHide
-            },
+        Kirigami.Action {
+            //: as in, don't mark this article as read
+            text: qsTr("Keep Unread")
+            iconName: "mail-mark-unread"
+            checkable: true
+            checked: currentArticle ? !currentArticle.isRead : true
+            enabled: !!currentArticle
+            onTriggered: currentArticle.isRead = !checked
+            displayHint: Kirigami.DisplayHint.AlwaysHide
+        },
 
-            Kirigami.Action {
-                id: readableAction
-                iconName: "view-readermode"
-                text: qsTr("Show Web Content");
-                checkable: true
-                checked: swipeView.currentItem ? swipeView.currentItem.isReadable : false
-                enabled: swipeView.currentItem ? true : false
-                displayHint: Kirigami.DisplayHint.AlwaysHide
-                onTriggered: {
-                    if (swipeView.currentItem) {
-                        swipeView.currentItem.isReadable = !swipeView.currentItem.isReadable;
-                    }
+        Kirigami.Action {
+            id: readableAction
+            iconName: "view-readermode"
+            text: qsTr("Show Web Content");
+            checkable: true
+            checked: swipeView.currentItem ? swipeView.currentItem.isReadable : false
+            enabled: swipeView.currentItem ? true : false
+            displayHint: Kirigami.DisplayHint.AlwaysHide
+            onTriggered: {
+                if (swipeView.currentItem) {
+                    swipeView.currentItem.isReadable = !swipeView.currentItem.isReadable;
                 }
-            },
-
-            Kirigami.Action {
-                id: refreshReadableAction
-                text: qsTr("Reload Web Content")
-                iconName: "view-refresh"
-                visible: swipeView.currentItem && readableAction.checked
-                displayHint: Kirigami.DisplayHint.AlwaysHide
-                onTriggered: swipeView.currentItem.refreshReadable()
             }
+        },
 
-        ]
-    }
+        Kirigami.Action {
+            id: refreshReadableAction
+            text: qsTr("Reload Web Content")
+            iconName: "view-refresh"
+            visible: swipeView.currentItem && readableAction.checked
+            displayHint: Kirigami.DisplayHint.AlwaysHide
+            onTriggered: swipeView.currentItem.refreshReadable()
+        }
+    ]
 
     ListView {
         id: swipeView
