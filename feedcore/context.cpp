@@ -14,6 +14,7 @@
 #include "storage.h"
 #include <QDebug>
 #include <QFile>
+#include <QNetworkInformation>
 #include <QSet>
 
 namespace FeedCore
@@ -52,11 +53,10 @@ Context::Context(Storage *storage, QObject *parent)
     : QObject(parent)
     , d{std::make_unique<PrivData>(storage, this)}
 {
-    // TODO Qt6 migrate
-    /*
-    QObject::connect(&d->ncm, &QNetworkConfigurationManager::configurationAdded, d->updateScheduler, &Scheduler::clearErrors);
-    QObject::connect(&d->ncm, &QNetworkConfigurationManager::configurationChanged, d->updateScheduler, &Scheduler::clearErrors);
-    */
+    if (QNetworkInformation::loadDefaultBackend()) {
+        QObject::connect(QNetworkInformation::instance(), &QNetworkInformation::reachabilityChanged, d->updateScheduler, &Scheduler::clearErrors);
+        QObject::connect(QNetworkInformation::instance(), &QNetworkInformation::isBehindCaptivePortalChanged, d->updateScheduler, &Scheduler::clearErrors);
+    }
 
     Future<Feed *> *getFeeds{d->storage->getFeeds()};
     QObject::connect(getFeeds, &BaseFuture::finished, this, [this, getFeeds] {
