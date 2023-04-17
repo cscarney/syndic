@@ -29,7 +29,7 @@ AbstractArticleListPage {
              checkable: true
              checked: globalSettings.unreadFilter
              displayHint: Kirigami.DisplayHint.AlwaysHide
-             onCheckedChanged: globalSettings.unreadFilter = checked
+             onCheckedChanged: (checked)=>{globalSettings.unreadFilter = checked}
          },
 
         Kirigami.Action {
