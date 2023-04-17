@@ -10,7 +10,7 @@ import QtQuick.Layouts 1.12
 
 Kirigami.Page {
     id: root
-
+    required property var articleListController
     property string iconName: ""
     property string headingText: ""
     property string descriptionText: qsTr("Select an item to view it here")

@@ -50,6 +50,20 @@ Kirigami.ScrollablePage {
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Kirigami.Theme.backgroundColor: Kirigami.Theme.alternateBackgroundColor
 
+    // Interface exposed to child pages via the articleListController property
+    QtObject {
+        id: articleListController
+        readonly property ArticleListModel model: feedItemModel
+        readonly property int currentIndex: articleList.currentIndex
+
+        function nextItem () {
+            articleList.currentIndex++;
+            articleList.pageDownIfNecessary();
+        }
+
+        function previousItem () { articleList.currentIndex-- }
+    }
+
     Timer {
         id: pageOpenTimer
         interval: 0
@@ -59,7 +73,7 @@ Kirigami.ScrollablePage {
             }
             pageRow.currentIndex = root.Kirigami.ColumnView.index
             if (childPage) {
-                root.pageRow.push(childPage, {model: feedItemModel, parentList: articleList})
+                root.pageRow.push(childPage, {articleListController: articleListController})
             } else {
                 root.pageRow.pop(root);
             }
