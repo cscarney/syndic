@@ -148,7 +148,7 @@ Kirigami.Page {
         }
     }
 
-    Keys.onPressed: {
+    Keys.onPressed: (event)=>{
         if (!root.currentArticle) {
             return;
         }
