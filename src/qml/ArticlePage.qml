@@ -12,7 +12,7 @@ import com.rocksandpaper.syndic 1.0
 
 Kirigami.Page {
     id: root
-    required property ListView parentList
+    required property var articleListController
     readonly property bool inProgress: swipeView.currentItem ? !!swipeView.currentItem.inProgress : false;
     readonly property string hoveredLink: swipeView.currentItem ? swipeView.currentItem.hoveredLink || "" : ""
     readonly property Article currentArticle: swipeView.currentItem ? swipeView.currentItem.article : null;
@@ -97,8 +97,8 @@ Kirigami.Page {
         orientation: ListView.Horizontal
         highlightMoveDuration: 0
 
-        model: parentList.model
-        currentIndex: parentList.currentIndex
+        model: articleListController.model
+        currentIndex: articleListController.currentIndex
         snapMode: ListView.SnapOneItem
         highlightRangeMode: ListView.StrictlyEnforceRange
 
@@ -112,10 +112,10 @@ Kirigami.Page {
         }
 
         onCurrentIndexChanged: {
-            if (swipeView.currentIndex < parentList.currentIndex) {
-                previousItem();
-            } else if (swipeView.currentIndex > parentList.currentIndex) {
-                nextItem();
+            if (swipeView.currentIndex < articleListController.currentIndex) {
+                articleListController.previousItem();
+            } else if (swipeView.currentIndex > articleListController.currentIndex) {
+                articleListController.nextItem();
             }
         }
 
@@ -159,18 +159,18 @@ Kirigami.Page {
                 swipeView.currentItem.pageUpDown(0.9);
             } else {
                 root.Window.window.suspendAnimations();
-                nextItem();
+                articleListController.nextItem();
             }
             break;
 
         case Qt.Key_Left:
             root.Window.window.suspendAnimations();
-            previousItem();
+            articleListController.previousItem();
             break;
 
         case Qt.Key_Right:
             root.Window.window.suspendAnimations();
-            nextItem();
+            articleListController.nextItem();
             break;
 
         case Qt.Key_Up:
@@ -199,10 +199,4 @@ Kirigami.Page {
         }
         event.accepted = true
     }
-
-    function nextItem () {
-        parentList.currentIndex++;
-        parentList.pageDownIfNecessary();
-    }
-    function previousItem () { parentList.currentIndex-- }
 }
