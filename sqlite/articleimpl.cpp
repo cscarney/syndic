@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 #include "sqlite/articleimpl.h"
-#include "readability/readability.h"
 #include "sqlite/feedimpl.h"
 #include "sqlite/storageimpl.h"
 #include <QSqlQuery>
@@ -55,18 +54,8 @@ void ArticleImpl::requestContent()
     });
 }
 
-void ArticleImpl::requestReadableContent(Readability *readability)
-{
-    Future<QString> *fut = m_storage->getReadableContent(this);
-    QObject::connect(fut, &BaseFuture::finished, this, [this, fut, readability = QPointer<Readability>(readability)] {
-        if (!fut->result().isEmpty()) {
-            emit gotContent(fut->result().first(), ReadableContent);
-            return;
-        }
-
-        // no stored content, fall back to base impl
-        Article::requestReadableContent(readability);
-    });
+FeedCore::Future<QString> *ArticleImpl::getCachedReadableContent() {
+    return m_storage->getReadableContent(this);
 }
 
 void ArticleImpl::cacheReadableContent(const QString &readableContent)
