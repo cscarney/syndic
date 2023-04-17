@@ -26,5 +26,6 @@
         <file>qml/oldkirigami/ScrollablePage.qml</file>
         <file>qml/oldkirigami/RefreshableScrollView.qml</file>
         <file>qml/oldkirigami/KScrollView.qml</file>
+        <file>qml/ArticlePageSwipeViewItem.qml</file>
     </qresource>
 </RCC>
