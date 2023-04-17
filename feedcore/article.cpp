@@ -63,13 +63,7 @@ void Article::setUrl(const QUrl &url)
     }
 }
 
-Feed *Article::feed() const
-{
-    return m_feed;
-}
-
-void Article::requestReadableContent(Readability *readability)
-{
+void Article::reloadReadableContent(Readability *readability) {
     if (readability == nullptr) {
         requestContent();
         return;
@@ -85,13 +79,45 @@ void Article::requestReadableContent(Readability *readability)
     });
 }
 
-void Article::requestReadableContent(Context *context)
-{
-    requestReadableContent(context->getReadability());
+Feed *Article::feed() const { return m_feed; }
+
+void Article::requestReadableContent(Readability *readability,
+                                     bool forceReload) {
+    if (forceReload) {
+        reloadReadableContent(readability);
+        return;
+    }
+
+    Future<QString> *fut = getCachedReadableContent();
+    if (!fut) {
+        // no cache
+        reloadReadableContent(readability);
+        return;
+    }
+
+    QObject::connect(
+        fut, &BaseFuture::finished, this,
+        [this, fut, readability = QPointer<Readability>(readability)] {
+          if (!fut->result().isEmpty()) {
+            emit gotContent(fut->result().first(), ReadableContent);
+            return;
+          }
+
+          // cache miss
+          reloadReadableContent(readability);
+        });
+}
+
+void Article::requestReadableContent(Context *context, bool forceReload) {
+    requestReadableContent(context->getReadability(), forceReload);
 }
 
 void Article::cacheReadableContent(const QString & /* readableContent */)
 {
+}
+
+FeedCore::Future<QString> *Article::getCachedReadableContent() {
+    return nullptr;
 }
 
 void Article::setRead(bool isRead)

@@ -4,6 +4,8 @@
  */
 
 #pragma once
+#include "articleref.h"
+#include "future.h"
 #include <QDateTime>
 #include <QObject>
 #include <QPointer>
@@ -77,22 +79,36 @@ public:
      * available.  The gotContent signal will be emitted with the readable content, possibly
      * asyncronously.
      */
-    virtual void requestReadableContent(FeedCore::Readability *readability);
+    void requestReadableContent(FeedCore::Readability *readability,
+                                bool forceReload = false);
 
     /**
      * Requestes the content of the article's linked web page.
      *
      * This overload uses the readability implementation provided by \a context
      */
-    Q_INVOKABLE void requestReadableContent(FeedCore::Context *context);
+    Q_INVOKABLE void requestReadableContent(FeedCore::Context *context,
+                                            bool forceReload = false);
 
     /**
-     * Called by the base implementation of requestReadableContent when
-     * readability successfully extracts web content.
+     * Called by requestReadableContent when readability successfully extracts
+     * web content.
      *
      * The base implementation does nothing.
      */
     virtual void cacheReadableContent(const QString &readableContent);
+
+    /**
+     * Called by requestReadableContent before trying to extract web content.
+     *
+     * Derived classes that implement cacheReadableContent should override this
+     * to return the content from the cache. If there is no cached content,
+     * the implementation may return either nullptr, or yield an empty result
+     * set.
+     *
+     * The default implementation returns nullptr.
+     */
+    virtual FeedCore::Future<QString> *getCachedReadableContent();
 
     /**
      * Resolves a link relative to the article page
@@ -152,5 +168,6 @@ private:
     bool m_starred{false};
 
     void setDefaultTitle();
+    void reloadReadableContent(FeedCore::Readability *readability);
 };
 }
