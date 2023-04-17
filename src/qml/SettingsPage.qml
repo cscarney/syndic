@@ -6,7 +6,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.0
-import QtQuick.Dialogs 1.2
+import QtQuick.Dialogs
 import org.kde.kirigami 2.7 as Kirigami
 
 Kirigami.ScrollablePage {
@@ -154,9 +154,9 @@ Kirigami.ScrollablePage {
                 onClicked: {
                     dialogLoader.sourceComponent = dialogComponent;
                     const opmlDialog = dialogLoader.item;
-                    opmlDialog.selectExisting = true;
+                    opmlDialog.fileMode = FileDialog.SaveFile;
                     opmlDialog.acceptedFunc = function() {
-                        feedContext.importOpml(opmlDialog.fileUrl);
+                        feedContext.importOpml(opmlDialog.selectedFile);
                     }
                     opmlDialog.open();
                 }
@@ -167,9 +167,9 @@ Kirigami.ScrollablePage {
                 onClicked: {
                     dialogLoader.sourceComponent = dialogComponent;
                     const opmlDialog = dialogLoader.item;
-                    opmlDialog.selectExisting = false;
+                    opmlDialog.fileMode = FileDialog.OpenFile;
                     opmlDialog.acceptedFunc = function() {
-                        feedContext.exportOpml(opmlDialog.fileUrl);
+                        feedContext.exportOpml(opmlDialog.selectedFile);
                     }
                     opmlDialog.open();
                 }
