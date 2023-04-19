@@ -105,11 +105,13 @@ OK.ScrollablePage {
             contentItem: ArticleListEntry { }
             property var data: ref
             onClicked: {
-                if (articleList.currentIndex !== model.index) {
-                    articleList.currentIndex = model.index
-                } else {
-                    pageRow.currentIndex = root.Kirigami.ColumnView.index + 1
+                // close the feed editor if necessary
+                // TODO this should really emit a signal on articleListController instead of poking at feed editor internals,
+                // but articleListController doesn't exist until the Qt6 migration stuff lands.
+                if (pageRow.lastItem.onDone) {
+                    pageRow.lastItem.onDone();
                 }
+                pageRow.currentIndex = root.Kirigami.ColumnView.index + 1
             }
         } /*  delegate */
 
