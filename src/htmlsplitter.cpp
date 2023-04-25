@@ -264,8 +264,7 @@ QSize ImageBlock::sizeGuess()
 
     static QRegularExpression extractSize("([1-9]\\d{1,3})x([1-9]\\d{1,3})");
     QRegularExpressionMatch match;
-    m_src.lastIndexOf(extractSize, -1, &match);
-    if (!match.hasMatch()) {
+    if (m_src.lastIndexOf(extractSize, -1, &match) < 0) {
         m_sizeGuess = {0, 0};
     } else {
         m_sizeGuess = {static_cast<int>(std::stol(match.captured(1).toLatin1().data(), nullptr, kNumericAttributeBase)),
