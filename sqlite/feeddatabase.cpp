@@ -514,7 +514,7 @@ void FeedDatabase::updateFeedLastUpdate(qint64 feedId, const QDateTime &lastUpda
     if (lastUpdate.isValid()) {
         q.bindValue(":lastUpdate", lastUpdate.toSecsSinceEpoch());
     } else {
-        q.bindValue(":lastUpdate", QVariant(QVariant::LongLong));
+        q.bindValue(":lastUpdate", QVariant(QMetaType::fromType<qint64>()));
     }
     q.bindValue(":id", feedId);
     if (!q.exec()) {
