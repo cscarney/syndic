@@ -17,36 +17,18 @@ env:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/cscarney/syndic-builder
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install Dependencies
-      run: sudo apt-get update && sudo apt-get -y install cmake extra-cmake-modules libkf5config-dev libkf5dbusaddons-dev libkf5syndication-dev qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev qttools5-dev
-
-    - name: Cache QReadable
-      id: cache-qreadable
-      uses: actions/cache@v3
-      with:
-        path: qreadable
-        key: qreadable-${{env.QREADABLE_COMMIT}}
-        restore-keys: |
-          qreadable-
-
-    - name: Checkout QReadable
-      if: steps.cache-qreadable.outputs.cache-hit != 'true'
-      run: |
-        mkdir qreadable && cd qreadable && git init && git remote add origin https://invent.kde.org/ccarney/qreadable.git
-        git fetch --depth 1 origin ${{env.QREADABLE_COMMIT}} && git checkout FETCH_HEAD
-
-    - name: Build QReadable
-      working-directory: qreadable
-      run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-        cd build && make && sudo make install
-
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_INSTALL_PREFIX=/opt/kde/usr -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
