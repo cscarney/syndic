@@ -189,11 +189,6 @@ Kirigami.ApplicationWindow {
 
     }
 
-    Timer {
-        id: animationSuspendTimer
-        interval: Kirigami.Units.longDuration
-    }
-
     Connections {
         target: pageStack.currentItem
         ignoreUnknownSignals: true
@@ -238,9 +233,5 @@ Kirigami.ApplicationWindow {
 
     function selectFeed(feed) {
         feedList.selectFeed(feed);
-    }
-
-    function suspendAnimations() {
-        animationSuspendTimer.start();
     }
 }

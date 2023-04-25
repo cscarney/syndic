@@ -68,9 +68,6 @@ Kirigami.ScrollablePage {
         id: pageOpenTimer
         interval: 0
         onTriggered: {
-            if (pageRow.wideMode) {
-                root.Window.window.suspendAnimations();
-            }
             pageRow.currentIndex = root.Kirigami.ColumnView.index
             if (childPage) {
                 root.pageRow.push(childPage, {articleListController: articleListController})
