@@ -27,10 +27,13 @@ void PlatformHelper::configureBackgroundService(bool)
 
 #else
 #include <QCoreApplication>
-#include <QDBusInterface>
 #include <QDebug>
 #include <QDesktopServices>
 #include <QVariant>
+
+#ifdef KF6DBusAddons_FOUND
+#include <QDBusInterface>
+#endif
 
 PlatformHelper::PlatformHelper(QObject *parent)
     : QObject(parent)
