@@ -290,7 +290,7 @@ void ArticleListModel::getItems(Callback cb)
     }
     Future<ArticleRef> *q = d->feed->getArticles(unreadFilter());
     QObject::connect(q, &BaseFuture::finished, this, [this, cb, q] {
-        QVector result = q->result();
+        auto result = q->result();
         if (unreadFilter()) {
             removeReadArticles(result);
         }
