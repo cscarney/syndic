@@ -158,18 +158,15 @@ Kirigami.Page {
             if (!swipeView.currentItem.atYEnd) {
                 swipeView.currentItem.pageUpDown(0.9);
             } else {
-                root.Window.window.suspendAnimations();
                 articleListController.nextItem();
             }
             break;
 
         case Qt.Key_Left:
-            root.Window.window.suspendAnimations();
             articleListController.previousItem();
             break;
 
         case Qt.Key_Right:
-            root.Window.window.suspendAnimations();
             articleListController.nextItem();
             break;
 
