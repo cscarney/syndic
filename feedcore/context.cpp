@@ -41,7 +41,7 @@ namespace
 class AllItemsFeed : public AggregateFeed
 {
 public:
-    AllItemsFeed(Context *context, QObject *parent = nullptr);
+    explicit AllItemsFeed(Context *context, QObject *parent = nullptr);
     QFuture<ArticleRef> getArticles(bool unreadFilter) final;
 
 private:

@@ -41,7 +41,7 @@ void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
         return;
     }
     const QDateTime &updateTime{nextUpdate(feed)};
-    for (auto i = schedule.begin(); i != schedule.end(); ++i) {
+    for (auto i = schedule.cbegin(); i != schedule.cend(); ++i) {
         if (nextUpdate(*i) >= updateTime) {
             schedule.insert(i, feed);
             return;

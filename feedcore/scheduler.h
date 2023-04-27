@@ -35,13 +35,15 @@ public:
      */
     void unschedule(Feed *feedRef);
 
+    static constexpr const int kDefaultTimerResolution = 60000;
+
     /**
      * Start the update timer
      *
      * Once this method is called, stale feeds will be checked for every /resolution/ msecs
      * until stop() is called.
      */
-    void start(int resolution = 60000);
+    void start(int resolution = kDefaultTimerResolution);
 
     /**
      * Stop the update timer
