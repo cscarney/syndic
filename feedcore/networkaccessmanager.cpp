@@ -215,7 +215,7 @@ QNetworkReply *NetworkAccessManager::PrivData::makeRealReply(const WaitingReques
 
 void NetworkAccessManager::PrivData::removeWaiting(DeferredNetworkReply *reply)
 {
-    QVector<WaitingRequest>::const_iterator it = std::find_if(waitingRequests.begin(), waitingRequests.end(), [reply](const WaitingRequest &wr) {
+    QList<WaitingRequest>::const_iterator it = std::find_if(waitingRequests.begin(), waitingRequests.end(), [reply](const WaitingRequest &wr) {
         return wr.repl == reply;
     });
     if (it != waitingRequests.end()) {

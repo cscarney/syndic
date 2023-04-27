@@ -55,13 +55,13 @@ private slots:
 
     void testAllItemsFeedContainsAllItems()
     {
-        QVector<ArticleRef> allItems;
+        QList<ArticleRef> allItems;
         allItems << m_mockFeed1->m_articles;
         allItems << m_mockFeed2->m_articles;
         std::sort(allItems.begin(), allItems.end());
 
         auto getArticles = m_allItemsFeed->getArticles(false);
-        QVector<ArticleRef> aafItems;
+        QList<ArticleRef> aafItems;
         FeedCore::Future::safeThen(getArticles, this, [&aafItems](auto &getArticles) {
             aafItems = Future::safeResults(getArticles);
         });
@@ -77,11 +77,11 @@ private slots:
         m_mockFeed1->m_articles[0]->setRead(true);
         m_mockFeed2->m_articles[1]->setRead(true);
 
-        QVector<ArticleRef> unreadItems = {m_mockFeed1->m_articles[1], m_mockFeed2->m_articles[0]};
+        QList<ArticleRef> unreadItems = {m_mockFeed1->m_articles[1], m_mockFeed2->m_articles[0]};
         std::sort(unreadItems.begin(), unreadItems.end());
 
         auto getArticles = m_allItemsFeed->getArticles(true);
-        QVector<ArticleRef> aafItems;
+        QList<ArticleRef> aafItems;
         FeedCore::Future::safeThen(getArticles, this, [&aafItems](auto &getArticles) {
             aafItems = Future::safeResults(getArticles);
         });

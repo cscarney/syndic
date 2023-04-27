@@ -14,7 +14,7 @@ using namespace FeedCore;
 
 class MockStorage : public FeedCore::Storage
 {
-    QVector<Feed *> m_feeds;
+    QList<Feed *> m_feeds;
 
 public:
     QFuture<FeedCore::ArticleRef> getAll() override

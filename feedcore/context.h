@@ -202,7 +202,7 @@ signals:
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
-    void populateFeeds(const QVector<Feed *> &feeds);
-    void registerFeeds(const QVector<Feed *> &feeds);
+    void populateFeeds(const QList<Feed *> &feeds);
+    void registerFeeds(const QList<Feed *> &feeds);
 };
 }

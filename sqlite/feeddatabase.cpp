@@ -41,7 +41,7 @@ static bool exec(QSqlDatabase &db, const QString &queryString)
     return true;
 }
 
-static bool exec(QSqlDatabase &db, const QVector<QString> &queries)
+static bool exec(QSqlDatabase &db, const QList<QString> &queries)
 {
     for (const auto &q : queries) {
         if (!exec(db, q)) {

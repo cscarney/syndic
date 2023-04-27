@@ -1,7 +1,7 @@
 #pragma once
 #include "articleref.h"
 #include "feed.h"
-#include <QVector>
+#include <QList>
 
 class MockFeed : public FeedCore::Feed
 {
@@ -19,7 +19,7 @@ public:
         using Feed::Updater::Updater;
     };
     Updater m_updater;
-    QVector<FeedCore::ArticleRef> m_articles;
+    QList<FeedCore::ArticleRef> m_articles;
 
     Feed::Updater *updater() override
     {

@@ -58,7 +58,7 @@ class ArticleListModel::RowRemoveHelper
         int length = last - first + 1;
         model->beginRemoveRows(QModelIndex(), first, last);
         auto &items = model->d->items;
-        items.erase(items.begin() + first, items.begin() + last + 1);
+        items.erase(items.cbegin() + first, items.cbegin() + last + 1);
         model->endRemoveRows();
         clear();
         return length;
@@ -149,7 +149,7 @@ void ArticleListModel::componentComplete()
     });
 }
 
-void ArticleListModel::onRefreshFinished(const QVector<ArticleRef> &result)
+void ArticleListModel::onRefreshFinished(const QList<ArticleRef> &result)
 {
     beginResetModel();
     d->items = {};
@@ -171,7 +171,7 @@ static int indexForItem(const QList<QmlArticleRef> &list, const ArticleRef &item
     return it - list.constBegin();
 }
 
-void ArticleListModel::onMergeFinished(const QVector<ArticleRef> &result)
+void ArticleListModel::onMergeFinished(const QList<ArticleRef> &result)
 {
     auto &items = d->items;
     QSet<Article *> knownItems(items.constBegin(), items.constEnd());
@@ -274,7 +274,7 @@ void ArticleListModel::requestUpdate()
     removeRead();
 }
 
-static void removeReadArticles(QVector<ArticleRef> &v)
+static void removeReadArticles(QList<ArticleRef> &v)
 {
     auto it = std::remove_if(v.begin(), v.end(), [](const ArticleRef &i) {
         return i->isRead();
@@ -286,7 +286,7 @@ template<typename Callback>
 void ArticleListModel::getItems(Callback cb)
 {
     if (!d->feed) {
-        cb(QVector<ArticleRef>{});
+        cb(QList<ArticleRef>{});
         return;
     }
     QFuture<ArticleRef> q = d->feed->getArticles(unreadFilter());

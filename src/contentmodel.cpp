@@ -65,7 +65,7 @@ public:
     void run() override
     {
         QMutexLocker lock(&m_runLock);
-        const QVector<ContentBlock *> blocks = HtmlSplitter::cleanHtml(m_text, nullptr);
+        const QList<ContentBlock *> blocks = HtmlSplitter::cleanHtml(m_text, nullptr);
         for (ContentBlock *block : blocks) {
             if (m_cancelled) {
                 return;

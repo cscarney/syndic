@@ -255,8 +255,8 @@ void Context::exportOpml(const QUrl &url) const
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         return;
     }
-    QVector<Feed *> uncategorizedFeeds;
-    QMap<QString, QVector<Feed *>> categories;
+    QList<Feed *> uncategorizedFeeds;
+    QMap<QString, QList<Feed *>> categories;
     for (Feed *feed : qAsConst(d->feeds)) {
         QString category = feed->category();
         if (category.isEmpty()) {
@@ -351,13 +351,13 @@ void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
     emit defaultUpdateEnabledChanged();
 }
 
-void Context::populateFeeds(const QVector<Feed *> &feeds)
+void Context::populateFeeds(const QList<Feed *> &feeds)
 {
     registerFeeds(feeds);
     emit feedListPopulated(d->feeds.size());
 }
 
-void Context::registerFeeds(const QVector<Feed *> &feeds)
+void Context::registerFeeds(const QList<Feed *> &feeds)
 {
     const QDateTime timestamp = QDateTime::currentDateTime();
     for (const auto &feed : feeds) {

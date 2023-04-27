@@ -91,10 +91,10 @@ class testStoreAndRetrieveFeed : public QObject
         return QUrl::fromLocalFile(absolutePath);
     }
 
-    QVector<FeedCore::ArticleRef> getArticles(FeedCore::Feed *feed)
+    QList<FeedCore::ArticleRef> getArticles(FeedCore::Feed *feed)
     {
         auto articlesFuture = feed->getArticles(true);
-        QVector<FeedCore::ArticleRef> articles;
+        QList<FeedCore::ArticleRef> articles;
         FeedCore::Future::safeThen(articlesFuture, this, [&articles](auto &articlesFuture) {
             auto result = FeedCore::Future::safeResults(articlesFuture);
             qDebug() << "got articles" << result;

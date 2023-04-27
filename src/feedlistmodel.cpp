@@ -7,10 +7,10 @@
 #include "context.h"
 #include "iconprovider.h"
 #include "starreditemsfeed.h"
+#include <QList>
 #include <QPointer>
 #include <QString>
 #include <QTimer>
-#include <QVector>
 #include <algorithm>
 
 using namespace FeedCore;
@@ -98,7 +98,7 @@ public:
     Context *context = nullptr;
     QSharedPointer<Feed> allItems = nullptr;
     StarredItemsFeed *starredItems = nullptr;
-    QVector<FeedCore::Feed *> feeds;
+    QList<FeedCore::Feed *> feeds;
     Sort sortMode = Name;
     std::unique_ptr<SortHelper> sortHelper = std::make_unique<NameSortHelper>();
 
@@ -280,16 +280,16 @@ void FeedListModel::onFeedAdded(FeedCore::Feed *feed)
 void FeedListModel::onFeedSortValueChanged(Feed *feed)
 {
     const auto comparator = d->sortHelper->comparator;
-    const QVector<Feed *>::iterator it = std::find(d->feeds.begin(), d->feeds.end(), feed);
+    const QList<Feed *>::iterator it = std::find(d->feeds.begin(), d->feeds.end(), feed);
     if (it == d->feeds.end()) {
         // feed not found
         return;
     }
 
-    const QVector<Feed *>::iterator next_it = it + 1;
+    const QList<Feed *>::iterator next_it = it + 1;
     if (next_it != d->feeds.end() && comparator(*next_it, feed)) {
         // move toward end
-        const QVector<Feed *>::iterator newLocation = std::lower_bound(next_it, d->feeds.end(), feed, comparator);
+        const QList<Feed *>::iterator newLocation = std::lower_bound(next_it, d->feeds.end(), feed, comparator);
         int oldRow = int(it - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         int newRow = int(newLocation - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
@@ -298,10 +298,10 @@ void FeedListModel::onFeedSortValueChanged(Feed *feed)
         return;
     }
 
-    const QVector<Feed *>::iterator prev_it = it - 1;
+    const QList<Feed *>::iterator prev_it = it - 1;
     if (it != d->feeds.begin() && comparator(feed, *prev_it)) {
         // move toward beginning
-        const QVector<Feed *>::iterator newLocation = std::lower_bound(d->feeds.begin(), it, feed, comparator);
+        const QList<Feed *>::iterator newLocation = std::lower_bound(d->feeds.begin(), it, feed, comparator);
         int oldRow = int(it - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         int newRow = int(newLocation - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);

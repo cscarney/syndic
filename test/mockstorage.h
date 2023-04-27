@@ -6,7 +6,7 @@
 class MockStorage : public FeedCore::Storage
 {
 public:
-    QVector<MockFeed *> m_feeds;
+    QList<MockFeed *> m_feeds;
 
     QFuture<FeedCore::ArticleRef> getAll() override
     {

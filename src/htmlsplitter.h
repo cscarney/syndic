@@ -24,14 +24,14 @@ public:
      *
      * The resulting block objects are owned by /blockParent/.
      */
-    static QVector<ContentBlock *> cleanHtml(const QString &input, QObject *blockParent = nullptr);
+    static QList<ContentBlock *> cleanHtml(const QString &input, QObject *blockParent = nullptr);
 
 private:
     explicit HtmlSplitter(const QString &input, QObject *blockParent = nullptr);
     void visitElementOpen(GumboNode *node) override;
     void visitText(GumboNode *node) override;
     void visitElementClose(GumboNode *node) override;
-    QVector<ContentBlock *> m_blocks;
+    QList<ContentBlock *> m_blocks;
     TextBlock *m_currentTextBlock{nullptr};
     bool m_haveTextContent{false};
     QStringList m_openElements;

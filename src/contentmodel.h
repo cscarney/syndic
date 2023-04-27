@@ -42,6 +42,6 @@ protected:
 private:
     class ParseJob;
     QString m_text;
-    QVector<ContentBlock *> m_blocks;
+    QList<ContentBlock *> m_blocks;
     std::unique_ptr<ParseJob> m_job;
 };

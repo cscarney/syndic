@@ -95,8 +95,8 @@ private:
     void onItemAdded(const FeedCore::ArticleRef &item);
     void insertAndNotify(int index, const FeedCore::ArticleRef &item);
     void refreshMerge();
-    void onRefreshFinished(const QVector<FeedCore::ArticleRef> &result);
-    void onMergeFinished(const QVector<FeedCore::ArticleRef> &result);
+    void onRefreshFinished(const QList<FeedCore::ArticleRef> &result);
+    void onMergeFinished(const QList<FeedCore::ArticleRef> &result);
     void onStatusChanged();
     class RowRemoveHelper;
 };

@@ -21,7 +21,7 @@ HtmlSplitter::HtmlSplitter(const QString &input, QObject *blockParent)
     walk();
 }
 
-QVector<ContentBlock *> HtmlSplitter::cleanHtml(const QString &input, QObject *blockParent)
+QList<ContentBlock *> HtmlSplitter::cleanHtml(const QString &input, QObject *blockParent)
 {
     return HtmlSplitter(input, blockParent).m_blocks;
 }

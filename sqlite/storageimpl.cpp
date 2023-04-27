@@ -10,8 +10,8 @@
 #include "sqlite/feedimpl.h"
 #include <QCoreApplication>
 #include <QEvent>
+#include <QList>
 #include <QTimer>
-#include <QVector>
 #include <Syndication/Person>
 #include <utility>
 using namespace FeedCore;

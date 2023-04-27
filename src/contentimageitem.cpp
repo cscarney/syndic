@@ -26,7 +26,7 @@ ContentImageItem::~ContentImageItem()
 
 QSGNode *ContentImageItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData * /* data */)
 {
-    auto *imageNode = static_cast<QSGImageNode *>(node);
+    auto *imageNode = static_cast<QSGImageNode *>(node); // NOLINT dynamic_cast with Qt-provided type doesn't work on android
     if (m_needsUpdate) {
         imageNode = window()->createImageNode();
         auto *texture = window()->createTextureFromImage(m_image);
