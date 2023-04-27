@@ -4,6 +4,7 @@
  */
 
 #pragma once
+#include "articleref.h"
 #include "future.h"
 #include <QDateTime>
 #include <QObject>
@@ -134,7 +135,7 @@ public:
      *
      * If unreadFilter is true, only unread articles are returned.
      */
-    virtual Future<ArticleRef> *getArticles(bool unreadFilter) = 0;
+    virtual QFuture<ArticleRef> getArticles(bool unreadFilter) = 0;
 
     virtual Updater *updater() = 0;
 

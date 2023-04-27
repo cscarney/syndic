@@ -4,6 +4,7 @@
  */
 
 #pragma once
+#include "articleref.h"
 #include "future.h"
 #include <QObject>
 #include <Syndication/Feed>
@@ -19,10 +20,10 @@ class Storage : public QObject
 public:
     explicit Storage(QObject *parent = nullptr)
         : QObject(parent){};
-    virtual Future<ArticleRef> *getAll() = 0;
-    virtual Future<ArticleRef> *getUnread() = 0;
-    virtual Future<ArticleRef> *getStarred() = 0;
-    virtual Future<Feed *> *getFeeds() = 0;
-    virtual Future<Feed *> *storeFeed(Feed *feed) = 0;
+    virtual QFuture<ArticleRef> getAll() = 0;
+    virtual QFuture<ArticleRef> getUnread() = 0;
+    virtual QFuture<ArticleRef> getStarred() = 0;
+    virtual QFuture<Feed *> getFeeds() = 0;
+    virtual QFuture<Feed *> storeFeed(Feed *feed) = 0;
 };
 }

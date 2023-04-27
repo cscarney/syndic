@@ -26,10 +26,12 @@ public:
         return &m_updater;
     }
 
-    FeedCore::Future<FeedCore::ArticleRef> *getArticles(bool /*unreadFilter*/) override
+    QFuture<FeedCore::ArticleRef> getArticles(bool /*unreadFilter*/) override
     {
-        return FeedCore::Future<FeedCore::ArticleRef>::yield(this, [this](auto *op) {
-            op->setResult(QVector<FeedCore::ArticleRef>(m_articles));
+        return FeedCore::Future::yield<FeedCore::ArticleRef>(this, [this](auto &op) {
+            for (const auto &item : std::as_const(m_articles)) {
+                op.addResult(item);
+            }
         });
     }
 

@@ -19,21 +19,21 @@ class StorageImpl : public FeedCore::Storage
 public:
     explicit StorageImpl(const QString &filePath);
     ~StorageImpl();
-    FeedCore::Future<FeedCore::ArticleRef> *getById(qint64 id);
-    FeedCore::Future<FeedCore::ArticleRef> *getByFeed(FeedImpl *feedId);
-    FeedCore::Future<FeedCore::ArticleRef> *getUnreadByFeed(FeedImpl *feedId);
-    FeedCore::Future<FeedCore::ArticleRef> *storeArticle(FeedImpl *feed, const Syndication::ItemPtr &item);
-    FeedCore::Future<QString> *getContent(ArticleImpl *article);
-    FeedCore::Future<QString> *getReadableContent(ArticleImpl *article);
+    QFuture<FeedCore::ArticleRef> getById(qint64 id);
+    QFuture<FeedCore::ArticleRef> getByFeed(FeedImpl *feedId);
+    QFuture<FeedCore::ArticleRef> getUnreadByFeed(FeedImpl *feedId);
+    QFuture<FeedCore::ArticleRef> storeArticle(FeedImpl *feed, const Syndication::ItemPtr &item);
+    QFuture<QString> getContent(ArticleImpl *article);
+    QFuture<QString> getReadableContent(ArticleImpl *article);
     void cacheReadableContent(ArticleImpl *article, const QString &readableContent);
     void onArticleReadChanged(ArticleImpl *article);
     void onArticleStarredChanged(ArticleImpl *article);
 
-    FeedCore::Future<FeedCore::ArticleRef> *getAll() final;
-    FeedCore::Future<FeedCore::ArticleRef> *getUnread() final;
-    FeedCore::Future<FeedCore::ArticleRef> *getStarred() final;
-    FeedCore::Future<FeedCore::Feed *> *getFeeds() final;
-    FeedCore::Future<FeedCore::Feed *> *storeFeed(FeedCore::Feed *feed) final;
+    QFuture<FeedCore::ArticleRef> getAll() final;
+    QFuture<FeedCore::ArticleRef> getUnread() final;
+    QFuture<FeedCore::ArticleRef> getStarred() final;
+    QFuture<FeedCore::Feed *> getFeeds() final;
+    QFuture<FeedCore::Feed *> storeFeed(FeedCore::Feed *feed) final;
     void listenForChanges(FeedImpl *feed);
     void expire(FeedImpl *feed, const QDateTime &olderThan);
 
@@ -45,17 +45,17 @@ private:
     FeedCore::ObjectFactory<qint64, FeedImpl> m_feedFactory;
     FeedCore::SharedFactory<qint64, ArticleImpl> m_articleFactory;
     bool m_hasTransaction{false};
-    void appendFeedResults(FeedCore::Future<FeedCore::Feed *> *op, FeedQuery &q);
-    void appendArticleResults(FeedCore::Future<FeedCore::ArticleRef> *op, ItemQuery &q);
+    void appendFeedResults(QPromise<FeedCore::Feed *> &op, FeedQuery &q);
+    void appendArticleResults(QPromise<FeedCore::ArticleRef> &op, ItemQuery &q);
     void onFeedRequestDelete(FeedImpl *feed);
     void ensureTransaction();
     const static int CommitEvent;
 
     template<typename Payload, typename Func>
-    FeedCore::Future<Payload> *runInTransaction(Func func)
+    QFuture<Payload> runInTransaction(Func func)
     {
         ensureTransaction();
-        return FeedCore::Future<Payload>::yield(this, func);
+        return FeedCore::Future::yield<Payload>(this, func);
     }
 };
 }

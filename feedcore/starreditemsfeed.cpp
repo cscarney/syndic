@@ -29,7 +29,7 @@ StarredItemsFeed::StarredItemsFeed(FeedCore::Context *context, const QString &na
     setName(name);
 }
 
-Future<ArticleRef> *StarredItemsFeed::getArticles(bool /*unused*/)
+QFuture<ArticleRef> StarredItemsFeed::getArticles(bool /*unused*/)
 {
     return m_context->getStarred();
 }

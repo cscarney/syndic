@@ -67,7 +67,7 @@ public:
         return m_urlStringStatus;
     }
 
-    Future<ArticleRef> *getArticles(bool unreadFilter) final;
+    QFuture<ArticleRef> getArticles(bool unreadFilter) final;
 
     Feed *targetFeed() const;
     void setTargetFeed(Feed *targetFeed);

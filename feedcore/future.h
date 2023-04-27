@@ -4,108 +4,50 @@
  */
 
 #pragma once
-#include "articleref.h"
+#include <QFuture>
 #include <QObject>
-#include <QTimer>
-#include <QVector>
 
-namespace FeedCore
+namespace FeedCore::Future
 {
-class BaseFuture : public QObject
+/**
+ **
+ * Create a QPromise/QFuture pair with a single-shot timer
+ */
+template<typename T, typename Callable>
+QFuture<T> yield(QObject *context, Callable call)
 {
-    Q_OBJECT
-signals:
-    void finished();
-};
+    QPromise<T> promise;
+    QFuture result = promise.future();
+    QMetaObject::invokeMethod(
+        context,
+        [context = QPointer<QObject>(context), promise = std::move(promise), call]() mutable {
+            promise.start();
+            call(promise);
+            promise.finish();
+        },
+        Qt::QueuedConnection);
+    return result;
+}
 
 /**
- * A quick-and-dirty single-thread async class.
- *
- * This should probably be replaced with QPromise/QFuture at some point.
+ * A wrapper around QFuture::then that guards against the context
+ * object being destroyed before the future completes.
  */
-template<typename T>
-class Future : public BaseFuture
+template<typename T, typename Functor>
+void safeThen(QFuture<T> &f, QObject *target, Functor func)
 {
-public:
-    const QVector<T> &result()
-    {
-        return m_result;
-    };
-    void setResult(const QVector<T> &&result)
-    {
-        m_result = result;
-    };
-    void setResult(const T &result)
-    {
-        m_result = {result};
-    };
-    void setResult()
-    {
-        m_result = {};
-    };
-    void appendResult(const T &result)
-    {
-        m_result << result;
-    };
-
-    template<typename Callable>
-    static Future<T> *yield(QObject *context, Callable call)
-    {
-        auto *op = new Future<T>;
-        QTimer::singleShot(0, context, [op, call] {
-            call(op);
-            op->finish();
-        });
-        return op;
-    }
-
-protected:
-    void finish()
-    {
-        emit finished();
-        delete this;
-    }
-
-private:
-    QVector<T> m_result;
-};
-
-template<typename T>
-class UnionFuture : public Future<T>
-{
-public:
-    void addFuture(Future<T> *f)
-    {
-        m_pending++;
-        QObject::connect(f, &BaseFuture::finished, this, [this, f] {
-            m_pending--;
-            for (auto i : f->result()) {
-                this->appendResult(i);
-            }
-            if (!m_pending) {
-                this->finish();
-            }
-        });
-    }
-
-    template<typename Callable>
-    static UnionFuture<T> *create(Callable call)
-    {
-        auto *op = new UnionFuture<T>;
-        call(op);
-        op->scheduleIfEmpty();
-        return op;
-    }
-
-private:
-    int m_pending{0};
-    UnionFuture() = default;
-
-    void scheduleIfEmpty()
-    {
-        if (!m_pending) {
-            QTimer::singleShot(0, this, &UnionFuture<T>::finish);
+    f.then([target = QPointer<QObject>(target), func](QFuture<T> f) {
+        if (target) {
+            QMetaObject::invokeMethod(target.get(), [f, func] {
+                func(f);
+            });
         }
-    }
-};
+    });
+}
+
+template<typename T>
+QList<T> safeResults(const QFuture<T> &f)
+{
+    return f.isValid() ? f.results() : QList<T>();
+}
 }

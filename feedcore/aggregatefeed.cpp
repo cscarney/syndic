@@ -47,13 +47,27 @@ Feed::Updater *AggregateFeed::updater()
     return m_updater;
 }
 
-FeedCore::Future<ArticleRef> *AggregateFeed::getArticles(bool unreadOnly)
+QFuture<ArticleRef> AggregateFeed::getArticles(bool unreadOnly)
 {
-    return UnionFuture<ArticleRef>::create([this, unreadOnly](auto *op) {
-        for (auto *f : std::as_const(m_feeds)) {
-            op->addFuture(f->getArticles(unreadOnly));
+    QList<QFuture<ArticleRef>> sourceOps;
+    for (auto *f : std::as_const(m_feeds)) {
+        sourceOps.append(f->getArticles(unreadOnly));
+    }
+    auto aggregateOp = QtFuture::whenAll(sourceOps.begin(), sourceOps.end());
+
+    QPromise<ArticleRef> p;
+    auto result = p.future();
+    aggregateOp.then([p = std::move(p)](const QList<QFuture<ArticleRef>> &results) mutable {
+        p.start();
+        for (const auto &resultFuture : results) {
+            const auto result = Future::safeResults(resultFuture);
+            for (const auto &eachArticle : result) {
+                p.addResult(eachArticle);
+            }
         }
+        p.finish();
     });
+    return result;
 }
 
 void AggregateFeed::addFeed(Feed *feed)

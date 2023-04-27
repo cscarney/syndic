@@ -17,7 +17,7 @@ class StarredItemsFeed : public Feed
 {
 public:
     StarredItemsFeed(Context *context, const QString &name, QObject *parent = nullptr);
-    Future<ArticleRef> *getArticles(bool unreadFilter) final;
+    QFuture<ArticleRef> getArticles(bool unreadFilter) final;
     Updater *updater() final;
 
 private:

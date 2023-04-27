@@ -19,13 +19,13 @@ using namespace SqliteStorage;
 
 const int StorageImpl::CommitEvent = QEvent::registerEventType();
 
-void StorageImpl::appendArticleResults(Future<ArticleRef> *op, ItemQuery &q)
+void StorageImpl::appendArticleResults(QPromise<ArticleRef> &op, ItemQuery &q)
 {
     while (q.next()) {
         const auto &feed = m_feedFactory.getInstance(q.feed(), this);
         const auto &item = m_articleFactory.getInstance(q.id(), this, feed, q);
         item->updateFromQuery(q);
-        op->appendResult(item);
+        op.addResult(item);
     }
 }
 
@@ -48,25 +48,25 @@ void StorageImpl::ensureTransaction()
     QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>(CommitEvent)), Qt::LowEventPriority);
 }
 
-Future<ArticleRef> *StorageImpl::getAll()
+QFuture<ArticleRef> StorageImpl::getAll()
 {
-    return Future<ArticleRef>::yield(this, [this](auto *op) {
+    return Future::yield<ArticleRef>(this, [this](auto &op) {
         ItemQuery q{m_db.selectAllItems()};
         appendArticleResults(op, q);
     });
 }
 
-Future<ArticleRef> *StorageImpl::getUnread()
+QFuture<ArticleRef> StorageImpl::getUnread()
 {
-    return Future<ArticleRef>::yield(this, [this](auto *op) {
+    return Future::yield<ArticleRef>(this, [this](auto &op) {
         ItemQuery q{m_db.selectUnreadItems()};
         appendArticleResults(op, q);
     });
 }
 
-FeedCore::Future<ArticleRef> *StorageImpl::getStarred()
+QFuture<ArticleRef> StorageImpl::getStarred()
 {
-    return Future<ArticleRef>::yield(this, [this](auto *op) {
+    return Future::yield<ArticleRef>(this, [this](auto &op) {
         ItemQuery q{m_db.selectStarredItems()};
         appendArticleResults(op, q);
     });
@@ -84,36 +84,36 @@ StorageImpl::~StorageImpl()
     }
 }
 
-Future<ArticleRef> *StorageImpl::getById(qint64 id)
+QFuture<ArticleRef> StorageImpl::getById(qint64 id)
 {
-    return Future<ArticleRef>::yield(this, [this, id](auto *op) {
+    return Future::yield<ArticleRef>(this, [this, id](auto &op) {
         ItemQuery q{m_db.selectItem(id)};
         appendArticleResults(op, q);
     });
 }
 
-Future<ArticleRef> *StorageImpl::getByFeed(FeedImpl *feed)
+QFuture<ArticleRef> StorageImpl::getByFeed(FeedImpl *feed)
 {
     const qint64 feedId{feed->id()};
-    return Future<ArticleRef>::yield(this, [this, feedId](auto *op) {
+    return Future::yield<ArticleRef>(this, [this, feedId](auto &op) {
         ItemQuery q = m_db.selectItemsByFeed(feedId);
         appendArticleResults(op, q);
     });
 }
 
-Future<ArticleRef> *StorageImpl::getUnreadByFeed(FeedImpl *feed)
+QFuture<ArticleRef> StorageImpl::getUnreadByFeed(FeedImpl *feed)
 {
     const qint64 feedId = feed->id();
-    return Future<ArticleRef>::yield(this, [this, feedId](auto *op) {
+    return Future::yield<ArticleRef>(this, [this, feedId](auto &op) {
         ItemQuery q{m_db.selectUnreadItemsByFeed(feedId)};
         appendArticleResults(op, q);
     });
 }
 
-Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication::ItemPtr &item)
+QFuture<ArticleRef> StorageImpl::storeArticle(FeedImpl *feed, const Syndication::ItemPtr &item)
 {
     const qint64 feedId{feed->id()};
-    return runInTransaction<ArticleRef>([this, item, feedId](auto *op) {
+    return runInTransaction<ArticleRef>([this, item, feedId](auto &op) {
         const auto &itemId = m_db.selectItemId(feedId, item->id());
         const auto &authors = item->authors();
         const auto &authorName = authors.empty() ? "" : authors[0]->name();
@@ -136,8 +136,6 @@ Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication:
             if (m_articleFactory.hasInstance(*itemId)) {
                 getById(*itemId);
             }
-
-            op->setResult();
             return;
         }
 
@@ -146,7 +144,6 @@ Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication:
         }
         const auto &newId = m_db.insertItem(feedId, item->id(), item->title(), authorName, date, item->link(), content);
         if (!newId) {
-            op->setResult();
             return;
         }
         ItemQuery result{m_db.selectItem(*newId)};
@@ -154,21 +151,21 @@ Future<ArticleRef> *StorageImpl::storeArticle(FeedImpl *feed, const Syndication:
     });
 }
 
-FeedCore::Future<QString> *StorageImpl::getContent(ArticleImpl *article)
+QFuture<QString> StorageImpl::getContent(ArticleImpl *article)
 {
     qint64 id = article->id();
-    return Future<QString>::yield(this, [this, id](auto *op) {
-        op->appendResult(m_db.selectItemContent(id));
+    return Future::yield<QString>(this, [this, id](auto &op) {
+        op.addResult(m_db.selectItemContent(id));
     });
 }
 
-FeedCore::Future<QString> *StorageImpl::getReadableContent(ArticleImpl *article)
+QFuture<QString> StorageImpl::getReadableContent(ArticleImpl *article)
 {
     qint64 id = article->id();
-    return Future<QString>::yield(this, [this, id](auto *op) {
+    return Future::yield<QString>(this, [this, id](auto &op) {
         QString readableContent = m_db.selectItemReadableContent(id);
         if (!readableContent.isEmpty()) {
-            op->appendResult(readableContent);
+            op.addResult(readableContent);
         }
     });
 }
@@ -196,18 +193,18 @@ void StorageImpl::onArticleStarredChanged(ArticleImpl *article)
     m_db.updateItemStarred(itemId, isStarred);
 }
 
-void StorageImpl::appendFeedResults(Future<Feed *> *op, FeedQuery &q)
+void StorageImpl::appendFeedResults(QPromise<Feed *> &op, FeedQuery &q)
 {
     while (q.next()) {
         auto *ref = m_feedFactory.getInstance(q.id(), this);
         ref->updateFromQuery(q);
-        op->appendResult(ref);
+        op.addResult(ref);
     }
 }
 
-Future<Feed *> *StorageImpl::getFeeds()
+QFuture<Feed *> StorageImpl::getFeeds()
 {
-    return Future<Feed *>::yield(this, [this](auto *op) {
+    return Future::yield<Feed *>(this, [this](auto &op) {
         FeedQuery q{m_db.selectAllFeeds()};
         appendFeedResults(op, q);
     });
@@ -238,17 +235,16 @@ static qint64 packFeedExpireAge(Feed *feed)
     return packModeValue(feed->expireMode(), feed->expireAge());
 }
 
-Future<Feed *> *StorageImpl::storeFeed(Feed *feed)
+QFuture<Feed *> StorageImpl::storeFeed(Feed *feed)
 {
     const QUrl &url = feed->url();
     const QString &name = feed->name();
     const QString &category = feed->category();
     const qint64 updateInterval = packFeedUpdateInterval(feed);
     const qint64 expireAge = packFeedExpireAge(feed);
-    return runInTransaction<FeedCore::Feed *>([this, url, name, category, updateInterval, expireAge](auto *op) {
+    return runInTransaction<FeedCore::Feed *>([this, url, name, category, updateInterval, expireAge](auto &op) {
         const auto &insertId = m_db.insertFeed(url);
         if (!insertId) {
-            op->setResult();
             return;
         }
         m_db.updateFeedUpdateInterval(*insertId, updateInterval);

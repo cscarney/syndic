@@ -92,20 +92,21 @@ void Article::requestReadableContent(Readability *readability, bool forceReload)
         return;
     }
 
-    Future<QString> *fut = getCachedReadableContent();
-    if (!fut) {
+    QFuture<QString> fut = getCachedReadableContent();
+    if (fut.isCanceled()) {
         // no cache
         reloadReadableContent(readability);
         return;
     }
 
-    QObject::connect(fut, &BaseFuture::finished, this, [this, fut, readability = QPointer<Readability>(readability)] {
-        if (!fut->result().isEmpty()) {
-            emit gotContent(fut->result().first(), ReadableContent);
+    Future::safeThen(fut, this, [this, readability = QPointer<Readability>(readability)](auto &fut) {
+        if (fut.isValid() && fut.resultCount() > 0) {
+            emit gotContent(fut.result(), ReadableContent);
             return;
         }
 
         // cache miss
+        // TODO make sure we actually get here
         reloadReadableContent(readability);
     });
 }
@@ -119,9 +120,9 @@ void Article::cacheReadableContent(const QString & /* readableContent */)
 {
 }
 
-FeedCore::Future<QString> *Article::getCachedReadableContent()
+QFuture<QString> Article::getCachedReadableContent()
 {
-    return nullptr;
+    return QFuture<QString>();
 }
 
 void Article::setRead(bool isRead)
