@@ -13,8 +13,8 @@ import com.rocksandpaper.syndic 1.0
 Kirigami.Page {
     id: root
     required property var articleListController
-    readonly property bool inProgress: swipeView.currentItem ? !!swipeView.currentItem.inProgress : false;
-    readonly property string hoveredLink: swipeView.currentItem ? swipeView.currentItem.hoveredLink || "" : ""
+    readonly property bool inProgress: !!swipeView.currentItem?.inProgress
+    readonly property string hoveredLink: swipeView.currentItem?.hoveredLink ?? ""
     readonly property Article currentArticle: swipeView.currentItem ? swipeView.currentItem.article : null;
 
     topPadding: 0
@@ -24,7 +24,7 @@ Kirigami.Page {
     Kirigami.Theme.inherit: false
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Layout.fillWidth: true
-    title: currentArticle ? currentArticle.title || "" : ""
+    title: currentArticle?.title ?? ""
     titleDelegate: Item { }
 
     actions: [
@@ -46,7 +46,7 @@ Kirigami.Page {
         Kirigami.Action {
             text: qsTr("Starred")
             checkable: true
-            checked: currentArticle ? currentArticle.isStarred : false
+            checked: !!currentArticle?.isStarred
             enabled: !!currentArticle
             onTriggered: currentArticle.isStarred = checked
             iconName: checked ? "starred-symbolic-nomask" : "non-starred-symbolic-nomask"
@@ -69,8 +69,8 @@ Kirigami.Page {
             iconName: "view-readermode"
             text: qsTr("Show Web Content");
             checkable: true
-            checked: swipeView.currentItem ? swipeView.currentItem.isReadable : false
-            enabled: swipeView.currentItem ? true : false
+            checked: !!swipeView.currentItem?.isReadable
+            enabled: !!swipeView.currentItem
             displayHint: Kirigami.DisplayHint.AlwaysHide
             onTriggered: {
                 if (swipeView.currentItem) {

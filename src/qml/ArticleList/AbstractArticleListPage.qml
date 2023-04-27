@@ -46,7 +46,7 @@ Kirigami.ScrollablePage {
     bottomPadding: 0
     leftPadding: 0
     rightPadding: 0
-    title: feed ? feed.name : ""
+    title: feed?.name ?? ""
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     Kirigami.Theme.backgroundColor: Kirigami.Theme.alternateBackgroundColor
 

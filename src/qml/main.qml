@@ -35,12 +35,12 @@ Kirigami.ApplicationWindow {
             top: pageStack.top
             bottom: pageStack.bottom
             left: pageStack.left
-            leftMargin: (pageStack.firstVisibleItem ? pageStack.firstVisibleItem.width : 0);
+            leftMargin: (pageStack.firstVisibleItem?.width ?? 0);
         }
         width: 10
         cursorShape: Qt.SizeHorCursor;
         enabled: pageStack.firstVisibleItem && !Kirigami.Settings.hasTransientTouchInput
-        onPositionChanged: {
+        onPositionChanged: (mouse)=>{
             const proportion = (resizeMouse.x + mouse.x +globalDrawer.actualWidth / 2) / root.width;
             priv.itemListProportion = Math.max(Math.min(proportion, 0.49), 0.23);
         }
@@ -152,7 +152,7 @@ Kirigami.ApplicationWindow {
         property real itemListProportion:  0.38
         property real feedListProportion: 0.23
         property bool isFirstPage: pageStack.firstVisibleItem === pageStack.items[0]
-        property string pageTitle: pageStack.firstVisibleItem ? pageStack.firstVisibleItem.title : ""
+        property string pageTitle: pageStack.firstVisibleItem?.title ?? ""
 
         function goBack(event) {
             // go back to the first non-visible page (rather than the

@@ -133,7 +133,7 @@ ColumnLayout {
             Layout.preferredWidth: implicitWidth * scaleToFit
             Layout.preferredHeight: implicitHeight * scaleToFit
             Layout.alignment: Qt.AlignHCenter
-            ToolTip.text: modelBlock.title || ""
+            ToolTip.text: modelBlock.title ?? ""
             ToolTip.visible: (ToolTip.text != "") && (imageMouse.containsMouse || imageMouse.pressed)
             ToolTip.delay: Kirigami.Units.toolTipDelay
             ContentImage {

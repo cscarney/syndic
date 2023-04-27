@@ -8,7 +8,7 @@ ScrollView {
     required property Article article
     property alias showExpandedByline: articleView.showExpandedByline
     property alias hoveredLink: articleView.hoveredLink
-    property bool isReadable: root.article ? root.article.feed.flags & Feed.UseReadableContentFlag : false
+    property bool isReadable: root.article?.feed.flags & Feed.UseReadableContentFlag
     property bool inProgress: false
     property alias atYEnd: scroller.atYEnd
 
