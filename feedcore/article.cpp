@@ -106,7 +106,6 @@ void Article::requestReadableContent(Readability *readability, bool forceReload)
         }
 
         // cache miss
-        // TODO make sure we actually get here
         reloadReadableContent(readability);
     });
 }
