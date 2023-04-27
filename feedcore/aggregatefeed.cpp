@@ -20,7 +20,7 @@ public:
         if (auto *af = qobject_cast<AggregateFeed *>(feed())) {
             // TODO need to pass the pending update timestamp
             for (auto *subfeed : std::as_const(af->m_feeds)) {
-                subfeed->updater()->start();
+                subfeed->updater()->start(updateStartTime());
             }
             finish();
         }
