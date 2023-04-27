@@ -42,7 +42,7 @@ class AllItemsFeed : public AggregateFeed
 {
 public:
     AllItemsFeed(Context *context, QObject *parent = nullptr);
-    Future<ArticleRef> *getArticles(bool unreadFilter) final;
+    QFuture<ArticleRef> getArticles(bool unreadFilter) final;
 
 private:
     Context *m_context{nullptr};
@@ -58,9 +58,9 @@ Context::Context(Storage *storage, QObject *parent)
         QObject::connect(QNetworkInformation::instance(), &QNetworkInformation::isBehindCaptivePortalChanged, d->updateScheduler, &Scheduler::clearErrors);
     }
 
-    Future<Feed *> *getFeeds{d->storage->getFeeds()};
-    QObject::connect(getFeeds, &BaseFuture::finished, this, [this, getFeeds] {
-        populateFeeds(getFeeds->result());
+    QFuture<Feed *> getFeeds{d->storage->getFeeds()};
+    Future::safeThen(getFeeds, this, [this](auto &getFeeds) {
+        populateFeeds(Future::safeResults(getFeeds));
     });
     AutomationEngine::fromDefaultConfigFile(this);
     d->updateScheduler->start();
@@ -135,16 +135,16 @@ Feed *Context::createCategoryFeed(const QString &category)
 
 void Context::addFeed(ProvisionalFeed *feed)
 {
-    Future<Feed *> *q{d->storage->storeFeed(feed)};
-    QObject::connect(q, &BaseFuture::finished, this, [this, q, feed = QPointer(feed)] {
-        const auto &result = q->result();
+    QFuture<Feed *> q{d->storage->storeFeed(feed)};
+    Future::safeThen(q, this, [this, feed = QPointer(feed)](auto &q) {
+        const auto &result = Future::safeResults(q);
         registerFeeds(result);
         if (!feed.isNull()) {
-            if (q->result().isEmpty()) {
+            if (result.isEmpty()) {
                 // TODO report backend errors
                 emit feed->saveFailed();
             } else {
-                feed->setTargetFeed(q->result().first());
+                feed->setTargetFeed(result.first());
             }
         }
     });
@@ -159,7 +159,7 @@ QStringList Context::getCategories()
     return categories.keys();
 }
 
-Future<ArticleRef> *Context::getArticles(bool unreadFilter)
+QFuture<ArticleRef> Context::getArticles(bool unreadFilter)
 {
     if (unreadFilter) {
         return d->storage->getUnread();
@@ -167,7 +167,7 @@ Future<ArticleRef> *Context::getArticles(bool unreadFilter)
     return d->storage->getAll();
 }
 
-Future<ArticleRef> *Context::getStarred()
+QFuture<ArticleRef> Context::getStarred()
 {
     return d->storage->getStarred();
 }
@@ -311,9 +311,9 @@ void Context::importOpml(const QUrl &url)
 
     d->updateScheduler->stop();
     for (ProvisionalFeed *feed : opml->newFeeds()) {
-        auto *q = d->storage->storeFeed(feed);
-        QObject::connect(q, &BaseFuture::finished, this, [this, opml, q] {
-            registerFeeds(q->result());
+        auto q = d->storage->storeFeed(feed);
+        Future::safeThen(q, this, [this, opml](auto &q) {
+            registerFeeds(Future::safeResults(q));
         });
     }
     QObject::connect(opml.get(), &QObject::destroyed, this, [this] {
@@ -401,7 +401,7 @@ AllItemsFeed::AllItemsFeed(Context *context, QObject *parent)
     QObject::connect(context, &Context::feedAdded, this, &AllItemsFeed::addFeed);
 }
 
-Future<ArticleRef> *AllItemsFeed::getArticles(bool unreadFilter)
+QFuture<ArticleRef> AllItemsFeed::getArticles(bool unreadFilter)
 {
     return m_context->getArticles(unreadFilter);
 }

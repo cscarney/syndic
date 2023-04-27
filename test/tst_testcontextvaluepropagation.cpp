@@ -17,31 +17,32 @@ class MockStorage : public FeedCore::Storage
     QVector<Feed *> m_feeds;
 
 public:
-    Future<FeedCore::ArticleRef> *getAll() override
+    QFuture<FeedCore::ArticleRef> getAll() override
     {
-        return Future<ArticleRef>::yield(this, [](auto) {});
+        return Future::yield<ArticleRef>(this, [](auto &) {});
     }
 
-    Future<FeedCore::ArticleRef> *getUnread() override
+    QFuture<FeedCore::ArticleRef> getUnread() override
     {
-        return Future<ArticleRef>::yield(this, [](auto) {});
+        return Future::yield<ArticleRef>(this, [](auto &) {});
     }
-    Future<FeedCore::ArticleRef> *getStarred() override
+    QFuture<FeedCore::ArticleRef> getStarred() override
     {
-        return Future<ArticleRef>::yield(this, [](auto) {});
+        return Future::yield<ArticleRef>(this, [](auto &) {});
     }
-    Future<FeedCore::Feed *> *getFeeds() override
+    QFuture<FeedCore::Feed *> getFeeds() override
     {
-        return Future<Feed *>::yield(this, [this](auto r) {
-            QVector<Feed *> feeds = m_feeds;
-            r->setResult(std::move(feeds));
+        return Future::yield<Feed *>(this, [this](auto &r) {
+            for (const auto &item : std::as_const(m_feeds)) {
+                r.addResult(item);
+            }
         });
     }
-    Future<FeedCore::Feed *> *storeFeed(FeedCore::Feed *feed) override
+    QFuture<FeedCore::Feed *> storeFeed(FeedCore::Feed *feed) override
     {
         m_feeds.append(feed);
-        return Future<Feed *>::yield(this, [feed](auto r) {
-            r->setResult(feed);
+        return Future::yield<Feed *>(this, [feed](auto &r) {
+            r.addResult(feed);
         });
     }
 };

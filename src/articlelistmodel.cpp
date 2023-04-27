@@ -7,6 +7,7 @@
 #include "articleref.h"
 #include "feed.h"
 #include "qmlarticleref.h"
+#include <QTimer>
 #include <algorithm>
 
 using namespace FeedCore;
@@ -288,9 +289,9 @@ void ArticleListModel::getItems(Callback cb)
         cb(QVector<ArticleRef>{});
         return;
     }
-    Future<ArticleRef> *q = d->feed->getArticles(unreadFilter());
-    QObject::connect(q, &BaseFuture::finished, this, [this, cb, q] {
-        auto result = q->result();
+    QFuture<ArticleRef> q = d->feed->getArticles(unreadFilter());
+    Future::safeThen(q, this, [this, cb](auto &q) {
+        auto result = Future::safeResults(q);
         if (unreadFilter()) {
             removeReadArticles(result);
         }

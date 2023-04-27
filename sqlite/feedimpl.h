@@ -24,7 +24,7 @@ class FeedImpl : public FeedCore::UpdatableFeed
 public:
     qint64 id() const;
     void updateFromQuery(const FeedQuery &query);
-    FeedCore::Future<FeedCore::ArticleRef> *getArticles(bool unreadFilter) final;
+    QFuture<FeedCore::ArticleRef> getArticles(bool unreadFilter) final;
     bool editable() final
     {
         return true;

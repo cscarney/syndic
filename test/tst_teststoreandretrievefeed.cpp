@@ -93,13 +93,18 @@ class testStoreAndRetrieveFeed : public QObject
 
     QVector<FeedCore::ArticleRef> getArticles(FeedCore::Feed *feed)
     {
-        auto *articlesFuture = feed->getArticles(true);
+        auto articlesFuture = feed->getArticles(true);
         QVector<FeedCore::ArticleRef> articles;
-        QObject::connect(articlesFuture, &FeedCore::BaseFuture::finished, [articlesFuture, &articles]() {
-            qDebug() << "got articles" << articlesFuture->result();
-            articles = articlesFuture->result();
+        FeedCore::Future::safeThen(articlesFuture, this, [&articles](auto &articlesFuture) {
+            auto result = FeedCore::Future::safeResults(articlesFuture);
+            qDebug() << "got articles" << result;
+            articles = result;
         });
-        QSignalSpy(articlesFuture, &FeedCore::BaseFuture::finished).wait();
+        if (!QTest::qWaitFor([&] {
+                return articlesFuture.isFinished();
+            })) {
+            return {};
+        };
         return articles;
     }
 

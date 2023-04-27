@@ -41,15 +41,15 @@ ProvisionalFeed::ProvisionalFeed(QObject *parent)
     });
 }
 
-Future<ArticleRef> *ProvisionalFeed::getArticles(bool /* unreadFilter */)
+QFuture<ArticleRef> ProvisionalFeed::getArticles(bool /* unreadFilter */)
 {
-    return Future<ArticleRef>::yield(this, [this](auto *op) {
+    return Future::yield<ArticleRef>(this, [this](auto &op) {
         if (m_feed == nullptr) {
             return;
         }
         const auto &items = m_feed->items();
         for (const auto &item : items) {
-            op->appendResult(m_articles.getInstance(item, this));
+            op.addResult(m_articles.getInstance(item, this));
         }
     });
 }

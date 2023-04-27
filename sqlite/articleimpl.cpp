@@ -48,13 +48,13 @@ void ArticleImpl::requestContent()
     if (m_storage.isNull()) {
         return;
     }
-    Future<QString> *fut = m_storage->getContent(this);
-    QObject::connect(fut, &BaseFuture::finished, this, [this, fut] {
-        emit gotContent(fut->result().first());
+    QFuture<QString> fut = m_storage->getContent(this);
+    Future::safeThen(fut, this, [this](auto &fut) {
+        emit gotContent(fut.result());
     });
 }
 
-FeedCore::Future<QString> *ArticleImpl::getCachedReadableContent()
+QFuture<QString> ArticleImpl::getCachedReadableContent()
 {
     return m_storage->getReadableContent(this);
 }

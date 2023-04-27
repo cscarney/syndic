@@ -6,6 +6,7 @@
 #include "scheduler.h"
 #include "feed.h"
 #include <QSet>
+#include <QTimer>
 
 namespace FeedCore
 {

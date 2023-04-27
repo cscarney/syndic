@@ -9,6 +9,7 @@
 #include "starreditemsfeed.h"
 #include <QPointer>
 #include <QString>
+#include <QTimer>
 #include <QVector>
 #include <algorithm>
 

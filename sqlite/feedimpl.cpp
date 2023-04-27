@@ -62,7 +62,7 @@ void FeedImpl::updateFromQuery(const FeedQuery &query)
     setFlags(query.flags());
 }
 
-Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)
+QFuture<ArticleRef> FeedImpl::getArticles(bool unreadFilter)
 {
     if (unreadFilter) {
         return m_storage->getUnreadByFeed(this);
@@ -72,9 +72,9 @@ Future<ArticleRef> *FeedImpl::getArticles(bool unreadFilter)
 
 void FeedImpl::updateSourceArticle(const Syndication::ItemPtr &article)
 {
-    auto *q = m_storage->storeArticle(this, article);
-    QObject::connect(q, &BaseFuture::finished, this, [this, q] {
-        for (const auto &item : q->result()) {
+    auto q = m_storage->storeArticle(this, article);
+    Future::safeThen(q, this, [this](auto &q) {
+        for (const auto &item : Future::safeResults(q)) {
             if (!item->isRead()) {
                 incrementUnreadCount();
             }

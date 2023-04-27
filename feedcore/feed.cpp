@@ -4,6 +4,7 @@
  */
 
 #include "feed.h"
+#include <QTimer>
 using namespace FeedCore;
 
 struct Feed::PrivData {

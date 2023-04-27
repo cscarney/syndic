@@ -104,7 +104,7 @@ public:
      *
      * The default implementation returns nullptr.
      */
-    virtual FeedCore::Future<QString> *getCachedReadableContent();
+    virtual QFuture<QString> getCachedReadableContent();
 
     /**
      * Resolves a link relative to the article page

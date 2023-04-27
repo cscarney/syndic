@@ -128,13 +128,13 @@ public:
      *
      * @return A future representing the list of articles.
      */
-    Future<ArticleRef> *getArticles(bool unreadFilter);
+    QFuture<ArticleRef> getArticles(bool unreadFilter);
 
     /**
      * List starred articles stored in this context (isStarred == true).
      * @return A future representing the list of articles
      */
-    Future<ArticleRef> *getStarred();
+    QFuture<ArticleRef> getStarred();
 
     /**
      * Trigger an update on every feed in this context.

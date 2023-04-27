@@ -60,13 +60,14 @@ private slots:
         allItems << m_mockFeed2->m_articles;
         std::sort(allItems.begin(), allItems.end());
 
-        auto *getArticles = m_allItemsFeed->getArticles(false);
+        auto getArticles = m_allItemsFeed->getArticles(false);
         QVector<ArticleRef> aafItems;
-        QObject::connect(getArticles, &BaseFuture::finished, this, [getArticles, &aafItems] {
-            aafItems = getArticles->result();
+        FeedCore::Future::safeThen(getArticles, this, [&aafItems](auto &getArticles) {
+            aafItems = Future::safeResults(getArticles);
         });
-        QSignalSpy waitArticles(getArticles, &FeedCore::BaseFuture::finished);
-        waitArticles.wait();
+        QVERIFY(QTest::qWaitFor([&] {
+            return getArticles.isFinished();
+        }));
         std::sort(aafItems.begin(), aafItems.end());
         QVERIFY(allItems == aafItems);
     }
@@ -79,13 +80,14 @@ private slots:
         QVector<ArticleRef> unreadItems = {m_mockFeed1->m_articles[1], m_mockFeed2->m_articles[0]};
         std::sort(unreadItems.begin(), unreadItems.end());
 
-        auto *getArticles = m_allItemsFeed->getArticles(true);
+        auto getArticles = m_allItemsFeed->getArticles(true);
         QVector<ArticleRef> aafItems;
-        QObject::connect(getArticles, &BaseFuture::finished, this, [getArticles, &aafItems] {
-            aafItems = getArticles->result();
+        FeedCore::Future::safeThen(getArticles, this, [&aafItems](auto &getArticles) {
+            aafItems = Future::safeResults(getArticles);
         });
-        QSignalSpy waitArticles(getArticles, &FeedCore::BaseFuture::finished);
-        waitArticles.wait();
+        QVERIFY(QTest::qWaitFor([&] {
+            return getArticles.isFinished();
+        }));
         std::sort(aafItems.begin(), aafItems.end());
         QVERIFY(unreadItems == aafItems);
     }

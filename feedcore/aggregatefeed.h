@@ -17,7 +17,7 @@ class AggregateFeed : public FeedCore::Feed
 public:
     explicit AggregateFeed(QObject *parent = nullptr);
     FeedCore::Feed::Updater *updater() override;
-    FeedCore::Future<FeedCore::ArticleRef> *getArticles(bool unreadOnly) override;
+    QFuture<FeedCore::ArticleRef> getArticles(bool unreadOnly) override;
 
 protected:
     void addFeed(Feed *feed);
