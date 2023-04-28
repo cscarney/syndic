@@ -114,7 +114,7 @@ Kirigami.Page {
             implicitWidth: swipeView.width || 1
         }
 
-        onCurrentIndexChanged: {
+        onCurrentItemChanged: {
             if (swipeView.currentIndex < parentList.currentIndex) {
                 previousItem();
             } else if (swipeView.currentIndex > parentList.currentIndex) {
