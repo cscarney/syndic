@@ -48,7 +48,9 @@ set(feedcore_SRCS
     readability/qreadablereadability.cpp
     )
     
-add_library(feedcore STATIC ${feedcore_SRCS})
+add_library(feedcore SHARED ${feedcore_SRCS})
+set_target_properties(feedcore PROPERTIES OUTPUT_NAME syndiccore)
+install(TARGETS feedcore DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 ecm_create_qm_loader(feedcore feedcore)
 
 target_link_libraries(feedcore
