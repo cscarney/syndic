@@ -17,6 +17,7 @@ class Storage;
 class Feed;
 class ProvisionalFeed;
 class Readability;
+class UpdaterFactory;
 
 class Context;
 
@@ -168,6 +169,8 @@ public:
     Q_INVOKABLE void importOpml(const QUrl &url);
 
     Readability *getReadability();
+
+    UpdaterFactory *updaterFactory();
 
     bool defaultUpdateEnabled() const;
     void setDefaultUpdateEnabled(bool defaultUpdateEnabled);

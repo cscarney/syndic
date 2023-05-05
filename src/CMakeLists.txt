@@ -33,6 +33,7 @@ set(syndic_SRCS
     )
     
 add_executable(syndic ${syndic_SRCS})
+set_target_properties(syndic PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 kconfig_add_kcfg_files(syndic settings.kcfgc GENERATE_MOC)
 ecm_create_qm_loader(syndic syndic)

@@ -12,6 +12,7 @@
 #include "readability/qreadablereadability.h"
 #include "scheduler.h"
 #include "storage.h"
+#include "updaterfactory.h"
 #include <QDebug>
 #include <QFile>
 #include <QNetworkInformation>
@@ -328,6 +329,11 @@ Readability *Context::getReadability()
         d->readability->setParent(this);
     }
     return d->readability;
+}
+
+UpdaterFactory *Context::updaterFactory()
+{
+    return UpdaterFactory::instance();
 }
 
 bool Context::defaultUpdateEnabled() const

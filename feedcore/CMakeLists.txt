@@ -15,7 +15,11 @@ set(feedcore_HEADERS
     provisionalfeed.h
     networkaccessmanager.h
     starreditemsfeed.h
+    updaterfactory.h
+    updaterfactory.cpp
     updatablefeed.h
+    defaultupdater.h
+    defaultupdater.cpp
     opmlreader.h
     sharedcache.h
     gumbovisitor.h
@@ -54,10 +58,14 @@ install(TARGETS feedcore DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 ecm_create_qm_loader(feedcore feedcore)
 
 target_link_libraries(feedcore
+    PUBLIC
     Qt6::Core
     Qt6::Sql
     Qt6::Network
     KF6::Syndication
+    PRIVATE
     QReadable::libqreadable
     htmlparser
 )
+
+target_link_libraries(feedcore PRIVATE htmlparser)

@@ -14,6 +14,8 @@
 
 namespace FeedCore
 {
+class Context;
+
 /**
  * Abstract class for stored feeds.
  */
@@ -154,6 +156,8 @@ public:
      * signal on the feed to handle this.
      */
     Q_INVOKABLE virtual void requestDelete();
+
+    Context *context();
 
     const QString &name() const;
     void setName(const QString &name);

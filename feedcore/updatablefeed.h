@@ -17,19 +17,19 @@ class UpdatableFeed : public Feed
 public:
     Updater *updater() final;
 
-protected:
-    explicit UpdatableFeed(QObject *parent);
-
-private:
     /**
      * Process an update from the remote source.
      *
      * This is called whenever an update has been sucessfully downloaded and processed
-     * by the Syndication library.  The base implementation updates the properties of the
+     * by the Syndication library. The base implementation updates the properties of the
      * feed using the retrieved data, then calls updateSourceArticle for each article.
      */
     virtual void updateFromSource(const Syndication::FeedPtr &feed);
 
+protected:
+    explicit UpdatableFeed(QObject *parent);
+
+private:
     /**
      * Process an article from the remote source.
      *
@@ -48,8 +48,7 @@ private:
      */
     virtual void expire(const QDateTime &olderThan) = 0;
 
-    class UpdaterImpl;
-    UpdaterImpl *m_updater;
+    Updater *m_updater;
 };
 
 }

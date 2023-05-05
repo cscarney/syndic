@@ -4,6 +4,7 @@
  */
 
 #include "feed.h"
+#include "context.h"
 #include <QTimer>
 using namespace FeedCore;
 
@@ -237,6 +238,16 @@ bool Feed::editable()
 void Feed::requestDelete()
 {
     emit deleteRequested();
+}
+
+Context *Feed::context()
+{
+    for (QObject *p = parent(); p != nullptr; p = p->parent()) {
+        if (auto *c = qobject_cast<Context *>(p)) {
+            return c;
+        }
+    }
+    return nullptr;
 }
 
 QString Feed::category() const

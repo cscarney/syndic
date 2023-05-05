@@ -60,6 +60,7 @@ add_subdirectory(data)
 add_subdirectory(feedcore)
 add_subdirectory(sqlite)
 add_subdirectory(src)
+add_subdirectory(updater-plugins)
 
 ecm_install_po_files_as_qm(po)
 install(FILES com.rocksandpaper.syndic.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})

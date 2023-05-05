@@ -26,7 +26,9 @@ private:
 void ProvisionalFeed::onUrlChanged()
 {
     syncUrlString();
-    updater()->abort();
+    if (status() == Feed::Updating) {
+        updater()->abort();
+    }
     m_feed = nullptr;
     emit reset();
 }
