@@ -30,14 +30,14 @@ Kirigami.Page {
     actions: [
         Kirigami.Action {
             text: qsTr("Open")
-            iconName: "globe"
+            icon.name: "globe"
             onTriggered: Qt.openUrlExternally(currentArticle.url);
             displayHint: Kirigami.Settings.isMobile ? Kirigami.DisplayHint.IconOnly : Kirigami.DisplayHint.NoPreference
         },
 
         Kirigami.Action {
             text: qsTr("Share")
-            iconName: "emblem-shared-symbolic-nomask"
+            icon.name: "emblem-shared-symbolic-nomask"
             displayHint: Kirigami.DisplayHint.AlwaysHide
             enabled: !!currentArticle
             onTriggered: platformHelper.share(currentArticle.url);
@@ -49,14 +49,14 @@ Kirigami.Page {
             checked: !!currentArticle?.isStarred
             enabled: !!currentArticle
             onTriggered: currentArticle.isStarred = checked
-            iconName: checked ? "starred-symbolic-nomask" : "non-starred-symbolic-nomask"
+            icon.name: checked ? "starred-symbolic-nomask" : "non-starred-symbolic-nomask"
             displayHint: Kirigami.DisplayHint.IconOnly
         },
 
         Kirigami.Action {
             //: as in, don't mark this article as read
             text: qsTr("Keep Unread")
-            iconName: "mail-mark-unread"
+            icon.name: "mail-mark-unread"
             checkable: true
             checked: currentArticle ? !currentArticle.isRead : true
             enabled: !!currentArticle
@@ -66,7 +66,7 @@ Kirigami.Page {
 
         Kirigami.Action {
             id: readableAction
-            iconName: "view-readermode"
+            icon.name: "view-readermode"
             text: qsTr("Show Web Content");
             checkable: true
             checked: !!swipeView.currentItem?.isReadable
@@ -82,7 +82,7 @@ Kirigami.Page {
         Kirigami.Action {
             id: refreshReadableAction
             text: qsTr("Reload Web Content")
-            iconName: "view-refresh"
+            icon.name: "view-refresh"
             visible: swipeView.currentItem && readableAction.checked
             displayHint: Kirigami.DisplayHint.AlwaysHide
             onTriggered: swipeView.currentItem.refreshReadable()

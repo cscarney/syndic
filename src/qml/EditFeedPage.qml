@@ -19,7 +19,7 @@ AbstractFeedEditorPage {
     actions: [
         Kirigami.Action {
             text: qsTr("Save")
-            iconName: "checkmark"
+            icon.name: "checkmark"
             onTriggered: {
                 provisionalFeed.save();
                 onDone();
@@ -28,7 +28,7 @@ AbstractFeedEditorPage {
 
         Kirigami.Action {
             text: qsTr("Delete")
-            iconName: "delete"
+            icon.name: "delete"
             onTriggered: targetFeed.requestDelete();
             displayHint: Kirigami.DisplayHint.AlwaysHide
         }

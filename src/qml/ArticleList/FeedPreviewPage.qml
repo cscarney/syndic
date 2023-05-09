@@ -18,7 +18,7 @@ AbstractArticleListPage {
         Kirigami.Action {
             id: saveAction
             text: qsTr("Subscribe")
-            iconName: "list-add"
+            icon.name: "list-add"
             enabled: model.status == Feed.Idle
             onTriggered: {
                 const provisionalFeed = root.provisionalFeed

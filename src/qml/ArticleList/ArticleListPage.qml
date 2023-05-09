@@ -15,7 +15,7 @@ AbstractArticleListPage {
     actions: [
         Kirigami.Action {
             text: qsTr("Mark All Read")
-            iconName: "checkmark"
+            icon.name: "checkmark"
             enabled: root.feed && root.feed.unreadCount > 0
             onTriggered: {
                 root.model.markAllRead();
@@ -25,7 +25,7 @@ AbstractArticleListPage {
 
         Kirigami.Action {
              text: qsTr("Hide Read")
-             iconName: "view-filter"
+             icon.name: "view-filter"
              checkable: true
              checked: globalSettings.unreadFilter
              displayHint: Kirigami.DisplayHint.AlwaysHide
@@ -34,7 +34,7 @@ AbstractArticleListPage {
 
         Kirigami.Action {
             text: qsTr("Edit…")
-            iconName: "document-edit"
+            icon.name: "document-edit"
             displayHint: Kirigami.DisplayHint.AlwaysHide
             visible: feed && feed.editable
             onTriggered: {
@@ -45,7 +45,7 @@ AbstractArticleListPage {
 
         Kirigami.Action {
             text: qsTr("Refresh")
-            iconName: "view-refresh"
+            icon.name: "view-refresh"
             displayHint: Kirigami.DisplayHint.AlwaysHide
             enabled: feed && feed.status!=Feed.Updating
             visible: !cancelAction.visible
@@ -57,7 +57,7 @@ AbstractArticleListPage {
         Kirigami.Action {
             id: cancelAction
             text: qsTr("Cancel")
-            iconName: "dialog-cancel"
+            icon.name: "dialog-cancel"
             displayHint: Kirigami.DisplayHint.AlwaysHide
             visible: feed && feed.status===Feed.Updating
             onTriggered: {

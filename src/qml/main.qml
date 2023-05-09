@@ -89,21 +89,21 @@ Kirigami.ApplicationWindow {
         actions: [
             Kirigami.Action {
                 text: qsTr("Add Content")
-                iconName: "list-add"
+                icon.name: "list-add"
                 onTriggered: {
                     priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
                 }
             },
             Kirigami.Action {
                 text: qsTr("Settings")
-                iconName: "settings-configure"
+                icon.name: "settings-configure"
                 onTriggered: {
                     priv.pushUtilityPage("qrc:/qml/SettingsPage.qml")
                 }
             },
             Kirigami.Action {
                 text: qsTr("About %1").arg(Qt.application.displayName)
-                iconName: "help-about"
+                icon.name: "help-about"
                 onTriggered: {
                     priv.pushUtilityPage("qrc:/qml/AboutPage.qml")
                 }
