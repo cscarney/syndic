@@ -88,6 +88,7 @@ ReadabilityResult *QReadableReadability::fetch(const QUrl &url)
 {
     auto *nam = NetworkAccessManager::instance();
     QNetworkRequest req(url);
+    req.setRawHeader("Accept", "text/html");
     auto *reply = nam->get(req);
     return new Result(this, reply);
 }
