@@ -174,7 +174,6 @@ QNetworkReply *FeedCore::NetworkAccessManager::createRequest(QNetworkAccessManag
     QNetworkRequest newRequest(request);
     newRequest.setHeader(QNetworkRequest::UserAgentHeader, "syndic/1.0");
     setDefaultAttribute(newRequest, QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
-    setDefaultAttribute(newRequest, QNetworkRequest::Http2AllowedAttribute, false);
     newRequest.setTransferTimeout();
 
     // We don't want to keep connections open since we make one-shot downloads
