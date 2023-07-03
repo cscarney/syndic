@@ -54,9 +54,7 @@ private:
     QNetworkReply *m_reply{nullptr};
     LoadStatus m_loadStatus{Loading};
 
-    enum ImageLoadFlags { None = 0, UseHttp2Flag = 1 };
-
-    void beginImageLoad(ImageLoadFlags flags = None);
+    void beginImageLoad();
     void cancelImageLoad();
     void onImageLoadFinished();
     void setLoadStatus(LoadStatus v);
