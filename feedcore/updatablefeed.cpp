@@ -46,6 +46,7 @@ private:
     QSet<QUrl> m_seenUrls;
     QPointer<QNetworkReply> m_reply;
     bool m_isDiscoveredFeed{false};
+    bool m_useHttp2{false};
     void onReplyFinished();
 };
 
@@ -216,6 +217,7 @@ void LoadOperation::start(const QUrl &url, const QString &failMessage)
     }
     m_seenUrls << url;
     QNetworkRequest request(url);
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute, m_useHttp2);
     m_reply = NetworkAccessManager::instance()->get(request);
     QObject::connect(m_reply, &QNetworkReply::finished, this, &LoadOperation::onReplyFinished);
 }
@@ -255,6 +257,26 @@ void LoadOperation::onReplyFinished()
         start(redirect, "too many redirects");
         break;
     }
+
+    case QNetworkReply::ContentAccessDenied:
+    case QNetworkReply::ServiceUnavailableError:
+        // Try HTTP/2 if the server denies our HTTP/1.1 request
+        // Qt5-specific workaround for
+        // https://github.com/cscarney/syndic/issues/156
+        if (!m_useHttp2 && QString(m_reply->rawHeader("Server"))
+                               .contains("cloudflare", Qt::CaseInsensitive)) {
+            qDebug() << QStringLiteral(
+                            "Possible cloudflare challenge page for %1. Trying "
+                            "with HTTP/2, if this works you should complain to "
+                            "the server admin.")
+                            .arg(url.toString());
+            m_useHttp2 = true;
+            m_seenUrls.remove(url);
+            start(url, "redirect limit on HTTP/2 fallback");
+        } else {
+            emit failed(m_reply->errorString(), DeleteLater(this));
+        }
+        break;
 
     default:
         emit failed(m_reply->errorString(), DeleteLater(this));
