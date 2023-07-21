@@ -20,23 +20,26 @@ Kirigami.ScrollablePage {
     property bool isUpdating: model.status === Feed.Updating
     property bool unreadFilter: true
     property bool automaticOpen: pageRow.defaultColumnWidth * 2 < pageRow.width
-    property string childPage: {
-        if (articleList.currentItem) {
-            return "qrc:/qml/ArticlePage.qml"
-        } else if (model && automaticOpen) {
-            switch(model.status) {
-            case Feed.Loading:
-                return ""
-            case Feed.Updating:
-                return "qrc:/qml/Placeholders/UpdatingPlaceholderPage.qml";
-            case Feed.Error:
-                return "qrc:/qml/Placeholders/ErrorPlaceholderPage.qml";
-            default:
-                return "qrc:/qml/Placeholders/EmptyFeedPlaceholderPage.qml";
+    PageControl.nextPage {
+        componentName: {
+            if (articleList.currentItem) {
+                return "qrc:/qml/ArticlePage.qml"
+            } else if (model && automaticOpen) {
+                switch(model.status) {
+                case Feed.Loading:
+                    return ""
+                case Feed.Updating:
+                    return "qrc:/qml/Placeholders/UpdatingPlaceholderPage.qml";
+                case Feed.Error:
+                    return "qrc:/qml/Placeholders/ErrorPlaceholderPage.qml";
+                default:
+                    return "qrc:/qml/Placeholders/EmptyFeedPlaceholderPage.qml";
+                }
+            } else {
+                return "";
             }
-        } else {
-            return "";
         }
+        pageData: ({articleListController: articleListController})
     }
 
     supportsRefreshing: true
@@ -62,19 +65,6 @@ Kirigami.ScrollablePage {
         }
 
         function previousItem () { articleList.currentIndex-- }
-    }
-
-    Timer {
-        id: pageOpenTimer
-        interval: 0
-        onTriggered: {
-            pageRow.currentIndex = root.Kirigami.ColumnView.index
-            if (childPage) {
-                root.pageRow.push(childPage, {articleListController: articleListController})
-            } else {
-                root.pageRow.pop(root);
-            }
-        }
     }
 
     ListView {
@@ -168,8 +158,6 @@ Kirigami.ScrollablePage {
             refreshing = Qt.binding(()=>isUpdating);
         }
     }
-
-    onChildPageChanged: pageOpenTimer.start()
 
     function clearRead() {
         root.currentIndex = -1
