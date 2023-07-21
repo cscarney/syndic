@@ -68,8 +68,6 @@ Kirigami.ApplicationWindow {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.minimumHeight: contentHeight
-                onCurrentlySelectedFeedChanged:
-                    if (currentlySelectedFeed) priv.pushFeed(currentlySelectedFeed)
 
                 onItemClicked: {
                     if (pageStack.items[0] && pageStack.items[0].feedListAction) {
@@ -91,7 +89,7 @@ Kirigami.ApplicationWindow {
                 text: qsTr("Add Content")
                 icon.name: "list-add"
                 onTriggered: {
-                    priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
+                    priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: root.pageStack})
                 }
             },
             Kirigami.Action {
@@ -170,23 +168,12 @@ Kirigami.ApplicationWindow {
             }
         }
 
-        function pushRoot(pageUrl, pageProps) {
-            pageStack.currentIndex = 0;
-            pageStack[pageStack.depth ? "replace" : "push"](pageUrl, pageProps)
-        }
-
-        function pushFeed(feed) {
-            priv.pushRoot("qrc:/qml/ArticleList/ArticleListPage.qml",
-                           {pageRow: pageStack,
-                               feed: feed})
-        }
-
         function pushUtilityPage(pageUrl, pageProps) {
             feedList.currentIndex = -1
             feedList.currentlySelectedFeed = null
-            priv.pushRoot(pageUrl, pageProps)
-        }
+            pageController.pushFirstPage(pageUrl, pageProps)
 
+        }
     }
 
     Connections {
@@ -206,6 +193,13 @@ Kirigami.ApplicationWindow {
                 Qt.callLater(()=>priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack}))
             }
         }
+    }
+
+    PageController {
+        id: pageController
+        pageRow: root.pageStack
+        firstPageComponent: "qrc:/qml/ArticleList/ArticleListPage.qml"
+        firstPageData: ({pageRow: root.pageStack, feed: feedList.currentlySelectedFeed})
     }
 
     onClosing: {

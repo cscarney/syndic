@@ -25,6 +25,7 @@
 #include "iconprovider.h"
 #include "networkaccessmanagerfactory.h"
 #include "notificationcontroller.h"
+#include "pagecontrolattached.h"
 #include "platformhelper.h"
 #include "provisionalfeed.h"
 #include "qmlarticleref.h"
@@ -75,6 +76,7 @@ static void registerQmlTypes()
     qmlRegisterUncreatableType<ContentBlock>("com.rocksandpaper.syndic", 1, 0, "ContentBlock", "obtained from contentmodel");
     qmlRegisterUncreatableType<ImageBlock>("com.rocksandpaper.syndic", 1, 0, "ImageBlock", "obtained from contentmodel");
     qmlRegisterUncreatableType<TextBlock>("com.rocksandpaper.syndic", 1, 0, "TextBlock", "obtained from contentmodel");
+    qmlRegisterUncreatableType<PageControlAttached>("com.rocksandpaper.syndic", 1, 0, "PageControl", "attached object");
 }
 
 static void enableSettingsAutosave(const Settings &settings)
