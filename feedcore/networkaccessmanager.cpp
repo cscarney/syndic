@@ -169,10 +169,17 @@ static void setDefaultAttribute(QNetworkRequest &req, QNetworkRequest::Attribute
     }
 }
 
+static void setDefaultHeader(QNetworkRequest &req, QNetworkRequest::KnownHeaders header, const QVariant &value)
+{
+    if (!req.header(header).isValid()) {
+        req.setHeader(header, value);
+    }
+}
+
 QNetworkReply *FeedCore::NetworkAccessManager::createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData)
 {
     QNetworkRequest newRequest(request);
-    newRequest.setHeader(QNetworkRequest::UserAgentHeader, "syndic/1.0");
+    setDefaultHeader(newRequest, QNetworkRequest::UserAgentHeader, "syndic/1.0");
     setDefaultAttribute(newRequest, QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
     newRequest.setTransferTimeout();
 
