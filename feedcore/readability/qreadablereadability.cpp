@@ -16,6 +16,8 @@
 
 using namespace FeedCore;
 
+static constexpr const char *kBrowserUserAgent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0";
+
 class QReadableReadability::Result : public ReadabilityResult
 {
     QNetworkReply *m_reply;
@@ -34,6 +36,7 @@ public:
     void onNetworkReplyFinished()
     {
         if (m_reply->error() != QNetworkReply::NoError) {
+            qDebug() << "Readability fetch failed. Debug info: " << m_reply->request().url() << m_reply->error() << m_reply->errorString();
             emit error();
             deleteLater();
             return;
@@ -89,6 +92,7 @@ ReadabilityResult *QReadableReadability::fetch(const QUrl &url)
     auto *nam = NetworkAccessManager::instance();
     QNetworkRequest req(url);
     req.setRawHeader("Accept", "text/html");
+    req.setHeader(QNetworkRequest::UserAgentHeader, kBrowserUserAgent);
     auto *reply = nam->get(req);
     return new Result(this, reply);
 }
