@@ -77,10 +77,8 @@ public:
     /**
      * Returns a shared instance of AllItemsFeed for this context.
      *
-     * The resulting instance is created the first time the function
-     * is called and is owned by the context. Using the shared instance
-     * is preferred if you don't need custom settings for the feed
-     * (name, etc.).
+     * The resulting instance is created on-demand and shared among
+     * all callers.
      */
     QSharedPointer<Feed> allItemsFeed();
 
@@ -104,10 +102,20 @@ public:
     /**
      * Create a new feed in the Context's storage object.
      *
-     * The feed supplied to this function will usually be a ProvisionalFeed.  The created
-     * Feed will be a duplicate of the one you provide; if you need access to the created
-     * Feed object, you should to listen for ProvisionalFeed::targetFeedChanged and
-     * ProvisionalFeed::saveError.
+     * The pattern for adding a new feed is:
+     *  - Create a new ProvisionalFeed object and set (at least) the URL property
+     *  - Optionally update the ProvisionalFeed to populate the remaining feed properties
+     *  - Pass the ProvisionalFeed to Context::addFeed
+     *  - Listen for ProvisionalFeed::targetFeedChanged and ProvisionalFeed::saveFailed signals
+     *  - Delete the ProvisionalFeed
+     *
+     * On success, ProvisionalFeed::targetFeed will be set to the newly created feed. On failure,
+     * the ProvisionalFeed::saveFailed signal will be emitted.
+     *
+     * The newly created feed is owned by the context's storage object. Ownership of the
+     * ProvisionalFeed remains with the caller. The ProvisionalFeed may be deleted immediately
+     * after the addFeed call if the caller does not need feedback on the success of the
+     * add operation.
      */
     Q_INVOKABLE void addFeed(FeedCore::ProvisionalFeed *feed);
 
@@ -120,9 +128,7 @@ public:
     Q_INVOKABLE QStringList getCategories();
 
     /**
-     * List articles stored in this context.
-     *
-     * This returns articles from all feeds; to get articles from a single feed use Feed::getArticles.
+     * List all articles from all feeds managed by this context.
      *
      * If unreadFilter is true, returns only unread articles.
      *
@@ -140,8 +146,8 @@ public:
      * Trigger an update on every feed in this context.
      *
      * The updates may not succeed and this method does not provide
-     * feedback.  If you need to track the status of the update you should
-     * use an AllItemsFeed instance.
+     * feedback. If you need to track the status of the update you should
+     * use allItemsFeed().
      */
     Q_INVOKABLE void requestUpdate();
 
@@ -149,20 +155,20 @@ public:
      * Attempt to cancel updates for all feeds.
      *
      * The operation may not succeed and this method does not provide
-     * feedback.  If you need to track the status of the update you should
-     * use an AllItemsFeed instance.
+     * feedback. If you need to track the status of the update you should
+     * use allItemsFeed().
      */
     void abortUpdates();
 
     /**
      * Write an OPML document with the feeds stored in this context
-     * to the provided url.  The URL must point to a writable local file.
+     * to the provided url. The URL must point to a writable local file.
      */
     Q_INVOKABLE void exportOpml(const QUrl &url) const;
 
     /**
      * Read an OPML document from the provided URL and add all of
-     * the feeds in the file to this context.  The URL must point to a
+     * the feeds in the file to this context. The URL must point to a
      * local file.
      */
     Q_INVOKABLE void importOpml(const QUrl &url);

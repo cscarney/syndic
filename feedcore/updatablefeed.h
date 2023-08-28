@@ -43,7 +43,7 @@ private:
     /**
      * Delete old articles
      *
-     * This is called by the base implementation of updateFromSource.  Derivce classes
+     * This is called by the base implementation of updateFromSource.  Derived classes
      * should override this and remove old articles from storage.
      */
     virtual void expire(const QDateTime &olderThan) = 0;
