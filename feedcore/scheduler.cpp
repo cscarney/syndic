@@ -115,13 +115,13 @@ void Scheduler::updateStale()
 void Scheduler::clearErrors()
 {
     QList<Feed *> errorFeeds;
-    for (Feed *feed : qAsConst(d->schedule)) {
+    for (Feed *feed : std::as_const(d->schedule)) {
         if (feed->status() == Feed::Error) {
             errorFeeds << feed;
         }
     }
     QDateTime timestamp{QDateTime::currentDateTime()};
-    for (Feed *feed : qAsConst(errorFeeds)) {
+    for (Feed *feed : std::as_const(errorFeeds)) {
         feed->updater()->start(timestamp);
     }
 }

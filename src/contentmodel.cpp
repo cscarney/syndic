@@ -105,7 +105,7 @@ void ContentModel::setText(const QString &text)
     if (m_text != text) {
         m_text = text;
 
-        for (auto *block : qAsConst(m_blocks)) {
+        for (auto *block : std::as_const(m_blocks)) {
             block->deleteLater();
         }
         beginResetModel();

@@ -153,7 +153,7 @@ void Context::addFeed(ProvisionalFeed *feed)
 QStringList Context::getCategories()
 {
     QMap<QString, std::nullptr_t> categories{{"", nullptr}};
-    for (auto *feed : qAsConst(d->feeds)) {
+    for (auto *feed : std::as_const(d->feeds)) {
         categories.insert(feed->category(), nullptr);
     }
     return categories.keys();
@@ -200,7 +200,7 @@ void Context::setDefaultUpdateInterval(qint64 defaultUpdateInterval)
         return;
     }
     d->updateInterval = defaultUpdateInterval;
-    for (Feed *feed : qAsConst(d->feeds)) {
+    for (Feed *feed : std::as_const(d->feeds)) {
         if (feed->updateMode() == Feed::InheritUpdateMode) {
             feed->setUpdateInterval(defaultUpdateInterval);
         }
@@ -219,7 +219,7 @@ void Context::setExpireAge(qint64 expireAge)
         return;
     }
     d->expireAge = expireAge;
-    for (Feed *feed : qAsConst(d->feeds)) {
+    for (Feed *feed : std::as_const(d->feeds)) {
         if (feed->expireMode() != Feed::OverrideUpdateMode) {
             feed->setExpireAge(expireAge);
         }
@@ -257,7 +257,7 @@ void Context::exportOpml(const QUrl &url) const
     }
     QList<Feed *> uncategorizedFeeds;
     QMap<QString, QList<Feed *>> categories;
-    for (Feed *feed : qAsConst(d->feeds)) {
+    for (Feed *feed : std::as_const(d->feeds)) {
         QString category = feed->category();
         if (category.isEmpty()) {
             uncategorizedFeeds.append(feed);
@@ -273,7 +273,7 @@ void Context::exportOpml(const QUrl &url) const
     xml.writeStartElement("head");
     xml.writeEndElement();
     xml.writeStartElement("body");
-    for (Feed *feed : qAsConst(uncategorizedFeeds)) {
+    for (Feed *feed : std::as_const(uncategorizedFeeds)) {
         writeOpmlFeed(xml, feed);
     }
     for (auto i = categories.constBegin(); i != categories.constEnd(); ++i) {
@@ -343,7 +343,7 @@ void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
 
     d->defaultUpdate = defaultUpdateEnabled;
     const QDateTime timestamp = QDateTime::currentDateTime();
-    for (Feed *feed : qAsConst(d->feeds)) {
+    for (Feed *feed : std::as_const(d->feeds)) {
         if (feed->updateMode() == Feed::InheritUpdateMode) {
             d->configureUpdates(feed, timestamp);
         }
