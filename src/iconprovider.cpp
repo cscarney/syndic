@@ -107,7 +107,7 @@ class IconProvider::IconImageEntry : public QObject
 
         void finish(IImpl *replacement) override
         {
-            for (IconImageResponse *r : qAsConst(m_waitingResponses)) {
+            for (IconImageResponse *r : std::as_const(m_waitingResponses)) {
                 replacement->respond(r);
             }
         }
