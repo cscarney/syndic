@@ -97,15 +97,15 @@ ColumnLayout {
             required property int index
             required property var model
             property var modelBlock: model.block
-            Layout.fillWidth: loader.item.Layout.fillWidth
-            Layout.alignment: loader.item.Layout.alignment
-            Layout.preferredHeight: loader.item.Layout.preferredHeight
-            Layout.preferredWidth: loader.item.Layout.preferredWidth
-            Layout.topMargin: loader.item.Layout.topMargin
+            Layout.fillWidth: loader.item?.Layout.fillWidth ?? false
+            Layout.alignment: loader.item?.Layout.alignment ?? Qt.AlignCenter
+            Layout.preferredHeight: loader.item?.Layout.preferredHeight ?? 0
+            Layout.preferredWidth: loader.item?.Layout.preferredWidth ?? 0
+            Layout.topMargin: loader.item?.Layout.topMargin ?? 0
 
             // Load blocks asynchronously, in order, hiding them until they're ready
             asynchronous: true
-            active: index===0 || contentRepeater.itemAt(index-1).status===Loader.Ready
+            active: index===0 || contentRepeater.itemAt(index-1)?.status===Loader.Ready
             visible: status===Loader.Ready
 
             sourceComponent: switch (loader.modelBlock.delegateName) {
