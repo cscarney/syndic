@@ -14,7 +14,6 @@ set(syndic_HEADERS
     contentimageitem.h
     application.h
     networkaccessmanagerfactory.h
-    pagecontrolattached.h
     )
 
 set(syndic_SRCS
@@ -28,7 +27,6 @@ set(syndic_SRCS
     platformhelper.cpp
     contentimageitem.cpp
     networkaccessmanagerfactory.cpp
-    pagecontrolattached.cpp
     application.cpp
     main.cpp
     resources.qrc

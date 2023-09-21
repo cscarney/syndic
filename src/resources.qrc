@@ -24,6 +24,5 @@
         <file>qml/ElasticComboBox.qml</file>
         <file>qml/+org.kde.desktop/ElasticComboBox.qml</file>
         <file>qml/ArticlePageSwipeViewItem.qml</file>
-        <file>qml/PageController.qml</file>
     </qresource>
 </RCC>

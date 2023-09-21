@@ -32,8 +32,4 @@ AbstractArticleListPage {
             }
         }
     ]
-
-    Component.onCompleted: {
-        provisionalFeed.updater.start()
-    }
 }

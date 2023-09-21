@@ -13,11 +13,6 @@ AbstractFeedEditorPage {
     property bool previewOpen: false
     property bool keepDrawerOpen: true
     title: qsTr("Add Content")
-    PageControl.nextPage {
-        componentName: root.previewOpen ? "qrc:/qml/ArticleList/FeedPreviewPage.qml" : ""
-        pageData: ({provisionalFeed: root.provisionalFeed,
-                                        pageRow: root.pageRow})
-    }
 
     provisionalFeed: ProvisionalFeed {
         updateMode: Feed.InheritUpdateMode
@@ -40,6 +35,19 @@ AbstractFeedEditorPage {
             onToggled: previewOpen = checked
         }
     ]
+
+    onPreviewOpenChanged: {
+        if (previewOpen) {
+            provisionalFeed.updater.start()
+            pageRow.currentIndex = Kirigami.ColumnView.index
+            pageRow.push("qrc:/qml/ArticleList/FeedPreviewPage.qml",
+                         {provisionalFeed: root.provisionalFeed,
+                          pageRow: root.pageRow});
+            previewOpen = true;
+        } else {
+            pageRow.pop(this);
+        }
+    }
 
     Keys.onReturnPressed: previewOpen = true
     Keys.onEnterPressed: previewOpen = true
