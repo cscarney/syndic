@@ -48,8 +48,8 @@ Kirigami.Page {
 
     Connections {
         target: root.Kirigami.ColumnView.view
-        function onFirstVisibleItemChanged() {
-            if (target.firstVisibleItem === root) {
+        function onLeadingVisibleItemChanged() {
+            if (target.leadingVisibleItem === root) {
                 // calling removeItem directly from change handler causes crash in Kirigami
                 const columnView = target;
                 Qt.callLater(()=>columnView.removeItem(root));
