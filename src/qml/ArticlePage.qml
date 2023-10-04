@@ -186,6 +186,14 @@ Kirigami.Page {
             swipeView.currentItem.pageUpDown(0.9);
             break;
 
+        case Qt.Key_Home:
+            swipeView.currentItem.scrollToTop();
+            break;
+
+        case Qt.Key_End:
+            swipeView.currentItem.scrollToBottom();
+            break;
+
         case Qt.Key_Return:
         case Qt.Key_Enter:
             Qt.openUrlExternally(currentArticle.url);

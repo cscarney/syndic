@@ -77,13 +77,27 @@ ScrollView {
         requestContent(true);
     }
 
+    function topY() {
+        return scroller.originY - scroller.topMargin;
+    }
+
+    function bottomY() {
+        return scroller.originY + scroller.contentHeight + scroller.bottomMargin - scroller.height;
+    }
+
     function pxUpDown(increment) {
-        const topY = scroller.originY - scroller.topMargin;
-        const bottomY = scroller.originY + scroller.contentHeight + scroller.bottomMargin - scroller.height;
-        scroller.contentY = Math.max(topY, Math.min(scroller.contentY + increment, bottomY))
+        scroller.contentY = Math.max(topY(), Math.min(scroller.contentY + increment, bottomY()))
     }
 
     function pageUpDown(increment) {
         pxUpDown(increment * scroller.height)
+    }
+
+    function scrollToTop() {
+        scroller.contentY = topY();
+    }
+
+    function scrollToBottom() {
+        scroller.contentY = bottomY();
     }
 }
