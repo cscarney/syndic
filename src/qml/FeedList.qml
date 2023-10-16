@@ -7,6 +7,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import org.kde.kirigami 2.14 as Kirigami
+import org.kde.kirigami.delegates as Delegates
 import com.rocksandpaper.syndic 1.0
 
 ListView {
@@ -31,20 +32,25 @@ ListView {
         }
     }
 
-    delegate: Kirigami.BasicListItem {
+    delegate: Kirigami.AbstractListItem {
         id: listItem
         required property int index
         required property var feed
         property string iconName: feed.icon.toString()
         property int status: feed.status
         property int unreadCount: feed.unreadCount
-        icon.source: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
-        label: feed.name
-        separatorVisible: false
         padding: Kirigami.Units.largeSpacing
         leftPadding: Kirigami.Units.smallSpacing
         rightPadding: Kirigami.Units.smallSpacing
-        trailing: RowLayout {
+        contentItem: RowLayout {
+            spacing: Kirigami.Units.smallSpacing
+
+            Delegates.IconTitleSubtitle {
+                Layout.fillWidth: true
+                icon.source: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
+                title: feed.name
+            }
+
             Kirigami.Icon {
                 source: "content-loading-symbolic-nomask"
                 Layout.preferredHeight: contentItem.height
@@ -63,6 +69,7 @@ ListView {
                 id: unreadCountLabel
                 visible: listItem.unreadCount !== 0
                 horizontalAlignment: Text.AlignCenter
+                Layout.leftMargin: background.radius
                 Layout.rightMargin: background.radius
                 text: listItem.unreadCount
                 leftInset: -background.radius
