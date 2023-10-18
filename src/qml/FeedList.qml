@@ -90,6 +90,7 @@ ListView {
         label: section
         topPadding: padding * 2
         bottomPadding: padding * 2
+        width: parent?.width > 0 ? parent.width : implicitWidth
         onClicked: {
             currentIndex = -1
             root.currentlySelectedFeed = feedContext.createCategoryFeed(section);
