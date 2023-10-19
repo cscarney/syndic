@@ -42,6 +42,8 @@ ListView {
         padding: Kirigami.Units.largeSpacing
         leftPadding: Kirigami.Units.smallSpacing
         rightPadding: Kirigami.Units.smallSpacing
+        highlighted: ListView.isCurrentItem
+
         contentItem: RowLayout {
             spacing: Kirigami.Units.smallSpacing
 
@@ -49,6 +51,7 @@ ListView {
                 Layout.fillWidth: true
                 icon.source: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
                 title: feed.name
+                selected: listItem.highlighted
             }
 
             Kirigami.Icon {
