@@ -80,6 +80,13 @@ signals:
     void urlStringChanged();
     void saveFailed();
 
+    /**
+     * This signal is similar to urlStringChanged, but is only emitted
+     * when the URL string is edited directly, and not when it changes
+     * because of Feed::setUrl(...)
+     */
+    void urlStringEdited();
+
 private:
     Feed *m_targetFeed{nullptr};
     Syndication::FeedPtr m_feed;

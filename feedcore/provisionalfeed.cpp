@@ -155,6 +155,7 @@ void ProvisionalFeed::setUrlString(const QString &newUrlString)
         m_urlStringStatus = INVALID;
     }
     emit urlStringChanged();
+    emit urlStringEdited();
 }
 
 void ProvisionalFeed::syncUrlString()
