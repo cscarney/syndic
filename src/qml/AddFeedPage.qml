@@ -20,7 +20,7 @@ AbstractFeedEditorPage {
         expireMode: Feed.InheritUpdateMode
         expireAge: globalSettings.expireAge
 
-        onUrlStringChanged: {
+        onUrlStringEdited: {
             previewOpen = false
         }
     }
