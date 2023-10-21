@@ -26,9 +26,7 @@ ListView {
         sortMode: globalSettings.feedListSort
 
         onRowsRemoved: {
-            Qt.callLater(()=>{
-                root.currentIndex = 0;
-            });
+            root.currentIndex = 0;
         }
     }
 
