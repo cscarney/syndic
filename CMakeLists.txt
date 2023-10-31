@@ -30,7 +30,10 @@ find_package(Qt6 COMPONENTS Core Qml Network Quick QuickControls2 Sql REQUIRED)
 find_package(KF6Syndication REQUIRED)
 find_package(KF6Config REQUIRED)
 find_package(KF6DBusAddons CONFIG QUIET)
+
+if (NOT WITHOUT_QREADABLE)
 find_package(QReadable REQUIRED)
+endif()
 
 if (ANDROID)
     set(BUILD_TESTING OFF)
