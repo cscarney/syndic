@@ -6,7 +6,6 @@ set(icons
     icons/sc-status-com.rocksandpaper.syndic.feed-empty.svg
     icons/sc-actions-com.rocksandpaper.syndic.tray-icon-symbolic.svg
     )
-message(${icons})
 ecm_install_icons(ICONS ${icons} DESTINATION share/icons THEME hicolor)
 
 install(PROGRAMS applications/com.rocksandpaper.syndic.desktop DESTINATION share/applications)
