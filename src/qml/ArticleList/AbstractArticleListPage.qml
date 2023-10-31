@@ -4,6 +4,7 @@
  */
 
 import QtQuick 2.12
+import QtQuick.Controls
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
 import org.kde.kirigami 2.7 as Kirigami
@@ -102,23 +103,26 @@ Kirigami.ScrollablePage {
            }
        } /* model */
 
-        delegate: Kirigami.AbstractListItem {
+        delegate: ItemDelegate {
             id: articleListItem
             required property var ref
             required property int index // needed by Kirigami
             width: articleList.width
             text: ref.article.headline
             padding: 10
-            separatorVisible: true
-
-            // if we don't override this then AbstractListItem sets the height to 0 when the ListView is hidden,
-            // which causes ListView to instantiate a very large number of delegates.
+            horizontalPadding: padding * 2
+            implicitWidth: implicitContentWidth + leftPadding + rightPadding
+            implicitHeight:  implicitContentHeight + topPadding + bottomPadding
             height: implicitHeight
+            opacity: enabled ? 1 : 0.6
+            highlighted: ListView.isCurrentItem
 
             contentItem: ArticleListEntry {
                 article: ref.article
             }
             onClicked: {
+                ListView.view.currentIndex = index;
+
                 // close the feed editor if necessary
                 // TODO this should really emit a signal on articleListController instead of poking at feed editor internals,
                 // but articleListController doesn't exist until the Qt6 migration stuff lands.
