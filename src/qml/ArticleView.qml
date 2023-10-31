@@ -16,6 +16,7 @@ ColumnLayout {
     property string text: ""
     property string hoveredLink
     property bool showExpandedByline: false
+    readonly property Feed sourceFeed: article.feed
 
     readonly property string textStyle: "<style>
     * {
@@ -25,6 +26,39 @@ ColumnLayout {
         padding-bottom: 12px;
     }
     </style>"
+
+    RowLayout {
+        visible: root.showExpandedByline
+        Layout.bottomMargin: -root.spacing
+        spacing: Kirigami.Units.largeSpacing
+
+        FeedIcon {
+            feed: sourceFeed
+            size: Kirigami.Units.iconSizes.sizeForLabels
+        }
+
+        Label {
+            text: sourceFeed?.name
+            Layout.preferredHeight: visible ? implicitHeight : 0
+            color: Kirigami.Theme.textColor
+            elide: Text.ElideRight
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
+            opacity: 0.6
+            MouseArea {
+                id: feedMouse
+                anchors.fill: parent
+                hoverEnabled: !Kirigami.Settings.hasTransientTouchInput
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                   const w = Window.window;
+                   if (w && w.selectFeed) {
+                       w.selectFeed(root.article.feed);
+                   }
+                }
+            }
+        }
+    }
 
     Kirigami.Heading {
         level: 1
@@ -49,9 +83,8 @@ ColumnLayout {
 
     RowLayout {
         Label {
-            property string expandedByline: root.article.author + ", <a href=\"syndic-feed-link:\">" + root.article.feed.name + "</a>"
             Layout.fillWidth: true
-            text: showExpandedByline ? expandedByline : root.article.author
+            text: root.article.author
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
@@ -60,13 +93,6 @@ ColumnLayout {
             font {
                 italic: true
                 weight: Font.Light
-            }
-
-            onLinkActivated: (link)=>{
-                const w = Window.window;
-                if (w && w.selectFeed) {
-                    w.selectFeed(root.article.feed);
-                }
             }
         }
 
