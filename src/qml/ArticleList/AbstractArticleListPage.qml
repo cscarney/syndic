@@ -111,9 +111,6 @@ Kirigami.ScrollablePage {
             text: ref.article.headline
             padding: 10
             horizontalPadding: padding * 2
-            implicitWidth: implicitContentWidth + leftPadding + rightPadding
-            implicitHeight:  implicitContentHeight + topPadding + bottomPadding
-            height: implicitHeight
             opacity: enabled ? 1 : 0.6
             highlighted: ListView.isCurrentItem
 

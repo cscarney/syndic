@@ -36,7 +36,7 @@ ListView {
         required property var feed
         property int status: feed.status
         property int unreadCount: feed.unreadCount
-        width: parent.width
+        width: root.width
         padding: Kirigami.Units.largeSpacing
         leftPadding: Kirigami.Units.smallSpacing
         rightPadding: Kirigami.Units.smallSpacing
