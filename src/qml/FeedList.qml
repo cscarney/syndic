@@ -45,9 +45,16 @@ ListView {
         contentItem: RowLayout {
             spacing: Kirigami.Units.smallSpacing
 
-            Delegates.IconTitleSubtitle {
+            Kirigami.Icon {
+                source: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
+                placeholder: "feed-subscribe"
+                fallback: "feed-subscribe"
+                implicitWidth: Kirigami.Units.iconSizes.smallMedium
+                implicitHeight: implicitWidth
+            }
+
+            Delegates.TitleSubtitle {
                 Layout.fillWidth: true
-                icon.source: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
                 title: feed.name
                 selected: listItem.highlighted
             }
