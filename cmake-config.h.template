@@ -5,3 +5,4 @@
  
 #cmakedefine Qt6Widgets_FOUND
 #cmakedefine KF6DBusAddons_FOUND
+#cmakedefine QReadable_FOUND

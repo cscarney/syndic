@@ -173,6 +173,11 @@ public:
      */
     Q_INVOKABLE void importOpml(const QUrl &url);
 
+    /*
+     * Gets the Readability object for this context.
+     *
+     * This may be null if we were built without readability support
+     */
     Readability *getReadability();
 
     bool defaultUpdateEnabled() const;

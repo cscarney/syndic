@@ -5,17 +5,25 @@
 #include "context.h"
 #include "automation/automationengine.h"
 #include "categoryfeed.h"
+#include "cmake-config.h"
 #include "feed.h"
 #include "future.h"
 #include "opmlreader.h"
 #include "provisionalfeed.h"
-#include "readability/qreadablereadability.h"
 #include "scheduler.h"
 #include "storage.h"
 #include <QDebug>
 #include <QFile>
 #include <QNetworkInformation>
 #include <QSet>
+
+#ifdef QReadable_FOUND
+#include "readability/qreadablereadability.h"
+using ReadabilityType = FeedCore::QReadableReadability;
+#else
+#include "readability/placeholderreadability.h"
+using ReadabilityType = FeedCore::PlaceholderReadability;
+#endif
 
 namespace FeedCore
 {
@@ -324,7 +332,7 @@ void Context::importOpml(const QUrl &url)
 Readability *Context::getReadability()
 {
     if (d->readability == nullptr) {
-        d->readability = new QReadableReadability();
+        d->readability = new ReadabilityType();
         d->readability->setParent(this);
     }
     return d->readability;

@@ -24,7 +24,6 @@ set(feedcore_HEADERS
     automation/automationrule.h
     readability/readability.h
     readability/readabilityresult.h
-    readability/qreadablereadability.h
     )
     
 set(feedcore_SRCS
@@ -45,9 +44,18 @@ set(feedcore_SRCS
     feeddiscovery.cpp
     automation/automationengine.cpp
     automation/automationrule.cpp
-    readability/qreadablereadability.cpp
     )
-    
+
+if (QReadable_FOUND)
+    set(feedcore_SRCS ${feedcore_SRCS}
+        readability/qreadablereadability.h
+        readability/qreadablereadability.cpp)
+else()
+    set(feedcore_SRCS ${feedcore_SRCS}
+        readability/placeholderreadability.h
+        readability/placeholderreadability.cpp)
+endif()
+
 add_library(feedcore STATIC ${feedcore_SRCS})
 ecm_create_qm_loader(feedcore feedcore)
 
@@ -56,6 +64,9 @@ target_link_libraries(feedcore
     Qt6::Sql
     Qt6::Network
     KF6::Syndication
-    QReadable::libqreadable
     htmlparser
 )
+
+if (QReadable_FOUND)
+    target_link_libraries(feedcore QReadable::libqreadable)
+endif()
