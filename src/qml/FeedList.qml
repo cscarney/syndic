@@ -34,7 +34,6 @@ ListView {
         id: listItem
         required property int index
         required property var feed
-        property string iconName: feed.icon.toString()
         property int status: feed.status
         property int unreadCount: feed.unreadCount
         padding: Kirigami.Units.largeSpacing
@@ -45,12 +44,8 @@ ListView {
         contentItem: RowLayout {
             spacing: Kirigami.Units.smallSpacing
 
-            Kirigami.Icon {
-                source: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
-                placeholder: "feed-subscribe"
-                fallback: "feed-subscribe"
-                implicitWidth: Kirigami.Units.iconSizes.smallMedium
-                implicitHeight: implicitWidth
+            FeedIcon {
+                feed: listItem.feed
             }
 
             Delegates.TitleSubtitle {
