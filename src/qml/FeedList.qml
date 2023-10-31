@@ -30,12 +30,13 @@ ListView {
         }
     }
 
-    delegate: Kirigami.AbstractListItem {
+    delegate: ItemDelegate {
         id: listItem
         required property int index
         required property var feed
         property int status: feed.status
         property int unreadCount: feed.unreadCount
+        width: parent.width
         padding: Kirigami.Units.largeSpacing
         leftPadding: Kirigami.Units.smallSpacing
         rightPadding: Kirigami.Units.smallSpacing
@@ -84,7 +85,10 @@ ListView {
             }
         }
 
-        onClicked: root.itemClicked()
+        onClicked: {
+            ListView.view.currentIndex = index;
+            root.itemClicked()
+        }
     }/* delegate */
 
     section.property: "category"
