@@ -148,60 +148,84 @@ Kirigami.Page {
         }
     }
 
-    Keys.onPressed: (event)=>{
-        if (!root.currentArticle) {
-            return;
-        }
+    component ArticleNavigationShortcut: Shortcut {
+        enabled: !!root.currentArticle
+    }
 
-        switch (event.key) {
-        case Qt.Key_Space:
-            if (!swipeView.currentItem.atYEnd) {
-                swipeView.currentItem.pageUpDown(0.9);
-            } else {
+
+    property list<Shortcut> shortcuts: [
+        ArticleNavigationShortcut {
+            sequences: [" "]
+            onActivated: {
+                if (!swipeView.currentItem.atYEnd) {
+                    swipeView.currentItem.pageUpDown(0.9);
+                } else {
+                    articleListController.nextItem();
+                }
+            }
+        },
+
+        ArticleNavigationShortcut {
+            sequences: ["Left"]
+            onActivated: {
+                articleListController.previousItem();
+            }
+        },
+
+        ArticleNavigationShortcut {
+            sequences: ["Right"]
+            onActivated: {
                 articleListController.nextItem();
             }
-            break;
+        },
 
-        case Qt.Key_Left:
-            articleListController.previousItem();
-            break;
+        ArticleNavigationShortcut {
+            sequences: ["Up"]
+            onActivated: {
+                swipeView.currentItem.pxUpDown(Kirigami.Units.gridUnit * -2);
+            }
+        },
 
-        case Qt.Key_Right:
-            articleListController.nextItem();
-            break;
+        ArticleNavigationShortcut {
+            sequences: ["Down"]
+            onActivated: {
+                swipeView.currentItem.pxUpDown(Kirigami.Units.gridUnit * 2);
+            }
+        },
 
-        case Qt.Key_Up:
-            swipeView.currentItem.pxUpDown(Kirigami.Units.gridUnit * -2);
-            break;
+        ArticleNavigationShortcut {
+            sequences: ["PgUp"]
+            onActivated: {
+                swipeView.currentItem.pageUpDown(-0.9);
+            }
+        },
 
-        case Qt.Key_Down:
-            swipeView.currentItem.pxUpDown(Kirigami.Units.gridUnit * 2);
-            break;
+        ArticleNavigationShortcut {
+            sequences: ["PgDown"]
+            onActivated: {
+                swipeView.currentItem.pageUpDown(0.9);
+            }
+        },
 
-        case Qt.Key_PageUp:
-            swipeView.currentItem.pageUpDown(-0.9);
-            break;
+        ArticleNavigationShortcut {
+            sequences: ["Home"]
+            onActivated: {
+                swipeView.currentItem.scrollToTop();
+            }
+        },
 
-        case Qt.Key_PageDown:
-            swipeView.currentItem.pageUpDown(0.9);
-            break;
+        ArticleNavigationShortcut {
+            sequences: ["End"]
+            onActivated: {
+                swipeView.currentItem.scrollToBottom();
+            }
+        },
 
-        case Qt.Key_Home:
-            swipeView.currentItem.scrollToTop();
-            break;
-
-        case Qt.Key_End:
-            swipeView.currentItem.scrollToBottom();
-            break;
-
-        case Qt.Key_Return:
-        case Qt.Key_Enter:
-            Qt.openUrlExternally(currentArticle.url);
-            break;
-
-        default:
-            return;
+        ArticleNavigationShortcut {
+            sequences: ["Return", "Enter"]
+            onActivated: {
+                Qt.openUrlExternally(currentArticle.url);
+            }
         }
-        event.accepted = true
-    }
+    ]
 }
