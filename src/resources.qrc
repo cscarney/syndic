@@ -25,5 +25,6 @@
         <file>qml/+org.kde.desktop/ElasticComboBox.qml</file>
         <file>qml/ArticlePageSwipeViewItem.qml</file>
         <file>qml/FeedIcon.qml</file>
+        <file>qml/ArticleList/SearchResultPage.qml</file>
     </qresource>
 </RCC>

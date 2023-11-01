@@ -64,4 +64,17 @@ public:
             op.addResult(newFeed);
         });
     }
+
+    QFuture<FeedCore::ArticleRef> getSearchResults(const QString &search) override
+    {
+        return FeedCore::Future::yield<FeedCore::ArticleRef>(this, [this, search](auto &op) {
+            for (auto *feed : m_feeds) {
+                for (auto &ar : std::as_const(feed->m_articles)) {
+                    if (ar->title().contains(search)) {
+                        op.addResult(ar);
+                    }
+                }
+            }
+        });
+    }
 };

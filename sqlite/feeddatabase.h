@@ -23,6 +23,7 @@ public:
     ItemQuery selectAllItems();
     ItemQuery selectUnreadItems();
     ItemQuery selectStarredItems();
+    ItemQuery selectItemsBySearch(const QString &search);
     ItemQuery selectItemsByFeed(qint64 feedId);
     ItemQuery selectUnreadItemsByFeed(qint64 feedId);
     ItemQuery selectItem(qint64 id);
