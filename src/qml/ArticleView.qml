@@ -260,6 +260,7 @@ ColumnLayout {
             selectedTextColor: Kirigami.Theme.highlightedTextColor
             selectionColor: Kirigami.Theme.highlightColor
             baseUrl: root.article.url
+            activeFocusOnPress: false
 
             // native rendering is glitchy with selection highlight
             renderType: Text.QtRendering
