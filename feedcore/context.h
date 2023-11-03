@@ -100,6 +100,11 @@ public:
     Q_INVOKABLE FeedCore::Feed *createCategoryFeed(const QString &category);
 
     /**
+     * Return the list of articles matching a search query
+     */
+    QFuture<ArticleRef> searchArticles(const QString &query);
+
+    /**
      * Create a new feed in the Context's storage object.
      *
      * The pattern for adding a new feed is:

@@ -45,6 +45,11 @@ public:
             r.addResult(feed);
         });
     }
+
+    QFuture<ArticleRef> getSearchResults(const QString &search) override
+    {
+        return Future::yield<ArticleRef>(this, [](auto &) {});
+    }
 };
 
 constexpr const int contextUpdateInterval = 1904;

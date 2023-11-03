@@ -157,6 +157,17 @@ ItemQuery FeedDatabase::selectStarredItems()
     return q;
 }
 
+ItemQuery FeedDatabase::selectItemsBySearch(const QString &search)
+{
+    QString like = "%" + search + "%";
+    ItemQuery q(db(), "headline LIKE :search OR feedContent LIKE :search OR readableContent LIKE :search " + select_sort);
+    q.bindValue(":search", like);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in selectItemsBySearch: " + q.lastError().text();
+    }
+    return q;
+}
+
 ItemQuery FeedDatabase::selectItemsByFeed(qint64 feedId)
 {
     ItemQuery q(db(), "feed=:feed " + select_sort);

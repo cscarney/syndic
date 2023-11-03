@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 #include "context.h"
+#include "article.h"
 #include "automation/automationengine.h"
 #include "categoryfeed.h"
 #include "cmake-config.h"
@@ -139,6 +140,11 @@ QSet<Feed *> Context::getCategoryFeeds(const QString &category)
 Feed *Context::createCategoryFeed(const QString &category)
 {
     return new CategoryFeed(this, category);
+}
+
+QFuture<ArticleRef> Context::searchArticles(const QString &query)
+{
+    return d->storage->getSearchResults(query);
 }
 
 void Context::addFeed(ProvisionalFeed *feed)

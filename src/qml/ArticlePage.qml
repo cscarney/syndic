@@ -149,7 +149,8 @@ Kirigami.Page {
     }
 
     component ArticleNavigationShortcut: Shortcut {
-        enabled: !!root.currentArticle
+        property bool ignoreWhen: false
+        enabled: (root.currentArticle != null) && (!ignoreWhen)
     }
 
 
@@ -223,6 +224,7 @@ Kirigami.Page {
 
         ArticleNavigationShortcut {
             sequences: ["Return", "Enter"]
+            ignoreWhen: root.ApplicationWindow.activeFocusControl instanceof TextField
             onActivated: {
                 Qt.openUrlExternally(currentArticle.url);
             }

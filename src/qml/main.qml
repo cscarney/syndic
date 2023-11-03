@@ -7,7 +7,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
-import org.kde.kirigami 2.7 as Kirigami
+import org.kde.kirigami as Kirigami
 
 Kirigami.ApplicationWindow {
     id: root
@@ -57,6 +57,27 @@ Kirigami.ApplicationWindow {
         // Drawer is modal unless a the current page requests to keep it open (e.g. settings)
         modal: !(pageStack.depth===1 && pageStack.items[0].keepDrawerOpen)
         onModalChanged: drawerOpen=!modal
+
+        header: Kirigami.AbstractApplicationHeader {
+            Kirigami.SearchField {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    leftMargin: Kirigami.Units.largeSpacing
+                    rightMargin: Kirigami.Units.largeSpacing
+                }
+                autoAccept: false
+
+                onAccepted: {
+                    if (text) {
+                        priv.pushUtilityPage("qrc:/qml/ArticleList/SearchResultPage.qml", {pageRow: pageStack, query: text})
+                    } else {
+                        feedList.currentIndex = 0
+                    }
+                    drawer.drawerOpen = !drawer.modal
+                }
+            }
+        }
 
         topContent: ColumnLayout {
             spacing: 0

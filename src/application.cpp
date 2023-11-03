@@ -28,6 +28,7 @@
 #include "platformhelper.h"
 #include "provisionalfeed.h"
 #include "qmlarticleref.h"
+#include "searchresultfeed.h"
 #include "settings.h"
 #include "sqlite/storageimpl.h"
 
@@ -66,6 +67,7 @@ static void registerQmlTypes()
     qmlRegisterType<FeedCore::ProvisionalFeed>("com.rocksandpaper.syndic", 1, 0, "ProvisionalFeed");
     qmlRegisterType<ContentModel>("com.rocksandpaper.syndic", 1, 0, "ContentModel");
     qmlRegisterType<ContentImageItem>("com.rocksandpaper.syndic", 1, 0, "ContentImage");
+    qmlRegisterType<FeedCore::SearchResultFeed>("com.rocksandpaper.syndic", 1, 0, "SearchResultFeed");
     qmlRegisterUncreatableType<FeedCore::Feed::Updater>("com.rocksandpaper.syndic", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<FeedCore::Context>("com.rocksandpaper.syndic", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<FeedCore::Feed>("com.rocksandpaper.syndic", 1, 0, "Feed", "obtained from cpp model");
