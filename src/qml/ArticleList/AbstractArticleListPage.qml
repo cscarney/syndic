@@ -8,7 +8,7 @@ import QtQuick.Controls
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
 import org.kde.kirigami 2.7 as Kirigami
-import com.rocksandpaper.syndic 1.0
+import com.rocksandpaper.syndic
 
 Kirigami.ScrollablePage {
     id: root
@@ -85,7 +85,7 @@ Kirigami.ScrollablePage {
         currentIndex: -1
         pressDelay: Kirigami.Settings.hasTransientTouchInput ? 120 : 0
 
-        model: ArticleListModel {
+        model: FeedModel {
            id: feedItemModel
            feed: root.feed
            unreadFilter: root.unreadFilter
