@@ -19,8 +19,9 @@ class Context;
 /**
  * List model for the article list.
  *
- * The model is tied to a single feed.  To display a combined list of feeds,
- * the model can be populated from an AllItemsFeed.
+ * This is a generic list model for displaying a list of articles. It is
+ * intended to be used as a base class for other models that display
+ * articles from a feed or search result.
  */
 class ArticleListModel : public QAbstractListModel, public QQmlParserStatus
 {
@@ -37,23 +38,27 @@ class ArticleListModel : public QAbstractListModel, public QQmlParserStatus
     Q_PROPERTY(bool unreadFilter READ unreadFilter WRITE setUnreadFilter NOTIFY unreadFilterChanged);
 
     /**
-     * A convenience accessor for feed()->status()
+     * The current load status of the article list. This will be
+     * Feed::Loading until the model finishes loading, otherwise
+     * it takes it's value from the source.
+     *
+     * \sa FeedCore::Feed::LoadStatus
+     * \sa ArticleListModel::setStatusFromUpstream
      */
     Q_PROPERTY(FeedCore::Feed::LoadStatus status READ status NOTIFY statusChanged);
-
-    /**
-     * The feed whose items are displayed in the list
-     */
-    Q_PROPERTY(FeedCore::Feed *feed READ feed WRITE setFeed NOTIFY feedChanged);
 
 public:
     explicit ArticleListModel(QObject *parent = nullptr);
     ~ArticleListModel();
 
     /**
-     * Begins an update on the feed and updates the list accordingly.
+     * Requests an update on the underlying source. This corresponds
+     * to the user clicking the refresh button in the user interface.
+     *
+     * This function may be implemented by a derived class; the default
+     * implementation does nothing.
      */
-    Q_INVOKABLE void requestUpdate();
+    Q_INVOKABLE virtual void requestUpdate();
 
     /**
      * Marks all of the items displayed in the list as read and removes
@@ -66,8 +71,6 @@ public:
      */
     Q_INVOKABLE void removeRead();
 
-    FeedCore::Feed *feed() const;
-    void setFeed(FeedCore::Feed *feed);
     bool unreadFilter() const;
     void setUnreadFilter(bool unreadFilter);
     FeedCore::LoadStatus status();
@@ -79,9 +82,53 @@ public:
     void componentComplete() override;
 
 signals:
-    void feedChanged();
     void unreadFilterChanged();
     void statusChanged();
+
+protected:
+    /**
+     * Called before the first update to perform initial setup.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void init();
+
+    /**
+     * Called by refresh() to get the list of items from the source.
+     */
+    virtual QFuture<FeedCore::ArticleRef> getArticles() = 0;
+
+    /**
+     * Called after an update to sync the load status of the model
+     * with the load status of the source.
+     *
+     * The default implementation sets the status to Idle.
+     */
+    virtual void setStatusFromUpstream();
+
+    /**
+     * Returns true if the source has been initialized
+     */
+    bool active();
+
+    /**
+     * Remove all items
+     */
+    void clear();
+
+    /**
+     * Reloads the list from the source. This does *not* update
+     * the source itself, it just replaces the existing content
+     * of the list with the result of a new call to getArticles().
+     */
+    void refresh();
+
+    /**
+     * Add an item to the list.
+     */
+    void addItem(const FeedCore::ArticleRef &item);
+
+    void setStatus(FeedCore::LoadStatus status);
 
 private:
     struct PrivData;
@@ -89,10 +136,6 @@ private:
 
     template<typename Callback>
     void getItems(Callback cb);
-    void setStatusFromUpstream();
-    void setStatus(FeedCore::LoadStatus status);
-    void refresh();
-    void onItemAdded(const FeedCore::ArticleRef &item);
     void insertAndNotify(int index, const FeedCore::ArticleRef &item);
     void refreshMerge();
     void onRefreshFinished(const QList<FeedCore::ArticleRef> &result);

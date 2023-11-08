@@ -17,11 +17,11 @@
 #include <KDBusService>
 #endif
 
-#include "articlelistmodel.h"
 #include "contentimageitem.h"
 #include "contentmodel.h"
 #include "context.h"
 #include "feedlistmodel.h"
+#include "feedmodel.h"
 #include "iconprovider.h"
 #include "networkaccessmanagerfactory.h"
 #include "notificationcontroller.h"
@@ -63,7 +63,7 @@ static FeedCore::Context *createContext(QObject *parent = nullptr)
 static void registerQmlTypes()
 {
     qmlRegisterType<FeedListModel>("com.rocksandpaper.syndic", 1, 0, "FeedListModel");
-    qmlRegisterType<ArticleListModel>("com.rocksandpaper.syndic", 1, 0, "ArticleListModel");
+    qmlRegisterType<FeedModel>("com.rocksandpaper.syndic", 1, 0, "FeedModel");
     qmlRegisterType<FeedCore::ProvisionalFeed>("com.rocksandpaper.syndic", 1, 0, "ProvisionalFeed");
     qmlRegisterType<ContentModel>("com.rocksandpaper.syndic", 1, 0, "ContentModel");
     qmlRegisterType<ContentImageItem>("com.rocksandpaper.syndic", 1, 0, "ContentImage");
@@ -72,6 +72,7 @@ static void registerQmlTypes()
     qmlRegisterUncreatableType<FeedCore::Context>("com.rocksandpaper.syndic", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<FeedCore::Feed>("com.rocksandpaper.syndic", 1, 0, "Feed", "obtained from cpp model");
     qmlRegisterUncreatableType<FeedCore::Article>("com.rocksandpaper.syndic", 1, 0, "Article", "obtained from cpp model");
+    qmlRegisterUncreatableType<ArticleListModel>("com.rocksandpaper.syndic", 1, 0, "ArticleListModel", "abstract base class");
     qmlRegisterUncreatableType<QmlArticleRef>("com.rocksandpaper.syndic", 1, 0, "articleRef", "obtained from cpp model");
     qmlRegisterUncreatableType<PlatformHelper>("com.rocksandpaper.syndic", 1, 0, "PlatformHelper", "global object");
     qmlRegisterUncreatableType<ContentBlock>("com.rocksandpaper.syndic", 1, 0, "ContentBlock", "obtained from contentmodel");

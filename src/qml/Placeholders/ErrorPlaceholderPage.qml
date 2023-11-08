@@ -8,7 +8,7 @@ import org.kde.kirigami 2.7 as Kirigami
 import com.rocksandpaper.syndic 1.0
 
 AbstractPlaceholderPage {
-    property ArticleListModel model: articleListController.model;
+    property FeedModel model: articleListController.model;
 
     iconName: "dialog-error-symbolic-nomask"
     headingText: "Error Updating Feed"

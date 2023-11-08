@@ -13,7 +13,6 @@
 using namespace FeedCore;
 
 struct ArticleListModel::PrivData {
-    Feed *feed{};
     QList<QmlArticleRef> items;
     bool unreadFilter{false};
     LoadStatus status{LoadStatus::Loading};
@@ -142,11 +141,13 @@ void ArticleListModel::componentComplete()
 {
     QTimer::singleShot(0, this, [this] {
         d->active = true;
-        QObject::connect(d->feed, &Feed::articleAdded, this, &ArticleListModel::onItemAdded);
-        QObject::connect(d->feed, &Feed::statusChanged, this, &ArticleListModel::onStatusChanged);
-        QObject::connect(d->feed, &Feed::reset, this, &ArticleListModel::refresh);
+        init();
         refresh();
     });
+}
+
+void ArticleListModel::init()
+{
 }
 
 void ArticleListModel::onRefreshFinished(const QList<ArticleRef> &result)
@@ -183,7 +184,7 @@ void ArticleListModel::onMergeFinished(const QList<ArticleRef> &result)
     setStatusFromUpstream();
 }
 
-void ArticleListModel::onItemAdded(ArticleRef const &item)
+void ArticleListModel::addItem(ArticleRef const &item)
 {
     if (!d->unreadFilter || !item->isRead()) {
         insertAndNotify(indexForItem(d->items, item), item);
@@ -249,29 +250,8 @@ QVariant ArticleListModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-Feed *ArticleListModel::feed() const
-{
-    return d->feed;
-}
-
-void ArticleListModel::setFeed(Feed *feed)
-{
-    if (d->feed != feed) {
-        d->feed = feed;
-        if (d->active) {
-            beginResetModel();
-            d->items = {};
-            endResetModel();
-            refresh();
-        }
-        emit feedChanged();
-    }
-}
-
 void ArticleListModel::requestUpdate()
 {
-    feed()->updater()->start();
-    removeRead();
 }
 
 static void removeReadArticles(QList<ArticleRef> &v)
@@ -285,11 +265,10 @@ static void removeReadArticles(QList<ArticleRef> &v)
 template<typename Callback>
 void ArticleListModel::getItems(Callback cb)
 {
-    if (!d->feed) {
+    QFuture<ArticleRef> q = getArticles();
+    if (q.isCanceled()) {
         cb(QList<ArticleRef>{});
-        return;
     }
-    QFuture<ArticleRef> q = d->feed->getArticles(unreadFilter());
     Future::safeThen(q, this, [this, cb](auto &q) {
         auto result = Future::safeResults(q);
         if (unreadFilter()) {
@@ -302,15 +281,17 @@ void ArticleListModel::getItems(Callback cb)
 
 void ArticleListModel::setStatusFromUpstream()
 {
-    auto *feed = d->feed;
-    if (feed != nullptr) {
-        setStatus(feed->status());
-    }
+    setStatus(Feed::Idle);
 }
 
-void ArticleListModel::onStatusChanged()
+bool ArticleListModel::active()
 {
-    if (status() != Feed::Loading) {
-        setStatus(d->feed->status());
-    }
+    return d->active;
+}
+
+void ArticleListModel::clear()
+{
+    beginResetModel();
+    d->items = {};
+    endResetModel();
 }

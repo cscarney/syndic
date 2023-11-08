@@ -13,6 +13,7 @@ set(syndic_HEADERS
     platformhelper.h
     contentimageitem.h
     application.h
+    feedmodel.h
     networkaccessmanagerfactory.h
     )
 
@@ -28,6 +29,7 @@ set(syndic_SRCS
     contentimageitem.cpp
     networkaccessmanagerfactory.cpp
     application.cpp
+    feedmodel.cpp
     main.cpp
     resources.qrc
     )
