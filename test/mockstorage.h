@@ -77,4 +77,9 @@ public:
             }
         });
     }
+
+    QFuture<FeedCore::ArticleRef> getHighlights() override
+    {
+        return getAll();
+    }
 };

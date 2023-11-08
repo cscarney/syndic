@@ -186,6 +186,11 @@ QFuture<ArticleRef> Context::getStarred()
     return d->storage->getStarred();
 }
 
+QFuture<ArticleRef> Context::getHighlights()
+{
+    return d->storage->getHighlights();
+}
+
 void Context::requestUpdate()
 {
     const auto &timestamp = QDateTime::currentDateTime();

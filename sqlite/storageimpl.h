@@ -33,6 +33,7 @@ public:
     QFuture<FeedCore::ArticleRef> getUnread() final;
     QFuture<FeedCore::ArticleRef> getStarred() final;
     QFuture<FeedCore::ArticleRef> getSearchResults(const QString &search) override;
+    QFuture<FeedCore::ArticleRef> getHighlights() final;
     QFuture<FeedCore::Feed *> getFeeds() final;
     QFuture<FeedCore::Feed *> storeFeed(FeedCore::Feed *feed) final;
     void listenForChanges(FeedImpl *feed);

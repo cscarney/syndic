@@ -148,6 +148,14 @@ public:
     QFuture<ArticleRef> getStarred();
 
     /**
+     * List articles that may be of interest to the user.
+     *
+     * The specific algorithm is determined by the storage
+     * backend.
+     */
+    QFuture<ArticleRef> getHighlights();
+
+    /**
      * Trigger an update on every feed in this context.
      *
      * The updates may not succeed and this method does not provide
