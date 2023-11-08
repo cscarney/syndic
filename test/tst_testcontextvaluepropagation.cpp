@@ -50,6 +50,11 @@ public:
     {
         return Future::yield<ArticleRef>(this, [](auto &) {});
     }
+
+    QFuture<ArticleRef> getHighlights() override
+    {
+        return Future::yield<ArticleRef>(this, [](auto &) {});
+    }
 };
 
 constexpr const int contextUpdateInterval = 1904;

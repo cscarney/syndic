@@ -109,6 +109,14 @@ Kirigami.ApplicationWindow {
 
         actions: [
             Kirigami.Action {
+                text: qsTr("Highlights")
+                icon.name: "go-home-symbolic"
+                onTriggered: {
+                    priv.pushUtilityPage("qrc:/qml/ArticleList/OverviewPage.qml", {pageRow: pageStack})
+                }
+            },
+
+            Kirigami.Action {
                 text: qsTr("Add Content")
                 icon.name: "list-add"
                 onTriggered: {

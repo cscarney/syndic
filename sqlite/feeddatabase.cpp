@@ -168,6 +168,24 @@ ItemQuery FeedDatabase::selectItemsBySearch(const QString &search)
     return q;
 }
 
+ItemQuery FeedDatabase::selectItemsByRecommended(int limit)
+{
+    ItemQuery q(db());
+    q.prepare(
+                "SELECT "+
+                    ItemQuery::fieldList() + ", "
+                    "RANK() over (PARTITION BY feed ORDER BY date DESC) AS feedRank "
+                "FROM Item "
+                "ORDER BY isRead ASC, feedRank ASC, date ASC "
+                "LIMIT :limit;"
+                );
+    q.bindValue(":limit", limit);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in selectItemsByRecommended: " + q.lastError().text();
+    }
+    return q;
+}
+
 ItemQuery FeedDatabase::selectItemsByFeed(qint64 feedId)
 {
     ItemQuery q(db(), "feed=:feed " + select_sort);

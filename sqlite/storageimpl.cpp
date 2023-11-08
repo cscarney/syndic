@@ -80,6 +80,14 @@ QFuture<ArticleRef> StorageImpl::getSearchResults(const QString &search)
     });
 }
 
+QFuture<ArticleRef> StorageImpl::getHighlights()
+{
+    return Future::yield<ArticleRef>(this, [this](auto &op) {
+        ItemQuery q{m_db.selectItemsByRecommended()};
+        appendArticleResults(op, q);
+    });
+}
+
 StorageImpl::StorageImpl(const QString &filePath)
     : m_db(filePath)
 {

@@ -14,8 +14,10 @@ Kirigami.ScrollablePage {
     id: root
     required property Item pageRow
     required property ArticleListModel model
+    property alias delegate: articleList.delegate
     property alias count: articleList.count
     property alias currentIndex: articleList.currentIndex
+    readonly property ListView view: articleList
     property bool isUpdating: model.status === Feed.Updating
     property bool unreadFilter: true
     property bool automaticOpen: pageRow.defaultColumnWidth * 2 < pageRow.width
@@ -102,33 +104,6 @@ Kirigami.ScrollablePage {
 
         model: root.model
 
-        delegate: ItemDelegate {
-            id: articleListItem
-            required property var ref
-            required property int index // needed by Kirigami
-            width: articleList.width
-            text: ref.article.headline
-            padding: 10
-            horizontalPadding: padding * 2
-            opacity: enabled ? 1 : 0.6
-            highlighted: ListView.isCurrentItem
-
-            contentItem: ArticleListEntry {
-                article: ref.article
-            }
-            onClicked: {
-                ListView.view.currentIndex = index;
-
-                // close the feed editor if necessary
-                // TODO this should really emit a signal on articleListController instead of poking at  editor internals,
-                // but articleListController doesn't exist until the Qt6 migration stuff lands.
-                if (pageRow.lastItem.onDone) {
-                    pageRow.lastItem.onDone();
-                }
-                pageRow.currentIndex = root.Kirigami.ColumnView.index + 1
-            }
-        } /*  delegate */
-
         header: Kirigami.InlineMessage {
             id: errorMessage
             text: qsTr("Couldn't fetch feed from source")
@@ -175,5 +150,17 @@ Kirigami.ScrollablePage {
         root.currentIndex = -1
         root.model.removeRead()
         articleList.positionViewAtBeginning()
+    }
+
+    function selectIndex(index) {
+        articleList.currentIndex = index;
+
+        // close the feed editor if necessary
+        // TODO this should really emit a signal on articleListController instead of poking at  editor internals,
+        // but articleListController doesn't exist until the Qt6 migration stuff lands.
+        if (pageRow.lastItem.onDone) {
+            pageRow.lastItem.onDone();
+        }
+        pageRow.currentIndex = root.Kirigami.ColumnView.index + 1
     }
 }

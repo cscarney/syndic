@@ -14,13 +14,20 @@ namespace SqliteStorage
 class ItemQuery : public QSqlQuery
 {
 public:
-    ItemQuery(const QSqlDatabase &db, const QString &whereClause)
+    static inline QString fieldList()
+    {
+        return "id, feed, localId, headline, author, date, url, isRead, isStarred";
+    }
+
+    explicit ItemQuery(const QSqlDatabase &db)
         : QSqlQuery(db)
     {
-        prepare(
-            "SELECT id, feed, localId, headline, author, date, url, isRead, isStarred "
-            "FROM Item WHERE "
-            + whereClause);
+    }
+
+    ItemQuery(const QSqlDatabase &db, const QString &whereClause)
+        : ItemQuery(db)
+    {
+        prepare("SELECT " + fieldList() + " FROM Item WHERE " + whereClause);
     }
 
     qint64 id() const

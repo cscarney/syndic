@@ -27,5 +27,6 @@
         <file>qml/FeedIcon.qml</file>
         <file>qml/ArticleList/SearchResultPage.qml</file>
         <file>qml/ArticleList/AbstractFeedPage.qml</file>
+        <file>qml/ArticleList/OverviewPage.qml</file>
     </qresource>
 </RCC>
