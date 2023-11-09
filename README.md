@@ -13,9 +13,9 @@ Syndic is a simple, responsive feed reader made for casual browsing. It adapts t
 
 This branch currently builds against the development version of KF6 with Qt6. If you have Plasma 5/KF5, you should be building from the [v1-series branch](https://github.com/cscarney/syndic/tree/v1-series) instead of this one.
 
-You will need to build and install [QReadable](https://invent.kde.org/ccarney/qreadable) before building syndic. Other required dependencies are Cmake, ECM, Qt6 (Core, Network, Qml, Quick, QQC2, Sql), KF6 (Syndication, Config, Kirigami). KF6DbusAddons and Qt Widgets are recommended on for desktop builds. Android builds additionally require OpenSSL and Qt AndroidExtras.
+It is recommended to build and install [QReadable](https://invent.kde.org/ccarney/qreadable) before building syndic. You can avoid the QReadable dependency for testing purposes by passing `-DWITHOUT_QREADABLE=1` to cmake, but this is only recommended for testing puropses, as it will result in a non-functional reader view.
 
-The KF6 dependencies are currently in development and you will probably need to build them yourself with `kdesrc-build`.
+Other required dependencies are Cmake, ECM, Qt6 (Core, Network, Qml, Quick, QQC2, Sql), KF6 (Syndication, Config, Kirigami). KF6DbusAddons and Qt6Widgets are recommended on for desktop builds. Android builds additionally require OpenSSL.
 
 Once all of the dependencies are installed you can build using the normal CMake commands:
 
