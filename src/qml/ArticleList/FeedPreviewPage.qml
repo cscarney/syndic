@@ -7,7 +7,7 @@ import com.rocksandpaper.syndic 1.0
 import QtQuick.Window 2.15
 import org.kde.kirigami 2.14 as Kirigami
 
-AbstractArticleListPage {
+AbstractFeedPage {
     id: root
     required property ProvisionalFeed provisionalFeed
     automaticOpen: false

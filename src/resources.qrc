@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>qtquickcontrols2.conf</file>
         <file>qml/main.qml</file>
-        <file>qml/ArticleList/ArticleListPage.qml</file>
+        <file>qml/ArticleList/FeedPage.qml</file>
         <file>qml/ArticleList/EmptyFeedOverlay.qml</file>
         <file>qml/ArticleList/ArticleListEntry.qml</file>
         <file>qml/Placeholders/AbstractPlaceholderPage.qml</file>
@@ -26,5 +26,6 @@
         <file>qml/ArticlePageSwipeViewItem.qml</file>
         <file>qml/FeedIcon.qml</file>
         <file>qml/ArticleList/SearchResultPage.qml</file>
+        <file>qml/ArticleList/AbstractFeedPage.qml</file>
     </qresource>
 </RCC>

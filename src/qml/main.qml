@@ -197,7 +197,7 @@ Kirigami.ApplicationWindow {
         }
 
         function pushFeed(feed) {
-            priv.pushRoot("qrc:/qml/ArticleList/ArticleListPage.qml",
+            priv.pushRoot("qrc:/qml/ArticleList/FeedPage.qml",
                            {pageRow: pageStack,
                                feed: feed})
         }
