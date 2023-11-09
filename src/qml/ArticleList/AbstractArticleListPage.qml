@@ -12,10 +12,8 @@ import com.rocksandpaper.syndic
 
 Kirigami.ScrollablePage {
     id: root
-
-    required property Feed feed
     required property Item pageRow
-    property alias model: articleList.model
+    required property ArticleListModel model
     property alias count: articleList.count
     property alias currentIndex: articleList.currentIndex
     property bool isUpdating: model.status === Feed.Updating
@@ -54,7 +52,7 @@ Kirigami.ScrollablePage {
     // Interface exposed to child pages via the articleListController property
     QtObject {
         id: articleListController
-        readonly property ArticleListModel model: feedItemModel
+        readonly property ArticleListModel model: root.model
         readonly property int currentIndex: articleList.currentIndex
 
         function nextItem () {
@@ -78,6 +76,23 @@ Kirigami.ScrollablePage {
         }
     }
 
+    Connections {
+        target: root.model
+        function onStatusChanged() {
+            if (articleList.currentItem || !automaticOpen) return;
+            if ((model.status === Feed.Idle) && (model.rowCount() > 0))
+                articleList.currentIndex = 0;
+        }
+
+        function onRowsAboutToBeRemoved() {
+            // force currentIndex to be updated before we check to see if it was removed
+            articleList.forceLayout();
+            if (root.currentIndex < first || root.currentIndex > last)
+                return;
+            root.currentIndex = -1
+        }
+    }
+
     ListView {
         id: articleList
         clip: true
@@ -85,23 +100,7 @@ Kirigami.ScrollablePage {
         currentIndex: -1
         pressDelay: Kirigami.Settings.hasTransientTouchInput ? 120 : 0
 
-        model: FeedModel {
-           id: feedItemModel
-           feed: root.feed
-           unreadFilter: root.unreadFilter
-           onStatusChanged: {
-               if (articleList.currentItem || !automaticOpen) return;
-               if ((model.status === Feed.Idle) && (model.rowCount() > 0))
-                   articleList.currentIndex = 0;
-           }
-           onRowsAboutToBeRemoved: function(parent, first, last){
-               // force currentIndex to be updated before we check to see if it was removed
-               articleList.forceLayout();
-               if (root.currentIndex < first || root.currentIndex > last)
-                   return;
-               root.currentIndex = -1
-           }
-       } /* model */
+        model: root.model
 
         delegate: ItemDelegate {
             id: articleListItem
@@ -121,7 +120,7 @@ Kirigami.ScrollablePage {
                 ListView.view.currentIndex = index;
 
                 // close the feed editor if necessary
-                // TODO this should really emit a signal on articleListController instead of poking at feed editor internals,
+                // TODO this should really emit a signal on articleListController instead of poking at  editor internals,
                 // but articleListController doesn't exist until the Qt6 migration stuff lands.
                 if (pageRow.lastItem.onDone) {
                     pageRow.lastItem.onDone();
@@ -149,7 +148,7 @@ Kirigami.ScrollablePage {
         EmptyFeedOverlay {
             id: emptyOverlay
             anchors.fill: parent
-            visible: (articleList.count == 0) && (feedItemModel.status !== Feed.Loading)
+            visible: (articleList.count == 0) && (root.model.status !== Feed.Loading)
             icon: unreadFilter ? "checkmark" : "com.rocksandpaper.syndic.feed-empty"
             text: unreadFilter ? qsTr("All Read") : qsTr("No Items")
         }

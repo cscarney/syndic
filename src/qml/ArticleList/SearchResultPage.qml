@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import com.rocksandpaper.syndic
 
-AbstractArticleListPage {
+AbstractFeedPage {
     id: root
     required property string query
 

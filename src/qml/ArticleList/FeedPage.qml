@@ -7,7 +7,7 @@ import QtQml 2.15
 import com.rocksandpaper.syndic 1.0
 import org.kde.kirigami 2.14 as Kirigami
 
-AbstractArticleListPage {
+AbstractFeedPage {
     id: root
     unreadFilter: globalSettings.unreadFilter
     property bool acceptFeedListAction: false
