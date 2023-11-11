@@ -15,7 +15,7 @@ ListView {
     property Feed currentlySelectedFeed
     signal itemClicked
 
-    currentIndex: 0
+    currentIndex: -1
     clip: true
     pressDelay: Kirigami.Settings.hasTransientTouchInput ? 120 : 0
     highlightMoveDuration: Kirigami.Units.longDuration
