@@ -22,10 +22,10 @@
 #include "context.h"
 #include "feedlistmodel.h"
 #include "feedmodel.h"
+#include "highlightsmodel.h"
 #include "iconprovider.h"
 #include "networkaccessmanagerfactory.h"
 #include "notificationcontroller.h"
-#include "overviewmodel.h"
 #include "platformhelper.h"
 #include "provisionalfeed.h"
 #include "qmlarticleref.h"
@@ -69,7 +69,7 @@ static void registerQmlTypes()
     qmlRegisterType<ContentModel>("com.rocksandpaper.syndic", 1, 0, "ContentModel");
     qmlRegisterType<ContentImageItem>("com.rocksandpaper.syndic", 1, 0, "ContentImage");
     qmlRegisterType<FeedCore::SearchResultFeed>("com.rocksandpaper.syndic", 1, 0, "SearchResultFeed");
-    qmlRegisterType<OverviewModel>("com.rocksandpaper.syndic", 1, 0, "OverviewModel");
+    qmlRegisterType<HighlightsModel>("com.rocksandpaper.syndic", 1, 0, "HighlightsModel");
     qmlRegisterUncreatableType<FeedCore::Feed::Updater>("com.rocksandpaper.syndic", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<FeedCore::Context>("com.rocksandpaper.syndic", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<FeedCore::Feed>("com.rocksandpaper.syndic", 1, 0, "Feed", "obtained from cpp model");

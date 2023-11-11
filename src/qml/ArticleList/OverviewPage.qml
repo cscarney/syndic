@@ -8,7 +8,7 @@ import ".."
 AbstractArticleListPage {
     id: root
     title: qsTr("Highlights")
-    model: OverviewModel {
+    model: HighlightsModel {
         context: feedContext
     }
 
