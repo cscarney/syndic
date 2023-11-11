@@ -114,9 +114,10 @@ Kirigami.ScrollablePage {
             }
         }
 
-        ElasticComboBox {
+        ComboBox {
             id: startPage
             Kirigami.FormData.label: qsTr("Start page:");
+            implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
             model: [qsTr("Highlights"), qsTr("All Items")];
             currentIndex:  globalSettings.startPage
             Binding {
@@ -126,10 +127,11 @@ Kirigami.ScrollablePage {
             }
         }
 
-        ElasticComboBox {
+        ComboBox {
             id: feedListSort
             Kirigami.FormData.label: qsTr("Sort feed list:");
-            model: [qsTr("Alphabetical"), qsTr("Unread First")]
+            implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
+            model: [qsTr("Alphabetical"), qsTr("Unread First")]            
             currentIndex: globalSettings.feedListSort
             Binding {
                 target: globalSettings
@@ -138,9 +140,10 @@ Kirigami.ScrollablePage {
             }
         }
 
-        ElasticComboBox {
+        ComboBox {
             id: articleFont
             Kirigami.FormData.label: qsTr("Article font:")
+            implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
             model: [qsTr("Use system font", "entry in font list"), "serif", ...Qt.fontFamilies()]
             onActivated: {
                 if (currentIndex == 0) {
