@@ -161,33 +161,31 @@ void ArticleListModel::onRefreshFinished(const QList<ArticleRef> &result)
     setStatusFromUpstream();
 }
 
-static bool compareDatesDescending(const ArticleRef &l, const ArticleRef &r)
-{
-    return l->date() > r->date();
-}
-
-static int indexForItem(const QList<QmlArticleRef> &list, const ArticleRef &item)
-{
-    auto it = std::lower_bound(list.constBegin(), list.constEnd(), item, compareDatesDescending);
-    return it - list.constBegin();
-}
-
 void ArticleListModel::onMergeFinished(const QList<ArticleRef> &result)
 {
     auto &items = d->items;
     QSet<Article *> knownItems(items.constBegin(), items.constEnd());
     for (const auto &item : result) {
         if (!knownItems.contains(item.get())) {
-            insertAndNotify(indexForItem(d->items, item), item);
+            insertAndNotify(indexForItem(item), item);
         }
     }
     setStatusFromUpstream();
 }
 
+int ArticleListModel::indexForItem(const FeedCore::ArticleRef &item)
+{
+    if (auto cmp = getArticleComparator()) {
+        auto it = std::lower_bound(d->items.constBegin(), d->items.constEnd(), item, cmp);
+        return it - d->items.constBegin();
+    }
+    return d->items.size();
+}
+
 void ArticleListModel::addItem(ArticleRef const &item)
 {
     if (!d->unreadFilter || !item->isRead()) {
-        insertAndNotify(indexForItem(d->items, item), item);
+        insertAndNotify(indexForItem(item), item);
     }
 }
 
@@ -274,7 +272,9 @@ void ArticleListModel::getItems(Callback cb)
         if (unreadFilter()) {
             removeReadArticles(result);
         }
-        std::sort(result.begin(), result.end(), &compareDatesDescending);
+        if (auto cmp = getArticleComparator()) {
+            std::sort(result.begin(), result.end(), getArticleComparator());
+        }
         cb(result);
     });
 }
@@ -282,6 +282,11 @@ void ArticleListModel::getItems(Callback cb)
 void ArticleListModel::setStatusFromUpstream()
 {
     setStatus(Feed::Idle);
+}
+
+ArticleListModel::ArticleComparator ArticleListModel::getArticleComparator()
+{
+    return nullptr;
 }
 
 bool ArticleListModel::active()

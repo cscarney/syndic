@@ -26,6 +26,7 @@ protected:
     void init() override;
     QFuture<FeedCore::ArticleRef> getArticles() override;
     void setStatusFromUpstream() override;
+    ArticleComparator getArticleComparator() override;
 
 private:
     struct PrivData;
