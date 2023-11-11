@@ -109,6 +109,7 @@ Kirigami.ApplicationWindow {
 
         actions: [
             Kirigami.Action {
+                id: highlightsAction
                 text: qsTr("Highlights")
                 icon.name: "go-home-symbolic"
                 onTriggered: {
@@ -246,6 +247,18 @@ Kirigami.ApplicationWindow {
     }
 
     Component.onCompleted: {
+        switch (globalSettings.startPage) {
+        default:
+        case 0:
+            highlightsAction.trigger();
+            break;
+
+        case 1:
+            feedList.currentIndex = 0;
+            break;
+        }
+
+
         // HACK workaround Kirigami's hopelessly broken back button behavior
         // Kirigami doesn't accept the underlying key event when the backRequested
         // event is accepted, so if we don't handle the back button directly we

@@ -115,6 +115,18 @@ Kirigami.ScrollablePage {
         }
 
         ElasticComboBox {
+            id: startPage
+            Kirigami.FormData.label: qsTr("Start page:");
+            model: [qsTr("Highlights"), qsTr("All Items")];
+            currentIndex:  globalSettings.startPage
+            Binding {
+                target: globalSettings
+                property: "startPage"
+                value: startPage.currentIndex
+            }
+        }
+
+        ElasticComboBox {
             id: feedListSort
             Kirigami.FormData.label: qsTr("Sort feed list:");
             model: [qsTr("Alphabetical"), qsTr("Unread First")]
