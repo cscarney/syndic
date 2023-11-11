@@ -75,6 +75,16 @@ AbstractArticleListPage {
         }
     }
 
+    actions: [
+        Kirigami.Action {
+            text: qsTr("Refresh")
+            icon.name: "view-refresh"
+            onTriggered: {
+                root.model.requestUpdate();
+            }
+        }
+    ]
+
     Binding {
         root.view.spacing: Kirigami.Units.largeSpacing * 2
         root.view.topMargin: root.view.spacing
