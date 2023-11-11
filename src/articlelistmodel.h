@@ -106,6 +106,9 @@ protected:
      */
     virtual void setStatusFromUpstream();
 
+    typedef bool (*ArticleComparator)(const FeedCore::ArticleRef &, const FeedCore::ArticleRef &);
+    virtual ArticleComparator getArticleComparator();
+
     /**
      * Returns true if the source has been initialized
      */
@@ -141,5 +144,6 @@ private:
     void onRefreshFinished(const QList<FeedCore::ArticleRef> &result);
     void onMergeFinished(const QList<FeedCore::ArticleRef> &result);
     void onStatusChanged();
+    int indexForItem(const FeedCore::ArticleRef &item);
     class RowRemoveHelper;
 };

@@ -1,4 +1,5 @@
 #include "feedmodel.h"
+#include "article.h"
 
 using namespace FeedCore;
 
@@ -56,6 +57,16 @@ void FeedModel::setStatusFromUpstream()
     if (feed != nullptr) {
         setStatus(feed->status());
     }
+}
+
+static bool compareDatesDescending(const ArticleRef &l, const ArticleRef &r)
+{
+    return l->date() > r->date();
+}
+
+ArticleListModel::ArticleComparator FeedModel::getArticleComparator()
+{
+    return &compareDatesDescending;
 }
 
 void FeedModel::requestUpdate()
