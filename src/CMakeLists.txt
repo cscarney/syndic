@@ -14,7 +14,7 @@ set(syndic_HEADERS
     contentimageitem.h
     application.h
     feedmodel.h
-    overviewmodel.h
+    highlightsmodel.h
     networkaccessmanagerfactory.h
     )
 
@@ -31,7 +31,7 @@ set(syndic_SRCS
     networkaccessmanagerfactory.cpp
     application.cpp
     feedmodel.cpp
-    overviewmodel.cpp
+    highlightsmodel.cpp
     main.cpp
     resources.qrc
     )
