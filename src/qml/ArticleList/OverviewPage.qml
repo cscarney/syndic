@@ -78,7 +78,6 @@ AbstractArticleListPage {
     Binding {
         root.view.spacing: Kirigami.Units.largeSpacing * 2
         root.view.topMargin: root.view.spacing
-        root.view.bottomMargin: 1000
         root.view.rightMargin: Kirigami.Units.largeSpacing * 2
         root.view.leftMargin: Kirigami.Units.largeSpacing * 2
     }
