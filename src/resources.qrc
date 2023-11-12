@@ -21,7 +21,6 @@
         <file>qml/SettingsPage.qml</file>
         <file>qml/AddFeedPage.qml</file>
         <file>qml/EditFeedPage.qml</file>
-        <file>qml/+org.kde.desktop/ElasticComboBox.qml</file>
         <file>qml/ArticlePageSwipeViewItem.qml</file>
         <file>qml/FeedIcon.qml</file>
         <file>qml/ArticleList/SearchResultPage.qml</file>
