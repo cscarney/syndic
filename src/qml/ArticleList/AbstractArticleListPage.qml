@@ -86,7 +86,7 @@ Kirigami.ScrollablePage {
                 articleList.currentIndex = 0;
         }
 
-        function onRowsAboutToBeRemoved() {
+        function onRowsAboutToBeRemoved(parent, first, last) {
             // force currentIndex to be updated before we check to see if it was removed
             articleList.forceLayout();
             if (root.currentIndex < first || root.currentIndex > last)
