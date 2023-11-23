@@ -37,9 +37,7 @@ ListView {
         property int status: feed.status
         property int unreadCount: feed.unreadCount
         width: root.width
-        padding: Kirigami.Units.largeSpacing
-        leftPadding: Kirigami.Units.smallSpacing
-        rightPadding: Kirigami.Units.smallSpacing
+        verticalPadding: Kirigami.Units.largeSpacing
         highlighted: ListView.isCurrentItem
 
         contentItem: RowLayout {
