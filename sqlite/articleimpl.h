@@ -18,6 +18,7 @@ class ArticleImpl : public FeedCore::Article
 {
     Q_OBJECT
 public:
+    ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const ItemQuery &q);
     qint64 id() const;
     void updateFromQuery(const ItemQuery &q);
     void requestContent() final;
@@ -25,9 +26,7 @@ public:
     void cacheReadableContent(const QString &readableContent) final;
 
 private:
-    ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const ItemQuery &q);
     qint64 m_id;
     QPointer<StorageImpl> m_storage;
-    friend FeedCore::SharedFactory<qint64, ArticleImpl>;
 };
 }

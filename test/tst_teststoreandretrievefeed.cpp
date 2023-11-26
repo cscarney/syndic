@@ -271,7 +271,7 @@ private slots:
             QUrl feedUrl = writeAtomFeedTestXml(newDateTime, newDateTime);
             m_feed->setUrl(feedUrl);
             m_feed->updater()->start();
-            QSignalSpy(articles.at(0).get(), &FeedCore::Article::dateChanged).wait();
+            QSignalSpy(articles.at(1).get(), &FeedCore::Article::dateChanged).wait();
 
             QVERIFY(dateCompare(articles.at(0)->date(), newDateTime));
             QVERIFY(dateCompare(articles.at(1)->date(), newDateTime));
