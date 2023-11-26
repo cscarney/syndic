@@ -26,7 +26,7 @@ public:
         return instance;
     }
 
-    bool hasInstance(KeyType key)
+    bool hasInstance(KeyType key) const
     {
         return !m_instances[key].isNull();
     }
