@@ -68,13 +68,24 @@ Kirigami.ScrollablePage {
     Timer {
         id: pageOpenTimer
         interval: 0
-        onTriggered: {
+
+        // HACK temporarily disable the scroll animation on the page row, otherwise
+        // the article page won't get scrolled into view on the add feed/preview page
+        // TODO This seems like a bug in pageRow's animation logic, can we fix it upstream?
+        onTriggered: callWithAnimationDisabled(()=>{
             pageRow.currentIndex = root.Kirigami.ColumnView.index
             if (childPage) {
                 root.pageRow.push(childPage, {articleListController: articleListController})
             } else {
                 root.pageRow.pop(root);
             }
+        })
+
+        function callWithAnimationDisabled(f) {
+            var pageRowDuration = root.pageRow.columnView.scrollDuration;
+            root.pageRow.columnView.scrollDuration = 0;
+            f();
+            root.pageRow.columnView.scrollDuration = pageRowDuration;
         }
     }
 
