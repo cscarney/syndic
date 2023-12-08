@@ -122,4 +122,8 @@ ListView {
         root.forceLayout()
         root.currentIndex = feedListModel.indexOf(feed)
     }
+
+    function pageUrlFor(feed) {
+        return feedListModel.pageUrlFor(feed);
+    }
 }

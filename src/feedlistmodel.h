@@ -37,6 +37,7 @@ public:
     Sort sortMode() const;
     void setSortMode(Sort sortMode);
     Q_INVOKABLE int indexOf(FeedCore::Feed *feed);
+    Q_INVOKABLE QString pageUrlFor(FeedCore::Feed *feed);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const final;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const final;

@@ -5,6 +5,7 @@ import com.rocksandpaper.syndic
 AbstractArticleListPage {
     id: root
     required property Feed feed
+    property bool acceptFeedListAction: false
 
     model: FeedModel {
         id: feedItemModel
@@ -30,4 +31,14 @@ AbstractArticleListPage {
             root.selectIndex(index)
         }
     } /*  delegate */
+
+    function feedListAction() {
+        // ignore the one that created us...
+        if (!acceptFeedListAction) return;
+        clearRead();
+    }
+
+    Component.onCompleted: Qt.callLater(function(){
+        acceptFeedListAction = true;
+    })
 }

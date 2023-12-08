@@ -256,6 +256,14 @@ int FeedListModel::indexOf(FeedCore::Feed *feed)
     return idx < 0 ? idx : idx + SPECIAL_FEED_COUNT;
 }
 
+QString FeedListModel::pageUrlFor(FeedCore::Feed *feed)
+{
+    if (feed == d->starredItems) {
+        return QStringLiteral("qrc:/qml/ArticleList/StarredItemsPage.qml");
+    }
+    return QStringLiteral("qrc:/qml/ArticleList/FeedPage.qml");
+}
+
 void FeedListModel::loadFeeds()
 {
     beginResetModel();

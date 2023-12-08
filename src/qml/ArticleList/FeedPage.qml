@@ -10,7 +10,6 @@ import org.kde.kirigami 2.14 as Kirigami
 AbstractFeedPage {
     id: root
     unreadFilter: globalSettings.unreadFilter
-    property bool acceptFeedListAction: false
 
     actions: [
         Kirigami.Action {
@@ -65,14 +64,4 @@ AbstractFeedPage {
             }
         }
     ]
-
-    function feedListAction() {
-        // ignore the one that created us...
-        if (!acceptFeedListAction) return;
-        clearRead();
-    }
-
-    Component.onCompleted: Qt.callLater(function(){
-        acceptFeedListAction = true;
-    })
 }
