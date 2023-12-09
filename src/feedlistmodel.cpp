@@ -159,7 +159,7 @@ void FeedListModel::setContext(FeedCore::Context *context)
     if (context != nullptr) {
         d->allItems = d->context->allItemsFeed();
         d->allItems->setName(tr("All Items", "special feed name"));
-        d->starredItems = new StarredItemsFeed(d->context, tr("Starred", "special feed name"), this);
+        d->starredItems = new StarredItemsFeed(d->context, tr("Starred Items", "special feed name"), this);
     }
     emit contextChanged();
 }
