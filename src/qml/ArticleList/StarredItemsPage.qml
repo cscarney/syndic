@@ -5,7 +5,7 @@ AbstractFeedPage {
     id: root
     unreadFilter: globalSettings.filterSpecialFeeds && globalSettings.unreadFilter
 
-    Kirigami.Action {
+    actions: [Kirigami.Action {
          text: qsTr("Hide Read")
          icon.name: "view-filter"
          checkable: true
