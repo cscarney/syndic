@@ -16,7 +16,7 @@
 #ifdef KF6DBusAddons_FOUND
 #include <KDBusService>
 #endif
-
+#include "articlesummary.h"
 #include "contentimageitem.h"
 #include "contentmodel.h"
 #include "context.h"
@@ -70,6 +70,7 @@ static void registerQmlTypes()
     qmlRegisterType<ContentImageItem>("com.rocksandpaper.syndic", 1, 0, "ContentImage");
     qmlRegisterType<FeedCore::SearchResultFeed>("com.rocksandpaper.syndic", 1, 0, "SearchResultFeed");
     qmlRegisterType<HighlightsModel>("com.rocksandpaper.syndic", 1, 0, "HighlightsModel");
+    qmlRegisterType<FeedCore::ArticleSummary>("com.rocksandpaper.syndic", 1, 0, "ArticleSummary");
     qmlRegisterUncreatableType<FeedCore::Feed::Updater>("com.rocksandpaper.syndic", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<FeedCore::Context>("com.rocksandpaper.syndic", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<FeedCore::Feed>("com.rocksandpaper.syndic", 1, 0, "Feed", "obtained from cpp model");
@@ -80,6 +81,7 @@ static void registerQmlTypes()
     qmlRegisterUncreatableType<ContentBlock>("com.rocksandpaper.syndic", 1, 0, "ContentBlock", "obtained from contentmodel");
     qmlRegisterUncreatableType<ImageBlock>("com.rocksandpaper.syndic", 1, 0, "ImageBlock", "obtained from contentmodel");
     qmlRegisterUncreatableType<TextBlock>("com.rocksandpaper.syndic", 1, 0, "TextBlock", "obtained from contentmodel");
+    QMetaType::registerConverter<QmlArticleRef, FeedCore::ArticleRef>();
 }
 
 static void enableSettingsAutosave(const Settings &settings)
