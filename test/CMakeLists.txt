@@ -24,3 +24,7 @@ target_link_libraries(testProvisionalFeed PRIVATE Qt6::Test feedcore)
 add_executable(testAllItemsFeed tst_allitemsfeed.cpp)
 add_test(NAME testAllItemsFeed COMMAND testAllItemsFeed)
 target_link_libraries(testAllItemsFeed PRIVATE Qt6::Test feedcore)
+
+add_executable(testArticleSummary tst_articlesummary.cpp)
+add_test(NAME testArticleSummary COMMAND testArticleSummary)
+target_link_libraries(testArticleSummary PRIVATE Qt6::Test feedcore)

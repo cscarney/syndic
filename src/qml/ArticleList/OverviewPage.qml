@@ -17,7 +17,11 @@ AbstractArticleListPage {
         required property var ref
         required property int index
         property Article article: ref.article
-        visible: false
+        property ArticleSummary articleSummary: ArticleSummary {
+            article: ref
+        }
+
+        visible: articleSummary?.finished ?? false
         highlighted: ListView.isCurrentItem
         showClickFeedback: true
         contentItem: ColumnLayout {
@@ -41,6 +45,7 @@ AbstractArticleListPage {
 
             Label {
                 id: contentLabel
+                text: articleSummary.firstParagraph
                 wrapMode: Text.Wrap
                 elide: Text.ElideRight
                 textFormat: Text.PlainText
@@ -53,25 +58,8 @@ AbstractArticleListPage {
             itemCard.background.opacity: article.isRead && !highlighted ? 0.5 : 1
         }
 
-        Connections {
-            target: article
-            function onGotContent(content, type) {
-                if (type !== Article.FeedContent) {
-                    return;
-                }
-
-                // TODO replace this with a proper HTML parse
-                contentLabel.text = content.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
-                itemCard.visible = true
-            }
-        }
-
         onClicked: {
             root.selectIndex(index)
-        }
-
-        Component.onCompleted: {
-            article.requestContent()
         }
     }
 

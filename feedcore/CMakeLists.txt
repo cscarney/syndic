@@ -15,6 +15,7 @@ set(feedcore_HEADERS
     provisionalfeed.h
     networkaccessmanager.h
     starreditemsfeed.h
+    articlesummary.h
     updatablefeed.h
     opmlreader.h
     sharedcache.h
@@ -38,6 +39,7 @@ set(feedcore_SRCS
     provisionalfeed.cpp
     networkaccessmanager.cpp
     starreditemsfeed.cpp
+    articlesummary.cpp
     updatablefeed.cpp
     opmlreader.cpp
     sharedcache.cpp
