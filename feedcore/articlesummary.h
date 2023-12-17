@@ -23,7 +23,7 @@ public:
     bool finished() const;
 
     ArticleRef article() const;
-    void setArticle(ArticleRef newArticle);
+    void setArticle(const ArticleRef &newArticle);
 
 signals:
     void firstParagraphChanged();

@@ -5,6 +5,7 @@
 #include <QRegularExpression>
 #include <QThreadPool>
 #include <QUrl>
+#include <utility>
 using namespace FeedCore;
 
 struct ArticleSummary::PrivData {
@@ -19,7 +20,7 @@ struct ArticleSummary::PrivData {
 class ArticleSummary::Summarizer : public GumboVisitor
 {
 public:
-    Summarizer(const QString &content)
+    explicit Summarizer(const QString &content)
         : GumboVisitor{content}
     {
     }
@@ -85,7 +86,7 @@ private:
     {
         if (m_result.paragraph.isEmpty()) {
             QString simplified = m_workingParagraph.simplified();
-            int wordCount = simplified.count(' ') + 1;
+            qsizetype wordCount = simplified.count(' ') + 1;
             if (wordCount >= kShortestAcceptableParagraph) {
                 m_result.paragraph = simplified;
             }
@@ -144,8 +145,9 @@ bool ArticleSummary::finished() const
 
 void ArticleSummary::setFirstParagraph(const QString &firstParagraph)
 {
-    if (d->firstParagraph == firstParagraph)
+    if (d->firstParagraph == firstParagraph) {
         return;
+    }
 
     d->firstParagraph = firstParagraph;
     emit firstParagraphChanged();
@@ -153,8 +155,9 @@ void ArticleSummary::setFirstParagraph(const QString &firstParagraph)
 
 void ArticleSummary::setFirstImage(const QUrl &firstImage)
 {
-    if (d->firstImage == firstImage)
+    if (d->firstImage == firstImage) {
         return;
+    }
 
     d->firstImage = firstImage;
     emit firstImageChanged();
@@ -162,8 +165,9 @@ void ArticleSummary::setFirstImage(const QUrl &firstImage)
 
 void ArticleSummary::setFinished(bool finished)
 {
-    if (d->finished == finished)
+    if (d->finished == finished) {
         return;
+    }
     d->finished = finished;
     emit finishedChanged();
 }
@@ -173,10 +177,11 @@ ArticleRef ArticleSummary::article() const
     return d->article;
 }
 
-void ArticleSummary::setArticle(ArticleRef newArticle)
+void ArticleSummary::setArticle(const ArticleRef &newArticle)
 {
-    if (d->article == newArticle)
+    if (d->article == newArticle) {
         return;
+    }
 
     d->article = newArticle;
     emit articleChanged();
@@ -189,12 +194,12 @@ void ArticleSummary::setArticle(ArticleRef newArticle)
     d->future = fContent
                     .then(QtFuture::Launch::Async,
                           [](std::tuple<QString, Article::ContentType> getContentResult) {
-                              auto [content, contentType] = getContentResult;
+                              auto [content, contentType] = std::move(getContentResult);
                               Summarizer summarizer{content};
                               summarizer.walk();
                               return summarizer.result();
                           })
-                    .then(this, [target = QPointer(this)](Summarizer::Result summarizerResult) {
+                    .then(this, [target = QPointer(this)](const Summarizer::Result &summarizerResult) {
                         if (!target) {
                             return;
                         }
