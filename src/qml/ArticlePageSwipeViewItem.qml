@@ -33,14 +33,6 @@ ScrollView {
             article: root.article
             width: scroller.contentWidth
         }
-
-        Behavior on contentY {
-            id: animateScroll
-            NumberAnimation {
-                duration: Kirigami.Units.shortDuration
-                easing.type: Easing.OutExpo
-            }
-        }
     }
 
     Connections {
@@ -51,6 +43,14 @@ ScrollView {
                 articleView.text = content;
             }
         }
+    }
+
+    NumberAnimation {
+        id: animateScroll
+        target: scroller
+        property: "contentY"
+        duration: Kirigami.Units.shortDuration
+        easing.type: Easing.OutExpo
     }
 
     Component.onCompleted: {
@@ -72,6 +72,13 @@ ScrollView {
         }
     }
 
+    function animateScrollToY(y) {
+        animateScroll.stop()
+        animateScroll.from = scroller.contentY;
+        animateScroll.to = y;
+        animateScroll.start();
+    }
+
     function refreshReadable() {
         articleView.text = "";
         requestContent(true);
@@ -86,7 +93,7 @@ ScrollView {
     }
 
     function pxUpDown(increment) {
-        scroller.contentY = Math.max(topY(), Math.min(scroller.contentY + increment, bottomY()))
+        animateScrollToY(Math.max(topY(), Math.min(scroller.contentY + increment, bottomY())))
     }
 
     function pageUpDown(increment) {
@@ -94,10 +101,10 @@ ScrollView {
     }
 
     function scrollToTop() {
-        scroller.contentY = topY();
+        animateScrollToY(topY());
     }
 
     function scrollToBottom() {
-        scroller.contentY = bottomY();
+        animateScrollToY(bottomY());
     }
 }
