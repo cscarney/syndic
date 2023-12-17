@@ -188,15 +188,18 @@ void ArticleSummary::setArticle(ArticleRef newArticle)
 
     d->future = fContent
                     .then(QtFuture::Launch::Async,
-                          [](const std::tuple<QString, Article::ContentType> &getContentResult) {
+                          [](std::tuple<QString, Article::ContentType> getContentResult) {
                               auto [content, contentType] = getContentResult;
                               Summarizer summarizer{content};
                               summarizer.walk();
                               return summarizer.result();
                           })
-                    .then(this, [this](const Summarizer::Result &summarizerResult) {
-                        setFirstParagraph(summarizerResult.paragraph);
-                        setFirstImage(summarizerResult.image);
-                        setFinished(true);
+                    .then(this, [target = QPointer(this)](Summarizer::Result summarizerResult) {
+                        if (!target) {
+                            return;
+                        }
+                        target->setFirstParagraph(summarizerResult.paragraph);
+                        target->setFirstImage(summarizerResult.image);
+                        target->setFinished(true);
                     });
 }
