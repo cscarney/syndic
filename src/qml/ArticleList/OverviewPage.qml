@@ -11,6 +11,8 @@ AbstractArticleListPage {
     model: HighlightsModel {
         context: feedContext
     }
+    bottomPadding: Kirigami.Units.largeSpacing * 2
+    automaticOpen: false
 
     delegate: Kirigami.AbstractCard {
         id: itemCard
