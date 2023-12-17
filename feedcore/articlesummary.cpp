@@ -38,6 +38,7 @@ public:
 private:
     Result m_result;
     QString m_workingParagraph;
+    int m_blacklistedTags = 0;
 
     void visitElementOpen(GumboNode *node) override
     {
@@ -61,6 +62,10 @@ private:
             }
             break;
 
+        case GUMBO_TAG_FIGURE:
+            m_blacklistedTags++;
+            break;
+
         default:
             break;
         }
@@ -68,13 +73,13 @@ private:
 
     void visitText(GumboNode *node) override
     {
-        if (m_result.paragraph.isEmpty()) {
+        if (m_result.paragraph.isEmpty() && m_blacklistedTags == 0) {
             QString text = node->v.text.text;
             m_workingParagraph.append(text);
         }
     }
 
-    static constexpr const int kShortestAcceptableParagraph = 3;
+    static constexpr const int kShortestAcceptableParagraph = 5;
 
     void acceptParagraph()
     {
@@ -90,10 +95,18 @@ private:
     void visitElementClose(GumboNode *node) override
     {
         GumboElement &el = node->v.element;
-        if (el.tag == GUMBO_TAG_P) {
+        switch (el.tag) {
+        case GUMBO_TAG_P:
             if (m_result.paragraph.isEmpty()) {
                 acceptParagraph();
             }
+            break;
+
+        case GUMBO_TAG_FIGURE:
+            m_blacklistedTags--;
+
+        default:
+            break;
         }
     }
 
