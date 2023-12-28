@@ -64,6 +64,14 @@ AbstractArticleListPage {
         }
     }
 
+    EmptyFeedOverlay {
+        parent: root.view
+        anchors.fill: parent
+        icon: "content-loading-symbolic-nomask"
+        text: qsTr("Gathering highlights...")
+        visible: root.view.count === 0 && model.status === Feed.LoadStatus.Loading
+    }
+
     actions: [
         Kirigami.Action {
             text: qsTr("Refresh")
