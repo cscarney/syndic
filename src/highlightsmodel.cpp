@@ -18,13 +18,31 @@ void HighlightsModel::context(Context *newContext)
     if (m_context == newContext)
         return;
     m_context = newContext;
+    m_waitForFeed = newContext->allItemsFeed();
     emit contextChanged();
+}
+
+static bool feedIsReady(const QSharedPointer<Feed> &feed)
+{
+    return feed->status() != Feed::Loading && feed->status() != Feed::Updating;
 }
 
 QFuture<ArticleRef> HighlightsModel::getArticles()
 {
     if (!m_context)
         return QFuture<ArticleRef>{};
+
+    if (m_waitForFeed && !feedIsReady(m_waitForFeed)) {
+        // wait for load to finish
+        return QtFuture::connect(m_waitForFeed.get(), &Feed::statusChanged)
+            .then(this,
+                  [this] {
+                      return getArticles();
+                  })
+            .unwrap();
+    }
+
+    m_waitForFeed.clear();
     return m_context->getHighlights();
 }
 
