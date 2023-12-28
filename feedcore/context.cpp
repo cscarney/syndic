@@ -29,15 +29,16 @@ using ReadabilityType = FeedCore::PlaceholderReadability;
 namespace FeedCore
 {
 struct Context::PrivData {
+    enum ContextFlags { FeedListComplete = 1, UpdateRequestPending = 1U << 1U, PrefetchReadableContent = 1U << 2U, FeedsScheduledByDefault = 1U << 3U };
+
     Context *parent;
     Storage *storage;
     QSet<Feed *> feeds;
-    bool defaultUpdate{false};
     qint64 updateInterval{0};
     qint64 expireAge{0};
     Scheduler *updateScheduler;
     Readability *readability{nullptr};
-    bool prefetchContent{false};
+    QFlags<ContextFlags> flags{};
     QWeakPointer<Feed> allItemsFeed{nullptr};
 
     PrivData(Storage *storage, Context *parent);
@@ -91,7 +92,7 @@ void Context::PrivData::configureUpdates(Feed *feed, const QDateTime &timestamp)
     bool shouldSchedule{false};
     if (updateMode == Feed::InheritUpdateMode) {
         feed->setUpdateInterval(updateInterval);
-        shouldSchedule = defaultUpdate;
+        shouldSchedule = flags.testFlag(FeedsScheduledByDefault);
     } else {
         shouldSchedule = (updateMode != Feed::DisableUpdateMode);
     }
@@ -351,16 +352,16 @@ Readability *Context::getReadability()
 
 bool Context::defaultUpdateEnabled() const
 {
-    return d->defaultUpdate;
+    return d->flags.testAnyFlag(PrivData::FeedsScheduledByDefault);
 }
 
 void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
 {
-    if (d->defaultUpdate == defaultUpdateEnabled) {
+    if (Context::defaultUpdateEnabled() == defaultUpdateEnabled) {
         return;
     }
 
-    d->defaultUpdate = defaultUpdateEnabled;
+    d->flags.setFlag(PrivData::FeedsScheduledByDefault, defaultUpdateEnabled);
     const QDateTime timestamp = QDateTime::currentDateTime();
     for (Feed *feed : std::as_const(d->feeds)) {
         if (feed->updateMode() == Feed::InheritUpdateMode) {
@@ -373,6 +374,7 @@ void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
 void Context::populateFeeds(const QList<Feed *> &feeds)
 {
     registerFeeds(feeds);
+    d->flags.setFlag(PrivData::FeedListComplete);
     emit feedListPopulated(d->feeds.size());
 }
 
@@ -398,15 +400,15 @@ void Context::registerFeeds(const QList<Feed *> &feeds)
 
 bool Context::prefetchContent() const
 {
-    return d->prefetchContent;
+    return d->flags.testFlag(PrivData::PrefetchReadableContent);
 }
 
 void Context::setPrefetchContent(bool newPrefetchContent)
 {
-    if (d->prefetchContent == newPrefetchContent) {
+    if (prefetchContent() == newPrefetchContent) {
         return;
     }
-    d->prefetchContent = newPrefetchContent;
+    d->flags.setFlag(PrivData::PrefetchReadableContent, newPrefetchContent);
     emit prefetchContentChanged();
 }
 
