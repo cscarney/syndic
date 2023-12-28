@@ -26,8 +26,22 @@ using ReadabilityType = FeedCore::QReadableReadability;
 using ReadabilityType = FeedCore::PlaceholderReadability;
 #endif
 
-namespace FeedCore
+using namespace FeedCore;
+
+namespace
 {
+class AllItemsFeed : public AggregateFeed
+{
+public:
+    explicit AllItemsFeed(Context *context, QObject *parent = nullptr);
+    QFuture<ArticleRef> getArticles(bool unreadFilter) final;
+    void notifyLoadComplete();
+
+private:
+    Context *m_context{nullptr};
+};
+}
+
 struct Context::PrivData {
     enum ContextFlags { FeedListComplete = 1, UpdateRequestPending = 1U << 1U, PrefetchReadableContent = 1U << 2U, FeedsScheduledByDefault = 1U << 3U };
 
@@ -39,25 +53,12 @@ struct Context::PrivData {
     Scheduler *updateScheduler;
     Readability *readability{nullptr};
     QFlags<ContextFlags> flags{};
-    QWeakPointer<Feed> allItemsFeed{nullptr};
+    QWeakPointer<AllItemsFeed> allItemsFeed{nullptr};
 
     PrivData(Storage *storage, Context *parent);
     void configureUpdates(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime()) const;
     void configureExpiration(Feed *feed) const;
 };
-
-namespace
-{
-class AllItemsFeed : public AggregateFeed
-{
-public:
-    explicit AllItemsFeed(Context *context, QObject *parent = nullptr);
-    QFuture<ArticleRef> getArticles(bool unreadFilter) final;
-
-private:
-    Context *m_context{nullptr};
-};
-}
 
 Context::Context(Storage *storage, QObject *parent)
     : QObject(parent)
@@ -119,7 +120,7 @@ const QSet<Feed *> &Context::getFeeds()
 
 QSharedPointer<Feed> Context::allItemsFeed()
 {
-    QSharedPointer<Feed> result = d->allItemsFeed;
+    QSharedPointer<AllItemsFeed> result = d->allItemsFeed;
     if (!result) {
         result.reset(new AllItemsFeed(this));
         d->allItemsFeed = result;
@@ -194,6 +195,12 @@ QFuture<ArticleRef> Context::getHighlights()
 
 void Context::requestUpdate()
 {
+    if (!feedListComplete()) {
+        // if the feed list is still loading, defer until it is complete
+        d->flags.setFlag(PrivData::UpdateRequestPending);
+        return;
+    }
+
     const auto &timestamp = QDateTime::currentDateTime();
     const auto &feeds = d->feeds;
     for (Feed *const entry : feeds) {
@@ -350,9 +357,14 @@ Readability *Context::getReadability()
     return d->readability;
 }
 
+bool Context::feedListComplete()
+{
+    return d->flags.testFlag(PrivData::FeedListComplete);
+}
+
 bool Context::defaultUpdateEnabled() const
 {
-    return d->flags.testAnyFlag(PrivData::FeedsScheduledByDefault);
+    return d->flags.testFlag(PrivData::FeedsScheduledByDefault);
 }
 
 void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
@@ -375,6 +387,12 @@ void Context::populateFeeds(const QList<Feed *> &feeds)
 {
     registerFeeds(feeds);
     d->flags.setFlag(PrivData::FeedListComplete);
+    if (d->flags.testFlag(PrivData::UpdateRequestPending)) {
+        requestUpdate();
+    }
+    if (auto aaf = d->allItemsFeed.toStrongRef()) {
+        aaf->notifyLoadComplete();
+    }
     emit feedListPopulated(d->feeds.size());
 }
 
@@ -416,6 +434,9 @@ AllItemsFeed::AllItemsFeed(Context *context, QObject *parent)
     : AggregateFeed(parent)
     , m_context{context}
 {
+    if (!m_context->feedListComplete()) {
+        setIdleStatus(Feed::Loading);
+    }
     for (const auto &feed : context->getFeeds()) {
         addFeed(feed);
     }
@@ -426,4 +447,8 @@ QFuture<ArticleRef> AllItemsFeed::getArticles(bool unreadFilter)
 {
     return m_context->getArticles(unreadFilter);
 }
+
+void AllItemsFeed::notifyLoadComplete()
+{
+    setIdleStatus(Feed::Idle);
 }
