@@ -25,4 +25,5 @@ protected:
 
 private:
     FeedCore::Context *m_context = nullptr;
+    QSharedPointer<FeedCore::Feed> m_waitForFeed;
 };
