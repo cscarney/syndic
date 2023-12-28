@@ -254,7 +254,7 @@ void Application::bindContextPropertiesToSettings()
     QObject::connect(settings(), &Settings::prefetchContentChanged, this, &Application::syncPrefetchContent);
 
     if (d->settings.updateOnStart()) {
-        QObject::connect(d->context, &FeedCore::Context::feedListPopulated, d->context, &FeedCore::Context::requestUpdate);
+        d->context->requestUpdate();
     }
 
     QObject::connect(settings(), &Settings::runInBackgroundChanged, this, [this] {

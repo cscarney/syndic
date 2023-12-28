@@ -193,6 +193,11 @@ public:
      */
     Readability *getReadability();
 
+    /*
+     * Returns whether the feed list has finished loading
+     */
+    bool feedListComplete();
+
     bool defaultUpdateEnabled() const;
     void setDefaultUpdateEnabled(bool defaultUpdateEnabled);
     qint64 defaultUpdateInterval();

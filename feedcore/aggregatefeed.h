@@ -22,12 +22,14 @@ public:
 protected:
     void addFeed(Feed *feed);
     void removeFeed(Feed *feed);
+    void setIdleStatus(FeedCore::Feed::LoadStatus status);
 
 private:
     class Updater;
     QSet<Feed *> m_feeds;
     QSet<Feed *> m_active;
     Updater *m_updater{nullptr};
+    LoadStatus m_idleStatus{Feed::Idle};
     void onUnreadCountChanged(int delta);
     void onArticleAdded(const ArticleRef &article);
     void setFeedActive(FeedCore::Feed *feed, bool active);

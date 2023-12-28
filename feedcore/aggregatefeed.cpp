@@ -104,10 +104,25 @@ void AggregateFeed::setFeedActive(Feed *feed, bool active)
     } else {
         m_active.remove(feed);
     }
-    setStatus(m_active.isEmpty() ? LoadStatus::Idle : LoadStatus::Updating);
+    setStatus(m_active.isEmpty() ? m_idleStatus : LoadStatus::Updating);
 }
 
 void AggregateFeed::syncFeedStatus(Feed *sender)
 {
     setFeedActive(sender, sender->status() == LoadStatus::Updating);
+}
+
+void AggregateFeed::setIdleStatus(LoadStatus status)
+{
+    // the status to use when no feeds are updating.
+    // this supports the case where e.g. the aggregate
+    // feed itself is loading or in error.
+
+    if (m_idleStatus == status) {
+        return;
+    }
+    m_idleStatus = status;
+    if (m_active.isEmpty()) {
+        setStatus(status);
+    }
 }
