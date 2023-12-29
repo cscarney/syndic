@@ -231,11 +231,9 @@ Kirigami.ApplicationWindow {
 
     Connections {
         target: feedContext
-        function onFeedListPopulated(nFeeds) {
-            if (nFeeds === 0) {
-                // call later to avoid pushing into an incomplete pageRow
-                Qt.callLater(()=>priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack}))
-            }
+        function onFirstRun() {
+            // call later to avoid pushing into an incomplete pageRow
+            Qt.callLater(()=>priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack}))
         }
     }
 

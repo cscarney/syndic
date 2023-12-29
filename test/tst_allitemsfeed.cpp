@@ -42,8 +42,11 @@ private slots:
 
         m_allItemsFeed = m_context->allItemsFeed();
 
-        QSignalSpy waitForFeedListPopulated(m_context.get(), &Context::feedListPopulated);
-        waitForFeedListPopulated.wait();
+        if (!QTest::qWaitFor([this] {
+                return m_context->feedListComplete();
+            })) {
+            qCritical() << "Feed list did not complete";
+        }
     }
 
     void cleanup()

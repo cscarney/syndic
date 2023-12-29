@@ -36,8 +36,11 @@ class testStoreAndRetrieveFeed : public QObject
         m_context = new FeedCore::Context(new SqliteStorage::StorageImpl(testDbName));
         m_context->setDefaultUpdateInterval(testContextUpdateInterval);
         m_context->setExpireAge(testContextExpireAge);
-        QSignalSpy waitForFeeds(m_context, &FeedCore::Context::feedListPopulated);
-        waitForFeeds.wait();
+        if (!QTest::qWaitFor([this] {
+                return m_context->feedListComplete();
+            })) {
+            qCritical() << "Feed list did not complete";
+        }
         auto feeds = m_context->getFeeds();
         m_feed = feeds.isEmpty() ? nullptr : *feeds.begin();
     }
