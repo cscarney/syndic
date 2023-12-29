@@ -68,17 +68,28 @@ public:
      * storage backend.
      *
      * In a newly created context, this will return an empty set, since feeds
-     * are asynchronously loaded.  To get a complete feed list on startup,
-     * you should wait for the feedListPopulated signal before calling this
-     * function.
+     * are asynchronously loaded from storage.
      */
     const QSet<Feed *> &getFeeds();
 
     /**
-     * Returns a shared instance of AllItemsFeed for this context.
+     * Returns a shared instance of the "All Items" feed for this context.
      *
      * The resulting instance is created on-demand and shared among
      * all callers.
+     *
+     * The all items feed is an aggregate feed that contains all of the
+     * articles from all of the feeds in this context. Updating the all
+     * items feed will trigger updates on all of the feeds in the context.
+     *
+     * The status of the all items feed reflects the status of all of the
+     * feeds in the context:
+     *      Feed::Idle - all feeds have been loaded and all updates are complete
+     *      Feed::Loading - feeds are still being loaded from storage
+     *      Feed::Updating - one or more feeds are being updated
+     *  Note that the all items feed does not currently track the error state
+     *  of is component feeds; the status will never be Feed::Error even if
+     *  there are individual feeds with errors.
      */
     QSharedPointer<Feed> allItemsFeed();
 
@@ -186,14 +197,14 @@ public:
      */
     Q_INVOKABLE void importOpml(const QUrl &url);
 
-    /*
+    /**
      * Gets the Readability object for this context.
      *
      * This may be null if we were built without readability support
      */
     Readability *getReadability();
 
-    /*
+    /**
      * Returns whether the feed list has finished loading
      */
     bool feedListComplete();
@@ -222,11 +233,11 @@ signals:
     void feedAdded(FeedCore::Feed *feed);
 
     /**
-     * Emitted once when the context finishes populating the feed list.
+     * Emitted when the user needs to be prompted to configure the context.
      *
-     * After this signal is emitted, getFeeds() will include all stored feeds.
+     * This occurs when the context's storage has no configured feeds.
      */
-    void feedListPopulated(int nFeeds);
+    void firstRun();
 
 private:
     struct PrivData;

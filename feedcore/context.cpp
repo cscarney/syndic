@@ -393,7 +393,9 @@ void Context::populateFeeds(const QList<Feed *> &feeds)
     if (auto aaf = d->allItemsFeed.toStrongRef()) {
         aaf->notifyLoadComplete();
     }
-    emit feedListPopulated(d->feeds.size());
+    if (feeds.isEmpty()) {
+        emit firstRun();
+    }
 }
 
 void Context::registerFeeds(const QList<Feed *> &feeds)
