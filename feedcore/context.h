@@ -50,7 +50,11 @@ class Context : public QObject
      */
     Q_PROPERTY(qint64 expireAge READ expireAge WRITE setExpireAge NOTIFY expireAgeChanged)
 
+    /* whether feeds should preload readable content during feed updates */
     Q_PROPERTY(bool prefetchContent READ prefetchContent WRITE setPrefetchContent NOTIFY prefetchContentChanged)
+
+    /* whether the feed list has finished loading */
+    Q_PROPERTY(bool feedListComplete READ feedListComplete NOTIFY feedListCompleteChanged)
 
 public:
     /**
@@ -204,11 +208,6 @@ public:
      */
     Readability *getReadability();
 
-    /**
-     * Returns whether the feed list has finished loading
-     */
-    bool feedListComplete();
-
     bool defaultUpdateEnabled() const;
     void setDefaultUpdateEnabled(bool defaultUpdateEnabled);
     qint64 defaultUpdateInterval();
@@ -217,12 +216,14 @@ public:
     void setExpireAge(qint64 expireAge);
     bool prefetchContent() const;
     void setPrefetchContent(bool newPrefetchContent);
+    bool feedListComplete();
 
 signals:
     void defaultUpdateEnabledChanged();
     void defaultUpdateIntervalChanged();
     void expireAgeChanged();
     void prefetchContentChanged();
+    void feedListCompleteChanged();
 
     /**
      * Emitted when a feed is added to the context.  This may be a newly-created
@@ -244,5 +245,6 @@ private:
     std::unique_ptr<PrivData> d;
     void populateFeeds(const QList<Feed *> &feeds);
     void registerFeeds(const QList<Feed *> &feeds);
+    void setFeedListComplete(bool feedListComplete);
 };
 }

@@ -35,7 +35,7 @@ class AllItemsFeed : public AggregateFeed
 public:
     explicit AllItemsFeed(Context *context, QObject *parent = nullptr);
     QFuture<ArticleRef> getArticles(bool unreadFilter) final;
-    void notifyLoadComplete();
+    void onLoadComplete();
 
 private:
     Context *m_context{nullptr};
@@ -386,13 +386,10 @@ void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
 void Context::populateFeeds(const QList<Feed *> &feeds)
 {
     registerFeeds(feeds);
-    d->flags.setFlag(PrivData::FeedListComplete);
     if (d->flags.testFlag(PrivData::UpdateRequestPending)) {
         requestUpdate();
     }
-    if (auto aaf = d->allItemsFeed.toStrongRef()) {
-        aaf->notifyLoadComplete();
-    }
+    setFeedListComplete(true);
     if (feeds.isEmpty()) {
         emit firstRun();
     }
@@ -418,6 +415,15 @@ void Context::registerFeeds(const QList<Feed *> &feeds)
     }
 }
 
+void Context::setFeedListComplete(bool feedListComplete)
+{
+    if (this->feedListComplete() == feedListComplete) {
+        return;
+    }
+    d->flags.setFlag(PrivData::FeedListComplete, feedListComplete);
+    emit feedListCompleteChanged();
+}
+
 bool Context::prefetchContent() const
 {
     return d->flags.testFlag(PrivData::PrefetchReadableContent);
@@ -438,6 +444,7 @@ AllItemsFeed::AllItemsFeed(Context *context, QObject *parent)
 {
     if (!m_context->feedListComplete()) {
         setIdleStatus(Feed::Loading);
+        QObject::connect(m_context, &Context::feedListCompleteChanged, this, &AllItemsFeed::onLoadComplete, Qt::SingleShotConnection);
     }
     for (const auto &feed : context->getFeeds()) {
         addFeed(feed);
@@ -450,7 +457,7 @@ QFuture<ArticleRef> AllItemsFeed::getArticles(bool unreadFilter)
     return m_context->getArticles(unreadFilter);
 }
 
-void AllItemsFeed::notifyLoadComplete()
+void AllItemsFeed::onLoadComplete()
 {
     setIdleStatus(Feed::Idle);
 }
