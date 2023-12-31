@@ -24,7 +24,7 @@ public:
     ItemQuery selectUnreadItems();
     ItemQuery selectStarredItems();
     ItemQuery selectItemsBySearch(const QString &search);
-    static constexpr const int kDefaultNumberOfRecommendedItems = 10;
+    static constexpr const int kDefaultNumberOfRecommendedItems = 20;
     ItemQuery selectItemsByRecommended(int limit = kDefaultNumberOfRecommendedItems);
     ItemQuery selectItemsByFeed(qint64 feedId);
     ItemQuery selectUnreadItemsByFeed(qint64 feedId);
