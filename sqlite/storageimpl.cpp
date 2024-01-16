@@ -151,10 +151,10 @@ QFuture<ArticleRef> StorageImpl::getSearchResults(const QString &search)
     });
 }
 
-QFuture<ArticleRef> StorageImpl::getHighlights()
+QFuture<ArticleRef> StorageImpl::getHighlights(size_t limit)
 {
-    return m_worker->runInDatabaseThread<ArticleRef>([this](auto &db, auto &op) {
-        ItemQuery q{db.selectItemsByRecommended()};
+    return m_worker->runInDatabaseThread<ArticleRef>([this, limit](auto &db, auto &op) {
+        ItemQuery q{db.selectItemsByRecommended(limit)};
         m_worker->appendArticleResults(op, q);
     });
 }

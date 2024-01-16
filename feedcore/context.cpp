@@ -188,9 +188,9 @@ QFuture<ArticleRef> Context::getStarred()
     return d->storage->getStarred();
 }
 
-QFuture<ArticleRef> Context::getHighlights()
+QFuture<ArticleRef> Context::getHighlights(size_t limit)
 {
-    return d->storage->getHighlights();
+    return d->storage->getHighlights(limit);
 }
 
 void Context::requestUpdate()
