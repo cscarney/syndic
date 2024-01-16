@@ -16,6 +16,8 @@ public:
     FeedCore::Context *context() const;
     void context(FeedCore::Context *newContext);
     void requestUpdate() override;
+    void fetchMore(const QModelIndex &parent) override;
+    bool canFetchMore(const QModelIndex &parent) const override;
 
 signals:
     void contextChanged();

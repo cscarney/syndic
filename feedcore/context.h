@@ -162,13 +162,15 @@ public:
      */
     QFuture<ArticleRef> getStarred();
 
+    static constexpr const int kDefaultNumberOfRecommendedItems = 20;
+
     /**
      * List articles that may be of interest to the user.
      *
      * The specific algorithm is determined by the storage
      * backend.
      */
-    QFuture<ArticleRef> getHighlights();
+    QFuture<ArticleRef> getHighlights(size_t limit = kDefaultNumberOfRecommendedItems);
 
     /**
      * Trigger an update on every feed in this context.

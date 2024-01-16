@@ -51,7 +51,7 @@ public:
         return Future::yield<ArticleRef>(this, [](auto &) {});
     }
 
-    QFuture<ArticleRef> getHighlights() override
+    QFuture<ArticleRef> getHighlights(size_t limit) override
     {
         return Future::yield<ArticleRef>(this, [](auto &) {});
     }

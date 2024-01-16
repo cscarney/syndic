@@ -104,7 +104,7 @@ void ArticleListModel::setUnreadFilter(bool unreadFilter)
     }
 }
 
-LoadStatus ArticleListModel::status()
+LoadStatus ArticleListModel::status() const
 {
     return d->status;
 }

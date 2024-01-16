@@ -73,7 +73,7 @@ public:
 
     bool unreadFilter() const;
     void setUnreadFilter(bool unreadFilter);
-    FeedCore::LoadStatus status();
+    FeedCore::LoadStatus status() const;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const final;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const final;
@@ -133,6 +133,8 @@ protected:
 
     void setStatus(FeedCore::LoadStatus status);
 
+    void refreshMerge();
+
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
@@ -140,7 +142,6 @@ private:
     template<typename Callback>
     void getItems(Callback cb);
     void insertAndNotify(int index, const FeedCore::ArticleRef &item);
-    void refreshMerge();
     void onRefreshFinished(const QList<FeedCore::ArticleRef> &result);
     void onMergeFinished(const QList<FeedCore::ArticleRef> &result);
     void onStatusChanged();

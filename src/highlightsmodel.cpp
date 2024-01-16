@@ -50,3 +50,26 @@ void HighlightsModel::requestUpdate()
 {
     refresh();
 }
+
+void HighlightsModel::fetchMore(const QModelIndex &parent)
+{
+    if (!canFetchMore(parent)) {
+        return;
+    }
+
+    qDebug() << "fetching more";
+    refreshMerge();
+}
+
+bool HighlightsModel::canFetchMore(const QModelIndex &parent) const
+{
+    if (parent.isValid()) {
+        return false;
+    }
+
+    if (status() != Feed::Idle) {
+        return false;
+    }
+
+    return true;
+}

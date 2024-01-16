@@ -78,7 +78,7 @@ public:
         });
     }
 
-    QFuture<FeedCore::ArticleRef> getHighlights() override
+    QFuture<FeedCore::ArticleRef> getHighlights(size_t limit) override
     {
         return getAll();
     }

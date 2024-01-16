@@ -24,7 +24,7 @@ public:
     virtual QFuture<ArticleRef> getUnread() = 0;
     virtual QFuture<ArticleRef> getStarred() = 0;
     virtual QFuture<ArticleRef> getSearchResults(const QString &search) = 0;
-    virtual QFuture<ArticleRef> getHighlights() = 0;
+    virtual QFuture<ArticleRef> getHighlights(size_t limit) = 0;
     virtual QFuture<Feed *> getFeeds() = 0;
     virtual QFuture<Feed *> storeFeed(Feed *feed) = 0;
 };
