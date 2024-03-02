@@ -15,7 +15,7 @@ Kirigami.AboutPage {
         shortDescription: "Feed Reader",
         homepage: "http://syndic.rocksandpaper.com/",
         bugAddress: "https://github.com/cscarney/syndic/issues/new",
-        version: "1.0",
+        version: "0.99.1",
         otherText: "",
         authors: [
             {
@@ -35,7 +35,7 @@ Kirigami.AboutPage {
                 spdx: "GPL-3.0"
             }
         ],
-        copyrightStatement: "©2022 Connor Carney",
+        copyrightStatement: "©2024 Connor Carney",
         desktopFileName: "com.rocksandpaper.syndic"
     })
 
