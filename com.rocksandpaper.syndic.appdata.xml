@@ -6,6 +6,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 <component type="desktop-application">
     <id>com.rocksandpaper.syndic</id>
     <name>Syndic</name>
+    <developer_name>Connor Carney</developer_name>
     <url type="homepage">http://syndic.rocksandpaper.com/</url>
     <url type="bugtracker">https://github.com/cscarney/syndic/issues</url>
     <url type="translate">https://hosted.weblate.org/engage/syndic/</url>
@@ -24,13 +25,13 @@ SPDX-License-Identifier: GPL-3.0-or-later
     <launchable type="desktop-id">com.rocksandpaper.syndic.desktop</launchable>
     <screenshots>
         <screenshot type="default">
-            <image type="source">http://syndic.rocksandpaper.com/screenshots/syndic-mid.png</image>
+            <image type="source">https://syndic.rocksandpaper.com/doc/screenshots/syndic-mid.png</image>
         </screenshot>
         <screenshot>
-            <image type="source">http://syndic.rocksandpaper.com/screenshots/syndic-wide.png</image>
+            <image type="source">https://syndic.rocksandpaper.com/doc/screenshots/syndic-wide.png</image>
         </screenshot>
         <screenshot>
-            <image type="source">http://syndic.rocksandpaper.com/screenshots/syndic-narrow.png</image>
+            <image type="source">https://syndic.rocksandpaper.com/doc/screenshots/syndic-narrow.png</image>
         </screenshot>
     </screenshots>
     <translation type="qt">syndic</translation>
