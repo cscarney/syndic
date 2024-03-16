@@ -12,63 +12,43 @@ msgstr ""
 "X-Generator: Weblate 4.16.2-dev\n"
 "X-Qt-Contexts: true\n"
 
-#: src/qml/ArticleList/AbstractArticleListPage.qml:39
-msgctxt "AbstractArticleListPage|"
-msgid "All Read"
-msgstr "Todo leído"
-
-#: src/qml/ArticleList/AbstractArticleListPage.qml:39
-msgctxt "AbstractArticleListPage|"
-msgid "No Items"
-msgstr "No hay ningún elemento"
-
-#: src/qml/ArticleList/AbstractArticleListPage.qml:91
-msgctxt "AbstractArticleListPage|"
-msgid "Couldn't fetch feed from source"
-msgstr "No se pudo recuperar el suministro de la fuente"
-
-#: src/qml/ArticleList/AbstractArticleListPage.qml:97
-msgctxt "AbstractArticleListPage|"
-msgid "Retry"
-msgstr "Volver a intentar"
-
-#: src/qml/AbstractFeedEditorPage.qml:35
+#: src/qml/AbstractFeedEditorPage.qml:33
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Url:"
 msgstr "URL del suministro:"
 
-#: src/qml/AbstractFeedEditorPage.qml:46
+#: src/qml/AbstractFeedEditorPage.qml:43
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Options"
 msgstr "Opciones del suministro"
 
-#: src/qml/AbstractFeedEditorPage.qml:51
+#: src/qml/AbstractFeedEditorPage.qml:48
 msgctxt "AbstractFeedEditorPage|"
 msgid "Display Name:"
 msgstr "Nombre para mostrar:"
 
-#: src/qml/AbstractFeedEditorPage.qml:58
+#: src/qml/AbstractFeedEditorPage.qml:55
 msgctxt "AbstractFeedEditorPage|"
 msgid "Category:"
 msgstr "Categoría:"
 
-#: src/qml/AbstractFeedEditorPage.qml:70
+#: src/qml/AbstractFeedEditorPage.qml:68
 msgctxt "AbstractFeedEditorPage|"
 msgid "Always load web content"
 msgstr "Cargar siempre el contenido de la web"
 
-#: src/qml/AbstractFeedEditorPage.qml:86
+#: src/qml/AbstractFeedEditorPage.qml:84
 msgctxt "AbstractFeedEditorPage|"
 msgid "Fetch updates:"
 msgstr "Recuperar actualizaciones:"
 
 #. take the value from application settings
-#: src/qml/AbstractFeedEditorPage.qml:88 src/qml/AbstractFeedEditorPage.qml:141
+#: src/qml/AbstractFeedEditorPage.qml:86 src/qml/AbstractFeedEditorPage.qml:139
 msgctxt "AbstractFeedEditorPage|"
 msgid "Use Global Setting"
 msgstr "Utilizar configuración global"
 
-#: src/qml/AbstractFeedEditorPage.qml:112
+#: src/qml/AbstractFeedEditorPage.qml:110
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n minute(s)"
@@ -76,18 +56,18 @@ msgid_plural "%n minute(s)"
 msgstr[0] "%n minuto"
 msgstr[1] "%n minutos"
 
-#: src/qml/AbstractFeedEditorPage.qml:126
-#: src/qml/AbstractFeedEditorPage.qml:180
+#: src/qml/AbstractFeedEditorPage.qml:124
+#: src/qml/AbstractFeedEditorPage.qml:178
 msgctxt "AbstractFeedEditorPage|"
 msgid "Never"
 msgstr "Nunca"
 
-#: src/qml/AbstractFeedEditorPage.qml:140
+#: src/qml/AbstractFeedEditorPage.qml:138
 msgctxt "AbstractFeedEditorPage|"
 msgid "Delete old items:"
 msgstr "Eliminar elementos antiguos:"
 
-#: src/qml/AbstractFeedEditorPage.qml:165
+#: src/qml/AbstractFeedEditorPage.qml:163
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n day(s)"
@@ -95,81 +75,20 @@ msgid_plural "%n day(s)"
 msgstr[0] "%n día"
 msgstr[1] "%n días"
 
-#: src/qml/Placeholders/AbstractPlaceholderPage.qml:16
-msgctxt "AbstractPlaceholderPage|"
-msgid "Select an item to view it here"
-msgstr "Seleccione un elemento para verlo aquí"
-
-#: src/qml/AddFeedPage.qml:12
+#: src/qml/AddFeedPage.qml:15
 msgctxt "AddFeedPage|"
 msgid "Add Content"
 msgstr "Añadir contenido"
 
-#: src/qml/AddFeedPage.qml:24
+#: src/qml/AddFeedPage.qml:31
 msgctxt "AddFeedPage|"
 msgid "Preview…"
 msgstr "Previsualizar…"
 
-#: src/application.cpp:120
+#: src/application.cpp:127
 msgctxt "Application|"
 msgid "Syndic"
 msgstr "Syndic"
-
-#: src/qml/ArticleList/ArticleListPage.qml:17
-msgctxt "ArticleListPage|"
-msgid "Mark All Read"
-msgstr "Marcar todo como leído"
-
-#: src/qml/ArticleList/ArticleListPage.qml:28
-msgctxt "ArticleListPage|"
-msgid "Hide Read"
-msgstr "Ocultar lo leído"
-
-#: src/qml/ArticleList/ArticleListPage.qml:37
-msgctxt "ArticleListPage|"
-msgid "Edit…"
-msgstr "Editar…"
-
-#: src/qml/ArticleList/ArticleListPage.qml:48
-msgctxt "ArticleListPage|"
-msgid "Refresh"
-msgstr "Actualizar"
-
-#: src/qml/ArticleList/ArticleListPage.qml:60
-msgctxt "ArticleListPage|"
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: src/qml/ArticlePage.qml:35
-msgctxt "ArticlePage|"
-msgid "Open"
-msgstr "Abrir"
-
-#: src/qml/ArticlePage.qml:43
-msgctxt "ArticlePage|"
-msgid "Share"
-msgstr "Compartir"
-
-#: src/qml/ArticlePage.qml:50
-msgctxt "ArticlePage|"
-msgid "Starred"
-msgstr "Destacado"
-
-#. as in, don't mark this article as read
-#: src/qml/ArticlePage.qml:60
-msgctxt "ArticlePage|"
-msgid "Keep Unread"
-msgstr "Mantener como no leído"
-
-#: src/qml/ArticlePage.qml:71
-msgctxt "ArticlePage|"
-msgid "Show Web Content"
-msgstr "Mostrar contenido web"
-
-#: src/qml/ArticlePage.qml:79
-msgctxt "ArticlePage|"
-msgid "Reload Web Content"
-msgstr "Recargar el contenido de la web"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
@@ -181,25 +100,15 @@ msgctxt "EditFeedPage|"
 msgid "Delete"
 msgstr "Eliminar"
 
-#: src/qml/Placeholders/ErrorPlaceholderPage.qml:18
-msgctxt "ErrorPlaceholderPage|"
-msgid "Retry"
-msgstr "Volver a intentar"
-
-#: src/feedlistmodel.cpp:160
+#: src/feedlistmodel.cpp:161
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
 msgstr "Todos los elementos"
 
-#: src/feedlistmodel.cpp:161
+#: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
-msgid "Starred"
-msgstr "Destacado"
-
-#: src/qml/ArticleList/FeedPreviewPage.qml:20
-msgctxt "FeedPreviewPage|"
-msgid "Subscribe"
-msgstr "Suscribirse"
+msgid "Starred Items"
+msgstr ""
 
 #: src/notificationcontroller.cpp:40
 msgctxt "NotificationController|system tray menu action"
@@ -272,64 +181,151 @@ msgstr[1] "%n días"
 
 #: src/qml/SettingsPage.qml:119
 msgctxt "SettingsPage|"
+msgid "Start page:"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:121
+msgctxt "SettingsPage|"
+msgid "Highlights"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:121
+msgctxt "SettingsPage|"
+msgid "All Items"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:132
+msgctxt "SettingsPage|"
 msgid "Sort feed list:"
 msgstr "Ordenar lista de suministros:"
 
-#: src/qml/SettingsPage.qml:120
+#: src/qml/SettingsPage.qml:134
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
 msgstr "Alfabéticamente"
 
-#: src/qml/SettingsPage.qml:120
+#: src/qml/SettingsPage.qml:134
 msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr "Elementos sin leer primero"
 
-#: src/qml/SettingsPage.qml:131
+#: src/qml/SettingsPage.qml:145
 msgctxt "SettingsPage|"
 msgid "Article font:"
 msgstr "Fuente del artículo:"
 
-#: src/qml/SettingsPage.qml:132
+#: src/qml/SettingsPage.qml:147
 msgctxt "SettingsPage|entry in font list"
 msgid "Use system font"
 msgstr "Utilizar la fuente del sistema"
 
-#: src/qml/SettingsPage.qml:150
+#: src/qml/SettingsPage.qml:165
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr "Datos OPML:"
 
-#: src/qml/SettingsPage.qml:153
+#: src/qml/SettingsPage.qml:168
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr "Importar…"
 
-#: src/qml/SettingsPage.qml:166
+#: src/qml/SettingsPage.qml:181
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "Exportar…"
 
-#: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
-msgctxt "UpdatingPlaceholderPage|"
-msgid "Update in Progress"
-msgstr "Actualización en curso"
+#~ msgctxt "AbstractArticleListPage|"
+#~ msgid "All Read"
+#~ msgstr "Todo leído"
 
-#: src/qml/main.qml:90
-msgctxt "main|"
-msgid "Add Content"
-msgstr "Añadir contenido"
+#~ msgctxt "AbstractArticleListPage|"
+#~ msgid "No Items"
+#~ msgstr "No hay ningún elemento"
 
-#: src/qml/main.qml:97
-msgctxt "main|"
-msgid "Settings"
-msgstr "Configuración"
+#~ msgctxt "AbstractArticleListPage|"
+#~ msgid "Couldn't fetch feed from source"
+#~ msgstr "No se pudo recuperar el suministro de la fuente"
 
-#: src/qml/main.qml:104
+#~ msgctxt "AbstractArticleListPage|"
+#~ msgid "Retry"
+#~ msgstr "Volver a intentar"
+
+#~ msgctxt "AbstractPlaceholderPage|"
+#~ msgid "Select an item to view it here"
+#~ msgstr "Seleccione un elemento para verlo aquí"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Mark All Read"
+#~ msgstr "Marcar todo como leído"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Hide Read"
+#~ msgstr "Ocultar lo leído"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Edit…"
+#~ msgstr "Editar…"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Refresh"
+#~ msgstr "Actualizar"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Cancel"
+#~ msgstr "Cancelar"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Open"
+#~ msgstr "Abrir"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Share"
+#~ msgstr "Compartir"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Starred"
+#~ msgstr "Destacado"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Keep Unread"
+#~ msgstr "Mantener como no leído"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Show Web Content"
+#~ msgstr "Mostrar contenido web"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Reload Web Content"
+#~ msgstr "Recargar el contenido de la web"
+
+#~ msgctxt "ErrorPlaceholderPage|"
+#~ msgid "Retry"
+#~ msgstr "Volver a intentar"
+
+#~ msgctxt "FeedListModel|special feed name"
+#~ msgid "Starred"
+#~ msgstr "Destacado"
+
+#~ msgctxt "FeedPreviewPage|"
+#~ msgid "Subscribe"
+#~ msgstr "Suscribirse"
+
+#~ msgctxt "UpdatingPlaceholderPage|"
+#~ msgid "Update in Progress"
+#~ msgstr "Actualización en curso"
+
+#~ msgctxt "main|"
+#~ msgid "Add Content"
+#~ msgstr "Añadir contenido"
+
+#~ msgctxt "main|"
+#~ msgid "Settings"
+#~ msgstr "Configuración"
+
 #, qt-format
-msgctxt "main|"
-msgid "About %1"
-msgstr "Acerca de %1"
+#~ msgctxt "main|"
+#~ msgid "About %1"
+#~ msgstr "Acerca de %1"
 
 #~ msgctxt "ArticleListPage|"
 #~ msgid "Clear"
