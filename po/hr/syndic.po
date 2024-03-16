@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
 "PO-Revision-Date: 2023-03-25 12:37+0000\n"
 "Last-Translator: Milo Ivir <mail@milotype.de>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/syndic/app/hr/>"
-"\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/syndic/app/hr/"
+">\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,63 +14,43 @@ msgstr ""
 "X-Generator: Weblate 4.17-dev\n"
 "X-Qt-Contexts: true\n"
 
-#: src/qml/ArticleList/AbstractArticleListPage.qml:39
-msgctxt "AbstractArticleListPage|"
-msgid "All Read"
-msgstr "Svi pročitani"
-
-#: src/qml/ArticleList/AbstractArticleListPage.qml:39
-msgctxt "AbstractArticleListPage|"
-msgid "No Items"
-msgstr "Nema članaka"
-
-#: src/qml/ArticleList/AbstractArticleListPage.qml:91
-msgctxt "AbstractArticleListPage|"
-msgid "Couldn't fetch feed from source"
-msgstr "Neuspjelo preuzimanje članka iz izvora"
-
-#: src/qml/ArticleList/AbstractArticleListPage.qml:97
-msgctxt "AbstractArticleListPage|"
-msgid "Retry"
-msgstr "Pokušaj ponovo"
-
-#: src/qml/AbstractFeedEditorPage.qml:35
+#: src/qml/AbstractFeedEditorPage.qml:33
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Url:"
 msgstr "URL članka:"
 
-#: src/qml/AbstractFeedEditorPage.qml:46
+#: src/qml/AbstractFeedEditorPage.qml:43
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Options"
 msgstr "Opcije za članke"
 
-#: src/qml/AbstractFeedEditorPage.qml:51
+#: src/qml/AbstractFeedEditorPage.qml:48
 msgctxt "AbstractFeedEditorPage|"
 msgid "Display Name:"
 msgstr "Prikazano ime:"
 
-#: src/qml/AbstractFeedEditorPage.qml:58
+#: src/qml/AbstractFeedEditorPage.qml:55
 msgctxt "AbstractFeedEditorPage|"
 msgid "Category:"
 msgstr "Kategorija:"
 
-#: src/qml/AbstractFeedEditorPage.qml:70
+#: src/qml/AbstractFeedEditorPage.qml:68
 msgctxt "AbstractFeedEditorPage|"
 msgid "Always load web content"
 msgstr "Uvijek učitaj web sadržaj"
 
-#: src/qml/AbstractFeedEditorPage.qml:86
+#: src/qml/AbstractFeedEditorPage.qml:84
 msgctxt "AbstractFeedEditorPage|"
 msgid "Fetch updates:"
 msgstr "Preuzmi aktualiziranja:"
 
 #. take the value from application settings
-#: src/qml/AbstractFeedEditorPage.qml:88 src/qml/AbstractFeedEditorPage.qml:141
+#: src/qml/AbstractFeedEditorPage.qml:86 src/qml/AbstractFeedEditorPage.qml:139
 msgctxt "AbstractFeedEditorPage|"
 msgid "Use Global Setting"
 msgstr "Koristi globalne postavke"
 
-#: src/qml/AbstractFeedEditorPage.qml:112
+#: src/qml/AbstractFeedEditorPage.qml:110
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n minute(s)"
@@ -79,18 +59,18 @@ msgstr[0] "%n minuta"
 msgstr[1] "%n minute"
 msgstr[2] "%n minuta"
 
-#: src/qml/AbstractFeedEditorPage.qml:126
-#: src/qml/AbstractFeedEditorPage.qml:180
+#: src/qml/AbstractFeedEditorPage.qml:124
+#: src/qml/AbstractFeedEditorPage.qml:178
 msgctxt "AbstractFeedEditorPage|"
 msgid "Never"
 msgstr "Nikada"
 
-#: src/qml/AbstractFeedEditorPage.qml:140
+#: src/qml/AbstractFeedEditorPage.qml:138
 msgctxt "AbstractFeedEditorPage|"
 msgid "Delete old items:"
 msgstr "Izbriši stare članke:"
 
-#: src/qml/AbstractFeedEditorPage.qml:165
+#: src/qml/AbstractFeedEditorPage.qml:163
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n day(s)"
@@ -99,81 +79,20 @@ msgstr[0] "%n dan"
 msgstr[1] "%n dana"
 msgstr[2] "%n dana"
 
-#: src/qml/Placeholders/AbstractPlaceholderPage.qml:16
-msgctxt "AbstractPlaceholderPage|"
-msgid "Select an item to view it here"
-msgstr "Odaberi članak koji će se ovdje prikazati"
-
-#: src/qml/AddFeedPage.qml:12
+#: src/qml/AddFeedPage.qml:15
 msgctxt "AddFeedPage|"
 msgid "Add Content"
 msgstr "Dodaj sadržaj"
 
-#: src/qml/AddFeedPage.qml:24
+#: src/qml/AddFeedPage.qml:31
 msgctxt "AddFeedPage|"
 msgid "Preview…"
 msgstr "Pregled …"
 
-#: src/application.cpp:120
+#: src/application.cpp:127
 msgctxt "Application|"
 msgid "Syndic"
 msgstr "Syndic"
-
-#: src/qml/ArticleList/ArticleListPage.qml:17
-msgctxt "ArticleListPage|"
-msgid "Mark All Read"
-msgstr "Označi sve pročitane"
-
-#: src/qml/ArticleList/ArticleListPage.qml:28
-msgctxt "ArticleListPage|"
-msgid "Hide Read"
-msgstr "Sakrij pročitane"
-
-#: src/qml/ArticleList/ArticleListPage.qml:37
-msgctxt "ArticleListPage|"
-msgid "Edit…"
-msgstr "Uredi…"
-
-#: src/qml/ArticleList/ArticleListPage.qml:48
-msgctxt "ArticleListPage|"
-msgid "Refresh"
-msgstr "Aktualiziraj"
-
-#: src/qml/ArticleList/ArticleListPage.qml:60
-msgctxt "ArticleListPage|"
-msgid "Cancel"
-msgstr "Odustani"
-
-#: src/qml/ArticlePage.qml:35
-msgctxt "ArticlePage|"
-msgid "Open"
-msgstr "Otvori"
-
-#: src/qml/ArticlePage.qml:43
-msgctxt "ArticlePage|"
-msgid "Share"
-msgstr "Dijeli"
-
-#: src/qml/ArticlePage.qml:50
-msgctxt "ArticlePage|"
-msgid "Starred"
-msgstr "Označeno"
-
-#. as in, don't mark this article as read
-#: src/qml/ArticlePage.qml:60
-msgctxt "ArticlePage|"
-msgid "Keep Unread"
-msgstr "Ostavi kao nepročitano"
-
-#: src/qml/ArticlePage.qml:71
-msgctxt "ArticlePage|"
-msgid "Show Web Content"
-msgstr "Prikaži web sadržaj"
-
-#: src/qml/ArticlePage.qml:79
-msgctxt "ArticlePage|"
-msgid "Reload Web Content"
-msgstr "Ponovo učitaj web sadržaj"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
@@ -185,25 +104,15 @@ msgctxt "EditFeedPage|"
 msgid "Delete"
 msgstr "Izbriši"
 
-#: src/qml/Placeholders/ErrorPlaceholderPage.qml:18
-msgctxt "ErrorPlaceholderPage|"
-msgid "Retry"
-msgstr "Pokušaj ponovo"
-
-#: src/feedlistmodel.cpp:160
+#: src/feedlistmodel.cpp:161
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
 msgstr "Svi članci"
 
-#: src/feedlistmodel.cpp:161
+#: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
-msgid "Starred"
-msgstr "Označeni"
-
-#: src/qml/ArticleList/FeedPreviewPage.qml:20
-msgctxt "FeedPreviewPage|"
-msgid "Subscribe"
-msgstr "Pretplati se"
+msgid "Starred Items"
+msgstr ""
 
 #: src/notificationcontroller.cpp:40
 msgctxt "NotificationController|system tray menu action"
@@ -279,64 +188,151 @@ msgstr[2] "%n dana"
 
 #: src/qml/SettingsPage.qml:119
 msgctxt "SettingsPage|"
+msgid "Start page:"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:121
+msgctxt "SettingsPage|"
+msgid "Highlights"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:121
+msgctxt "SettingsPage|"
+msgid "All Items"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:132
+msgctxt "SettingsPage|"
 msgid "Sort feed list:"
 msgstr "Razvrstaj popis članaka:"
 
-#: src/qml/SettingsPage.qml:120
+#: src/qml/SettingsPage.qml:134
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
 msgstr "Abecednim redom"
 
-#: src/qml/SettingsPage.qml:120
+#: src/qml/SettingsPage.qml:134
 msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr "Najprije nepročitane"
 
-#: src/qml/SettingsPage.qml:131
+#: src/qml/SettingsPage.qml:145
 msgctxt "SettingsPage|"
 msgid "Article font:"
 msgstr "Font članka:"
 
-#: src/qml/SettingsPage.qml:132
+#: src/qml/SettingsPage.qml:147
 msgctxt "SettingsPage|entry in font list"
 msgid "Use system font"
 msgstr "Koristi font sustava"
 
-#: src/qml/SettingsPage.qml:150
+#: src/qml/SettingsPage.qml:165
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr "OPML podaci:"
 
-#: src/qml/SettingsPage.qml:153
+#: src/qml/SettingsPage.qml:168
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr "Uvezi …"
 
-#: src/qml/SettingsPage.qml:166
+#: src/qml/SettingsPage.qml:181
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "Izvezi …"
 
-#: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
-msgctxt "UpdatingPlaceholderPage|"
-msgid "Update in Progress"
-msgstr "Aktualiziranje u tijeku"
+#~ msgctxt "AbstractArticleListPage|"
+#~ msgid "All Read"
+#~ msgstr "Svi pročitani"
 
-#: src/qml/main.qml:90
-msgctxt "main|"
-msgid "Add Content"
-msgstr "Dodaj sadržaj"
+#~ msgctxt "AbstractArticleListPage|"
+#~ msgid "No Items"
+#~ msgstr "Nema članaka"
 
-#: src/qml/main.qml:97
-msgctxt "main|"
-msgid "Settings"
-msgstr "Postavke"
+#~ msgctxt "AbstractArticleListPage|"
+#~ msgid "Couldn't fetch feed from source"
+#~ msgstr "Neuspjelo preuzimanje članka iz izvora"
 
-#: src/qml/main.qml:104
+#~ msgctxt "AbstractArticleListPage|"
+#~ msgid "Retry"
+#~ msgstr "Pokušaj ponovo"
+
+#~ msgctxt "AbstractPlaceholderPage|"
+#~ msgid "Select an item to view it here"
+#~ msgstr "Odaberi članak koji će se ovdje prikazati"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Mark All Read"
+#~ msgstr "Označi sve pročitane"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Hide Read"
+#~ msgstr "Sakrij pročitane"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Edit…"
+#~ msgstr "Uredi…"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Refresh"
+#~ msgstr "Aktualiziraj"
+
+#~ msgctxt "ArticleListPage|"
+#~ msgid "Cancel"
+#~ msgstr "Odustani"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Open"
+#~ msgstr "Otvori"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Share"
+#~ msgstr "Dijeli"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Starred"
+#~ msgstr "Označeno"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Keep Unread"
+#~ msgstr "Ostavi kao nepročitano"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Show Web Content"
+#~ msgstr "Prikaži web sadržaj"
+
+#~ msgctxt "ArticlePage|"
+#~ msgid "Reload Web Content"
+#~ msgstr "Ponovo učitaj web sadržaj"
+
+#~ msgctxt "ErrorPlaceholderPage|"
+#~ msgid "Retry"
+#~ msgstr "Pokušaj ponovo"
+
+#~ msgctxt "FeedListModel|special feed name"
+#~ msgid "Starred"
+#~ msgstr "Označeni"
+
+#~ msgctxt "FeedPreviewPage|"
+#~ msgid "Subscribe"
+#~ msgstr "Pretplati se"
+
+#~ msgctxt "UpdatingPlaceholderPage|"
+#~ msgid "Update in Progress"
+#~ msgstr "Aktualiziranje u tijeku"
+
+#~ msgctxt "main|"
+#~ msgid "Add Content"
+#~ msgstr "Dodaj sadržaj"
+
+#~ msgctxt "main|"
+#~ msgid "Settings"
+#~ msgstr "Postavke"
+
 #, qt-format
-msgctxt "main|"
-msgid "About %1"
-msgstr "%1 informacije"
+#~ msgctxt "main|"
+#~ msgid "About %1"
+#~ msgstr "%1 informacije"
 
 #~ msgctxt "ArticleListPage|"
 #~ msgid "Clear"
