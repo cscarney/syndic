@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2023-03-21 00:42+0000\n"
+"PO-Revision-Date: 2024-03-17 19:43+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/syndic/app/es/>\n"
 "Language: es\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.2-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
@@ -128,7 +128,7 @@ msgstr "Compartir"
 #: src/qml/ArticlePage.qml:47
 msgctxt "ArticlePage|"
 msgid "Starred"
-msgstr "Destacado"
+msgstr "Favoritos"
 
 #. as in, don't mark this article as read
 #: src/qml/ArticlePage.qml:58
@@ -169,7 +169,7 @@ msgstr "Todos los elementos"
 #: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
-msgstr "Destacado"
+msgstr "Artículos favoritos"
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
@@ -217,12 +217,12 @@ msgstr[1] "%1 elementos nuevos"
 #: src/qml/ArticleList/OverviewPage.qml:10
 msgctxt "OverviewPage|"
 msgid "Highlights"
-msgstr ""
+msgstr "Destacados"
 
 #: src/qml/ArticleList/OverviewPage.qml:71
 msgctxt "OverviewPage|"
 msgid "Gathering highlights..."
-msgstr ""
+msgstr "Lo más destacado..."
 
 #: src/qml/ArticleList/OverviewPage.qml:77
 msgctxt "OverviewPage|"
@@ -233,7 +233,7 @@ msgstr "Actualizar"
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
-msgstr ""
+msgstr "Resultados de la búsqueda de \"%1\""
 
 #: src/qml/SettingsPage.qml:16
 msgctxt "SettingsPage|"
@@ -294,12 +294,12 @@ msgstr[1] "%n días"
 #: src/qml/SettingsPage.qml:119
 msgctxt "SettingsPage|"
 msgid "Start page:"
-msgstr ""
+msgstr "Página de inicio:"
 
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
 msgid "Highlights"
-msgstr ""
+msgstr "Destacados"
 
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
@@ -359,7 +359,7 @@ msgstr "Actualización en curso"
 #: src/qml/main.qml:113
 msgctxt "main|"
 msgid "Highlights"
-msgstr ""
+msgstr "Destacados"
 
 #: src/qml/main.qml:121
 msgctxt "main|"
