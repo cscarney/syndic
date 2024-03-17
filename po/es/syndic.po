@@ -169,7 +169,7 @@ msgstr "Todos los elementos"
 #: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
-msgstr ""
+msgstr "Items sobresalientes"
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
@@ -294,17 +294,17 @@ msgstr[1] "%n días"
 #: src/qml/SettingsPage.qml:119
 msgctxt "SettingsPage|"
 msgid "Start page:"
-msgstr ""
+msgstr "Página de inicio:"
 
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
 msgid "Highlights"
-msgstr ""
+msgstr "Sobresalientes"
 
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
 msgid "All Items"
-msgstr ""
+msgstr "Todos los items"
 
 #: src/qml/SettingsPage.qml:132
 msgctxt "SettingsPage|"
