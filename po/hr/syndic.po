@@ -173,32 +173,32 @@ msgstr "Svi članci"
 #: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
-msgstr ""
+msgstr "Označeni"
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
 msgid "Mark All Read"
-msgstr ""
+msgstr "Označi sve pročitane"
 
 #: src/qml/ArticleList/FeedPage.qml:26
 msgctxt "FeedPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Sakrij pročitane"
 
 #: src/qml/ArticleList/FeedPage.qml:35
 msgctxt "FeedPage|"
 msgid "Edit…"
-msgstr ""
+msgstr "Uredi…"
 
 #: src/qml/ArticleList/FeedPage.qml:46
 msgctxt "FeedPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Aktualiziraj"
 
 #: src/qml/ArticleList/FeedPage.qml:58
 msgctxt "FeedPage|"
 msgid "Cancel"
-msgstr ""
+msgstr "Odustani"
 
 #: src/qml/ArticleList/FeedPreviewPage.qml:20
 msgctxt "FeedPreviewPage|"
@@ -232,7 +232,7 @@ msgstr ""
 #: src/qml/ArticleList/OverviewPage.qml:77
 msgctxt "OverviewPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Aktualiziraj"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
@@ -311,7 +311,7 @@ msgstr ""
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
 msgid "All Items"
-msgstr ""
+msgstr "Svi članci"
 
 #: src/qml/SettingsPage.qml:132
 msgctxt "SettingsPage|"
@@ -356,7 +356,7 @@ msgstr "Izvezi …"
 #: src/qml/ArticleList/StarredItemsPage.qml:9
 msgctxt "StarredItemsPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Sakrij pročitane"
 
 #: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
 msgctxt "UpdatingPlaceholderPage|"
@@ -383,30 +383,6 @@ msgstr "Postavke"
 msgctxt "main|"
 msgid "About %1"
 msgstr "%1 informacije"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Mark All Read"
-#~ msgstr "Označi sve pročitane"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Hide Read"
-#~ msgstr "Sakrij pročitane"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Edit…"
-#~ msgstr "Uredi…"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Refresh"
-#~ msgstr "Aktualiziraj"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Cancel"
-#~ msgstr "Odustani"
-
-#~ msgctxt "FeedListModel|special feed name"
-#~ msgid "Starred"
-#~ msgstr "Označeni"
 
 #~ msgctxt "ArticleListPage|"
 #~ msgid "Clear"

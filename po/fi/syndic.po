@@ -169,32 +169,32 @@ msgstr "Kaikki kohteet"
 #: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
-msgstr ""
+msgstr "Tähdellä merkitty"
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
 msgid "Mark All Read"
-msgstr ""
+msgstr "Merkitse kaikki luetuiksi"
 
 #: src/qml/ArticleList/FeedPage.qml:26
 msgctxt "FeedPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Piilota luetut"
 
 #: src/qml/ArticleList/FeedPage.qml:35
 msgctxt "FeedPage|"
 msgid "Edit…"
-msgstr ""
+msgstr "Muokkaa…"
 
 #: src/qml/ArticleList/FeedPage.qml:46
 msgctxt "FeedPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Päivitä"
 
 #: src/qml/ArticleList/FeedPage.qml:58
 msgctxt "FeedPage|"
 msgid "Cancel"
-msgstr ""
+msgstr "Peruuta"
 
 #: src/qml/ArticleList/FeedPreviewPage.qml:20
 msgctxt "FeedPreviewPage|"
@@ -227,7 +227,7 @@ msgstr ""
 #: src/qml/ArticleList/OverviewPage.qml:77
 msgctxt "OverviewPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Päivitä"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
@@ -304,7 +304,7 @@ msgstr ""
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
 msgid "All Items"
-msgstr ""
+msgstr "Kaikki kohteet"
 
 #: src/qml/SettingsPage.qml:132
 msgctxt "SettingsPage|"
@@ -349,7 +349,7 @@ msgstr "Vie…"
 #: src/qml/ArticleList/StarredItemsPage.qml:9
 msgctxt "StarredItemsPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Piilota luetut"
 
 #: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
 msgctxt "UpdatingPlaceholderPage|"
@@ -376,30 +376,6 @@ msgstr "Asetukset"
 msgctxt "main|"
 msgid "About %1"
 msgstr "Tietoja %1istä"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Mark All Read"
-#~ msgstr "Merkitse kaikki luetuiksi"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Hide Read"
-#~ msgstr "Piilota luetut"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Edit…"
-#~ msgstr "Muokkaa…"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Refresh"
-#~ msgstr "Päivitä"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Cancel"
-#~ msgstr "Peruuta"
-
-#~ msgctxt "FeedListModel|special feed name"
-#~ msgid "Starred"
-#~ msgstr "Tähdellä merkitty"
 
 #~ msgctxt "ArticleListPage|"
 #~ msgid "Clear"

@@ -169,32 +169,32 @@ msgstr "Tutti gli articoli"
 #: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
-msgstr ""
+msgstr "Preferito"
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
 msgid "Mark All Read"
-msgstr ""
+msgstr "Contrassegna tutto come letto"
 
 #: src/qml/ArticleList/FeedPage.qml:26
 msgctxt "FeedPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Nascondi i letti"
 
 #: src/qml/ArticleList/FeedPage.qml:35
 msgctxt "FeedPage|"
 msgid "Edit…"
-msgstr ""
+msgstr "Modifica…"
 
 #: src/qml/ArticleList/FeedPage.qml:46
 msgctxt "FeedPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Aggiorna"
 
 #: src/qml/ArticleList/FeedPage.qml:58
 msgctxt "FeedPage|"
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #: src/qml/ArticleList/FeedPreviewPage.qml:20
 msgctxt "FeedPreviewPage|"
@@ -227,7 +227,7 @@ msgstr ""
 #: src/qml/ArticleList/OverviewPage.qml:77
 msgctxt "OverviewPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Aggiorna"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
@@ -304,7 +304,7 @@ msgstr ""
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
 msgid "All Items"
-msgstr ""
+msgstr "Tutti gli articoli"
 
 #: src/qml/SettingsPage.qml:132
 msgctxt "SettingsPage|"
@@ -349,7 +349,7 @@ msgstr "Esporta…"
 #: src/qml/ArticleList/StarredItemsPage.qml:9
 msgctxt "StarredItemsPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Nascondi i letti"
 
 #: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
 msgctxt "UpdatingPlaceholderPage|"
@@ -376,30 +376,6 @@ msgstr "Impostazioni"
 msgctxt "main|"
 msgid "About %1"
 msgstr "Informazioni su %1"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Mark All Read"
-#~ msgstr "Contrassegna tutto come letto"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Hide Read"
-#~ msgstr "Nascondi i letti"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Edit…"
-#~ msgstr "Modifica…"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Refresh"
-#~ msgstr "Aggiorna"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Cancel"
-#~ msgstr "Annulla"
-
-#~ msgctxt "FeedListModel|special feed name"
-#~ msgid "Starred"
-#~ msgstr "Preferito"
 
 #~ msgctxt "ArticleListPage|"
 #~ msgid "Clear"
