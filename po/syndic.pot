@@ -5,6 +5,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 
+#: src/qml/ArticleList/AbstractArticleListPage.qml:120
+msgctxt "AbstractArticleListPage|"
+msgid "Couldn't fetch feed from source"
+msgstr ""
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:126
+msgctxt "AbstractArticleListPage|"
+msgid "Retry"
+msgstr ""
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:139
+msgctxt "AbstractArticleListPage|"
+msgid "All Read"
+msgstr ""
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:139
+msgctxt "AbstractArticleListPage|"
+msgid "No Items"
+msgstr ""
+
 #: src/qml/AbstractFeedEditorPage.qml:33
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Url:"
@@ -66,6 +86,11 @@ msgid "%n day(s)"
 msgid_plural "%n day(s)"
 msgstr[0] ""
 
+#: src/qml/Placeholders/AbstractPlaceholderPage.qml:16
+msgctxt "AbstractPlaceholderPage|"
+msgid "Select an item to view it here"
+msgstr ""
+
 #: src/qml/AddFeedPage.qml:15
 msgctxt "AddFeedPage|"
 msgid "Add Content"
@@ -81,6 +106,37 @@ msgctxt "Application|"
 msgid "Syndic"
 msgstr ""
 
+#: src/qml/ArticlePage.qml:32
+msgctxt "ArticlePage|"
+msgid "Open"
+msgstr ""
+
+#: src/qml/ArticlePage.qml:39
+msgctxt "ArticlePage|"
+msgid "Share"
+msgstr ""
+
+#: src/qml/ArticlePage.qml:47
+msgctxt "ArticlePage|"
+msgid "Starred"
+msgstr ""
+
+#. as in, don't mark this article as read
+#: src/qml/ArticlePage.qml:58
+msgctxt "ArticlePage|"
+msgid "Keep Unread"
+msgstr ""
+
+#: src/qml/ArticlePage.qml:70
+msgctxt "ArticlePage|"
+msgid "Show Web Content"
+msgstr ""
+
+#: src/qml/ArticlePage.qml:84
+msgctxt "ArticlePage|"
+msgid "Reload Web Content"
+msgstr ""
+
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
 msgid "Save"
@@ -91,6 +147,11 @@ msgctxt "EditFeedPage|"
 msgid "Delete"
 msgstr ""
 
+#: src/qml/Placeholders/ErrorPlaceholderPage.qml:19
+msgctxt "ErrorPlaceholderPage|"
+msgid "Retry"
+msgstr ""
+
 #: src/feedlistmodel.cpp:161
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
@@ -99,6 +160,36 @@ msgstr ""
 #: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPage.qml:16
+msgctxt "FeedPage|"
+msgid "Mark All Read"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPage.qml:26
+msgctxt "FeedPage|"
+msgid "Hide Read"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPage.qml:35
+msgctxt "FeedPage|"
+msgid "Edit…"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPage.qml:46
+msgctxt "FeedPage|"
+msgid "Refresh"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPage.qml:58
+msgctxt "FeedPage|"
+msgid "Cancel"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPreviewPage.qml:20
+msgctxt "FeedPreviewPage|"
+msgid "Subscribe"
 msgstr ""
 
 #: src/notificationcontroller.cpp:40
@@ -112,6 +203,27 @@ msgctxt "NotificationController|Notification Text"
 msgid "%1 New Item(s)"
 msgid_plural "%1 New Item(s)"
 msgstr[0] ""
+
+#: src/qml/ArticleList/OverviewPage.qml:10
+msgctxt "OverviewPage|"
+msgid "Highlights"
+msgstr ""
+
+#: src/qml/ArticleList/OverviewPage.qml:71
+msgctxt "OverviewPage|"
+msgid "Gathering highlights..."
+msgstr ""
+
+#: src/qml/ArticleList/OverviewPage.qml:77
+msgctxt "OverviewPage|"
+msgid "Refresh"
+msgstr ""
+
+#: src/qml/ArticleList/SearchResultPage.qml:8
+#, qt-format
+msgctxt "SearchResultPage|"
+msgid "Search results for \"%1\""
+msgstr ""
 
 #: src/qml/SettingsPage.qml:16
 msgctxt "SettingsPage|"
@@ -220,4 +332,35 @@ msgstr ""
 #: src/qml/SettingsPage.qml:181
 msgctxt "SettingsPage|"
 msgid "Export…"
+msgstr ""
+
+#: src/qml/ArticleList/StarredItemsPage.qml:9
+msgctxt "StarredItemsPage|"
+msgid "Hide Read"
+msgstr ""
+
+#: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
+msgctxt "UpdatingPlaceholderPage|"
+msgid "Update in Progress"
+msgstr ""
+
+#: src/qml/main.qml:113
+msgctxt "main|"
+msgid "Highlights"
+msgstr ""
+
+#: src/qml/main.qml:121
+msgctxt "main|"
+msgid "Add Content"
+msgstr ""
+
+#: src/qml/main.qml:128
+msgctxt "main|"
+msgid "Settings"
+msgstr ""
+
+#: src/qml/main.qml:135
+#, qt-format
+msgctxt "main|"
+msgid "About %1"
 msgstr ""
