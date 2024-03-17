@@ -5,17 +5,38 @@ Syndic is a simple, responsive feed reader made for casual browsing. It adapts t
 
 ## Getting Syndic
 
-- Flatpak builds are available on [Flathub](https://flathub.org/apps/details/com.rocksandpaper.syndic)
+- You can get the [Linux desktop version](https://flathub.org/apps/details/com.rocksandpaper.syndic) from [Flathub](https://flathub.org/apps/details/com.rocksandpaper.syndic). This is the recommended way to install Syndic.
 - Android apks for the current release are available from the [releases page](https://github.com/cscarney/syndic/releases).
-- .deb packages for Ubuntu are available from our [Launchpad PPA](https://launchpad.net/~cscarney/+archive/ubuntu/syndic).
+- Pre-release flatpak bundles for Linux are also available from the [releases page](https://github.com/cscarney/syndic/releases).
+- .deb packages for Ubuntu are available from the official [Launchpad PPA](https://launchpad.net/~cscarney/+archive/ubuntu/syndic). The PPA will only include Qt5 versions for now, since the Qt6 version has dependencies that aren't yet available in the Ubuntu repositories.
+  
+## Support and bug reporting
+If you have a **question**, **comment** or **suggestion**, please open a thread on the [discussion board](https://github.com/cscarney/syndic/discussions).
+
+If you have found a **bug in the application**, please check the [bug tracker](https://github.com/cscarney/syndic/issues) to see if it has already be reported, and open a new issue if necessary. 
+
+**Please do not open bug reports to ask for help.** If you have a problem and you're not sure whether it's a bug or not, please start a discussion thread first. We can convert it to a bug report if necessary.
+
+## Help Translate
+Want to see Syndic in your native language? Contribute translations from your web browser using [weblate](https://hosted.weblate.org/projects/syndic/app/)!
+
+Current translation status:
+
+![Weblate translation status](https://hosted.weblate.org/widget/syndic/app/horizontal-auto.svg)
 
 ## Building from Source
 
-This branch currently builds against the development version of KF6 with Qt6. If you have Plasma 5/KF5, you should be building from the [v1-series branch](https://github.com/cscarney/syndic/tree/v1-series) instead of this one.
+The official git repository is [here](https://github.com/cscarney/syndic/).
 
-It is recommended to build and install [QReadable](https://invent.kde.org/ccarney/qreadable) before building syndic. You can avoid the QReadable dependency for testing purposes by passing `-DWITHOUT_QREADABLE=1` to cmake, but this is only recommended for testing puropses, as it will result in a non-functional reader view.
+The master branch builds against Qt6 and KDE Frameworks 6.  This is the branch you should build if you are interested in contributing to Syndic.
 
-Other required dependencies are Cmake, ECM, Qt6 (Core, Network, Qml, Quick, QQC2, Sql), KF6 (Syndication, Config, Kirigami). KF6DbusAddons and Qt6Widgets are recommended on for desktop builds. Android builds additionally require OpenSSL.
+If you are only interested in *using* Syndic and want a stable, reproducible product, you should build one of the [release tags](https://github.com/cscarney/syndic/tags).
+
+If you need to build against Qt5/KF5, you should use the [v1-series branch](https://github.com/cscarney/syndic/tree/v1-series).
+
+It is recommended to build and install [QReadable](https://invent.kde.org/ccarney/qreadable) before building syndic. You can avoid the QReadable dependency for testing purposes by passing `-DWITHOUT_QREADABLE=1` to cmake, but this is not recommended, as it will result in a non-functional reader view.
+
+Other required dependencies are Cmake, ECM, Qt6 (Core, Network, Qml, Quick, QQC, Sql), KF6 (Syndication, Config, Kirigami). KF6DbusAddons and Qt6Widgets are recommended on for desktop builds. Android builds additionally require OpenSSL.
 
 Once all of the dependencies are installed you can build using the normal CMake commands:
 
@@ -26,7 +47,4 @@ Once all of the dependencies are installed you can build using the normal CMake 
 
 ### Building for Android
 
-[Cross Compiling for Android](https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html#cross-compiling-for-android) is beyond the scope of this readme, but in general, you should use the [ECM Android Toolchain](https://api.kde.org/ecm/toolchain/Android.html) with `-DQTANDROID_EXPORTED_TARGET=syndic -DANDROID_APK_DIR=/path/to/source/android` and then make the `create-apk-syndic` target. 
-
-## Help Translate
-Want to see Syndic in your native language? Contribute translations from your web browser using [weblate](https://hosted.weblate.org/projects/syndic/app/)!
+Version 2.0 does not yet build for android. There are significant changes to android support in Qt6 that have not yet been implemented in Syndic. The [v1-series branch](https://github.com/cscarney/syndic/tree/v1-series) branch can be cross-compiled for android using Qt5.
