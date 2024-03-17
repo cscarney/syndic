@@ -169,32 +169,32 @@ msgstr "Tüm Ögeler"
 #: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
-msgstr ""
+msgstr "Yıldızlı"
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
 msgid "Mark All Read"
-msgstr ""
+msgstr "Tümünü Okundu Olarak İşaretle"
 
 #: src/qml/ArticleList/FeedPage.qml:26
 msgctxt "FeedPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Okunmuşları Gizle"
 
 #: src/qml/ArticleList/FeedPage.qml:35
 msgctxt "FeedPage|"
 msgid "Edit…"
-msgstr ""
+msgstr "Düzenle…"
 
 #: src/qml/ArticleList/FeedPage.qml:46
 msgctxt "FeedPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Yenile"
 
 #: src/qml/ArticleList/FeedPage.qml:58
 msgctxt "FeedPage|"
 msgid "Cancel"
-msgstr ""
+msgstr "İptal Et"
 
 #: src/qml/ArticleList/FeedPreviewPage.qml:20
 msgctxt "FeedPreviewPage|"
@@ -227,7 +227,7 @@ msgstr ""
 #: src/qml/ArticleList/OverviewPage.qml:77
 msgctxt "OverviewPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Yenile"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
@@ -304,7 +304,7 @@ msgstr ""
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
 msgid "All Items"
-msgstr ""
+msgstr "Tüm Ögeler"
 
 #: src/qml/SettingsPage.qml:132
 msgctxt "SettingsPage|"
@@ -349,7 +349,7 @@ msgstr "Dışa Aktar…"
 #: src/qml/ArticleList/StarredItemsPage.qml:9
 msgctxt "StarredItemsPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Okunmuşları Gizle"
 
 #: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
 msgctxt "UpdatingPlaceholderPage|"
@@ -376,30 +376,6 @@ msgstr "Ayarlar"
 msgctxt "main|"
 msgid "About %1"
 msgstr "%1 Hakkında"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Mark All Read"
-#~ msgstr "Tümünü Okundu Olarak İşaretle"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Hide Read"
-#~ msgstr "Okunmuşları Gizle"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Edit…"
-#~ msgstr "Düzenle…"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Refresh"
-#~ msgstr "Yenile"
-
-#~ msgctxt "ArticleListPage|"
-#~ msgid "Cancel"
-#~ msgstr "İptal Et"
-
-#~ msgctxt "FeedListModel|special feed name"
-#~ msgid "Starred"
-#~ msgstr "Yıldızlı"
 
 #~ msgctxt "ArticleListPage|"
 #~ msgid "Clear"
