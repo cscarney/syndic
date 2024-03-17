@@ -14,6 +14,26 @@ msgstr ""
 "X-Generator: Weblate 4.17-dev\n"
 "X-Qt-Contexts: true\n"
 
+#: src/qml/ArticleList/AbstractArticleListPage.qml:120
+msgctxt "AbstractArticleListPage|"
+msgid "Couldn't fetch feed from source"
+msgstr "Neuspjelo preuzimanje članka iz izvora"
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:126
+msgctxt "AbstractArticleListPage|"
+msgid "Retry"
+msgstr "Pokušaj ponovo"
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:139
+msgctxt "AbstractArticleListPage|"
+msgid "All Read"
+msgstr "Svi pročitani"
+
+#: src/qml/ArticleList/AbstractArticleListPage.qml:139
+msgctxt "AbstractArticleListPage|"
+msgid "No Items"
+msgstr "Nema članaka"
+
 #: src/qml/AbstractFeedEditorPage.qml:33
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Url:"
@@ -79,6 +99,11 @@ msgstr[0] "%n dan"
 msgstr[1] "%n dana"
 msgstr[2] "%n dana"
 
+#: src/qml/Placeholders/AbstractPlaceholderPage.qml:16
+msgctxt "AbstractPlaceholderPage|"
+msgid "Select an item to view it here"
+msgstr "Odaberi članak koji će se ovdje prikazati"
+
 #: src/qml/AddFeedPage.qml:15
 msgctxt "AddFeedPage|"
 msgid "Add Content"
@@ -94,6 +119,37 @@ msgctxt "Application|"
 msgid "Syndic"
 msgstr "Syndic"
 
+#: src/qml/ArticlePage.qml:32
+msgctxt "ArticlePage|"
+msgid "Open"
+msgstr "Otvori"
+
+#: src/qml/ArticlePage.qml:39
+msgctxt "ArticlePage|"
+msgid "Share"
+msgstr "Dijeli"
+
+#: src/qml/ArticlePage.qml:47
+msgctxt "ArticlePage|"
+msgid "Starred"
+msgstr "Označeno"
+
+#. as in, don't mark this article as read
+#: src/qml/ArticlePage.qml:58
+msgctxt "ArticlePage|"
+msgid "Keep Unread"
+msgstr "Ostavi kao nepročitano"
+
+#: src/qml/ArticlePage.qml:70
+msgctxt "ArticlePage|"
+msgid "Show Web Content"
+msgstr "Prikaži web sadržaj"
+
+#: src/qml/ArticlePage.qml:84
+msgctxt "ArticlePage|"
+msgid "Reload Web Content"
+msgstr "Ponovo učitaj web sadržaj"
+
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
 msgid "Save"
@@ -104,6 +160,11 @@ msgctxt "EditFeedPage|"
 msgid "Delete"
 msgstr "Izbriši"
 
+#: src/qml/Placeholders/ErrorPlaceholderPage.qml:19
+msgctxt "ErrorPlaceholderPage|"
+msgid "Retry"
+msgstr "Pokušaj ponovo"
+
 #: src/feedlistmodel.cpp:161
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
@@ -113,6 +174,36 @@ msgstr "Svi članci"
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
 msgstr ""
+
+#: src/qml/ArticleList/FeedPage.qml:16
+msgctxt "FeedPage|"
+msgid "Mark All Read"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPage.qml:26
+msgctxt "FeedPage|"
+msgid "Hide Read"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPage.qml:35
+msgctxt "FeedPage|"
+msgid "Edit…"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPage.qml:46
+msgctxt "FeedPage|"
+msgid "Refresh"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPage.qml:58
+msgctxt "FeedPage|"
+msgid "Cancel"
+msgstr ""
+
+#: src/qml/ArticleList/FeedPreviewPage.qml:20
+msgctxt "FeedPreviewPage|"
+msgid "Subscribe"
+msgstr "Pretplati se"
 
 #: src/notificationcontroller.cpp:40
 msgctxt "NotificationController|system tray menu action"
@@ -127,6 +218,27 @@ msgid_plural "%1 New Item(s)"
 msgstr[0] "%1 novi članak"
 msgstr[1] "%1 nova članka"
 msgstr[2] "%1 novih članaka"
+
+#: src/qml/ArticleList/OverviewPage.qml:10
+msgctxt "OverviewPage|"
+msgid "Highlights"
+msgstr ""
+
+#: src/qml/ArticleList/OverviewPage.qml:71
+msgctxt "OverviewPage|"
+msgid "Gathering highlights..."
+msgstr ""
+
+#: src/qml/ArticleList/OverviewPage.qml:77
+msgctxt "OverviewPage|"
+msgid "Refresh"
+msgstr ""
+
+#: src/qml/ArticleList/SearchResultPage.qml:8
+#, qt-format
+msgctxt "SearchResultPage|"
+msgid "Search results for \"%1\""
+msgstr ""
 
 #: src/qml/SettingsPage.qml:16
 msgctxt "SettingsPage|"
@@ -241,25 +353,36 @@ msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "Izvezi …"
 
-#~ msgctxt "AbstractArticleListPage|"
-#~ msgid "All Read"
-#~ msgstr "Svi pročitani"
+#: src/qml/ArticleList/StarredItemsPage.qml:9
+msgctxt "StarredItemsPage|"
+msgid "Hide Read"
+msgstr ""
 
-#~ msgctxt "AbstractArticleListPage|"
-#~ msgid "No Items"
-#~ msgstr "Nema članaka"
+#: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
+msgctxt "UpdatingPlaceholderPage|"
+msgid "Update in Progress"
+msgstr "Aktualiziranje u tijeku"
 
-#~ msgctxt "AbstractArticleListPage|"
-#~ msgid "Couldn't fetch feed from source"
-#~ msgstr "Neuspjelo preuzimanje članka iz izvora"
+#: src/qml/main.qml:113
+msgctxt "main|"
+msgid "Highlights"
+msgstr ""
 
-#~ msgctxt "AbstractArticleListPage|"
-#~ msgid "Retry"
-#~ msgstr "Pokušaj ponovo"
+#: src/qml/main.qml:121
+msgctxt "main|"
+msgid "Add Content"
+msgstr "Dodaj sadržaj"
 
-#~ msgctxt "AbstractPlaceholderPage|"
-#~ msgid "Select an item to view it here"
-#~ msgstr "Odaberi članak koji će se ovdje prikazati"
+#: src/qml/main.qml:128
+msgctxt "main|"
+msgid "Settings"
+msgstr "Postavke"
+
+#: src/qml/main.qml:135
+#, qt-format
+msgctxt "main|"
+msgid "About %1"
+msgstr "%1 informacije"
 
 #~ msgctxt "ArticleListPage|"
 #~ msgid "Mark All Read"
@@ -281,58 +404,9 @@ msgstr "Izvezi …"
 #~ msgid "Cancel"
 #~ msgstr "Odustani"
 
-#~ msgctxt "ArticlePage|"
-#~ msgid "Open"
-#~ msgstr "Otvori"
-
-#~ msgctxt "ArticlePage|"
-#~ msgid "Share"
-#~ msgstr "Dijeli"
-
-#~ msgctxt "ArticlePage|"
-#~ msgid "Starred"
-#~ msgstr "Označeno"
-
-#~ msgctxt "ArticlePage|"
-#~ msgid "Keep Unread"
-#~ msgstr "Ostavi kao nepročitano"
-
-#~ msgctxt "ArticlePage|"
-#~ msgid "Show Web Content"
-#~ msgstr "Prikaži web sadržaj"
-
-#~ msgctxt "ArticlePage|"
-#~ msgid "Reload Web Content"
-#~ msgstr "Ponovo učitaj web sadržaj"
-
-#~ msgctxt "ErrorPlaceholderPage|"
-#~ msgid "Retry"
-#~ msgstr "Pokušaj ponovo"
-
 #~ msgctxt "FeedListModel|special feed name"
 #~ msgid "Starred"
 #~ msgstr "Označeni"
-
-#~ msgctxt "FeedPreviewPage|"
-#~ msgid "Subscribe"
-#~ msgstr "Pretplati se"
-
-#~ msgctxt "UpdatingPlaceholderPage|"
-#~ msgid "Update in Progress"
-#~ msgstr "Aktualiziranje u tijeku"
-
-#~ msgctxt "main|"
-#~ msgid "Add Content"
-#~ msgstr "Dodaj sadržaj"
-
-#~ msgctxt "main|"
-#~ msgid "Settings"
-#~ msgstr "Postavke"
-
-#, qt-format
-#~ msgctxt "main|"
-#~ msgid "About %1"
-#~ msgstr "%1 informacije"
 
 #~ msgctxt "ArticleListPage|"
 #~ msgid "Clear"
