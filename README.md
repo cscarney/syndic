@@ -15,7 +15,7 @@ If you have a **question**, **comment** or **suggestion**, please open a thread 
 
 If you have found a **bug in the application**, please check the [bug tracker](https://github.com/cscarney/syndic/issues) to see if it has already be reported, and open a new issue if necessary. 
 
-**Please do not open bug reports to ask for help.** If you have a problem and you're not sure whether it's a bug or not, please start a discussion thread first. We can convert it to a bug report if necessary.
+**Please do not open bug reports to ask for help.** Start a discussion thread first,and we can convert it to a bug report if necessary. 
 
 ## Help Translate
 Want to see Syndic in your native language? Contribute translations from your web browser using [weblate](https://hosted.weblate.org/projects/syndic/app/)!
