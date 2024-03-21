@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2023-04-30 02:52+0000\n"
-"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
+"PO-Revision-Date: 2024-03-21 09:01+0000\n"
+"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/syndic/app/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
@@ -217,12 +217,12 @@ msgstr[1] "%1 Yeni Öge"
 #: src/qml/ArticleList/OverviewPage.qml:10
 msgctxt "OverviewPage|"
 msgid "Highlights"
-msgstr ""
+msgstr "Vurgular"
 
 #: src/qml/ArticleList/OverviewPage.qml:71
 msgctxt "OverviewPage|"
 msgid "Gathering highlights..."
-msgstr ""
+msgstr "Vurgular toplanıyor..."
 
 #: src/qml/ArticleList/OverviewPage.qml:77
 msgctxt "OverviewPage|"
@@ -233,7 +233,7 @@ msgstr "Yenile"
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
-msgstr ""
+msgstr "\"%1\" için arama sonuçları"
 
 #: src/qml/SettingsPage.qml:16
 msgctxt "SettingsPage|"
@@ -294,12 +294,12 @@ msgstr[1] "%n gün"
 #: src/qml/SettingsPage.qml:119
 msgctxt "SettingsPage|"
 msgid "Start page:"
-msgstr ""
+msgstr "Başlangıç sayfası:"
 
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
 msgid "Highlights"
-msgstr ""
+msgstr "Vurgular"
 
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
@@ -359,7 +359,7 @@ msgstr "Güncelleniyor"
 #: src/qml/main.qml:113
 msgctxt "main|"
 msgid "Highlights"
-msgstr ""
+msgstr "Vurgular"
 
 #: src/qml/main.qml:121
 msgctxt "main|"
