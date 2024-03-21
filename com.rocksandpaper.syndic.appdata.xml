@@ -10,11 +10,18 @@ SPDX-License-Identifier: GPL-3.0-or-later
     <url type="homepage">http://syndic.rocksandpaper.com/</url>
     <url type="bugtracker">https://github.com/cscarney/syndic/issues</url>
     <url type="translate">https://hosted.weblate.org/engage/syndic/</url>
-    <summary>Touch-friendly RSS/Atom reader</summary>
+    <summary>Browse articles from your favorite websites</summary>
     <description>
-        <p>Syndic is a simple, responsive feed reader designed for casual browsing.</p>
-        <p>It is designed to adapt to either mouse and touch input, and run well on both desktop and mobile devices.</p>
-        <p>The UI is designed with Plasma Desktop and Android in mind, but it should run in other environments as well.</p>
+        <p>Syndic is a touch-friendly feed reader for Plasma Desktop, designed with casual browsing in mind. Subscribe to any site that provides an RSS or Atom feed. Get automatically-generated 
+            highlights from your collection, search for articles by keyword, or page through a list of every new article.</p>
+        <p>Features include:</p>
+        <ul>
+            <li><b>Convergent design</b> - Displays in one, two or three column mode depending on available space</li>
+            <li><b>Touch support</b> - quickly swipe between articles on touchscreen devices</li>
+            <li><b>Cut through the clutter</b> - automatically-generated highlights prevent lower-volume feeds from getting drowned out by higher-volume ones</li>
+            <li><b>Download web content</b> - fetch full article text from the web, even if the feed only provides a summary</li>
+            <li><b>Save your favorites</b> - mark your favorite articles to keep track of them and prevent them from expiring</li>
+        </ul>
     </description>
     <metadata_license>CC-BY-3.0</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
