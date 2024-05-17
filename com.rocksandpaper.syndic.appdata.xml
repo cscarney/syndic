@@ -16,11 +16,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
             highlights from your collection, search for articles by keyword, or page through a list of every new article.</p>
         <p>Features include:</p>
         <ul>
-            <li><b>Adaptive design</b> - Displays in one, two or three column mode depending on available space</li>
-            <li><b>Touchscreen support</b> - quickly swipe between articles on touchscreen devices</li>
-            <li><b>Cut through the clutter</b> - automatically-generated highlights prevent lower-volume feeds from getting drowned out by higher-volume ones</li>
-            <li><b>Download web content</b> - fetch full article text from the web, even if the feed only provides a summary</li>
-            <li><b>Save your favorites</b> - mark your favorite articles to keep track of them and prevent them from expiring</li>
+            <li><em>Adaptive design</em> - Displays in one, two or three column mode depending on available space</li>
+            <li><em>Touchscreen support</em> - quickly swipe between articles on touchscreen devices</li>
+            <li><em>Cut through the clutter</em> - automatically-generated highlights prevent lower-volume feeds from getting drowned out by higher-volume ones</li>
+            <li><em>Download web content</em> - fetch full article text from the web, even if the feed only provides a summary</li>
+            <li><em>Save your favorites</em> - mark your favorite articles to keep track of them and prevent them from expiring</li>
         </ul>
     </description>
     <metadata_license>CC-BY-3.0</metadata_license>
