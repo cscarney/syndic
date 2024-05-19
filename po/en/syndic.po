@@ -23,7 +23,7 @@ msgstr ""
 #: src/qml/ArticleList/AbstractArticleListPage.qml:139
 msgctxt "AbstractArticleListPage|"
 msgid "No Items"
-msgstr "%n New Item"
+msgstr ""
 
 #: src/qml/AbstractFeedEditorPage.qml:33
 msgctxt "AbstractFeedEditorPage|"
