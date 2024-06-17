@@ -248,5 +248,6 @@ private:
     void populateFeeds(const QList<Feed *> &feeds);
     void registerFeeds(const QList<Feed *> &feeds);
     void setFeedListComplete(bool feedListComplete);
+    void startUpdatesForAllFeeds();
 };
 }

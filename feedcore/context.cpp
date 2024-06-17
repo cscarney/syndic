@@ -200,12 +200,7 @@ void Context::requestUpdate()
         d->flags.setFlag(PrivData::UpdateRequestPending);
         return;
     }
-
-    const auto &timestamp = QDateTime::currentDateTime();
-    const auto &feeds = d->feeds;
-    for (Feed *const entry : feeds) {
-        entry->updater()->start(timestamp);
-    }
+    startUpdatesForAllFeeds();
 }
 
 void Context::abortUpdates()
@@ -387,7 +382,7 @@ void Context::populateFeeds(const QList<Feed *> &feeds)
 {
     registerFeeds(feeds);
     if (d->flags.testFlag(PrivData::UpdateRequestPending)) {
-        requestUpdate();
+        startUpdatesForAllFeeds();
     }
     setFeedListComplete(true);
     if (feeds.isEmpty()) {
@@ -422,6 +417,15 @@ void Context::setFeedListComplete(bool feedListComplete)
     }
     d->flags.setFlag(PrivData::FeedListComplete, feedListComplete);
     emit feedListCompleteChanged();
+}
+
+void Context::startUpdatesForAllFeeds()
+{
+    const auto &timestamp = QDateTime::currentDateTime();
+    const auto &feeds = d->feeds;
+    for (Feed *const entry : feeds) {
+        entry->updater()->start(timestamp);
+    }
 }
 
 bool Context::prefetchContent() const
