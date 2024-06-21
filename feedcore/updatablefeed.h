@@ -28,7 +28,7 @@ private:
      * by the Syndication library.  The base implementation updates the properties of the
      * feed using the retrieved data, then calls updateSourceArticle for each article.
      */
-    virtual void updateFromSource(const Syndication::FeedPtr &feed);
+    virtual QFuture<void> updateFromSource(const Syndication::FeedPtr &feed);
 
     /**
      * Process an article from the remote source.
@@ -38,7 +38,7 @@ private:
      * The implementation is responsible for identifying duplicates, and should emit the
      * Feed::articleAdded signal when a new article is found.
      */
-    virtual void updateSourceArticle(const Syndication::ItemPtr &article) = 0;
+    virtual QFuture<void> updateSourceArticle(const Syndication::ItemPtr &article) = 0;
 
     /**
      * Delete old articles

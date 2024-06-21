@@ -128,7 +128,7 @@ static inline QUrl getIconUrl(const Syndication::FeedPtr &feed, const QUrl &feed
     return QUrl();
 }
 
-void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
+QFuture<void> UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
 {
     if (name().isEmpty()) {
         setName(feed->title());
@@ -140,15 +140,18 @@ void UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
     if ((expireAge() > 0) && (expireMode() != DisableUpdateMode)) {
         expireTime = updater()->updateStartTime().toSecsSinceEpoch() - expireAge();
     }
+    QList<QFuture<void>> addResults;
     for (const auto &item : items) {
         const auto &dateUpdated = item->dateUpdated();
         if (dateUpdated == 0 || dateUpdated >= expireTime) {
-            updateSourceArticle(item);
+            addResults << updateSourceArticle(item);
         }
     }
     if (expireTime > 0) {
         expire(QDateTime::fromSecsSinceEpoch(expireTime));
     }
+
+    return QtFuture::whenAll(addResults.begin(), addResults.end()).then([](auto) {});
 }
 
 UpdatableFeed::UpdaterImpl::UpdaterImpl(UpdatableFeed *feed, QObject *parent)
@@ -192,14 +195,16 @@ void UpdatableFeed::UpdaterImpl::onSucceeded(const Syndication::FeedPtr &feed, c
         }
     }
 
-    m_updatableFeed->updateFromSource(feed);
+    auto whenDone = m_updatableFeed->updateFromSource(feed);
 
-    if (m_preloadQueue != nullptr) {
-        QObject::connect(m_preloadQueue, &PreloadQueue::finished, this, &UpdaterImpl::finish);
-        QMetaObject::invokeMethod(m_preloadQueue, &PreloadQueue::next, Qt::QueuedConnection);
-    } else {
-        finish();
-    }
+    Future::safeThen(whenDone, this, [this](const auto &) {
+        if (m_preloadQueue != nullptr) {
+            QObject::connect(m_preloadQueue, &PreloadQueue::finished, this, &UpdaterImpl::finish);
+            QMetaObject::invokeMethod(m_preloadQueue, &PreloadQueue::next, Qt::QueuedConnection);
+        } else {
+            finish();
+        }
+    });
 }
 
 void UpdatableFeed::UpdaterImpl::onFailed(const QString &errorString)

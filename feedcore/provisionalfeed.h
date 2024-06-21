@@ -96,8 +96,8 @@ private:
     class ArticleImpl;
     SharedFactory<Syndication::ItemPtr, ArticleImpl> m_articles;
     void onUrlChanged();
-    void updateFromSource(const Syndication::FeedPtr &feed) final;
-    void updateSourceArticle(const Syndication::ItemPtr & /*article*/) final{};
+    QFuture<void> updateFromSource(const Syndication::FeedPtr &feed) final;
+    QFuture<void> updateSourceArticle(const Syndication::ItemPtr & /*article*/) final;
     void expire(const QDateTime & /*olderThan*/) final{};
 };
 }

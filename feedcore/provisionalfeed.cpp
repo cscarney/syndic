@@ -54,7 +54,7 @@ QFuture<ArticleRef> ProvisionalFeed::getArticles(bool /* unreadFilter */)
     });
 }
 
-void ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed)
+QFuture<void> ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed)
 {
     if (name().isEmpty()) {
         setName(feed->title());
@@ -64,6 +64,12 @@ void ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed)
     setUnreadCount(feed->items().size());
     m_feed = feed;
     emit reset();
+    return QtFuture::makeReadyVoidFuture();
+}
+
+QFuture<void> ProvisionalFeed::updateSourceArticle(const Syndication::ItemPtr &)
+{
+    return QtFuture::makeReadyVoidFuture();
 }
 
 Feed *ProvisionalFeed::targetFeed() const

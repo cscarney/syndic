@@ -70,10 +70,11 @@ QFuture<ArticleRef> FeedImpl::getArticles(bool unreadFilter)
     return m_storage->getByFeed(this);
 }
 
-void FeedImpl::updateSourceArticle(const Syndication::ItemPtr &article)
+QFuture<void> FeedImpl::updateSourceArticle(const Syndication::ItemPtr &article)
 {
     auto q = m_storage->storeArticle(this, article);
-    Future::safeThen(q, this, [this](auto &q) {
+
+    return q.then(this, [this](const QFuture<ArticleRef> &q) {
         for (const auto &item : Future::safeResults(q)) {
             if (!item->isRead()) {
                 incrementUnreadCount();
