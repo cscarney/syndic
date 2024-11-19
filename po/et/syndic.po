@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2024-11-12 13:00+0000\n"
+"PO-Revision-Date: 2024-11-19 16:56+0000\n"
 "Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/syndic/app/et/>"
 "\n"
@@ -10,13 +10,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8.2\n"
+"X-Generator: Weblate 5.9-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
 msgctxt "AbstractArticleListPage|"
 msgid "Couldn't fetch feed from source"
-msgstr ""
+msgstr "Uudisvoo laadimine lähteaadressilt ei õnnestunud"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:126
 msgctxt "AbstractArticleListPage|"
@@ -41,334 +41,339 @@ msgstr "Uudisvoo võrguaadress:"
 #: src/qml/AbstractFeedEditorPage.qml:43
 msgctxt "AbstractFeedEditorPage|"
 msgid "Feed Options"
-msgstr ""
+msgstr "Uudisvoo valikud"
 
 #: src/qml/AbstractFeedEditorPage.qml:48
 msgctxt "AbstractFeedEditorPage|"
 msgid "Display Name:"
-msgstr ""
+msgstr "Kuvatav nimi:"
 
 #: src/qml/AbstractFeedEditorPage.qml:55
 msgctxt "AbstractFeedEditorPage|"
 msgid "Category:"
-msgstr ""
+msgstr "Kategooria:"
 
 #: src/qml/AbstractFeedEditorPage.qml:68
 msgctxt "AbstractFeedEditorPage|"
 msgid "Always load web content"
-msgstr ""
+msgstr "Laadi alati veebisisu"
 
 #: src/qml/AbstractFeedEditorPage.qml:84
 msgctxt "AbstractFeedEditorPage|"
 msgid "Fetch updates:"
-msgstr ""
+msgstr "Laadi uuendusi:"
 
 #. take the value from application settings
 #: src/qml/AbstractFeedEditorPage.qml:86 src/qml/AbstractFeedEditorPage.qml:139
 msgctxt "AbstractFeedEditorPage|"
 msgid "Use Global Setting"
-msgstr ""
+msgstr "Kasutades üldiseid seadistusi"
 
 #: src/qml/AbstractFeedEditorPage.qml:110
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n minute(s)"
 msgid_plural "%n minute(s)"
-msgstr[0] ""
+msgstr[0] "%n minuti järel"
+msgstr[1] "%n minuti järel"
 
 #: src/qml/AbstractFeedEditorPage.qml:124
 #: src/qml/AbstractFeedEditorPage.qml:178
 msgctxt "AbstractFeedEditorPage|"
 msgid "Never"
-msgstr ""
+msgstr "Mitte kunagi"
 
 #: src/qml/AbstractFeedEditorPage.qml:138
 msgctxt "AbstractFeedEditorPage|"
 msgid "Delete old items:"
-msgstr ""
+msgstr "Kustuta vanad kirjed:"
 
 #: src/qml/AbstractFeedEditorPage.qml:163
 #, qt-format
 msgctxt "AbstractFeedEditorPage|"
 msgid "%n day(s)"
 msgid_plural "%n day(s)"
-msgstr[0] ""
+msgstr[0] "%n päeva järel"
+msgstr[1] "%n päeva järel"
 
 #: src/qml/Placeholders/AbstractPlaceholderPage.qml:16
 msgctxt "AbstractPlaceholderPage|"
 msgid "Select an item to view it here"
-msgstr ""
+msgstr "Vali vaadatav kirje"
 
 #: src/qml/AddFeedPage.qml:15
 msgctxt "AddFeedPage|"
 msgid "Add Content"
-msgstr ""
+msgstr "Lisa sisu"
 
 #: src/qml/AddFeedPage.qml:31
 msgctxt "AddFeedPage|"
 msgid "Preview…"
-msgstr ""
+msgstr "Eelvaade…"
 
 #: src/application.cpp:127
 msgctxt "Application|"
 msgid "Syndic"
-msgstr ""
+msgstr "Syndic"
 
 #: src/qml/ArticlePage.qml:32
 msgctxt "ArticlePage|"
 msgid "Open"
-msgstr ""
+msgstr "Ava"
 
 #: src/qml/ArticlePage.qml:39
 msgctxt "ArticlePage|"
 msgid "Share"
-msgstr ""
+msgstr "Jaga"
 
 #: src/qml/ArticlePage.qml:47
 msgctxt "ArticlePage|"
 msgid "Starred"
-msgstr ""
+msgstr "Tähekesega märgitud"
 
 #. as in, don't mark this article as read
 #: src/qml/ArticlePage.qml:58
 msgctxt "ArticlePage|"
 msgid "Keep Unread"
-msgstr ""
+msgstr "Jäta lugemata kirjed alles"
 
 #: src/qml/ArticlePage.qml:70
 msgctxt "ArticlePage|"
 msgid "Show Web Content"
-msgstr ""
+msgstr "Näita sisu veebist"
 
 #: src/qml/ArticlePage.qml:84
 msgctxt "ArticlePage|"
 msgid "Reload Web Content"
-msgstr ""
+msgstr "Laadi veebisisu uuesti"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
 msgid "Save"
-msgstr ""
+msgstr "Salvesta"
 
 #: src/qml/EditFeedPage.qml:30
 msgctxt "EditFeedPage|"
 msgid "Delete"
-msgstr ""
+msgstr "Kustuta"
 
 #: src/qml/Placeholders/ErrorPlaceholderPage.qml:19
 msgctxt "ErrorPlaceholderPage|"
 msgid "Retry"
-msgstr ""
+msgstr "Proovi uuesti"
 
 #: src/feedlistmodel.cpp:161
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
-msgstr ""
+msgstr "Kõik kirjed"
 
 #: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
-msgstr ""
+msgstr "Tähekesega märgitud"
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
 msgid "Mark All Read"
-msgstr ""
+msgstr "Märgi kõik loetuks"
 
 #: src/qml/ArticleList/FeedPage.qml:26
 msgctxt "FeedPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Peida loetud"
 
 #: src/qml/ArticleList/FeedPage.qml:35
 msgctxt "FeedPage|"
 msgid "Edit…"
-msgstr ""
+msgstr "Muuda…"
 
 #: src/qml/ArticleList/FeedPage.qml:46
 msgctxt "FeedPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Värskenda andmeid"
 
 #: src/qml/ArticleList/FeedPage.qml:58
 msgctxt "FeedPage|"
 msgid "Cancel"
-msgstr ""
+msgstr "Katkesta"
 
 #: src/qml/ArticleList/FeedPreviewPage.qml:20
 msgctxt "FeedPreviewPage|"
 msgid "Subscribe"
-msgstr ""
+msgstr "Telli"
 
 #: src/notificationcontroller.cpp:40
 msgctxt "NotificationController|system tray menu action"
 msgid "Quit"
-msgstr ""
+msgstr "Välju"
 
 #: src/notificationcontroller.cpp:70
 #, qt-format
 msgctxt "NotificationController|Notification Text"
 msgid "%1 New Item(s)"
 msgid_plural "%1 New Item(s)"
-msgstr[0] ""
+msgstr[0] "%1 uus kirje"
+msgstr[1] "%1 uus kirjet"
 
 #: src/qml/ArticleList/OverviewPage.qml:10
 msgctxt "OverviewPage|"
 msgid "Highlights"
-msgstr ""
+msgstr "Esiletõstetud"
 
 #: src/qml/ArticleList/OverviewPage.qml:71
 msgctxt "OverviewPage|"
 msgid "Gathering highlights..."
-msgstr ""
+msgstr "Kogume andmeid esiletõstmiseks..."
 
 #: src/qml/ArticleList/OverviewPage.qml:77
 msgctxt "OverviewPage|"
 msgid "Refresh"
-msgstr ""
+msgstr "Värskenda andmeid"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
-msgstr ""
+msgstr "Otsingutulemused märksõnale „%1“"
 
 #: src/qml/SettingsPage.qml:16
 msgctxt "SettingsPage|"
 msgid "Settings"
-msgstr ""
+msgstr "Seadistused"
 
 #: src/qml/SettingsPage.qml:23
 msgctxt "SettingsPage|"
 msgid "Fetch updates:"
-msgstr ""
+msgstr "Laadi uuendusi:"
 
 #: src/qml/SettingsPage.qml:25
 msgctxt "SettingsPage|"
 msgid "On application start"
-msgstr ""
+msgstr "rakenduse käivitamisel"
 
 #: src/qml/SettingsPage.qml:37
 msgctxt "SettingsPage|"
 msgid "Automatically every:"
-msgstr ""
+msgstr "automaatselt iga:"
 
 #: src/qml/SettingsPage.qml:49
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n minute(s)"
 msgid_plural "%n minute(s)"
-msgstr[0] ""
+msgstr[0] "%n minuti järel"
+msgstr[1] "%n minuti järel"
 
 #: src/qml/SettingsPage.qml:61
 msgctxt "SettingsPage|"
 msgid "Run in background"
-msgstr ""
+msgstr "Käivita rakendus taustal"
 
 #: src/qml/SettingsPage.qml:74
 msgctxt "SettingsPage|"
 msgid "Download web content for offline viewing"
-msgstr ""
+msgstr "Laadi vallasrežiimis vaatamiseks veebisisu alla"
 
 #: src/qml/SettingsPage.qml:85
 msgctxt "SettingsPage|"
 msgid "Some web servers may not support this feature."
-msgstr ""
+msgstr "Mõned veebiserverid ei toeta sellist võimalust."
 
 #: src/qml/SettingsPage.qml:92
 msgctxt "SettingsPage|"
 msgid "Delete old items:"
-msgstr ""
+msgstr "Kustuta vanad kirjed:"
 
 #: src/qml/SettingsPage.qml:107
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n day(s)"
 msgid_plural "%n day(s)"
-msgstr[0] ""
+msgstr[0] "%n päeva möödumisel"
+msgstr[1] "%n päeva möödumisel"
 
 #: src/qml/SettingsPage.qml:119
 msgctxt "SettingsPage|"
 msgid "Start page:"
-msgstr ""
+msgstr "Avaleht:"
 
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
 msgid "Highlights"
-msgstr ""
+msgstr "esiletõstetud kirjed"
 
 #: src/qml/SettingsPage.qml:121
 msgctxt "SettingsPage|"
 msgid "All Items"
-msgstr ""
+msgstr "kõik kirjed"
 
 #: src/qml/SettingsPage.qml:132
 msgctxt "SettingsPage|"
 msgid "Sort feed list:"
-msgstr ""
+msgstr "Järjesta uudisvoogude loendit:"
 
 #: src/qml/SettingsPage.qml:134
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
-msgstr ""
+msgstr "tähestikuliselt"
 
 #: src/qml/SettingsPage.qml:134
 msgctxt "SettingsPage|"
 msgid "Unread First"
-msgstr ""
+msgstr "lugemata kirjed eespool"
 
 #: src/qml/SettingsPage.qml:145
 msgctxt "SettingsPage|"
 msgid "Article font:"
-msgstr ""
+msgstr "Artiklis kasutatav kirjatüüp:"
 
 #: src/qml/SettingsPage.qml:147
 msgctxt "SettingsPage|entry in font list"
 msgid "Use system font"
-msgstr ""
+msgstr "Kasuta süsteemi kirjatüüpi"
 
 #: src/qml/SettingsPage.qml:165
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
-msgstr ""
+msgstr "Andmed OPML-vormingus:"
 
 #: src/qml/SettingsPage.qml:168
 msgctxt "SettingsPage|"
 msgid "Import…"
-msgstr ""
+msgstr "Impordi…"
 
 #: src/qml/SettingsPage.qml:181
 msgctxt "SettingsPage|"
 msgid "Export…"
-msgstr ""
+msgstr "Ekspordi…"
 
 #: src/qml/ArticleList/StarredItemsPage.qml:9
 msgctxt "StarredItemsPage|"
 msgid "Hide Read"
-msgstr ""
+msgstr "Peida loetud kirjed"
 
 #: src/qml/Placeholders/UpdatingPlaceholderPage.qml:10
 msgctxt "UpdatingPlaceholderPage|"
 msgid "Update in Progress"
-msgstr ""
+msgstr "Uuendus on pooleli"
 
 #: src/qml/main.qml:113
 msgctxt "main|"
 msgid "Highlights"
-msgstr ""
+msgstr "Esiletõstetud kirjed"
 
 #: src/qml/main.qml:121
 msgctxt "main|"
 msgid "Add Content"
-msgstr ""
+msgstr "Lisa uudisvoog"
 
 #: src/qml/main.qml:128
 msgctxt "main|"
 msgid "Settings"
-msgstr ""
+msgstr "Seadistused"
 
 #: src/qml/main.qml:135
 #, qt-format
 msgctxt "main|"
 msgid "About %1"
-msgstr ""
+msgstr "%1u teave"
