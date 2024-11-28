@@ -6,6 +6,7 @@
 #pragma once
 #include <QFuture>
 #include <QObject>
+#include <QPointer>
 
 namespace FeedCore::Future
 {
