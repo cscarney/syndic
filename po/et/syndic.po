@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2024-11-19 16:56+0000\n"
+"PO-Revision-Date: 2025-01-09 04:06+0000\n"
 "Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/syndic/app/et/>"
 "\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
@@ -129,7 +129,7 @@ msgstr "Jaga"
 #: src/qml/ArticlePage.qml:47
 msgctxt "ArticlePage|"
 msgid "Starred"
-msgstr "Tähekesega märgitud"
+msgstr "Lemmikuks märgitud"
 
 #. as in, don't mark this article as read
 #: src/qml/ArticlePage.qml:58
@@ -170,7 +170,7 @@ msgstr "Kõik kirjed"
 #: src/feedlistmodel.cpp:162
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
-msgstr "Tähekesega märgitud"
+msgstr "Lemmikud"
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
