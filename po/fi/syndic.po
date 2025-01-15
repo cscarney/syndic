@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2024-12-04 00:00+0000\n"
+"PO-Revision-Date: 2025-01-15 02:00+0000\n"
 "Last-Translator: Ricky Tigg <ricky.tigg@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/syndic/app/fi/>\n"
 "Language: fi\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
@@ -233,7 +233,7 @@ msgstr "Päivitä"
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
-msgstr "Hakutulokset \"% 1\" :lle"
+msgstr "Hakutulokset \"%1\":lle"
 
 #: src/qml/SettingsPage.qml:16
 msgctxt "SettingsPage|"
