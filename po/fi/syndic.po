@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2025-01-15 02:00+0000\n"
+"PO-Revision-Date: 2025-02-18 19:30+0000\n"
 "Last-Translator: Ricky Tigg <ricky.tigg@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/syndic/app/fi/>\n"
 "Language: fi\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.10.1-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
@@ -189,7 +189,7 @@ msgstr "Muokkaa…"
 #: src/qml/ArticleList/FeedPage.qml:46
 msgctxt "FeedPage|"
 msgid "Refresh"
-msgstr "Päivitä"
+msgstr "Virkistä"
 
 #: src/qml/ArticleList/FeedPage.qml:58
 msgctxt "FeedPage|"
@@ -227,7 +227,7 @@ msgstr "Kohokohtia kootaan..."
 #: src/qml/ArticleList/OverviewPage.qml:77
 msgctxt "OverviewPage|"
 msgid "Refresh"
-msgstr "Päivitä"
+msgstr "Virkistä"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
