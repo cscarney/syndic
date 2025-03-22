@@ -30,7 +30,7 @@ jobs:
       run: flatpak build-bundle --arch=x86_64 repo ${FLATPAK_OUTPUT} ${FLATPAK_IDENTIFIER}
 
     - name: Export artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ env.FLATPAK_OUTPUT }}
         path: ${{ env.FLATPAK_OUTPUT }}
