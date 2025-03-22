@@ -12,14 +12,14 @@ env:
 
 jobs:
   build-flatpak:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v3
 
     - name: Setup flatpak-builder
       run: |
-        sudo apt-get update && sudo apt-get -y install flatpak-builder
+        sudo apt-get update && sudo apt-get -y install flatpak-builder appstream-util
         flatpak remote-add --user flathub https://flathub.org/repo/flathub.flatpakrepo
         flatpak-builder --user --install-deps-from=flathub --install-deps-only . com.rocksandpaper.syndic.yml
 
