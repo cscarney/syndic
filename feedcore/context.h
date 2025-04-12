@@ -17,6 +17,7 @@ class Storage;
 class Feed;
 class ProvisionalFeed;
 class Readability;
+class AutomationEngine;
 
 class Context;
 
@@ -209,6 +210,8 @@ public:
      * This may be null if we were built without readability support
      */
     Readability *getReadability();
+
+    AutomationEngine *automationEngine();
 
     bool defaultUpdateEnabled() const;
     void setDefaultUpdateEnabled(bool defaultUpdateEnabled);

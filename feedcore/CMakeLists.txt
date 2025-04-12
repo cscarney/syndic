@@ -26,6 +26,7 @@ set(feedcore_HEADERS
     automation/automationrule.h
     readability/readability.h
     readability/readabilityresult.h
+    readability/readabilityprefetchrule.h
     )
     
 set(feedcore_SRCS
@@ -46,8 +47,10 @@ set(feedcore_SRCS
     gumbovisitor.cpp
     feeddiscovery.cpp
     searchresultfeed.cpp
+    automation/abstractautomationrule.h
     automation/automationengine.cpp
     automation/automationrule.cpp
+    readability/readabilityprefetchrule.cpp
     )
 
 if (QReadable_FOUND)
