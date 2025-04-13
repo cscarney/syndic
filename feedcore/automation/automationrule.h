@@ -5,12 +5,14 @@
 #pragma once
 
 #include "articleref.h"
+#include "automation/abstractautomationrule.h"
+#include <QFuture>
 #include <QObject>
 
 namespace FeedCore
 {
 class AutomationEngine;
-class AutomationRule : public QObject
+class AutomationRule : public AbstractAutomationRule
 {
     Q_OBJECT
     Q_PROPERTY(FeedCore::AutomationRule::MatchField matchField READ matchField WRITE setMatchField NOTIFY matchFieldChanged)
@@ -22,8 +24,6 @@ class AutomationRule : public QObject
 public:
     enum MatchField { MatchEverything = 0, MatchFeed, MatchAuthor, MatchTitle };
     Q_ENUM(MatchField);
-
-    void apply(const ArticleRef &article);
 
     FeedCore::AutomationRule::MatchField matchField() const;
     void setMatchField(FeedCore::AutomationRule::MatchField newMatchField);
@@ -69,8 +69,8 @@ private:
 
     explicit AutomationRule(QObject *parent = nullptr);
     explicit AutomationRule(const QJsonObject &obj, QObject *parent);
-    bool matches(const ArticleRef &article);
-    void performAction(const ArticleRef &article);
+    bool matches(const ArticleRef &article) override;
+    QFuture<void> beginPerformAction(const ArticleRef &article) override;
     friend class FeedCore::AutomationEngine;
 };
 }

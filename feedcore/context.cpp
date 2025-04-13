@@ -11,6 +11,7 @@
 #include "future.h"
 #include "opmlreader.h"
 #include "provisionalfeed.h"
+#include "readability/readabilityprefetchrule.h"
 #include "scheduler.h"
 #include "storage.h"
 #include <QDebug>
@@ -43,7 +44,7 @@ private:
 }
 
 struct Context::PrivData {
-    enum ContextFlags { FeedListComplete = 1, UpdateRequestPending = 1U << 1U, PrefetchReadableContent = 1U << 2U, FeedsScheduledByDefault = 1U << 3U };
+    enum ContextFlags { FeedListComplete = 1, UpdateRequestPending = 1U << 1U, FeedsScheduledByDefault = 1U << 2U };
 
     Context *parent;
     Storage *storage;
@@ -52,8 +53,10 @@ struct Context::PrivData {
     qint64 expireAge{0};
     Scheduler *updateScheduler;
     Readability *readability{nullptr};
-    QFlags<ContextFlags> flags{};
+    QFlags<ContextFlags> flags;
     QWeakPointer<AllItemsFeed> allItemsFeed{nullptr};
+    std::unique_ptr<AutomationEngine> automationEngine;
+    QPointer<AbstractAutomationRule> prefetchContentRule{nullptr};
 
     PrivData(Storage *storage, Context *parent);
     void configureUpdates(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime()) const;
@@ -73,7 +76,7 @@ Context::Context(Storage *storage, QObject *parent)
     Future::safeThen(getFeeds, this, [this](auto &getFeeds) {
         populateFeeds(Future::safeResults(getFeeds));
     });
-    AutomationEngine::fromDefaultConfigFile(this);
+    d->automationEngine.reset(AutomationEngine::fromDefaultConfigFile(this));
     d->updateScheduler->start();
 }
 
@@ -352,6 +355,14 @@ Readability *Context::getReadability()
     return d->readability;
 }
 
+AutomationEngine *Context::automationEngine()
+{
+    if (d->automationEngine == nullptr) {
+        d->automationEngine = std::make_unique<AutomationEngine>(this);
+    }
+    return d->automationEngine.get();
+}
+
 bool Context::feedListComplete()
 {
     return d->flags.testFlag(PrivData::FeedListComplete);
@@ -430,7 +441,7 @@ void Context::startUpdatesForAllFeeds()
 
 bool Context::prefetchContent() const
 {
-    return d->flags.testFlag(PrivData::PrefetchReadableContent);
+    return d->prefetchContentRule != nullptr;
 }
 
 void Context::setPrefetchContent(bool newPrefetchContent)
@@ -438,7 +449,17 @@ void Context::setPrefetchContent(bool newPrefetchContent)
     if (prefetchContent() == newPrefetchContent) {
         return;
     }
-    d->flags.setFlag(PrivData::PrefetchReadableContent, newPrefetchContent);
+    if (newPrefetchContent) {
+        if (d->prefetchContentRule == nullptr) {
+            d->prefetchContentRule = new ReadabilityPrefetchRule(getReadability(), this);
+            automationEngine()->addAutomationRule(d->prefetchContentRule);
+        }
+    } else {
+        if (auto &engine = d->automationEngine) {
+            engine->removeAutomationRule(d->prefetchContentRule);
+            d->prefetchContentRule = nullptr;
+        }
+    }
     emit prefetchContentChanged();
 }
 

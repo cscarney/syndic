@@ -7,12 +7,12 @@
 using namespace FeedCore;
 
 AutomationRule::AutomationRule(QObject *parent)
-    : QObject{parent}
+    : AbstractAutomationRule{parent}
 {
 }
 
 AutomationRule::AutomationRule(const QJsonObject &obj, QObject *parent)
-    : QObject(parent)
+    : AbstractAutomationRule(parent)
     , m_matchField(static_cast<MatchField>(obj.value("matchField").toInt()))
     , m_matchValue(obj.value("matchValue").toString())
     , m_shouldMarkStarred(obj.value("shouldMarkStarred").toBool())
@@ -20,13 +20,6 @@ AutomationRule::AutomationRule(const QJsonObject &obj, QObject *parent)
     , m_shouldRunShellScript(obj.value("shellScript").isString())
     , m_shellScript(obj.value("shellScript").toString())
 {
-}
-
-void AutomationRule::apply(const ArticleRef &article)
-{
-    if (matches(article)) {
-        performAction(article);
-    }
 }
 
 FeedCore::AutomationRule::MatchField AutomationRule::matchField() const
@@ -129,7 +122,7 @@ bool AutomationRule::matches(const ArticleRef &article)
     }
 }
 
-void AutomationRule::performAction(const ArticleRef &article)
+QFuture<void> AutomationRule::beginPerformAction(const ArticleRef &article)
 {
     if (m_shouldMarkRead) {
         article->setRead(true);
@@ -137,6 +130,7 @@ void AutomationRule::performAction(const ArticleRef &article)
     if (m_shouldMarkStarred) {
         article->setStarred(true);
     }
+
     if (m_shouldRunShellScript) {
         auto *process = new QProcess(this);
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -147,5 +141,7 @@ void AutomationRule::performAction(const ArticleRef &article)
         process->setProcessEnvironment(env);
         QObject::connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), process, &QObject::deleteLater);
         process->start("/bin/sh", {"-c", m_shellScript});
+        return QtFuture::connect(process, &QProcess::finished).then([](auto) {});
     }
+    return QtFuture::makeReadyVoidFuture();
 }

@@ -8,8 +8,6 @@
 #include "context.h"
 #include "feeddiscovery.h"
 #include "networkaccessmanager.h"
-#include "readability/readability.h"
-#include "readability/readabilityresult.h"
 #include <QDebug>
 #include <QNetworkReply>
 #include <QPointer>
@@ -48,37 +46,6 @@ private:
     bool m_isDiscoveredFeed{false};
     void onReplyFinished();
 };
-
-class PreloadQueue : public QObject
-{
-    Q_OBJECT
-public:
-    explicit PreloadQueue(Readability *readability);
-
-    void setReadability(Readability *readability);
-    void addArticle(const ArticleRef &article);
-    void next();
-
-signals:
-    void finished();
-
-private:
-    QPointer<Readability> m_readability;
-    QQueue<ArticleRef> m_articles;
-
-    void onReadabilityResultFinished(const QString &content);
-    void onReadabilityResultError();
-};
-
-Context *findContext(Feed *feed)
-{
-    for (QObject *p = feed->parent(); p != nullptr; p = p->parent()) {
-        if (auto *c = qobject_cast<Context *>(p)) {
-            return c;
-        }
-    }
-    return nullptr;
-}
 }
 
 class UpdatableFeed::UpdaterImpl : public Feed::Updater
@@ -91,7 +58,6 @@ public:
 private:
     UpdatableFeed *m_updatableFeed{nullptr};
     QPointer<LoadOperation> m_operation;
-    QPointer<PreloadQueue> m_preloadQueue;
 
     void onSucceeded(const Syndication::FeedPtr &feed, const QUrl &changeUrl);
     void onFailed(const QString &errorString);
@@ -187,23 +153,9 @@ void UpdatableFeed::UpdaterImpl::onSucceeded(const Syndication::FeedPtr &feed, c
     if (changeUrl.isValid()) {
         m_updatableFeed->setUrl(changeUrl);
     }
-
-    if (m_updatableFeed->flags() & Feed::UseReadableContentFlag) {
-        if (Context *c = findContext(m_updatableFeed); c && c->prefetchContent()) {
-            m_preloadQueue = new PreloadQueue(c->getReadability());
-            QObject::connect(m_updatableFeed, &Feed::articleAdded, m_preloadQueue, &PreloadQueue::addArticle);
-        }
-    }
-
     auto whenDone = m_updatableFeed->updateFromSource(feed);
-
-    Future::safeThen(whenDone, this, [this](const auto &) {
-        if (m_preloadQueue != nullptr) {
-            QObject::connect(m_preloadQueue, &PreloadQueue::finished, this, &UpdaterImpl::finish);
-            QMetaObject::invokeMethod(m_preloadQueue, &PreloadQueue::next, Qt::QueuedConnection);
-        } else {
-            finish();
-        }
+    Future::safeThen(whenDone, this, [this](auto) {
+        finish();
     });
 }
 
@@ -263,37 +215,6 @@ void LoadOperation::onReplyFinished()
 
     default:
         emit failed(m_reply->errorString(), DeleteLater(this));
-    }
-}
-
-PreloadQueue::PreloadQueue(Readability *readability)
-    : m_readability(readability)
-{
-}
-
-void PreloadQueue::addArticle(const ArticleRef &article)
-{
-    m_articles << article;
-}
-
-void PreloadQueue::next()
-{
-    if (m_articles.isEmpty() || m_readability == nullptr) {
-        emit finished();
-        deleteLater();
-        return;
-    }
-
-    if (!m_articles.isEmpty() && m_readability != nullptr) {
-        ArticleRef article = m_articles.takeFirst();
-        ReadabilityResult *result = m_readability->fetch(article->url());
-        QObject::connect(result, &ReadabilityResult::finished, this, [this, article](const QString &text) {
-            article->cacheReadableContent(text);
-            next();
-        });
-
-        // just skip articles with readability failures
-        QObject::connect(result, &ReadabilityResult::error, this, &PreloadQueue::next);
     }
 }
 
