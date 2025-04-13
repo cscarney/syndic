@@ -24,6 +24,7 @@ public:
     void addAutomationRule(FeedCore::AbstractAutomationRule *rule);
     bool removeAutomationRule(FeedCore::AbstractAutomationRule *rule);
     static AutomationEngine *fromDefaultConfigFile(Context *parent);
+    bool active();
 
 private:
     struct PendingAction {

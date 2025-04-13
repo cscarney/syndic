@@ -78,6 +78,11 @@ AutomationEngine *AutomationEngine::fromDefaultConfigFile(Context *parent)
     return result;
 }
 
+bool AutomationEngine::active()
+{
+    return m_activeActions > 0 || !m_actionQueue.isEmpty();
+}
+
 void AutomationEngine::beginNextAction()
 {
     m_activeActions++;

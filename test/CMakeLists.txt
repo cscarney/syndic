@@ -28,3 +28,7 @@ target_link_libraries(testAllItemsFeed PRIVATE Qt6::Test feedcore)
 add_executable(testArticleSummary tst_articlesummary.cpp)
 add_test(NAME testArticleSummary COMMAND testArticleSummary)
 target_link_libraries(testArticleSummary PRIVATE Qt6::Test feedcore)
+
+add_executable(testAutomationEngine tst_automationengine.cpp)
+add_test(NAME testAutomationEngine COMMAND testAutomationEngine)
+target_link_libraries(testAutomationEngine PRIVATE Qt6::Test feedcore)
