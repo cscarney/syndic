@@ -457,6 +457,7 @@ void Context::setPrefetchContent(bool newPrefetchContent)
     } else {
         if (auto &engine = d->automationEngine) {
             engine->removeAutomationRule(d->prefetchContentRule);
+            d->prefetchContentRule = nullptr;
         }
     }
     emit prefetchContentChanged();
