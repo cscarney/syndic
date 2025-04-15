@@ -20,6 +20,7 @@
 #include "contentimageitem.h"
 #include "contentmodel.h"
 #include "context.h"
+#include "editablefeedlistmodel.h"
 #include "feedlistmodel.h"
 #include "feedmodel.h"
 #include "highlightsmodel.h"
@@ -64,6 +65,7 @@ static FeedCore::Context *createContext(QObject *parent = nullptr)
 static void registerQmlTypes()
 {
     qmlRegisterType<FeedListModel>("com.rocksandpaper.syndic", 1, 0, "FeedListModel");
+    qmlRegisterType<EditableFeedListModel>("com.rocksandpaper.syndic", 1, 0, "EditableFeedListModel");
     qmlRegisterType<FeedModel>("com.rocksandpaper.syndic", 1, 0, "FeedModel");
     qmlRegisterType<FeedCore::ProvisionalFeed>("com.rocksandpaper.syndic", 1, 0, "ProvisionalFeed");
     qmlRegisterType<ContentModel>("com.rocksandpaper.syndic", 1, 0, "ContentModel");

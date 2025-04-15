@@ -27,5 +27,6 @@
         <file>qml/ArticleList/AbstractFeedPage.qml</file>
         <file>qml/ArticleList/OverviewPage.qml</file>
         <file>qml/ArticleList/StarredItemsPage.qml</file>
+        <file>qml/ReadableContentSettingsDialog.qml</file>
     </qresource>
 </RCC>
