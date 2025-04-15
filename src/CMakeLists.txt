@@ -16,6 +16,7 @@ set(syndic_HEADERS
     feedmodel.h
     highlightsmodel.h
     networkaccessmanagerfactory.h
+    editablefeedlistmodel.h
     )
 
 set(syndic_SRCS
@@ -32,6 +33,7 @@ set(syndic_SRCS
     application.cpp
     feedmodel.cpp
     highlightsmodel.cpp
+    editablefeedlistmodel.cpp
     main.cpp
     resources.qrc
     )

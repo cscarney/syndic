@@ -128,7 +128,7 @@ Kirigami.ApplicationWindow {
                 text: qsTr("Settings")
                 icon.name: "settings-configure"
                 onTriggered: {
-                    priv.pushUtilityPage("qrc:/qml/SettingsPage.qml")
+                    priv.pushUtilityPage("qrc:/qml/SettingsPage.qml", {feedListModel: feedList.model})
                 }
             },
             Kirigami.Action {

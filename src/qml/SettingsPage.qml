@@ -8,10 +8,12 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs
 import org.kde.kirigami 2.7 as Kirigami
+import com.rocksandpaper.syndic 1.0
 
 Kirigami.ScrollablePage {
     id: root
     property bool keepDrawerOpen: true
+    required property FeedListModel feedListModel
 
     title: qsTr("Settings")
 
@@ -65,26 +67,6 @@ Kirigami.ScrollablePage {
                 target: globalSettings
                 property: "runInBackground"
                 value: runInBackground.checked
-            }
-        }
-
-        RowLayout {
-            CheckBox {
-                id: prefetchContent
-                text: qsTr("Download web content for offline viewing")
-                checked: globalSettings.prefetchContent
-                Binding {
-                    target: globalSettings
-                    property: "prefetchContent"
-                    value: prefetchContent.checked
-                }
-            }
-            Button {
-                icon.name: "help-contextual"
-                flat: true
-                ToolTip.text: qsTr("Some web servers may not support this feature.")
-                ToolTip.visible: pressed || hovered
-                ToolTip.delay: pressed ? -1 : Kirigami.Units.toolTipDelay
             }
         }
 
@@ -146,7 +128,7 @@ Kirigami.ScrollablePage {
             implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
             model: [qsTr("Use system font", "entry in font list"), "serif", ...Qt.fontFamilies()]
             onActivated: {
-                if (currentIndex == 0) {
+                if (currentIndex === 0) {
                     globalSettings.bodyFont = "";
                 } else {
                     globalSettings.bodyFont = currentText
@@ -160,10 +142,19 @@ Kirigami.ScrollablePage {
                 }
             }
         }
+        
+        Button {
+            Kirigami.FormData.label: qsTr("Web content:")
+            text: qsTr("Configure…")
+            onClicked: {
+                dialogLoader.sourceComponent = readableContentDialogComponent;
+                const dialog = dialogLoader.item;
+                dialog.open();
+            }
+        }
 
         RowLayout {
             Kirigami.FormData.label: qsTr("OPML Data:")
-
             Button {
                 text: qsTr("Import…");
                 onClicked: {
@@ -203,6 +194,14 @@ Kirigami.ScrollablePage {
             FileDialog {
                 property var acceptedFunc: function(){}
                 onAccepted: acceptedFunc();
+            }
+        },
+        
+        Component {
+            id: readableContentDialogComponent;
+            
+            ReadableContentSettingsDialog {
+                feedListModel: root.feedListModel
             }
         }
     ]

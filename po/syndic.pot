@@ -101,7 +101,7 @@ msgctxt "AddFeedPage|"
 msgid "Preview…"
 msgstr ""
 
-#: src/application.cpp:127
+#: src/application.cpp:129
 msgctxt "Application|"
 msgid "Syndic"
 msgstr ""
@@ -219,117 +219,137 @@ msgctxt "OverviewPage|"
 msgid "Refresh"
 msgstr ""
 
+#: src/qml/ReadableContentSettingsDialog.qml:15
+msgctxt "ReadableContentSettingsDialog|"
+msgid "Select feeds to display web content:"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:57
+msgctxt "ReadableContentSettingsDialog|"
+msgid "Download articles:"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:64
+msgctxt "ReadableContentSettingsDialog|"
+msgid "When opened"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:64
+msgctxt "ReadableContentSettingsDialog|"
+msgid "With feed updates"
+msgstr ""
+
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
 msgstr ""
 
-#: src/qml/SettingsPage.qml:16
+#: src/qml/SettingsPage.qml:18
 msgctxt "SettingsPage|"
 msgid "Settings"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:23
+#: src/qml/SettingsPage.qml:25
 msgctxt "SettingsPage|"
 msgid "Fetch updates:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:25
+#: src/qml/SettingsPage.qml:27
 msgctxt "SettingsPage|"
 msgid "On application start"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:37
+#: src/qml/SettingsPage.qml:39
 msgctxt "SettingsPage|"
 msgid "Automatically every:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:49
+#: src/qml/SettingsPage.qml:51
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n minute(s)"
 msgid_plural "%n minute(s)"
 msgstr[0] ""
 
-#: src/qml/SettingsPage.qml:61
+#: src/qml/SettingsPage.qml:63
 msgctxt "SettingsPage|"
 msgid "Run in background"
 msgstr ""
 
 #: src/qml/SettingsPage.qml:74
 msgctxt "SettingsPage|"
-msgid "Download web content for offline viewing"
-msgstr ""
-
-#: src/qml/SettingsPage.qml:85
-msgctxt "SettingsPage|"
-msgid "Some web servers may not support this feature."
-msgstr ""
-
-#: src/qml/SettingsPage.qml:92
-msgctxt "SettingsPage|"
 msgid "Delete old items:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:107
+#: src/qml/SettingsPage.qml:89
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n day(s)"
 msgid_plural "%n day(s)"
 msgstr[0] ""
 
-#: src/qml/SettingsPage.qml:119
+#: src/qml/SettingsPage.qml:101
 msgctxt "SettingsPage|"
 msgid "Start page:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:121
+#: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "Highlights"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:121
+#: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "All Items"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:132
+#: src/qml/SettingsPage.qml:114
 msgctxt "SettingsPage|"
 msgid "Sort feed list:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:134
+#: src/qml/SettingsPage.qml:116
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:134
+#: src/qml/SettingsPage.qml:116
 msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:145
+#: src/qml/SettingsPage.qml:127
 msgctxt "SettingsPage|"
 msgid "Article font:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:147
+#: src/qml/SettingsPage.qml:129
 msgctxt "SettingsPage|entry in font list"
 msgid "Use system font"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:165
+#: src/qml/SettingsPage.qml:147
+msgctxt "SettingsPage|"
+msgid "Web content:"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:148
+msgctxt "SettingsPage|"
+msgid "Configure…"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:157
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:168
+#: src/qml/SettingsPage.qml:159
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:181
+#: src/qml/SettingsPage.qml:172
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr ""
