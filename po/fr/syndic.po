@@ -110,7 +110,7 @@ msgctxt "AddFeedPage|"
 msgid "Preview…"
 msgstr "Aperçu…"
 
-#: src/application.cpp:127
+#: src/application.cpp:129
 msgctxt "Application|"
 msgid "Syndic"
 msgstr "Syndic"
@@ -229,33 +229,53 @@ msgctxt "OverviewPage|"
 msgid "Refresh"
 msgstr "Actualiser"
 
+#: src/qml/ReadableContentSettingsDialog.qml:15
+msgctxt "ReadableContentSettingsDialog|"
+msgid "Select feeds to display web content:"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:57
+msgctxt "ReadableContentSettingsDialog|"
+msgid "Download articles:"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:64
+msgctxt "ReadableContentSettingsDialog|"
+msgid "When opened"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:64
+msgctxt "ReadableContentSettingsDialog|"
+msgid "With feed updates"
+msgstr ""
+
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
 msgstr ""
 
-#: src/qml/SettingsPage.qml:16
+#: src/qml/SettingsPage.qml:18
 msgctxt "SettingsPage|"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: src/qml/SettingsPage.qml:23
+#: src/qml/SettingsPage.qml:25
 msgctxt "SettingsPage|"
 msgid "Fetch updates:"
 msgstr "Récupérer les mises à jour :"
 
-#: src/qml/SettingsPage.qml:25
+#: src/qml/SettingsPage.qml:27
 msgctxt "SettingsPage|"
 msgid "On application start"
 msgstr "Au démarrage de l'application"
 
-#: src/qml/SettingsPage.qml:37
+#: src/qml/SettingsPage.qml:39
 msgctxt "SettingsPage|"
 msgid "Automatically every:"
 msgstr "Automatiquement tous les :"
 
-#: src/qml/SettingsPage.qml:49
+#: src/qml/SettingsPage.qml:51
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n minute(s)"
@@ -263,27 +283,17 @@ msgid_plural "%n minute(s)"
 msgstr[0] "%n minute"
 msgstr[1] "%n minutes"
 
-#: src/qml/SettingsPage.qml:61
+#: src/qml/SettingsPage.qml:63
 msgctxt "SettingsPage|"
 msgid "Run in background"
 msgstr "Exécuter en arrière-plan"
 
 #: src/qml/SettingsPage.qml:74
 msgctxt "SettingsPage|"
-msgid "Download web content for offline viewing"
-msgstr "Télécharger du contenu web pour une consultation hors ligne"
-
-#: src/qml/SettingsPage.qml:85
-msgctxt "SettingsPage|"
-msgid "Some web servers may not support this feature."
-msgstr "Certains serveurs web peuvent ne pas prendre en charge cette fonction."
-
-#: src/qml/SettingsPage.qml:92
-msgctxt "SettingsPage|"
 msgid "Delete old items:"
 msgstr "Supprimer les anciens éléments :"
 
-#: src/qml/SettingsPage.qml:107
+#: src/qml/SettingsPage.qml:89
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n day(s)"
@@ -291,57 +301,67 @@ msgid_plural "%n day(s)"
 msgstr[0] "%n jour"
 msgstr[1] "%n jours"
 
-#: src/qml/SettingsPage.qml:119
+#: src/qml/SettingsPage.qml:101
 msgctxt "SettingsPage|"
 msgid "Start page:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:121
+#: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "Highlights"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:121
+#: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "All Items"
 msgstr "Tous les éléments"
 
-#: src/qml/SettingsPage.qml:132
+#: src/qml/SettingsPage.qml:114
 msgctxt "SettingsPage|"
 msgid "Sort feed list:"
 msgstr "Trier la liste des flux :"
 
-#: src/qml/SettingsPage.qml:134
+#: src/qml/SettingsPage.qml:116
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
 msgstr "Alphabétique"
 
-#: src/qml/SettingsPage.qml:134
+#: src/qml/SettingsPage.qml:116
 msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr "Les non lus d'abord"
 
-#: src/qml/SettingsPage.qml:145
+#: src/qml/SettingsPage.qml:127
 msgctxt "SettingsPage|"
 msgid "Article font:"
 msgstr "Police de l'article :"
 
-#: src/qml/SettingsPage.qml:147
+#: src/qml/SettingsPage.qml:129
 msgctxt "SettingsPage|entry in font list"
 msgid "Use system font"
 msgstr "Utiliser la police du système"
 
-#: src/qml/SettingsPage.qml:165
+#: src/qml/SettingsPage.qml:147
+msgctxt "SettingsPage|"
+msgid "Web content:"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:148
+msgctxt "SettingsPage|"
+msgid "Configure…"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:157
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr "Données OPML :"
 
-#: src/qml/SettingsPage.qml:168
+#: src/qml/SettingsPage.qml:159
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr "Importer…"
 
-#: src/qml/SettingsPage.qml:181
+#: src/qml/SettingsPage.qml:172
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "Exporter…"
@@ -376,6 +396,15 @@ msgstr "Paramètres"
 msgctxt "main|"
 msgid "About %1"
 msgstr "À propos %1"
+
+#~ msgctxt "SettingsPage|"
+#~ msgid "Download web content for offline viewing"
+#~ msgstr "Télécharger du contenu web pour une consultation hors ligne"
+
+#~ msgctxt "SettingsPage|"
+#~ msgid "Some web servers may not support this feature."
+#~ msgstr ""
+#~ "Certains serveurs web peuvent ne pas prendre en charge cette fonction."
 
 #~ msgctxt "ArticleListPage|"
 #~ msgid "Clear"
