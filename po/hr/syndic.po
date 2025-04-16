@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
 "PO-Revision-Date: 2024-03-18 22:37+0000\n"
 "Last-Translator: Milo Ivir <mail@milotype.de>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/syndic/app/hr/>"
-"\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/syndic/app/hr/"
+">\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -114,7 +114,7 @@ msgctxt "AddFeedPage|"
 msgid "Preview…"
 msgstr "Pregled …"
 
-#: src/application.cpp:127
+#: src/application.cpp:129
 msgctxt "Application|"
 msgid "Syndic"
 msgstr "Syndic"
@@ -234,33 +234,53 @@ msgctxt "OverviewPage|"
 msgid "Refresh"
 msgstr "Aktualiziraj"
 
+#: src/qml/ReadableContentSettingsDialog.qml:15
+msgctxt "ReadableContentSettingsDialog|"
+msgid "Select feeds to display web content:"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:57
+msgctxt "ReadableContentSettingsDialog|"
+msgid "Download articles:"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:64
+msgctxt "ReadableContentSettingsDialog|"
+msgid "When opened"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:64
+msgctxt "ReadableContentSettingsDialog|"
+msgid "With feed updates"
+msgstr ""
+
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
 msgstr "Rezultati pretrage za „%1”"
 
-#: src/qml/SettingsPage.qml:16
+#: src/qml/SettingsPage.qml:18
 msgctxt "SettingsPage|"
 msgid "Settings"
 msgstr "Postavke"
 
-#: src/qml/SettingsPage.qml:23
+#: src/qml/SettingsPage.qml:25
 msgctxt "SettingsPage|"
 msgid "Fetch updates:"
 msgstr "Preuzmi aktualiziranja:"
 
-#: src/qml/SettingsPage.qml:25
+#: src/qml/SettingsPage.qml:27
 msgctxt "SettingsPage|"
 msgid "On application start"
 msgstr "Tijekom pokretanja programa"
 
-#: src/qml/SettingsPage.qml:37
+#: src/qml/SettingsPage.qml:39
 msgctxt "SettingsPage|"
 msgid "Automatically every:"
 msgstr "Automatski svakih:"
 
-#: src/qml/SettingsPage.qml:49
+#: src/qml/SettingsPage.qml:51
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n minute(s)"
@@ -269,27 +289,17 @@ msgstr[0] "%n minuta"
 msgstr[1] "%n minute"
 msgstr[2] "%n minuta"
 
-#: src/qml/SettingsPage.qml:61
+#: src/qml/SettingsPage.qml:63
 msgctxt "SettingsPage|"
 msgid "Run in background"
 msgstr "Pokreni u pozadini"
 
 #: src/qml/SettingsPage.qml:74
 msgctxt "SettingsPage|"
-msgid "Download web content for offline viewing"
-msgstr "Preuzmi web sadržaj za izvanmrežno gledanje"
-
-#: src/qml/SettingsPage.qml:85
-msgctxt "SettingsPage|"
-msgid "Some web servers may not support this feature."
-msgstr "Neki web poslužitelji možda ne podržavaju ovu funkciju."
-
-#: src/qml/SettingsPage.qml:92
-msgctxt "SettingsPage|"
 msgid "Delete old items:"
 msgstr "Izbriši stare članke:"
 
-#: src/qml/SettingsPage.qml:107
+#: src/qml/SettingsPage.qml:89
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n day(s)"
@@ -298,57 +308,67 @@ msgstr[0] "%n dan"
 msgstr[1] "%n dana"
 msgstr[2] "%n dana"
 
-#: src/qml/SettingsPage.qml:119
+#: src/qml/SettingsPage.qml:101
 msgctxt "SettingsPage|"
 msgid "Start page:"
 msgstr "Početna stranica:"
 
-#: src/qml/SettingsPage.qml:121
+#: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "Highlights"
 msgstr "Istaknuti članci"
 
-#: src/qml/SettingsPage.qml:121
+#: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "All Items"
 msgstr "Svi članci"
 
-#: src/qml/SettingsPage.qml:132
+#: src/qml/SettingsPage.qml:114
 msgctxt "SettingsPage|"
 msgid "Sort feed list:"
 msgstr "Razvrstaj popis članaka:"
 
-#: src/qml/SettingsPage.qml:134
+#: src/qml/SettingsPage.qml:116
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
 msgstr "Abecednim redom"
 
-#: src/qml/SettingsPage.qml:134
+#: src/qml/SettingsPage.qml:116
 msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr "Najprije nepročitane"
 
-#: src/qml/SettingsPage.qml:145
+#: src/qml/SettingsPage.qml:127
 msgctxt "SettingsPage|"
 msgid "Article font:"
 msgstr "Font članka:"
 
-#: src/qml/SettingsPage.qml:147
+#: src/qml/SettingsPage.qml:129
 msgctxt "SettingsPage|entry in font list"
 msgid "Use system font"
 msgstr "Koristi font sustava"
 
-#: src/qml/SettingsPage.qml:165
+#: src/qml/SettingsPage.qml:147
+msgctxt "SettingsPage|"
+msgid "Web content:"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:148
+msgctxt "SettingsPage|"
+msgid "Configure…"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:157
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr "OPML podaci:"
 
-#: src/qml/SettingsPage.qml:168
+#: src/qml/SettingsPage.qml:159
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr "Uvezi …"
 
-#: src/qml/SettingsPage.qml:181
+#: src/qml/SettingsPage.qml:172
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "Izvezi …"
@@ -383,6 +403,14 @@ msgstr "Postavke"
 msgctxt "main|"
 msgid "About %1"
 msgstr "%1 informacije"
+
+#~ msgctxt "SettingsPage|"
+#~ msgid "Download web content for offline viewing"
+#~ msgstr "Preuzmi web sadržaj za izvanmrežno gledanje"
+
+#~ msgctxt "SettingsPage|"
+#~ msgid "Some web servers may not support this feature."
+#~ msgstr "Neki web poslužitelji možda ne podržavaju ovu funkciju."
 
 #~ msgctxt "ArticleListPage|"
 #~ msgid "Clear"
