@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
 "PO-Revision-Date: 2025-03-31 15:51+0000\n"
 "Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
-"Language-Team: Estonian <https://hosted.weblate.org/projects/syndic/app/et/>"
-"\n"
+"Language-Team: Estonian <https://hosted.weblate.org/projects/syndic/app/et/"
+">\n"
 "Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -111,7 +111,7 @@ msgctxt "AddFeedPage|"
 msgid "Preview…"
 msgstr "Eelvaade…"
 
-#: src/application.cpp:127
+#: src/application.cpp:129
 msgctxt "Application|"
 msgid "Syndic"
 msgstr "Syndic"
@@ -230,33 +230,53 @@ msgctxt "OverviewPage|"
 msgid "Refresh"
 msgstr "Värskenda andmeid"
 
+#: src/qml/ReadableContentSettingsDialog.qml:15
+msgctxt "ReadableContentSettingsDialog|"
+msgid "Select feeds to display web content:"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:57
+msgctxt "ReadableContentSettingsDialog|"
+msgid "Download articles:"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:64
+msgctxt "ReadableContentSettingsDialog|"
+msgid "When opened"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:64
+msgctxt "ReadableContentSettingsDialog|"
+msgid "With feed updates"
+msgstr ""
+
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
 msgstr "Otsingutulemused märksõnale „%1“"
 
-#: src/qml/SettingsPage.qml:16
+#: src/qml/SettingsPage.qml:18
 msgctxt "SettingsPage|"
 msgid "Settings"
 msgstr "Seadistused"
 
-#: src/qml/SettingsPage.qml:23
+#: src/qml/SettingsPage.qml:25
 msgctxt "SettingsPage|"
 msgid "Fetch updates:"
 msgstr "Laadi uuendusi:"
 
-#: src/qml/SettingsPage.qml:25
+#: src/qml/SettingsPage.qml:27
 msgctxt "SettingsPage|"
 msgid "On application start"
 msgstr "rakenduse käivitamisel"
 
-#: src/qml/SettingsPage.qml:37
+#: src/qml/SettingsPage.qml:39
 msgctxt "SettingsPage|"
 msgid "Automatically every:"
 msgstr "automaatselt iga:"
 
-#: src/qml/SettingsPage.qml:49
+#: src/qml/SettingsPage.qml:51
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n minute(s)"
@@ -264,27 +284,17 @@ msgid_plural "%n minute(s)"
 msgstr[0] "%n minuti järel"
 msgstr[1] "%n minuti järel"
 
-#: src/qml/SettingsPage.qml:61
+#: src/qml/SettingsPage.qml:63
 msgctxt "SettingsPage|"
 msgid "Run in background"
 msgstr "Käivita rakendus taustal"
 
 #: src/qml/SettingsPage.qml:74
 msgctxt "SettingsPage|"
-msgid "Download web content for offline viewing"
-msgstr "Laadi vallasrežiimis vaatamiseks veebisisu alla"
-
-#: src/qml/SettingsPage.qml:85
-msgctxt "SettingsPage|"
-msgid "Some web servers may not support this feature."
-msgstr "Mõned veebiserverid ei toeta sellist võimalust."
-
-#: src/qml/SettingsPage.qml:92
-msgctxt "SettingsPage|"
 msgid "Delete old items:"
 msgstr "Kustuta vanad kirjed:"
 
-#: src/qml/SettingsPage.qml:107
+#: src/qml/SettingsPage.qml:89
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n day(s)"
@@ -292,57 +302,67 @@ msgid_plural "%n day(s)"
 msgstr[0] "%n päeva möödumisel"
 msgstr[1] "%n päeva möödumisel"
 
-#: src/qml/SettingsPage.qml:119
+#: src/qml/SettingsPage.qml:101
 msgctxt "SettingsPage|"
 msgid "Start page:"
 msgstr "Avaleht:"
 
-#: src/qml/SettingsPage.qml:121
+#: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "Highlights"
 msgstr "esiletõstetud kirjed"
 
-#: src/qml/SettingsPage.qml:121
+#: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "All Items"
 msgstr "kõik kirjed"
 
-#: src/qml/SettingsPage.qml:132
+#: src/qml/SettingsPage.qml:114
 msgctxt "SettingsPage|"
 msgid "Sort feed list:"
 msgstr "Järjesta uudisvoogude loendit:"
 
-#: src/qml/SettingsPage.qml:134
+#: src/qml/SettingsPage.qml:116
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
 msgstr "tähestikuliselt"
 
-#: src/qml/SettingsPage.qml:134
+#: src/qml/SettingsPage.qml:116
 msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr "lugemata kirjed eespool"
 
-#: src/qml/SettingsPage.qml:145
+#: src/qml/SettingsPage.qml:127
 msgctxt "SettingsPage|"
 msgid "Article font:"
 msgstr "Artiklis kasutatav kirjatüüp:"
 
-#: src/qml/SettingsPage.qml:147
+#: src/qml/SettingsPage.qml:129
 msgctxt "SettingsPage|entry in font list"
 msgid "Use system font"
 msgstr "Kasuta süsteemi kirjatüüpi"
 
-#: src/qml/SettingsPage.qml:165
+#: src/qml/SettingsPage.qml:147
+msgctxt "SettingsPage|"
+msgid "Web content:"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:148
+msgctxt "SettingsPage|"
+msgid "Configure…"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:157
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr "Andmed OPML-vormingus:"
 
-#: src/qml/SettingsPage.qml:168
+#: src/qml/SettingsPage.qml:159
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr "Impordi…"
 
-#: src/qml/SettingsPage.qml:181
+#: src/qml/SettingsPage.qml:172
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "Ekspordi…"
@@ -377,3 +397,11 @@ msgstr "Seadistused"
 msgctxt "main|"
 msgid "About %1"
 msgstr "%1u teave"
+
+#~ msgctxt "SettingsPage|"
+#~ msgid "Download web content for offline viewing"
+#~ msgstr "Laadi vallasrežiimis vaatamiseks veebisisu alla"
+
+#~ msgctxt "SettingsPage|"
+#~ msgid "Some web servers may not support this feature."
+#~ msgstr "Mõned veebiserverid ei toeta sellist võimalust."
