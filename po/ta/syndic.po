@@ -110,7 +110,7 @@ msgctxt "AddFeedPage|"
 msgid "Preview…"
 msgstr "முன்னோட்டம்…"
 
-#: src/application.cpp:127
+#: src/application.cpp:129
 msgctxt "Application|"
 msgid "Syndic"
 msgstr "அறங்காவலர்"
@@ -229,33 +229,53 @@ msgctxt "OverviewPage|"
 msgid "Refresh"
 msgstr "புதுப்பிப்பு"
 
+#: src/qml/ReadableContentSettingsDialog.qml:15
+msgctxt "ReadableContentSettingsDialog|"
+msgid "Select feeds to display web content:"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:57
+msgctxt "ReadableContentSettingsDialog|"
+msgid "Download articles:"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:64
+msgctxt "ReadableContentSettingsDialog|"
+msgid "When opened"
+msgstr ""
+
+#: src/qml/ReadableContentSettingsDialog.qml:64
+msgctxt "ReadableContentSettingsDialog|"
+msgid "With feed updates"
+msgstr ""
+
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
 msgstr "\"%1\" க்கான தேடல் முடிவுகள்"
 
-#: src/qml/SettingsPage.qml:16
+#: src/qml/SettingsPage.qml:18
 msgctxt "SettingsPage|"
 msgid "Settings"
 msgstr "அமைப்புகள்"
 
-#: src/qml/SettingsPage.qml:23
+#: src/qml/SettingsPage.qml:25
 msgctxt "SettingsPage|"
 msgid "Fetch updates:"
 msgstr "புதுப்பிப்புகளைப் பெறுங்கள்:"
 
-#: src/qml/SettingsPage.qml:25
+#: src/qml/SettingsPage.qml:27
 msgctxt "SettingsPage|"
 msgid "On application start"
 msgstr "பயன்பாட்டு தொடக்கத்தில்"
 
-#: src/qml/SettingsPage.qml:37
+#: src/qml/SettingsPage.qml:39
 msgctxt "SettingsPage|"
 msgid "Automatically every:"
 msgstr "தானாகவே ஒவ்வொரு:"
 
-#: src/qml/SettingsPage.qml:49
+#: src/qml/SettingsPage.qml:51
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n minute(s)"
@@ -263,27 +283,17 @@ msgid_plural "%n minute(s)"
 msgstr[0] "%n மணித்துளி (கள்)"
 msgstr[1] "%n மணித்துளி (கள்)"
 
-#: src/qml/SettingsPage.qml:61
+#: src/qml/SettingsPage.qml:63
 msgctxt "SettingsPage|"
 msgid "Run in background"
 msgstr "பின்னணியில் இயக்கவும்"
 
 #: src/qml/SettingsPage.qml:74
 msgctxt "SettingsPage|"
-msgid "Download web content for offline viewing"
-msgstr "இணைப்பில்லாத பார்வைக்கு வலை உள்ளடக்கத்தைப் பதிவிறக்கவும்"
-
-#: src/qml/SettingsPage.qml:85
-msgctxt "SettingsPage|"
-msgid "Some web servers may not support this feature."
-msgstr "சில வலை சேவையகங்கள் இந்த அம்சத்தை ஆதரிக்காது."
-
-#: src/qml/SettingsPage.qml:92
-msgctxt "SettingsPage|"
 msgid "Delete old items:"
 msgstr "பழைய உருப்படிகளை நீக்கு:"
 
-#: src/qml/SettingsPage.qml:107
+#: src/qml/SettingsPage.qml:89
 #, qt-format
 msgctxt "SettingsPage|"
 msgid "%n day(s)"
@@ -291,57 +301,67 @@ msgid_plural "%n day(s)"
 msgstr[0] "%n நாள் (கள்)"
 msgstr[1] "%n நாள் (கள்)"
 
-#: src/qml/SettingsPage.qml:119
+#: src/qml/SettingsPage.qml:101
 msgctxt "SettingsPage|"
 msgid "Start page:"
 msgstr "தொடக்க பக்கம்:"
 
-#: src/qml/SettingsPage.qml:121
+#: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "Highlights"
 msgstr "சிறப்பம்சங்கள்"
 
-#: src/qml/SettingsPage.qml:121
+#: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "All Items"
 msgstr "அனைத்து உருப்படிகளும்"
 
-#: src/qml/SettingsPage.qml:132
+#: src/qml/SettingsPage.qml:114
 msgctxt "SettingsPage|"
 msgid "Sort feed list:"
 msgstr "தீவன பட்டியலை வரிசைப்படுத்துங்கள்:"
 
-#: src/qml/SettingsPage.qml:134
+#: src/qml/SettingsPage.qml:116
 msgctxt "SettingsPage|"
 msgid "Alphabetical"
 msgstr "அகரவரிசை"
 
-#: src/qml/SettingsPage.qml:134
+#: src/qml/SettingsPage.qml:116
 msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr "முதலில் படிக்காதது"
 
-#: src/qml/SettingsPage.qml:145
+#: src/qml/SettingsPage.qml:127
 msgctxt "SettingsPage|"
 msgid "Article font:"
 msgstr "கட்டுரை எழுத்துரு:"
 
-#: src/qml/SettingsPage.qml:147
+#: src/qml/SettingsPage.qml:129
 msgctxt "SettingsPage|entry in font list"
 msgid "Use system font"
 msgstr "கணினி எழுத்துருவைப் பயன்படுத்தவும்"
 
-#: src/qml/SettingsPage.qml:165
+#: src/qml/SettingsPage.qml:147
+msgctxt "SettingsPage|"
+msgid "Web content:"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:148
+msgctxt "SettingsPage|"
+msgid "Configure…"
+msgstr ""
+
+#: src/qml/SettingsPage.qml:157
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr "OPML தரவு:"
 
-#: src/qml/SettingsPage.qml:168
+#: src/qml/SettingsPage.qml:159
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr "இறக்குமதி…"
 
-#: src/qml/SettingsPage.qml:181
+#: src/qml/SettingsPage.qml:172
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "ஏற்றுமதி…"
@@ -376,3 +396,11 @@ msgstr "அமைப்புகள்"
 msgctxt "main|"
 msgid "About %1"
 msgstr "சுமார் %1"
+
+#~ msgctxt "SettingsPage|"
+#~ msgid "Download web content for offline viewing"
+#~ msgstr "இணைப்பில்லாத பார்வைக்கு வலை உள்ளடக்கத்தைப் பதிவிறக்கவும்"
+
+#~ msgctxt "SettingsPage|"
+#~ msgid "Some web servers may not support this feature."
+#~ msgstr "சில வலை சேவையகங்கள் இந்த அம்சத்தை ஆதரிக்காது."
