@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2025-03-31 15:51+0000\n"
+"PO-Revision-Date: 2025-04-17 20:01+0000\n"
 "Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
-"Language-Team: Estonian <https://hosted.weblate.org/projects/syndic/app/et/"
-">\n"
+"Language-Team: Estonian <https://hosted.weblate.org/projects/syndic/app/et/>"
+"\n"
 "Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
@@ -233,22 +233,22 @@ msgstr "Värskenda andmeid"
 #: src/qml/ReadableContentSettingsDialog.qml:15
 msgctxt "ReadableContentSettingsDialog|"
 msgid "Select feeds to display web content:"
-msgstr ""
+msgstr "Veebisisu näitamiseks vali uudisvood:"
 
 #: src/qml/ReadableContentSettingsDialog.qml:57
 msgctxt "ReadableContentSettingsDialog|"
 msgid "Download articles:"
-msgstr ""
+msgstr "Laadi alla artiklid:"
 
 #: src/qml/ReadableContentSettingsDialog.qml:64
 msgctxt "ReadableContentSettingsDialog|"
 msgid "When opened"
-msgstr ""
+msgstr "Kui on avatud"
 
 #: src/qml/ReadableContentSettingsDialog.qml:64
 msgctxt "ReadableContentSettingsDialog|"
 msgid "With feed updates"
-msgstr ""
+msgstr "Uudisvoo uuendamisel"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
@@ -345,12 +345,12 @@ msgstr "Kasuta süsteemi kirjatüüpi"
 #: src/qml/SettingsPage.qml:147
 msgctxt "SettingsPage|"
 msgid "Web content:"
-msgstr ""
+msgstr "Veebisisu:"
 
 #: src/qml/SettingsPage.qml:148
 msgctxt "SettingsPage|"
 msgid "Configure…"
-msgstr ""
+msgstr "Seadista…"
 
 #: src/qml/SettingsPage.qml:157
 msgctxt "SettingsPage|"
