@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import org.kde.kirigami as Kirigami
 import com.rocksandpaper.syndic
 
 AbstractArticleListPage {
@@ -23,6 +24,7 @@ AbstractArticleListPage {
         horizontalPadding: padding * 2
         opacity: enabled ? 1 : 0.6
         highlighted: ListView.isCurrentItem
+        hoverEnabled: !Kirigami.Settings.hasTransientTouchInput
 
         contentItem: ArticleListEntry {
             article: ref.article
