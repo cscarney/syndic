@@ -124,7 +124,8 @@ public:
     Q_ENUM(UpdateMode)
 
     enum FeedFlags {
-        UseReadableContentFlag = 1 /** < always use web content from readability */
+        UseReadableContentFlag = 1, /** < always use web content from readability */
+        IsWebPageFlag = 1U << 1U /** < this feed is a web page, not an RSS/Atom feed */
     };
     Q_FLAGS(FeedFlags)
 

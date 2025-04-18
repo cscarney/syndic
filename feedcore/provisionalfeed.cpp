@@ -60,7 +60,9 @@ QFuture<void> ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed
         setName(feed->title());
     }
     setLink(feed->link());
-    setIcon(feed->icon()->url());
+    if (auto icon = feed->icon()) {
+        setIcon(icon->url());
+    }
     setUnreadCount(feed->items().size());
     m_feed = feed;
     emit reset();
