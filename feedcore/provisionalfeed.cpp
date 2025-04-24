@@ -28,6 +28,7 @@ void ProvisionalFeed::onUrlChanged()
     syncUrlString();
     updater()->abort();
     m_feed = nullptr;
+    setFlags(flags() & ~Feed::IsWebPageFlag);
     emit reset();
 }
 

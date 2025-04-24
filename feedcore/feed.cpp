@@ -297,15 +297,22 @@ void Feed::Updater::finish()
 {
     d->feed->setLastUpdate(d->updateStartTime);
     d->feed->setStatus(LoadStatus::Idle);
+    cleanup();
 }
 
 void Feed::Updater::setError(const QString &errorMsg)
 {
     d->errorMsg = errorMsg;
     d->feed->setStatus(LoadStatus::Error);
+    cleanup();
 }
 
 void Feed::Updater::aborted()
 {
     d->feed->setStatus(LoadStatus::Idle);
+    cleanup();
+}
+
+void Feed::Updater::cleanup()
+{
 }

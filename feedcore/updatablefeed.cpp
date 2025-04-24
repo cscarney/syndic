@@ -21,6 +21,14 @@ constexpr const int kMaxRedirects = 10;
 
 namespace
 {
+class DeleteLater
+{
+public:
+    void operator()(QObject *o)
+    {
+        o->deleteLater();
+    }
+};
 
 class LoadOperation : public QObject
 {
@@ -28,60 +36,58 @@ class LoadOperation : public QObject
 public:
     void start(const QUrl &url, const QString &failMessage = QString());
     void abort();
-    virtual Syndication::FeedPtr parseFeed(const QByteArray &data, const QUrl &url) = 0;
-
-    struct DeleteLater {
-        explicit DeleteLater(LoadOperation *t)
-        {
-            t->deleteLater();
-        }
-    };
 
 signals:
-    void succeeded(const Syndication::FeedPtr &feed, const QUrl &changeUrl, DeleteLater); // NOLINT
-    void failed(const QString &errorString, DeleteLater); // NOLINT
-    void aborted(DeleteLater); // NOLINT
+    void succeeded(const QByteArray &feed, const QUrl &changeUrl);
+    void failed(const QString &errorString);
+    void aborted();
 
 private:
     QSet<QUrl> m_seenUrls;
     QPointer<QNetworkReply> m_reply;
-    bool m_isDiscoveredFeed{false};
     void onReplyFinished();
 };
+
+class Update : public QObject
+{
+    Q_OBJECT
+public:
+    explicit Update(const UpdatableFeed *feed);
+    void abort();
+    void start();
+
+signals:
+    void succeeded(const Syndication::FeedPtr &feed);
+    void failed(const QString &errorString);
+    void aborted();
+
+private:
+    UpdatableFeed *m_feed{nullptr};
+    std::unique_ptr<LoadOperation, DeleteLater> m_currentOperation;
+    QByteArray m_firstData;
+
+    void onPrimaryFeedFetchSucceeded(const QByteArray &data, const QUrl &url);
+    void onWebPageFetchSucceeded(const QByteArray &data, const QUrl &url);
+    void onDiscoveredFeedFetchSucceeded(const QByteArray &data, const QUrl &url);
+    void onDiscoveredFeedFetchFailed(const QString &errorString);
+    void fallbackToWebPage();
+    void onFailed(const QString &errorString);
+    void onAborted();
+};
+
 }
-
-class FeedLoadOperation : public LoadOperation
-{
-    Syndication::FeedPtr parseFeed(const QByteArray &data, const QUrl &url) override
-    {
-        return Syndication::parserCollection()->parse({data, url.toString()});
-    }
-};
-
-class WebPageLoadOperation : public LoadOperation
-{
-    Syndication::FeedPtr parseFeed(const QByteArray &data, const QUrl &url) override
-    {
-        ArticleLinkExtractor extractor(data, url);
-        extractor.walk();
-        return extractor.articleLinksFeed();
-    }
-};
 
 class UpdatableFeed::UpdaterImpl : public Feed::Updater
 {
 public:
     UpdaterImpl(UpdatableFeed *feed, QObject *parent);
-
-    template<typename OperationType>
-    void runWithOperationType();
-
     void run() final;
     void abort() final;
+    void cleanup() final;
 
 private:
     UpdatableFeed *m_updatableFeed{nullptr};
-    QPointer<LoadOperation> m_operation;
+    std::unique_ptr<Update> m_currentUpdate;
 
     void onSucceeded(const Syndication::FeedPtr &feed, const QUrl &changeUrl);
     void onFailed(const QString &errorString);
@@ -150,37 +156,29 @@ UpdatableFeed::UpdaterImpl::UpdaterImpl(UpdatableFeed *feed, QObject *parent)
 {
 }
 
-template<typename OperationType>
-void UpdatableFeed::UpdaterImpl::runWithOperationType()
+void UpdatableFeed::UpdaterImpl::run()
 {
     if (!feed()->url().isValid()) {
         setError(tr("Invalid URL", "error message"));
         return;
     }
-
-    m_operation = new OperationType;
-    QObject::connect(m_operation, &LoadOperation::succeeded, this, &UpdaterImpl::onSucceeded);
-    QObject::connect(m_operation, &LoadOperation::failed, this, &UpdaterImpl::onFailed);
-    QObject::connect(m_operation, &LoadOperation::aborted, this, [this] {
-        aborted();
-    });
-    m_operation->start(feed()->url());
-}
-
-void UpdatableFeed::UpdaterImpl::run()
-{
-    if (feed()->flags() & Feed::IsWebPageFlag) {
-        runWithOperationType<WebPageLoadOperation>();
-    } else {
-        runWithOperationType<FeedLoadOperation>();
-    }
+    m_currentUpdate.reset(new Update(m_updatableFeed));
+    QObject::connect(m_currentUpdate.get(), &Update::succeeded, this, &UpdaterImpl::onSucceeded);
+    QObject::connect(m_currentUpdate.get(), &Update::failed, this, &UpdaterImpl::onFailed);
+    QObject::connect(m_currentUpdate.get(), &Update::aborted, this, &UpdaterImpl::aborted);
+    m_currentUpdate->start();
 }
 
 void UpdatableFeed::UpdaterImpl::abort()
 {
-    if (!m_operation.isNull()) {
-        m_operation->abort();
+    if (m_currentUpdate) {
+        m_currentUpdate->abort();
     }
+}
+
+void UpdatableFeed::UpdaterImpl::cleanup()
+{
+    m_currentUpdate.release()->deleteLater();
 }
 
 void UpdatableFeed::UpdaterImpl::onSucceeded(const Syndication::FeedPtr &feed, const QUrl &changeUrl)
@@ -204,7 +202,7 @@ void LoadOperation::start(const QUrl &url, const QString &failMessage)
 {
     if (m_seenUrls.contains(url) || m_seenUrls.count() > kMaxRedirects) {
         const QString &errorMessage = failMessage.isEmpty() ? "unknown error" : failMessage;
-        emit failed(errorMessage, DeleteLater(this));
+        emit failed(errorMessage);
     }
     m_seenUrls << url;
     QNetworkRequest request(url);
@@ -225,21 +223,12 @@ void LoadOperation::onReplyFinished()
     switch (m_reply->error()) {
     case QNetworkReply::NoError: {
         QByteArray data = m_reply->readAll();
-
-        Syndication::FeedPtr feed = parseFeed(data, url);
-        if (feed != nullptr) {
-            QUrl changeUrl = m_isDiscoveredFeed ? url : QUrl();
-            emit succeeded(feed, changeUrl, DeleteLater(this));
-        } else {
-            QUrl discoveredFeed = FeedDiscovery::discoverFeed(url, data);
-            m_isDiscoveredFeed = true;
-            start(discoveredFeed, "couldn't find feed source");
-        }
+        emit succeeded(data, url);
         break;
     }
 
     case QNetworkReply::OperationCanceledError:
-        emit aborted(DeleteLater(this));
+        emit aborted();
         break;
 
     case QNetworkReply::InsecureRedirectError: {
@@ -250,8 +239,95 @@ void LoadOperation::onReplyFinished()
     }
 
     default:
-        emit failed(m_reply->errorString(), DeleteLater(this));
+        emit failed(m_reply->errorString());
     }
+}
+
+Update::Update(const UpdatableFeed *feed)
+    : m_feed{const_cast<UpdatableFeed *>(feed)}
+{
+}
+
+void Update::abort()
+{
+    m_currentOperation->abort();
+}
+
+void Update::start()
+{
+    m_currentOperation.reset(new LoadOperation);
+    if (m_feed->flags() & Feed::IsWebPageFlag) {
+        QObject::connect(m_currentOperation.get(), &LoadOperation::succeeded, this, &Update::onWebPageFetchSucceeded);
+    } else {
+        QObject::connect(m_currentOperation.get(), &LoadOperation::succeeded, this, &Update::onPrimaryFeedFetchSucceeded);
+    }
+    QObject::connect(m_currentOperation.get(), &LoadOperation::failed, this, &Update::onFailed);
+    QObject::connect(m_currentOperation.get(), &LoadOperation::aborted, this, &Update::onAborted);
+    m_currentOperation->start(m_feed->url());
+}
+
+void Update::onPrimaryFeedFetchSucceeded(const QByteArray &data, const QUrl &url)
+{
+    m_firstData = data;
+    Syndication::FeedPtr feed = Syndication::parserCollection()->parse({data, url.toString()});
+    if (feed.isNull()) {
+        // if the feed didn't parse, try feed discovery
+        QUrl discoveredFeedUrl = FeedDiscovery::discoverFeed(m_feed->url(), data);
+        m_currentOperation.reset(new LoadOperation);
+        QObject::connect(m_currentOperation.get(), &LoadOperation::succeeded, this, &Update::onDiscoveredFeedFetchSucceeded);
+        QObject::connect(m_currentOperation.get(), &LoadOperation::failed, this, &Update::onDiscoveredFeedFetchFailed);
+        QObject::connect(m_currentOperation.get(), &LoadOperation::aborted, this, &Update::onAborted);
+        m_currentOperation->start(discoveredFeedUrl);
+    } else {
+        emit succeeded(feed);
+    }
+}
+
+void Update::onWebPageFetchSucceeded(const QByteArray &data, const QUrl &url)
+{
+    ArticleLinkExtractor extractor(data, url);
+    extractor.walk();
+    Syndication::FeedPtr feed = extractor.articleLinksFeed();
+    emit succeeded(feed);
+}
+
+void Update::onDiscoveredFeedFetchSucceeded(const QByteArray &data, const QUrl &url)
+{
+    Syndication::FeedPtr feed = Syndication::parserCollection()->parse({data, url.toString()});
+    if (feed.isNull()) {
+        fallbackToWebPage();
+    } else {
+        m_feed->setUrl(url);
+        emit succeeded(feed);
+    }
+}
+
+void Update::onDiscoveredFeedFetchFailed(const QString &errorString)
+{
+    Q_UNUSED(errorString);
+    fallbackToWebPage();
+}
+
+void Update::fallbackToWebPage()
+{
+    ArticleLinkExtractor extractor(m_firstData, m_feed->url());
+    extractor.walk();
+    if (m_feed) {
+        m_feed->setFlags(m_feed->flags() | Feed::IsWebPageFlag);
+    }
+    Syndication::FeedPtr feed = extractor.articleLinksFeed();
+    emit succeeded(feed);
+    return;
+}
+
+void Update::onFailed(const QString &errorString)
+{
+    emit failed(errorString);
+}
+
+void Update::onAborted()
+{
+    emit aborted();
 }
 
 #include "updatablefeed.moc"

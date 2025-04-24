@@ -299,6 +299,13 @@ private:
      * Implemented by derived classes to perform the update.
      */
     virtual void run() = 0;
+
+    /**
+     * Implemented by derived classes to clean up after an update.
+     *
+     * This is called at the end of an update whether is succeeded, failed, or was aborted.
+     */
+    virtual void cleanup();
 };
 
 typedef Feed::LoadStatus LoadStatus;
