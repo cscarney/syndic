@@ -89,7 +89,7 @@ private:
     UpdatableFeed *m_updatableFeed{nullptr};
     std::unique_ptr<Update> m_currentUpdate;
 
-    void onSucceeded(const Syndication::FeedPtr &feed, const QUrl &changeUrl);
+    void onSucceeded(const Syndication::FeedPtr &feed);
     void onFailed(const QString &errorString);
 };
 
@@ -178,14 +178,13 @@ void UpdatableFeed::UpdaterImpl::abort()
 
 void UpdatableFeed::UpdaterImpl::cleanup()
 {
-    m_currentUpdate.release()->deleteLater();
+    if (auto *update = m_currentUpdate.release()) {
+        update->deleteLater();
+    }
 }
 
-void UpdatableFeed::UpdaterImpl::onSucceeded(const Syndication::FeedPtr &feed, const QUrl &changeUrl)
+void UpdatableFeed::UpdaterImpl::onSucceeded(const Syndication::FeedPtr &feed)
 {
-    if (changeUrl.isValid()) {
-        m_updatableFeed->setUrl(changeUrl);
-    }
     auto whenDone = m_updatableFeed->updateFromSource(feed);
     Future::safeThen(whenDone, this, [this](auto) {
         finish();

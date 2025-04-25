@@ -142,10 +142,20 @@ void NetworkAccessManager::DeferredNetworkReply::forwardHeaders()
     forwardAttribute(QNetworkRequest::SourceIsFromCacheAttribute);
 }
 
+static std::unique_ptr<NetworkAccessManager> networkAccessManagerInstance;
+
 NetworkAccessManager *NetworkAccessManager::instance()
 {
-    static auto *singleton = new NetworkAccessManager(new SharedCache);
-    return singleton;
+    if (auto instance = networkAccessManagerInstance.get()) {
+        return instance;
+    }
+    networkAccessManagerInstance = std::make_unique<NetworkAccessManager>(new SharedCache);
+    return networkAccessManagerInstance.get();
+}
+
+void NetworkAccessManager::setInstance(NetworkAccessManager *instance)
+{
+    networkAccessManagerInstance.reset(instance);
 }
 
 FeedCore::NetworkAccessManager::NetworkAccessManager(QObject *parent)
