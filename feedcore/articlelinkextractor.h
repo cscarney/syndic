@@ -21,7 +21,7 @@ namespace FeedCore
 struct ArticleLink {
     QUrl url;
     QString linkText;
-    QDateTime date; // Optional, will be valid only if date was extracted from URL
+    QDateTime date; // will be valid only if date was extracted from URL
 
     bool hasDate() const
     {
@@ -58,25 +58,15 @@ private:
     QString m_currentLinkText;
     QString m_currentHref;
     QList<ArticleLink> m_articleLinks;
+    QHash<QUrl, qsizetype> m_urlIndices;
     QUrl m_baseUrl;
     int m_highestScore;
 
     // Regular expression to extract date from URL pattern /YYYY/MM/DD/
     const QRegularExpression m_datePattern;
 
-    /**
-     * Called when an opening HTML tag is encountered
-     */
     void visitElementOpen(GumboNode *node) override;
-
-    /**
-     * Called when text content is encountered
-     */
     void visitText(GumboNode *node) override;
-
-    /**
-     * Called when a closing HTML tag is encountered
-     */
     void visitElementClose(GumboNode *node) override;
 
     /**

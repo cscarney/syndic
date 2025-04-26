@@ -227,7 +227,6 @@ void ArticleLinkExtractor::visitElementOpen(GumboNode *node)
         m_inAnchor = true;
         m_currentLinkText.clear();
 
-        // Extract href attribute
         GumboAttribute *href = gumbo_get_attribute(&node->v.element.attributes, "href");
         if (href) {
             m_currentHref = QString::fromUtf8(href->value);
@@ -243,10 +242,8 @@ void ArticleLinkExtractor::visitElementOpen(GumboNode *node)
 void ArticleLinkExtractor::visitText(GumboNode *node)
 {
     if (m_inAnchor) {
-        // Append text content to current link text
         m_currentLinkText += QString::fromUtf8(node->v.text.text);
     } else if (m_inTitle) {
-        // Capture the page title
         m_pageTitle += QString::fromUtf8(node->v.text.text);
     }
 }
@@ -279,7 +276,16 @@ void ArticleLinkExtractor::visitElementClose(GumboNode *node)
                 }
             }
 
-            m_articleLinks.append(link);
+            if (m_urlIndices.contains(url)) {
+                // Update existing link if the new link text is longer
+                int existingIndex = m_urlIndices.value(url);
+                if (link.linkText.length() > m_articleLinks.at(existingIndex).linkText.length()) {
+                    m_articleLinks[existingIndex].linkText = link.linkText;
+                }
+            } else {
+                m_urlIndices.insert(url, m_articleLinks.size());
+                m_articleLinks.append(link);
+            }
         }
 
         m_inAnchor = false;
@@ -290,7 +296,6 @@ void ArticleLinkExtractor::visitElementClose(GumboNode *node)
 
 int ArticleLinkExtractor::articleLinkScore(const QString &url, const QString &linkText)
 {
-    // Skip empty links or links without text
     if (url.isEmpty() || linkText.trimmed().isEmpty()) {
         qDebug() << url << "excluded due to empty link or text";
         return EmptyLinkScore;
@@ -338,7 +343,6 @@ int ArticleLinkExtractor::articleLinkScore(const QString &url, const QString &li
         return SubstanitalContentScore;
     }
 
-    // Default score for anything else
     return DefaultLinkScore;
 }
 
