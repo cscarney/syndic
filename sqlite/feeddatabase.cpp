@@ -174,7 +174,7 @@ ItemQuery FeedDatabase::selectItemsByRecommended(int limit)
     q.prepare(
                 "SELECT "+
                     ItemQuery::fieldList() + ", "
-                    "RANK() over (PARTITION BY feed ORDER BY date DESC) AS feedRank "
+                    "DENSE_RANK() over (PARTITION BY feed ORDER BY date DESC) AS feedRank "
                 "FROM Item "
                 "ORDER BY isRead ASC, feedRank ASC, date ASC "
                 "LIMIT :limit;"
