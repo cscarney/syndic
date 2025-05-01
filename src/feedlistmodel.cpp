@@ -5,6 +5,7 @@
 
 #include "feedlistmodel.h"
 #include "context.h"
+#include "highlightsfeed.h"
 #include "iconprovider.h"
 #include "starreditemsfeed.h"
 #include <QList>
@@ -17,7 +18,7 @@ using namespace FeedCore;
 
 namespace
 {
-enum SpecialFeedIndex { ALL_ITEMS_IDX = 0, STARRED_ITEMS_IDX, SPECIAL_FEED_COUNT };
+enum SpecialFeedIndex { ALL_ITEMS_IDX = 0, HIGHLIGHTS_IDX, STARRED_ITEMS_IDX, SPECIAL_FEED_COUNT };
 
 class SortHelper : public FeedSortNotifier
 {
@@ -98,6 +99,7 @@ public:
     Context *context = nullptr;
     QSharedPointer<Feed> allItems = nullptr;
     StarredItemsFeed *starredItems = nullptr;
+    HighlightsFeed *highlightsFeed = nullptr;
     QList<FeedCore::Feed *> feeds;
     Sort sortMode = Name;
     std::unique_ptr<SortHelper> sortHelper = std::make_unique<NameSortHelper>();
@@ -160,6 +162,7 @@ void FeedListModel::setContext(FeedCore::Context *context)
         d->allItems = d->context->allItemsFeed();
         d->allItems->setName(tr("All Items", "special feed name"));
         d->starredItems = new StarredItemsFeed(d->context, tr("Starred Items", "special feed name"), this);
+        d->highlightsFeed = new HighlightsFeed(d->context, tr("Highlights", "special feed name"), this);
     }
     emit contextChanged();
 }
@@ -187,6 +190,9 @@ QVariant FeedListModel::data(const QModelIndex &index, int role) const
         break;
     case STARRED_ITEMS_IDX:
         entry = d->starredItems;
+        break;
+    case HIGHLIGHTS_IDX:
+        entry = d->highlightsFeed;
         break;
     default:
         entry = d->feeds[indexRow - SPECIAL_FEED_COUNT];
@@ -261,7 +267,21 @@ QString FeedListModel::pageUrlFor(FeedCore::Feed *feed)
     if (feed == d->starredItems) {
         return QStringLiteral("qrc:/qml/ArticleList/StarredItemsPage.qml");
     }
+    if (feed == d->highlightsFeed) {
+        return QStringLiteral("qrc:/qml/ArticleList/OverviewPage.qml");
+    }
     return QStringLiteral("qrc:/qml/ArticleList/FeedPage.qml");
+}
+
+QString FeedListModel::themeIconFor(FeedCore::Feed *feed)
+{
+    if (feed == d->starredItems) {
+        return QStringLiteral("starred-symbolic");
+    }
+    if (feed == d->highlightsFeed) {
+        return QStringLiteral("go-home-symbolic");
+    }
+    return QStringLiteral("feed-subscribe");
 }
 
 void FeedListModel::loadFeeds()

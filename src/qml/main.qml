@@ -108,14 +108,6 @@ Kirigami.ApplicationWindow {
         }
 
         actions: [
-            Kirigami.Action {
-                id: highlightsAction
-                text: qsTr("Highlights")
-                icon.name: "go-home-symbolic"
-                onTriggered: {
-                    priv.pushUtilityPage("qrc:/qml/ArticleList/OverviewPage.qml", {pageRow: pageStack})
-                }
-            },
 
             Kirigami.Action {
                 text: qsTr("Add Content")
@@ -249,7 +241,7 @@ Kirigami.ApplicationWindow {
         switch (globalSettings.startPage) {
         default:
         case 0:
-            highlightsAction.trigger();
+            feedList.currentIndex = 1; // Highlights feed
             break;
 
         case 1:

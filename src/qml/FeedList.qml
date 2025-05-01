@@ -45,6 +45,7 @@ ListView {
 
             FeedIcon {
                 feed: listItem.feed
+                themeIcon: feedListModel.themeIconFor(feed)
             }
 
             Delegates.TitleSubtitle {

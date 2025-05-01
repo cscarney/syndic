@@ -7,7 +7,8 @@ Kirigami.Icon {
     required property Feed feed
     property alias size: root.implicitWidth
     property string iconName: feed.icon.toString()
-    source: iconName.length ? "image://feedicons/"+iconName : "feed-subscribe"
+    property string themeIcon: "feed-subscribe"
+    source: iconName.length ? "image://feedicons/"+iconName : themeIcon
     placeholder: "feed-subscribe"
     fallback: "feed-subscribe"
     implicitWidth: Kirigami.Units.iconSizes.smallMedium
