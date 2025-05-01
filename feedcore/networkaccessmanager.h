@@ -27,6 +27,7 @@ class NetworkAccessManager : public QNetworkAccessManager
 {
 public:
     static NetworkAccessManager *instance();
+    static void setInstance(NetworkAccessManager *instance);
 
     explicit NetworkAccessManager(QObject *parent = nullptr);
     explicit NetworkAccessManager(QAbstractNetworkCache *cache, QObject *parent = nullptr);

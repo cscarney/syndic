@@ -124,7 +124,8 @@ public:
     Q_ENUM(UpdateMode)
 
     enum FeedFlags {
-        UseReadableContentFlag = 1 /** < always use web content from readability */
+        UseReadableContentFlag = 1, /** < always use web content from readability */
+        IsWebPageFlag = 1U << 1U /** < this feed is a web page, not an RSS/Atom feed */
     };
     Q_FLAGS(FeedFlags)
 
@@ -298,6 +299,13 @@ private:
      * Implemented by derived classes to perform the update.
      */
     virtual void run() = 0;
+
+    /**
+     * Implemented by derived classes to clean up after an update.
+     *
+     * This is called at the end of an update whether is succeeded, failed, or was aborted.
+     */
+    virtual void cleanup();
 };
 
 typedef Feed::LoadStatus LoadStatus;

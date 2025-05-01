@@ -22,6 +22,7 @@ set(feedcore_HEADERS
     gumbovisitor.h
     feeddiscovery.h
     searchresultfeed.h
+    articlelinkextractor.h
     automation/automationengine.h
     automation/automationrule.h
     readability/readability.h
@@ -47,6 +48,7 @@ set(feedcore_SRCS
     gumbovisitor.cpp
     feeddiscovery.cpp
     searchresultfeed.cpp
+    articlelinkextractor.cpp
     automation/abstractautomationrule.h
     automation/automationengine.cpp
     automation/automationrule.cpp
@@ -63,13 +65,16 @@ else()
         readability/placeholderreadability.cpp)
 endif()
 
-add_library(feedcore STATIC ${feedcore_SRCS})
+add_library(feedcore STATIC ${feedcore_SRCS}
+    articlelinkextractor.h
+    articlelinkextractor.cpp)
 ecm_create_qm_loader(feedcore feedcore)
 
 target_link_libraries(feedcore
     Qt6::Core
     Qt6::Sql
     Qt6::Network
+    Qt6::Xml
     KF6::Syndication
     htmlparser
 )

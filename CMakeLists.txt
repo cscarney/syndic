@@ -25,7 +25,8 @@ include(ECMPoQmTools)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 
-find_package(Qt6 COMPONENTS Core Qml Network Quick QuickControls2 Sql REQUIRED)
+find_package(Qt6 COMPONENTS Core Qml Network Quick QuickControls2 Sql Xml
+    REQUIRED)
 
 find_package(KF6Syndication REQUIRED)
 find_package(KF6Config REQUIRED)
