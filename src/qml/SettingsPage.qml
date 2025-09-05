@@ -7,6 +7,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs
+import Qt.labs.platform as Platform
 import org.kde.kirigami 2.7 as Kirigami
 import com.rocksandpaper.syndic 1.0
 
@@ -220,16 +221,15 @@ Kirigami.ScrollablePage {
         Component {
             id: fontSelectorDialogComponent
 
-            FontDialog {
+            Platform.FontDialog {
                 id: fontDialog
-                parentWindow: root.Window.window
                 onAccepted: {
-                    if (selectedFont.family === fontMetrics.font.family) {
+                    if (font.family === fontMetrics.font.family) {
                         globalSettings.bodyFont = "";
                     } else {
-                        globalSettings.bodyFont = selectedFont.family;
+                        globalSettings.bodyFont = font.family;
                     }
-                    globalSettings.textAdjust = selectedFont.pointSize - fontMetrics.font.pointSize;
+                    globalSettings.textAdjust = font.pointSize - fontMetrics.font.pointSize;
                 }
             }
         },
