@@ -152,14 +152,19 @@ msgctxt "ErrorPlaceholderPage|"
 msgid "Retry"
 msgstr ""
 
-#: src/feedlistmodel.cpp:161
+#: src/feedlistmodel.cpp:163
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
 msgstr ""
 
-#: src/feedlistmodel.cpp:162
+#: src/feedlistmodel.cpp:164
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
+msgstr ""
+
+#: src/feedlistmodel.cpp:165
+msgctxt "FeedListModel|special feed name"
+msgid "Highlights"
 msgstr ""
 
 #: src/qml/ArticleList/FeedPage.qml:16
@@ -224,17 +229,17 @@ msgctxt "ReadableContentSettingsDialog|"
 msgid "Select feeds to display web content:"
 msgstr ""
 
-#: src/qml/ReadableContentSettingsDialog.qml:57
+#: src/qml/ReadableContentSettingsDialog.qml:59
 msgctxt "ReadableContentSettingsDialog|"
 msgid "Download articles:"
 msgstr ""
 
-#: src/qml/ReadableContentSettingsDialog.qml:64
+#: src/qml/ReadableContentSettingsDialog.qml:66
 msgctxt "ReadableContentSettingsDialog|"
 msgid "When opened"
 msgstr ""
 
-#: src/qml/ReadableContentSettingsDialog.qml:64
+#: src/qml/ReadableContentSettingsDialog.qml:66
 msgctxt "ReadableContentSettingsDialog|"
 msgid "With feed updates"
 msgstr ""
@@ -319,37 +324,37 @@ msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:127
+#: src/qml/SettingsPage.qml:128
 msgctxt "SettingsPage|"
 msgid "Article font:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:129
-msgctxt "SettingsPage|entry in font list"
-msgid "Use system font"
+#: src/qml/SettingsPage.qml:147
+msgctxt "SettingsPage|"
+msgid "Choose Font…"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:147
+#: src/qml/SettingsPage.qml:167
 msgctxt "SettingsPage|"
 msgid "Web content:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:148
+#: src/qml/SettingsPage.qml:168
 msgctxt "SettingsPage|"
 msgid "Configure…"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:157
+#: src/qml/SettingsPage.qml:177
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:159
+#: src/qml/SettingsPage.qml:179
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr ""
 
-#: src/qml/SettingsPage.qml:172
+#: src/qml/SettingsPage.qml:192
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr ""
@@ -366,20 +371,15 @@ msgstr ""
 
 #: src/qml/main.qml:113
 msgctxt "main|"
-msgid "Highlights"
-msgstr ""
-
-#: src/qml/main.qml:121
-msgctxt "main|"
 msgid "Add Content"
 msgstr ""
 
-#: src/qml/main.qml:128
+#: src/qml/main.qml:120
 msgctxt "main|"
 msgid "Settings"
 msgstr ""
 
-#: src/qml/main.qml:135
+#: src/qml/main.qml:127
 #, qt-format
 msgctxt "main|"
 msgid "About %1"
