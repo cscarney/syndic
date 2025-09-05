@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import QtQuick 2.0
-import QtQuick.Controls 2.12
+import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs
 import org.kde.kirigami 2.7 as Kirigami
@@ -122,24 +122,36 @@ Kirigami.ScrollablePage {
             }
         }
 
-        ComboBox {
-            id: articleFont
+            
+        Rectangle {
+            id: fontPreview
             Kirigami.FormData.label: qsTr("Article font:")
-            implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
-            model: [qsTr("Use system font", "entry in font list"), "serif", ...Qt.fontFamilies()]
-            onActivated: {
-                if (currentIndex === 0) {
-                    globalSettings.bodyFont = "";
-                } else {
-                    globalSettings.bodyFont = currentText
-                }
+            Kirigami.Theme.inherit: false
+            Kirigami.Theme.colorSet: Kirigami.Theme.View
+            implicitHeight: sampleText.implicitHeight + Kirigami.Units.largeSpacing
+            implicitWidth: sampleText.implicitWidth + Kirigami.Units.largeSpacing
+            color: Kirigami.Theme.backgroundColor
+            border.color: Kirigami.Theme.textColor
+            border.width: 1
+
+            Label {
+                id: sampleText
+                anchors.centerIn: parent
+                text: font.family + " " + font.pointSize
+                font.family: globalSettings.bodyFont || Kirigami.Theme.defaultFont.family
+                font.pointSize: Math.max(fontMetrics.font.pointSize + globalSettings.textAdjust, 6)
+                color: Kirigami.Theme.textColor
             }
-            Component.onCompleted: {
-                if (!globalSettings.bodyFont) {
-                    currentIndex = 0;
-                } else {
-                    currentIndex = find(globalSettings.bodyFont);
-                }
+        }
+            
+        Button {
+            text: qsTr("Choose Font…")
+            onClicked: {
+                dialogLoader.sourceComponent = fontSelectorDialogComponent;
+                const dialog = dialogLoader.item;
+                dialog.open()
+                dialog.currentFont.family = globalSettings.bodyFont || fontMetrics.font.family;
+                dialog.currentFont.pointSize = Math.max(fontMetrics.font.pointSize + globalSettings.textAdjust, 6);
             }
         }
         
@@ -203,6 +215,27 @@ Kirigami.ScrollablePage {
             ReadableContentSettingsDialog {
                 feedListModel: root.feedListModel
             }
+        },
+
+        Component {
+            id: fontSelectorDialogComponent
+
+            FontDialog {
+                id: fontDialog
+                parentWindow: root.Window.window
+                onAccepted: {
+                    if (selectedFont.family === fontMetrics.font.family) {
+                        globalSettings.bodyFont = "";
+                    } else {
+                        globalSettings.bodyFont = selectedFont.family;
+                    }
+                    globalSettings.textAdjust = selectedFont.pointSize - fontMetrics.font.pointSize;
+                }
+            }
+        },
+
+        FontMetrics {
+            id: fontMetrics
         }
     ]
 }
