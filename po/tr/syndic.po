@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2024-06-27 09:09+0000\n"
-"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
+"PO-Revision-Date: 2025-10-11 17:07+0000\n"
+"Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/syndic/app/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
@@ -161,15 +161,20 @@ msgctxt "ErrorPlaceholderPage|"
 msgid "Retry"
 msgstr "Yeniden Dene"
 
-#: src/feedlistmodel.cpp:161
+#: src/feedlistmodel.cpp:163
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
 msgstr "Tüm Ögeler"
 
-#: src/feedlistmodel.cpp:162
+#: src/feedlistmodel.cpp:164
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
 msgstr "Yıldızlı Ögeler"
+
+#: src/feedlistmodel.cpp:165
+msgctxt "FeedListModel|special feed name"
+msgid "Highlights"
+msgstr "Vurgular"
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
@@ -232,22 +237,22 @@ msgstr "Yenile"
 #: src/qml/ReadableContentSettingsDialog.qml:15
 msgctxt "ReadableContentSettingsDialog|"
 msgid "Select feeds to display web content:"
-msgstr ""
+msgstr "Web içeriğini görüntülemek için beslemeleri seçin:"
 
-#: src/qml/ReadableContentSettingsDialog.qml:57
+#: src/qml/ReadableContentSettingsDialog.qml:59
 msgctxt "ReadableContentSettingsDialog|"
 msgid "Download articles:"
-msgstr ""
+msgstr "Makaleleri indir:"
 
-#: src/qml/ReadableContentSettingsDialog.qml:64
+#: src/qml/ReadableContentSettingsDialog.qml:66
 msgctxt "ReadableContentSettingsDialog|"
 msgid "When opened"
-msgstr ""
+msgstr "Açıldığında"
 
-#: src/qml/ReadableContentSettingsDialog.qml:64
+#: src/qml/ReadableContentSettingsDialog.qml:66
 msgctxt "ReadableContentSettingsDialog|"
 msgid "With feed updates"
-msgstr ""
+msgstr "Besleme güncellemeleriyle"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
@@ -331,37 +336,37 @@ msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr "Önce Okunmamışlar"
 
-#: src/qml/SettingsPage.qml:127
+#: src/qml/SettingsPage.qml:128
 msgctxt "SettingsPage|"
 msgid "Article font:"
 msgstr "Makale yazı tipi:"
 
-#: src/qml/SettingsPage.qml:129
-msgctxt "SettingsPage|entry in font list"
-msgid "Use system font"
-msgstr "Sistem yazı tipini kullan"
-
 #: src/qml/SettingsPage.qml:147
 msgctxt "SettingsPage|"
-msgid "Web content:"
-msgstr ""
+msgid "Choose Font…"
+msgstr "Yazı Tipi Seç…"
 
-#: src/qml/SettingsPage.qml:148
+#: src/qml/SettingsPage.qml:167
+msgctxt "SettingsPage|"
+msgid "Web content:"
+msgstr "Web içeriği:"
+
+#: src/qml/SettingsPage.qml:168
 msgctxt "SettingsPage|"
 msgid "Configure…"
-msgstr ""
+msgstr "Yapılandır…"
 
-#: src/qml/SettingsPage.qml:157
+#: src/qml/SettingsPage.qml:177
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr "OPML Verisi:"
 
-#: src/qml/SettingsPage.qml:159
+#: src/qml/SettingsPage.qml:179
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr "İçe Aktar…"
 
-#: src/qml/SettingsPage.qml:172
+#: src/qml/SettingsPage.qml:192
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "Dışa Aktar…"
@@ -378,24 +383,27 @@ msgstr "Güncelleniyor"
 
 #: src/qml/main.qml:113
 msgctxt "main|"
-msgid "Highlights"
-msgstr "Vurgular"
-
-#: src/qml/main.qml:121
-msgctxt "main|"
 msgid "Add Content"
 msgstr "İçerik Ekle"
 
-#: src/qml/main.qml:128
+#: src/qml/main.qml:120
 msgctxt "main|"
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: src/qml/main.qml:135
+#: src/qml/main.qml:127
 #, qt-format
 msgctxt "main|"
 msgid "About %1"
 msgstr "%1 Hakkında"
+
+#~ msgctxt "SettingsPage|entry in font list"
+#~ msgid "Use system font"
+#~ msgstr "Sistem yazı tipini kullan"
+
+#~ msgctxt "main|"
+#~ msgid "Highlights"
+#~ msgstr "Vurgular"
 
 #~ msgctxt "SettingsPage|"
 #~ msgid "Download web content for offline viewing"
