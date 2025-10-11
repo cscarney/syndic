@@ -1,17 +1,17 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2024-03-18 22:37+0000\n"
+"PO-Revision-Date: 2025-10-02 09:02+0000\n"
 "Last-Translator: Milo Ivir <mail@milotype.de>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/syndic/app/hr/"
-">\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/syndic/app/hr/>"
+"\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.5-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
@@ -165,15 +165,20 @@ msgctxt "ErrorPlaceholderPage|"
 msgid "Retry"
 msgstr "Pokušaj ponovo"
 
-#: src/feedlistmodel.cpp:161
+#: src/feedlistmodel.cpp:163
 msgctxt "FeedListModel|special feed name"
 msgid "All Items"
 msgstr "Svi članci"
 
-#: src/feedlistmodel.cpp:162
+#: src/feedlistmodel.cpp:164
 msgctxt "FeedListModel|special feed name"
 msgid "Starred Items"
 msgstr "Označeni"
+
+#: src/feedlistmodel.cpp:165
+msgctxt "FeedListModel|special feed name"
+msgid "Highlights"
+msgstr ""
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
@@ -239,20 +244,20 @@ msgctxt "ReadableContentSettingsDialog|"
 msgid "Select feeds to display web content:"
 msgstr ""
 
-#: src/qml/ReadableContentSettingsDialog.qml:57
+#: src/qml/ReadableContentSettingsDialog.qml:59
 msgctxt "ReadableContentSettingsDialog|"
 msgid "Download articles:"
-msgstr ""
+msgstr "Preuzmi članke:"
 
-#: src/qml/ReadableContentSettingsDialog.qml:64
+#: src/qml/ReadableContentSettingsDialog.qml:66
 msgctxt "ReadableContentSettingsDialog|"
 msgid "When opened"
-msgstr ""
+msgstr "Kada se otvore"
 
-#: src/qml/ReadableContentSettingsDialog.qml:64
+#: src/qml/ReadableContentSettingsDialog.qml:66
 msgctxt "ReadableContentSettingsDialog|"
 msgid "With feed updates"
-msgstr ""
+msgstr "S aktualiziranjima feeda"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
@@ -338,37 +343,37 @@ msgctxt "SettingsPage|"
 msgid "Unread First"
 msgstr "Najprije nepročitane"
 
-#: src/qml/SettingsPage.qml:127
+#: src/qml/SettingsPage.qml:128
 msgctxt "SettingsPage|"
 msgid "Article font:"
 msgstr "Font članka:"
 
-#: src/qml/SettingsPage.qml:129
-msgctxt "SettingsPage|entry in font list"
-msgid "Use system font"
-msgstr "Koristi font sustava"
-
 #: src/qml/SettingsPage.qml:147
 msgctxt "SettingsPage|"
-msgid "Web content:"
-msgstr ""
+msgid "Choose Font…"
+msgstr "Odaberi font …"
 
-#: src/qml/SettingsPage.qml:148
+#: src/qml/SettingsPage.qml:167
+msgctxt "SettingsPage|"
+msgid "Web content:"
+msgstr "Web sadržaj:"
+
+#: src/qml/SettingsPage.qml:168
 msgctxt "SettingsPage|"
 msgid "Configure…"
-msgstr ""
+msgstr "Konfiguriraj …"
 
-#: src/qml/SettingsPage.qml:157
+#: src/qml/SettingsPage.qml:177
 msgctxt "SettingsPage|"
 msgid "OPML Data:"
 msgstr "OPML podaci:"
 
-#: src/qml/SettingsPage.qml:159
+#: src/qml/SettingsPage.qml:179
 msgctxt "SettingsPage|"
 msgid "Import…"
 msgstr "Uvezi …"
 
-#: src/qml/SettingsPage.qml:172
+#: src/qml/SettingsPage.qml:192
 msgctxt "SettingsPage|"
 msgid "Export…"
 msgstr "Izvezi …"
@@ -385,24 +390,27 @@ msgstr "Aktualiziranje u tijeku"
 
 #: src/qml/main.qml:113
 msgctxt "main|"
-msgid "Highlights"
-msgstr "Istaknuti članci"
-
-#: src/qml/main.qml:121
-msgctxt "main|"
 msgid "Add Content"
 msgstr "Dodaj sadržaj"
 
-#: src/qml/main.qml:128
+#: src/qml/main.qml:120
 msgctxt "main|"
 msgid "Settings"
 msgstr "Postavke"
 
-#: src/qml/main.qml:135
+#: src/qml/main.qml:127
 #, qt-format
 msgctxt "main|"
 msgid "About %1"
 msgstr "%1 informacije"
+
+#~ msgctxt "SettingsPage|entry in font list"
+#~ msgid "Use system font"
+#~ msgstr "Koristi font sustava"
+
+#~ msgctxt "main|"
+#~ msgid "Highlights"
+#~ msgstr "Istaknuti članci"
 
 #~ msgctxt "SettingsPage|"
 #~ msgid "Download web content for offline viewing"
