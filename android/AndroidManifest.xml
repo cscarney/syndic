@@ -2,7 +2,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.rocksandpaper.syndic"
-          android:versionName="2.1"
+          android:versionName="2.2"
           android:versionCode="1653427690"
           android:installLocation="auto">
 
