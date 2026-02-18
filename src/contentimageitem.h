@@ -48,14 +48,22 @@ protected:
     void updatePolish() override;
 
 private:
+    static QSet<ContentImageItem *> s_loadedItems;
+    static qint64 s_totalBytes;
+    static constexpr qint64 kMaxTotalBytes = 1ULL << 30U; // 1 GB
+
     QUrl m_src;
     QImage m_image;
     bool m_needsUpdate{false};
     QNetworkReply *m_reply{nullptr};
     LoadStatus m_loadStatus{Loading};
+    qint64 m_imageBytes{0};
 
     void beginImageLoad();
     void cancelImageLoad();
     void onImageLoadFinished();
     void setLoadStatus(LoadStatus v);
+    void clearImage();
+    void decrementMemoryTotals();
+    bool incrementMemoryTotals(QImage &image);
 };
