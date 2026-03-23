@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2023-03-19 22:40+0000\n"
+"PO-Revision-Date: 2026-03-23 22:12+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/syndic/app/nl/>\n"
 "Language: nl\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.2-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
@@ -174,7 +174,7 @@ msgstr "Favorieten"
 #: src/feedlistmodel.cpp:165
 msgctxt "FeedListModel|special feed name"
 msgid "Highlights"
-msgstr ""
+msgstr "Uitgelicht"
 
 #: src/qml/ArticleList/FeedPage.qml:16
 msgctxt "FeedPage|"
@@ -222,12 +222,12 @@ msgstr[1] "%1 nieuwe items"
 #: src/qml/ArticleList/OverviewPage.qml:10
 msgctxt "OverviewPage|"
 msgid "Highlights"
-msgstr ""
+msgstr "Uitgelicht"
 
 #: src/qml/ArticleList/OverviewPage.qml:71
 msgctxt "OverviewPage|"
 msgid "Gathering highlights..."
-msgstr ""
+msgstr "Bezig met ophalen van uitgelichte artikelen…"
 
 #: src/qml/ArticleList/OverviewPage.qml:77
 msgctxt "OverviewPage|"
@@ -237,28 +237,28 @@ msgstr "Bijwerken"
 #: src/qml/ReadableContentSettingsDialog.qml:15
 msgctxt "ReadableContentSettingsDialog|"
 msgid "Select feeds to display web content:"
-msgstr ""
+msgstr "Kies feeds die webinhoud mogen tonen:"
 
 #: src/qml/ReadableContentSettingsDialog.qml:59
 msgctxt "ReadableContentSettingsDialog|"
 msgid "Download articles:"
-msgstr ""
+msgstr "Artikelen downloaden:"
 
 #: src/qml/ReadableContentSettingsDialog.qml:66
 msgctxt "ReadableContentSettingsDialog|"
 msgid "When opened"
-msgstr ""
+msgstr "Na openen"
 
 #: src/qml/ReadableContentSettingsDialog.qml:66
 msgctxt "ReadableContentSettingsDialog|"
 msgid "With feed updates"
-msgstr ""
+msgstr "Als er updates zijn"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
-msgstr ""
+msgstr "Zoekresultaten voor “%1”"
 
 #: src/qml/SettingsPage.qml:18
 msgctxt "SettingsPage|"
@@ -309,12 +309,12 @@ msgstr[1] "%n dagen"
 #: src/qml/SettingsPage.qml:101
 msgctxt "SettingsPage|"
 msgid "Start page:"
-msgstr ""
+msgstr "Startpagina:"
 
 #: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
 msgid "Highlights"
-msgstr ""
+msgstr "Uitgelicht"
 
 #: src/qml/SettingsPage.qml:103
 msgctxt "SettingsPage|"
@@ -344,17 +344,17 @@ msgstr "Artikellettertype:"
 #: src/qml/SettingsPage.qml:147
 msgctxt "SettingsPage|"
 msgid "Choose Font…"
-msgstr ""
+msgstr "Kies een lettertype…"
 
 #: src/qml/SettingsPage.qml:167
 msgctxt "SettingsPage|"
 msgid "Web content:"
-msgstr ""
+msgstr "Webinhoud:"
 
 #: src/qml/SettingsPage.qml:168
 msgctxt "SettingsPage|"
 msgid "Configure…"
-msgstr ""
+msgstr "Instellen…"
 
 #: src/qml/SettingsPage.qml:177
 msgctxt "SettingsPage|"
