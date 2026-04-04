@@ -87,11 +87,13 @@ public:
 
 class IconProvider::IconImageEntry : public QObject
 {
+    static constexpr const int kMaxRedirectDepth = 5;
+
     class IImpl
     {
     public:
         virtual ~IImpl() = default;
-        virtual void respond(IconImageResponse *response) = 0;
+        virtual void respond(IconImageResponse *response, int redirectDepth) = 0;
         virtual void finish(IImpl * /* replacement */)
         {
         }
@@ -99,16 +101,21 @@ class IconProvider::IconImageEntry : public QObject
 
     class PendingImpl : public IImpl
     {
-        QList<IconImageResponse *> m_waitingResponses;
-        void respond(IconImageResponse *response) override
+        struct PendingResponse {
+            IconImageResponse *response;
+            int redirectDepth;
+        };
+
+        QList<PendingResponse> m_waitingResponses;
+        void respond(IconImageResponse *response, int redirectDepth) override
         {
-            m_waitingResponses << response;
+            m_waitingResponses << (PendingResponse){response, redirectDepth};
         }
 
         void finish(IImpl *replacement) override
         {
-            for (IconImageResponse *r : std::as_const(m_waitingResponses)) {
-                replacement->respond(r);
+            for (const PendingResponse &r : std::as_const(m_waitingResponses)) {
+                replacement->respond(r.response, r.redirectDepth);
             }
         }
     };
@@ -117,7 +124,7 @@ class IconProvider::IconImageEntry : public QObject
     {
         QImage m_image;
 
-        void respond(IconImageResponse *response) override
+        void respond(IconImageResponse *response, int /* redirectDepth */) override
         {
             response->succeed(m_image);
         }
@@ -134,13 +141,18 @@ class IconProvider::IconImageEntry : public QObject
     class RedirectImpl : public IImpl
     {
         QPointer<IconImageEntry> m_redirectTarget;
-        void respond(IconImageResponse *response) override
+        void respond(IconImageResponse *response, int redirectDepth) override
         {
             if (m_redirectTarget.isNull()) {
                 qWarning() << "Redirect target entry was destroyed.  This should never happen.";
                 response->fail();
             }
-            m_redirectTarget->respond(response);
+            if (redirectDepth > kMaxRedirectDepth) {
+                qDebug() << "Too many redirects while loading icon; aborting.";
+                response->fail();
+                return;
+            }
+            m_redirectTarget->respond(response, redirectDepth + 1);
         }
 
     public:
@@ -152,7 +164,7 @@ class IconProvider::IconImageEntry : public QObject
 
     class FailImpl : public IImpl
     {
-        void respond(IconImageResponse *response) override
+        void respond(IconImageResponse *response, int /* redirectDepth */) override
         {
             response->fail();
         }
@@ -186,9 +198,9 @@ public:
         });
     }
 
-    void respond(IconImageResponse *response)
+    void respond(IconImageResponse *response, int redirectDepth = 0)
     {
-        d->respond(response);
+        d->respond(response, redirectDepth);
     }
 };
 
