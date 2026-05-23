@@ -231,7 +231,9 @@ void Application::onLastWindowClosed()
         return;
     }
     startBackgroundNotifier();
-    unloadEngine();
+
+    // unload the engine after any in-flight events have fininshed
+    QMetaObject::invokeMethod(this, &Application::unloadEngine, Qt::QueuedConnection);
 #endif
 }
 
