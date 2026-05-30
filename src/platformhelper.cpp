@@ -7,7 +7,7 @@
 #include "cmake-config.h"
 #ifdef ANDROID
 
-#include <QAndroidJniObject>
+#include <QJniObject>
 
 PlatformHelper::PlatformHelper(QObject *parent)
     : QObject(parent)
@@ -16,8 +16,8 @@ PlatformHelper::PlatformHelper(QObject *parent)
 
 void PlatformHelper::share(const QUrl &url)
 {
-    QAndroidJniObject javaUrlString = QAndroidJniObject::fromString(url.toString());
-    QAndroidJniObject::callStaticMethod<void>("com/rocksandpaper/syndic/NativeHelper", "sendUrl", "(Ljava/lang/String;)V", javaUrlString.object<jstring>());
+    QJniObject javaUrlString = QJniObject::fromString(url.toString());
+    QJniObject::callStaticMethod<void>("com/rocksandpaper/syndic/NativeHelper", "sendUrl", "(Ljava/lang/String;)V", javaUrlString.object<jstring>());
 }
 
 void PlatformHelper::configureBackgroundService(bool)
