@@ -1,0 +1,76 @@
+name: Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master" ]
+    tags: [ "v*.*" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/cscarney/syndic-builder-android
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    # craftenv.sh requires bash
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # Signing is skipped when the keystore secret is unavailable (e.g. pull
+    # requests from forks); those builds produce an unsigned release APK.
+    - name: Import signing keystore
+      env:
+        KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE }}
+      run: |
+        if [ -n "$KEYSTORE_B64" ]; then
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/keystore.jks"
+          echo "SIGN_APK=ON" >> "$GITHUB_ENV"
+        else
+          echo "No signing keystore available; building unsigned APK"
+          echo "SIGN_APK=OFF" >> "$GITHUB_ENV"
+        fi
+
+    # craftenv.sh changes the working directory to the craft root, so cd back
+    # to the workspace before running cmake.
+    - name: Configure
+      run: |
+        source $ANDROID_CRAFT_ROOT/craft/craftenv.sh
+        cd "$GITHUB_WORKSPACE"
+        export CC=gcc CXX=g++
+        cmake -S . -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+          -DCMAKE_TOOLCHAIN_FILE=$ANDROID_QT_TOOLCHAIN \
+          -DCMAKE_PREFIX_PATH=$ANDROID_CRAFT_ROOT \
+          -DWITHOUT_QREADABLE=1 \
+          -DANDROID_VERSION_CODE=${{ github.run_number }} \
+          -DQT_ANDROID_SIGN_APK=$SIGN_APK
+
+    - name: Build APK
+      env:
+        QT_ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/keystore.jks
+        QT_ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
+        QT_ANDROID_KEYSTORE_STORE_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        QT_ANDROID_KEYSTORE_KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      run: |
+        source $ANDROID_CRAFT_ROOT/craft/craftenv.sh
+        cd "$GITHUB_WORKSPACE"
+        export CC=gcc CXX=g++
+        cmake --build build --target apk
+
+    - name: Export artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: syndic-android-arm64
+        path: build/src/android-build/syndic.apk

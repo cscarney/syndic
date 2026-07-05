@@ -1,0 +1,36 @@
+name: Android Builder Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master" ]
+    paths: [ ".github/android-builder/**" ]
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/syndic-builder-android
+
+jobs:
+  build-image:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # The builder image is large (~14GB unpacked); clear out preinstalled
+    # toolchains we don't need to make room for it.
+    - name: Free up runner disk space
+      run: |
+        sudo rm -rf /usr/local/lib/android /opt/hostedtoolcache /usr/share/dotnet /opt/ghc
+        df -h /
+
+    - name: Log in to GHCR
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Build image
+      run: docker build -t $IMAGE:latest .github/android-builder
+
+    - name: Push image
+      run: docker push $IMAGE:latest

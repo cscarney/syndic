@@ -38,12 +38,12 @@ set(syndic_SRCS
     resources.qrc
     )
     
-add_executable(syndic ${syndic_SRCS})
+qt_add_executable(syndic ${syndic_SRCS})
 
 kconfig_add_kcfg_files(syndic settings.kcfgc GENERATE_MOC)
 ecm_create_qm_loader(syndic syndic)
 
-target_link_libraries(syndic
+target_link_libraries(syndic PRIVATE
     Qt6::Core
     Qt6::Qml
     Qt6::Quick
@@ -56,13 +56,13 @@ target_link_libraries(syndic
     )
 
 if (Qt6Widgets_FOUND)
-    target_link_libraries(syndic
+    target_link_libraries(syndic PRIVATE
         Qt6::Widgets
         )
 endif()
 
 if(KF6DBusAddons_FOUND)
-    target_link_libraries(syndic
+    target_link_libraries(syndic PRIVATE
         KF6::DBusAddons
         )
 endif()
@@ -98,11 +98,42 @@ if (APPLE)
 endif()
 
 if (ANDROID)
-    target_link_libraries(syndic
-        KF6::Kirigami2
+    # On Android the app is built as a MODULE library that androiddeployqt
+    # expects to be named lib<target>_<abi>.so, but KDECMakeSettings clears
+    # CMAKE_SHARED_MODULE_PREFIX; restore the prefix or the APK step can't
+    # find the binary.
+    if (NOT ANDROID_VERSION_CODE)
+        set(ANDROID_VERSION_CODE 1)
+    endif()
+
+    # The package source dir is assembled in the build tree (see the
+    # android-package-source target in the top-level CMakeLists) so that
+    # generated files like the translation catalogs can be added to the
+    # package alongside the static files from android/. Prime it at configure
+    # time; the target refreshes it on every build.
+    file(GLOB android_package_files ${CMAKE_SOURCE_DIR}/android/*)
+    file(COPY ${android_package_files} DESTINATION ${CMAKE_BINARY_DIR}/android-package)
+
+    set_target_properties(syndic PROPERTIES
+        PREFIX "lib"
+        QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_BINARY_DIR}/android-package
+        QT_ANDROID_VERSION_NAME ${PROJECT_VERSION}
+        QT_ANDROID_VERSION_CODE ${ANDROID_VERSION_CODE}
+        )
+
+    # androiddeployqt only scans Qt's own qml dir for modules; KDE frameworks
+    # install theirs under lib/qml, so the Kirigami QML module won't be
+    # bundled without this.
+    foreach(prefix ${CMAKE_PREFIX_PATH})
+        if (EXISTS ${prefix}/lib/qml)
+            set_property(TARGET syndic APPEND PROPERTY QT_QML_IMPORT_PATH ${prefix}/lib/qml)
+        endif()
+    endforeach()
+
+    target_link_libraries(syndic PRIVATE
+        KF6::Kirigami
         OpenSSL::SSL
         Qt6::Svg
-        Qt6::AndroidExtras
         )
 
     kirigami_package_breeze_icons(
