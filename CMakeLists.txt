@@ -30,6 +30,7 @@ find_package(Qt6 COMPONENTS Core Qml Network Quick QuickControls2 Sql Xml
 
 find_package(KF6Syndication REQUIRED)
 find_package(KF6Config REQUIRED)
+find_package(KF6BreezeIcons CONFIG QUIET)
 find_package(KF6DBusAddons CONFIG QUIET)
 
 if (NOT WITHOUT_QREADABLE)

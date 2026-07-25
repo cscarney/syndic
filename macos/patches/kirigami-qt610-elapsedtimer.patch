@@ -1,0 +1,12 @@
+diff --git a/src/layouts/toolbarlayout.cpp b/src/layouts/toolbarlayout.cpp
+index b00f5ab..a4ef082 100644
+--- a/src/layouts/toolbarlayout.cpp
++++ b/src/layouts/toolbarlayout.cpp
+@@ -10,6 +10,7 @@
+ #include <unordered_map>
+ 
+ #include <QDeadlineTimer>
++#include <QElapsedTimer>
+ #include <QQmlComponent>
+ #include <QTimer>
+ 

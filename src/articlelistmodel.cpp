@@ -273,7 +273,7 @@ void ArticleListModel::getItems(Callback cb)
             removeReadArticles(result);
         }
         if (auto cmp = getArticleComparator()) {
-            std::sort(result.begin(), result.end(), getArticleComparator());
+            std::sort(result.begin(), result.end(), cmp);
         }
         cb(result);
     });

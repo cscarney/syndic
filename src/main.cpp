@@ -8,6 +8,11 @@
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 #include <QQuickStyle>
+
+#ifdef KF6BreezeIcons_FOUND
+#include <BreezeIcons>
+#endif
+
 using namespace FeedCore;
 
 int main(int argc, char *argv[])
@@ -24,9 +29,15 @@ int main(int argc, char *argv[])
     QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);
     Application app(argc, argv);
 
+#ifdef KF6BreezeIcons_FOUND
+    BreezeIcons::initIcons();
+#endif
+
     if (!qEnvironmentVariableIsSet("QT_QUICK_CONTROLS_STYLE")) {
-#ifdef ANDROID
+#if defined(Q_OS_ANDROID)
         QQuickStyle::setStyle("Material");
+#elif defined(Q_OS_MACOS)
+        QQuickStyle::setStyle("macOS");
 #else
         QQuickStyle::setStyle("org.kde.desktop");
 #endif
