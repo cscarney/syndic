@@ -67,6 +67,36 @@ if(KF6DBusAddons_FOUND)
         )
 endif()
 
+if(KF6BreezeIcons_FOUND)
+    target_link_libraries(syndic
+        KF6::BreezeIcons
+        )
+endif()
+
+if (APPLE)
+    set(SYNDIC_MACOS_MIN_VERSION "${CMAKE_OSX_DEPLOYMENT_TARGET}")
+    if (NOT SYNDIC_MACOS_MIN_VERSION)
+        # Qt 6.10 from Homebrew requires macOS 12 or newer.
+        set(SYNDIC_MACOS_MIN_VERSION "12.0")
+    endif()
+
+    set(SYNDIC_ICNS "${CMAKE_SOURCE_DIR}/macos/syndic.icns")
+    target_sources(syndic PRIVATE ${SYNDIC_ICNS})
+    set_source_files_properties(${SYNDIC_ICNS}
+        PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+
+    set_target_properties(syndic PROPERTIES
+        MACOSX_BUNDLE TRUE
+        MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/macos/Info.plist.in"
+        MACOSX_BUNDLE_BUNDLE_NAME "Syndic"
+        MACOSX_BUNDLE_GUI_IDENTIFIER "com.rocksandpaper.syndic"
+        MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
+        MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
+        MACOSX_BUNDLE_ICON_FILE "syndic.icns"
+        MACOSX_BUNDLE_COPYRIGHT "Copyright © Connor Carney. GPL-3.0-or-later."
+        )
+endif()
+
 if (ANDROID)
     target_link_libraries(syndic
         KF6::Kirigami2

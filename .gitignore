@@ -86,3 +86,8 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+
+# macOS build (see macos/build.sh)
+/build/
+/dist/
+/deps/
