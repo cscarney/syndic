@@ -26,8 +26,9 @@ AbstractFeedEditorPage {
     }
 
     actions: [
-        Kirigami.Action {
+        PageAction {
             id: previewAction
+            actionId: "editor.preview"
             text: qsTr("Preview…")
             icon.name: "document-preview"
             checkable: true

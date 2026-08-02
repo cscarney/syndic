@@ -6,13 +6,15 @@
 import QtQml 2.15
 import com.rocksandpaper.syndic 1.0
 import org.kde.kirigami 2.14 as Kirigami
+import ".."
 
 AbstractFeedPage {
     id: root
     unreadFilter: globalSettings.unreadFilter
 
     actions: [
-        Kirigami.Action {
+        PageAction {
+            actionId: "feed.markAllRead"
             text: qsTr("Mark All Read")
             icon.name: "checkmark"
             enabled: root.feed && root.feed.unreadCount > 0
@@ -22,7 +24,8 @@ AbstractFeedPage {
             displayHint: Kirigami.DisplayHint.KeepVisible
         },
 
-        Kirigami.Action {
+        PageAction {
+             actionId: "feed.hideRead"
              text: qsTr("Hide Read")
              icon.name: "view-filter"
              checkable: true
@@ -31,7 +34,8 @@ AbstractFeedPage {
              onCheckedChanged: (checked)=>{globalSettings.unreadFilter = checked}
          },
 
-        Kirigami.Action {
+        PageAction {
+            actionId: "feed.edit"
             text: qsTr("Edit…")
             icon.name: "document-edit"
             displayHint: Kirigami.DisplayHint.AlwaysHide
@@ -42,7 +46,8 @@ AbstractFeedPage {
             }
         },
 
-        Kirigami.Action {
+        PageAction {
+            actionId: "feed.refresh"
             text: qsTr("Refresh")
             icon.name: "view-refresh"
             displayHint: Kirigami.DisplayHint.AlwaysHide
@@ -53,12 +58,14 @@ AbstractFeedPage {
             }
         },
 
-        Kirigami.Action {
+        PageAction {
             id: cancelAction
+            actionId: "feed.cancel"
             text: qsTr("Cancel")
             icon.name: "dialog-cancel"
             displayHint: Kirigami.DisplayHint.AlwaysHide
-            visible: feed && feed.status===Feed.Updating
+            enabled: feed && feed.status===Feed.Updating
+            visible: enabled
             onTriggered: {
                 feed.updater.abort()
             }

@@ -28,14 +28,17 @@ Kirigami.Page {
     titleDelegate: Item { }
 
     actions: [
-        Kirigami.Action {
+        PageAction {
+            actionId: "article.openInBrowser"
             text: qsTr("Open")
             icon.name: "globe"
+            enabled: !!currentArticle
             onTriggered: Qt.openUrlExternally(currentArticle.url);
             displayHint: Kirigami.Settings.isMobile ? Kirigami.DisplayHint.IconOnly : Kirigami.DisplayHint.NoPreference
         },
 
-        Kirigami.Action {
+        PageAction {
+            actionId: "article.share"
             text: qsTr("Share")
             icon.name: "emblem-shared-symbolic-nomask"
             displayHint: Kirigami.DisplayHint.AlwaysHide
@@ -43,7 +46,8 @@ Kirigami.Page {
             onTriggered: platformHelper.share(currentArticle.url);
         },
 
-        Kirigami.Action {
+        PageAction {
+            actionId: "article.star"
             text: qsTr("Starred")
             checkable: true
             checked: !!currentArticle?.isStarred
@@ -53,7 +57,8 @@ Kirigami.Page {
             displayHint: Kirigami.DisplayHint.IconOnly
         },
 
-        Kirigami.Action {
+        PageAction {
+            actionId: "article.keepUnread"
             //: as in, don't mark this article as read
             text: qsTr("Keep Unread")
             icon.name: "mail-mark-unread"
@@ -64,8 +69,9 @@ Kirigami.Page {
             displayHint: Kirigami.DisplayHint.AlwaysHide
         },
 
-        Kirigami.Action {
+        PageAction {
             id: readableAction
+            actionId: "article.toggleWebContent"
             icon.name: "view-readermode"
             text: qsTr("Show Web Content");
             checkable: true
@@ -79,15 +85,44 @@ Kirigami.Page {
             }
         },
 
-        Kirigami.Action {
+        PageAction {
             id: refreshReadableAction
+            actionId: "article.reloadWebContent"
             text: qsTr("Reload Web Content")
             icon.name: "view-refresh"
             visible: swipeView.currentItem && readableAction.checked
             displayHint: Kirigami.DisplayHint.AlwaysHide
             onTriggered: swipeView.currentItem.refreshReadable()
+        },
+
+        // Navigation actions. These are not shown in the page toolbar (the
+        // arrow-key Shortcuts below are the on-screen affordance); they exist
+        // so that anything resolving actions by id -- e.g. a platform menu
+        // bar -- can find them via page.actions.
+        PageAction {
+            actionId: "article.next"
+            text: qsTr("Next Article")
+            visible: false
+            enabled: !!root.currentArticle
+            onTriggered: root.nextArticle()
+        },
+
+        PageAction {
+            actionId: "article.previous"
+            text: qsTr("Previous Article")
+            visible: false
+            enabled: !!root.currentArticle
+            onTriggered: root.previousArticle()
         }
     ]
+
+    function nextArticle() {
+        articleListController.nextItem();
+    }
+
+    function previousArticle() {
+        articleListController.previousItem();
+    }
 
     ListView {
         id: swipeView
@@ -161,7 +196,7 @@ Kirigami.Page {
                 if (!swipeView.currentItem.atYEnd) {
                     swipeView.currentItem.pageUpDown(0.9);
                 } else {
-                    articleListController.nextItem();
+                    root.nextArticle();
                 }
             }
         },
@@ -169,14 +204,14 @@ Kirigami.Page {
         ArticleNavigationShortcut {
             sequences: ["Left"]
             onActivated: {
-                articleListController.previousItem();
+                root.previousArticle();
             }
         },
 
         ArticleNavigationShortcut {
             sequences: ["Right"]
             onActivated: {
-                articleListController.nextItem();
+                root.nextArticle();
             }
         },
 
