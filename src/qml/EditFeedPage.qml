@@ -17,7 +17,8 @@ AbstractFeedEditorPage {
     }
 
     actions: [
-        Kirigami.Action {
+        PageAction {
+            actionId: "editor.save"
             text: qsTr("Save")
             icon.name: "checkmark"
             onTriggered: {
@@ -26,7 +27,8 @@ AbstractFeedEditorPage {
             }
         },
 
-        Kirigami.Action {
+        PageAction {
+            actionId: "editor.delete"
             text: qsTr("Delete")
             icon.name: "delete"
             onTriggered: targetFeed.requestDelete();

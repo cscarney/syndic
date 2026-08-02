@@ -1,11 +1,13 @@
 import QtQuick
 import org.kde.kirigami as Kirigami
+import ".."
 
 AbstractFeedPage {
     id: root
     unreadFilter: globalSettings.filterSpecialFeeds && globalSettings.unreadFilter
 
-    actions: [Kirigami.Action {
+    actions: [PageAction {
+         actionId: "feed.hideRead"
          text: qsTr("Hide Read")
          icon.name: "view-filter"
          checkable: true

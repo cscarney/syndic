@@ -6,6 +6,7 @@
 import com.rocksandpaper.syndic 1.0
 import QtQuick.Window 2.15
 import org.kde.kirigami 2.14 as Kirigami
+import ".."
 
 AbstractFeedPage {
     id: root
@@ -15,8 +16,9 @@ AbstractFeedPage {
     feed: provisionalFeed
 
     actions: [
-        Kirigami.Action {
+        PageAction {
             id: saveAction
+            actionId: "editor.subscribe"
             text: qsTr("Subscribe")
             icon.name: "list-add"
             enabled: model.status == Feed.Idle

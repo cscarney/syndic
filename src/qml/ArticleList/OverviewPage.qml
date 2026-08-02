@@ -73,7 +73,8 @@ AbstractArticleListPage {
     }
 
     actions: [
-        Kirigami.Action {
+        PageAction {
+            actionId: "feed.refresh"
             text: qsTr("Refresh")
             icon.name: "view-refresh"
             onTriggered: {

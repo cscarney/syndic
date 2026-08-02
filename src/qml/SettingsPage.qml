@@ -6,7 +6,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts 1.0
-import QtQuick.Dialogs
 import Qt.labs.platform as Platform
 import org.kde.kirigami 2.7 as Kirigami
 import com.rocksandpaper.syndic 1.0
@@ -15,6 +14,7 @@ Kirigami.ScrollablePage {
     id: root
     property bool keepDrawerOpen: true
     required property FeedListModel feedListModel
+    required property AppActions appActions
 
     title: qsTr("Settings")
 
@@ -170,28 +170,12 @@ Kirigami.ScrollablePage {
             Kirigami.FormData.label: qsTr("OPML Data:")
             Button {
                 text: qsTr("Import…");
-                onClicked: {
-                    dialogLoader.sourceComponent = dialogComponent;
-                    const opmlDialog = dialogLoader.item;
-                    opmlDialog.fileMode = FileDialog.SaveFile;
-                    opmlDialog.acceptedFunc = function() {
-                        feedContext.importOpml(opmlDialog.selectedFile);
-                    }
-                    opmlDialog.open();
-                }
+                onClicked: root.appActions.importOpml.trigger()
             }
 
             Button {
                 text: qsTr("Export…")
-                onClicked: {
-                    dialogLoader.sourceComponent = dialogComponent;
-                    const opmlDialog = dialogLoader.item;
-                    opmlDialog.fileMode = FileDialog.OpenFile;
-                    opmlDialog.acceptedFunc = function() {
-                        feedContext.exportOpml(opmlDialog.selectedFile);
-                    }
-                    opmlDialog.open();
-                }
+                onClicked: root.appActions.exportOpml.trigger()
             }
         }
     }
@@ -201,15 +185,6 @@ Kirigami.ScrollablePage {
             id: dialogLoader
         },
 
-        Component {
-            id: dialogComponent;
-
-            FileDialog {
-                property var acceptedFunc: function(){}
-                onAccepted: acceptedFunc();
-            }
-        },
-        
         Component {
             id: readableContentDialogComponent;
             

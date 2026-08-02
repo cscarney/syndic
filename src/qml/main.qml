@@ -20,6 +20,24 @@ Kirigami.ApplicationWindow {
         pointSize: Kirigami.Theme.defaultFont.pointSize
     }
 
+    // Always-alive, app-level actions shared by the global drawer and the
+    // settings page (and, later, a platform menu bar).
+    readonly property AppActions appActions: AppActions {
+        // NB: deliberately a plain function expression, not an arrow function,
+        // so the engine stores it as the property's value rather than as a
+        // binding.
+        pushUtilityPage: function(pageUrl, pageProps) { priv.pushUtilityPage(pageUrl, pageProps) }
+        pageRow: root.pageStack
+        feedListModel: feedList.model
+    }
+
+    GlobalMenuBar {
+        window: root
+        pageStack: root.pageStack
+        appActions: root.appActions
+        goBack: function() { priv.goBack({}) }
+    }
+
     pageStack {
         globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
         globalToolBar.showNavigationButtons: priv.isFirstPage ? 0 : Kirigami.ApplicationHeaderStyle.ShowBackButton
@@ -108,28 +126,9 @@ Kirigami.ApplicationWindow {
         }
 
         actions: [
-
-            Kirigami.Action {
-                text: qsTr("Add Content")
-                icon.name: "list-add"
-                onTriggered: {
-                    priv.pushUtilityPage("qrc:/qml/AddFeedPage.qml", {pageRow: pageStack})
-                }
-            },
-            Kirigami.Action {
-                text: qsTr("Settings")
-                icon.name: "settings-configure"
-                onTriggered: {
-                    priv.pushUtilityPage("qrc:/qml/SettingsPage.qml", {feedListModel: feedList.model})
-                }
-            },
-            Kirigami.Action {
-                text: qsTr("About %1").arg(Qt.application.displayName)
-                icon.name: "help-about"
-                onTriggered: {
-                    priv.pushUtilityPage("qrc:/qml/AboutPage.qml")
-                }
-            }
+            root.appActions.addContent,
+            root.appActions.settings,
+            root.appActions.about
         ]
     }
 
