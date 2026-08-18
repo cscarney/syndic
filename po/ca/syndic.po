@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: syndic-translate@rocksandpaper.com\n"
-"PO-Revision-Date: 2026-08-01 00:06+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2026-08-07 07:57+0000\n"
+"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/syndic/app/ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.8.dev0\n"
+"X-Generator: Weblate 2026.8.1.dev0\n"
 "X-Qt-Contexts: true\n"
 
 #: src/qml/ArticleList/AbstractArticleListPage.qml:120
@@ -144,7 +144,7 @@ msgstr "Mostra el contingut web"
 #: src/qml/ArticlePage.qml:84
 msgctxt "ArticlePage|"
 msgid "Reload Web Content"
-msgstr ""
+msgstr "Torna a carregar el contingut web"
 
 #: src/qml/EditFeedPage.qml:21
 msgctxt "EditFeedPage|"
@@ -242,23 +242,23 @@ msgstr ""
 #: src/qml/ReadableContentSettingsDialog.qml:59
 msgctxt "ReadableContentSettingsDialog|"
 msgid "Download articles:"
-msgstr ""
+msgstr "Baixa els articles:"
 
 #: src/qml/ReadableContentSettingsDialog.qml:66
 msgctxt "ReadableContentSettingsDialog|"
 msgid "When opened"
-msgstr ""
+msgstr "En obrir-los"
 
 #: src/qml/ReadableContentSettingsDialog.qml:66
 msgctxt "ReadableContentSettingsDialog|"
 msgid "With feed updates"
-msgstr ""
+msgstr "En actualitzar els canals"
 
 #: src/qml/ArticleList/SearchResultPage.qml:8
 #, qt-format
 msgctxt "SearchResultPage|"
 msgid "Search results for \"%1\""
-msgstr ""
+msgstr "Resultats de la cerca «%1»"
 
 #: src/qml/SettingsPage.qml:18
 msgctxt "SettingsPage|"
@@ -339,7 +339,7 @@ msgstr "Primer els elements sense llegir"
 #: src/qml/SettingsPage.qml:128
 msgctxt "SettingsPage|"
 msgid "Article font:"
-msgstr ""
+msgstr "Font de l’article:"
 
 #: src/qml/SettingsPage.qml:147
 msgctxt "SettingsPage|"
@@ -349,12 +349,12 @@ msgstr ""
 #: src/qml/SettingsPage.qml:167
 msgctxt "SettingsPage|"
 msgid "Web content:"
-msgstr ""
+msgstr "Contingut web:"
 
 #: src/qml/SettingsPage.qml:168
 msgctxt "SettingsPage|"
 msgid "Configure…"
-msgstr ""
+msgstr "Configura…"
 
 #: src/qml/SettingsPage.qml:177
 msgctxt "SettingsPage|"
