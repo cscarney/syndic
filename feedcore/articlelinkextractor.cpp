@@ -254,6 +254,8 @@ void ArticleLinkExtractor::visitElementClose(GumboNode *node)
         if (score > m_highestScore) {
             m_highestScore = score;
             m_articleLinks.clear();
+            // the indices index into m_articleLinks, so they have to go with it
+            m_urlIndices.clear();
         }
         if (score == m_highestScore) {
             ArticleLink link;
