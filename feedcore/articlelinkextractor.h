@@ -60,7 +60,7 @@ private:
     QList<ArticleLink> m_articleLinks;
     QHash<QUrl, qsizetype> m_urlIndices;
     QUrl m_baseUrl;
-    int m_highestScore;
+    int m_highestScore{0};
 
     // Regular expression to extract date from URL pattern /YYYY/MM/DD/
     const QRegularExpression m_datePattern;

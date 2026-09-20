@@ -184,7 +184,6 @@ ArticleLinkExtractor::ArticleLinkExtractor(const QString &input, const QUrl &bas
     , m_inAnchor(false)
     , m_inTitle(false)
     , m_baseUrl(baseUrl)
-    , m_highestScore(0)
     , m_datePattern(R"(/(\d{4})/(\d{2})/(\d{2})/)")
 {
 }
