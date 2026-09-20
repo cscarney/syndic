@@ -36,3 +36,7 @@ target_link_libraries(testAutomationEngine PRIVATE Qt6::Test feedcore)
 add_executable(testWebPageFallback tst_webpage_fallback.cpp)
 add_test(NAME testWebPageFallback COMMAND testWebPageFallback)
 target_link_libraries(testWebPageFallback PRIVATE Qt6::Test feedcore)
+
+add_executable(testArticleLinkExtractor tst_articlelinkextractor.cpp)
+add_test(NAME testArticleLinkExtractor COMMAND testArticleLinkExtractor)
+target_link_libraries(testArticleLinkExtractor PRIVATE Qt6::Test feedcore)

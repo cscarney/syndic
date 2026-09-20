@@ -169,6 +169,8 @@ private:
         "</ul>"
         "</body></html>");
 
+private slots:
+
     void initTestCase()
     {
         qRegisterMetaType<FeedCore::Feed::LoadStatus>();
