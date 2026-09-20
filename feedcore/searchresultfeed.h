@@ -28,7 +28,7 @@ signals:
 
 private:
     class Updater;
-    Context *m_context;
+    Context *m_context{nullptr};
     QString m_query;
     Updater *m_updater{nullptr};
 };
