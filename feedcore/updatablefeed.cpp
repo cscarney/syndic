@@ -202,6 +202,7 @@ void LoadOperation::start(const QUrl &url, const QString &failMessage)
     if (m_seenUrls.contains(url) || m_seenUrls.count() > kMaxRedirects) {
         const QString &errorMessage = failMessage.isEmpty() ? "unknown error" : failMessage;
         emit failed(errorMessage);
+        return;
     }
     m_seenUrls << url;
     QNetworkRequest request(url);
@@ -211,7 +212,11 @@ void LoadOperation::start(const QUrl &url, const QString &failMessage)
 
 void LoadOperation::abort()
 {
-    m_reply->abort();
+    // m_reply is a QPointer, so it is null before the first request and again
+    // once the reply has been deleted
+    if (m_reply) {
+        m_reply->abort();
+    }
 }
 
 void LoadOperation::onReplyFinished()
@@ -249,7 +254,9 @@ Update::Update(const UpdatableFeed *feed)
 
 void Update::abort()
 {
-    m_currentOperation->abort();
+    if (m_currentOperation) {
+        m_currentOperation->abort();
+    }
 }
 
 void Update::start()
