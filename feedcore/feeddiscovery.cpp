@@ -96,6 +96,7 @@ void FeedDiscovery::visitElementOpen(GumboNode *node)
 void FeedDiscovery::discovered(int score, const QUrl &url)
 {
     if (score > m_bestScore) {
+        m_bestScore = score;
         m_bestCandidate = url;
     }
 }
