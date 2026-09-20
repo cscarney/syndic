@@ -1,9 +1,10 @@
 #include "feeddiscovery.h"
+#include <QStringList>
 using namespace FeedCore;
 
 namespace
 {
-enum FeedCandidateScores : int { GuessFeedUrlScore = 0, FeedLikeLinkScore, FeedLikeAnchorScore, ExplicitFeedLinkScore };
+enum FeedCandidateScores : int { GuessFeedUrlScore = 0, FeedLikeLinkScore, FeedLikeAnchorScore, GenericXMLLinkScore, ExplicitFeedLinkScore };
 }
 static QUrl slashFeed(const QUrl &url)
 {
@@ -31,6 +32,40 @@ static bool looksLikeFeed(const QString &href)
     return (href.endsWith(".xml") || href.endsWith(".rdf") || href.endsWith(".rss") || href.endsWith("/feed") || href.contains("//feeds."));
 }
 
+/**
+ * rel is a space-separated list of tokens, e.g. rel="alternate home"
+ */
+static bool hasRelToken(const QString &rel, const QString &token)
+{
+    const QStringList tokens = rel.simplified().split(' ', Qt::SkipEmptyParts);
+    for (const QString &candidate : tokens) {
+        if (candidate.compare(token, Qt::CaseInsensitive) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Strip any parameters, e.g. type="application/atom+xml; charset=utf-8"
+ */
+static QString mediaType(const QString &typeAttribute)
+{
+    return typeAttribute.split(';').first().trimmed();
+}
+
+static bool isExplicitFeedType(const QString &type)
+{
+    static const QStringList feedTypes = {"application/rss+xml", "application/atom+xml", "application/rdf+xml"};
+    return feedTypes.contains(type, Qt::CaseInsensitive);
+}
+
+static bool isGenericXmlType(const QString &type)
+{
+    static const QStringList xmlTypes = {"application/xml", "text/xml"};
+    return xmlTypes.contains(type, Qt::CaseInsensitive);
+}
+
 static QString getAttrString(const GumboElement &element, const char *nameString)
 {
     GumboAttribute *attr = gumbo_get_attribute(&element.attributes, nameString);
@@ -43,7 +78,7 @@ static QString getAttrString(const GumboElement &element, const char *nameString
 void FeedDiscovery::visitLinkElement(const GumboElement &element)
 {
     QString rel = getAttrString(element, "rel");
-    if (rel != "alternate") {
+    if (!hasRelToken(rel, "alternate")) {
         return;
     }
 
@@ -52,14 +87,19 @@ void FeedDiscovery::visitLinkElement(const GumboElement &element)
         return;
     }
 
-    QString type = getAttrString(element, "type");
-    if (type == "application/rss+xml") {
+    QString type = mediaType(getAttrString(element, "type"));
+    if (isExplicitFeedType(type)) {
         discovered(ExplicitFeedLinkScore, href);
         return;
     }
 
+    if (isGenericXmlType(type)) {
+        discovered(GenericXMLLinkScore, href);
+        return;
+    }
+
     if (!type.isEmpty()) {
-        // some non-rss type, ignore
+        // some non-feed type; ignore
         return;
     }
 
