@@ -28,7 +28,7 @@
 #include "networkaccessmanagerfactory.h"
 #include "notificationcontroller.h"
 #include "platformhelper.h"
-#include "provisionalfeed.h"
+#include "provisionalsubscription.h"
 #include "qmlarticleref.h"
 #include "searchresultfeed.h"
 #include "settings.h"
@@ -67,15 +67,15 @@ static void registerQmlTypes()
     qmlRegisterType<FeedListModel>("com.rocksandpaper.syndic", 1, 0, "FeedListModel");
     qmlRegisterType<EditableFeedListModel>("com.rocksandpaper.syndic", 1, 0, "EditableFeedListModel");
     qmlRegisterType<FeedModel>("com.rocksandpaper.syndic", 1, 0, "FeedModel");
-    qmlRegisterType<FeedCore::ProvisionalFeed>("com.rocksandpaper.syndic", 1, 0, "ProvisionalFeed");
+    qmlRegisterType<FeedCore::ProvisionalSubscription>("com.rocksandpaper.syndic", 1, 0, "ProvisionalSubscription");
     qmlRegisterType<ContentModel>("com.rocksandpaper.syndic", 1, 0, "ContentModel");
     qmlRegisterType<ContentImageItem>("com.rocksandpaper.syndic", 1, 0, "ContentImage");
     qmlRegisterType<FeedCore::SearchResultFeed>("com.rocksandpaper.syndic", 1, 0, "SearchResultFeed");
     qmlRegisterType<HighlightsModel>("com.rocksandpaper.syndic", 1, 0, "HighlightsModel");
     qmlRegisterType<FeedCore::ArticleSummary>("com.rocksandpaper.syndic", 1, 0, "ArticleSummary");
-    qmlRegisterUncreatableType<FeedCore::Feed::Updater>("com.rocksandpaper.syndic", 1, 0, "Updater", "abstract base class");
     qmlRegisterUncreatableType<FeedCore::Context>("com.rocksandpaper.syndic", 1, 0, "FeedContext", "global object");
     qmlRegisterUncreatableType<FeedCore::Feed>("com.rocksandpaper.syndic", 1, 0, "Feed", "obtained from cpp model");
+    qmlRegisterUncreatableType<FeedCore::Subscription>("com.rocksandpaper.syndic", 1, 0, "Subscription", "obtained from cpp model");
     qmlRegisterUncreatableType<FeedCore::Article>("com.rocksandpaper.syndic", 1, 0, "Article", "obtained from cpp model");
     qmlRegisterUncreatableType<ArticleListModel>("com.rocksandpaper.syndic", 1, 0, "ArticleListModel", "abstract base class");
     qmlRegisterUncreatableType<QmlArticleRef>("com.rocksandpaper.syndic", 1, 0, "articleRef", "obtained from cpp model");

@@ -6,34 +6,34 @@
 #pragma once
 #include "factory.h"
 #include "future.h"
-#include "updatablefeed.h"
+#include "localsubscription.h"
 #include <Syndication/Feed>
 namespace FeedCore
 {
 /**
- * A minimal implementation of Feed, used for configuring and previewing feeds before commiting them to storage.
+ * A minimal implementation of Subscription, used for configuring and previewing feeds before commiting them to storage.
  *
  * This implementation provides preview content backed directly by a Syndication::Feed instance.
- * Preview content is not downloaded automatically; call updater()->start() to fetch it from the remote source.
+ * Preview content is not downloaded automatically; call update() to fetch it from the remote source.
  *
  * The preview implementation does not do any state tracking -- marking a preview article as read, etc. is a no-op
  * and every update obliterates all previous content.
  */
-class ProvisionalFeed : public UpdatableFeed
+class ProvisionalSubscription : public LocalSubscription
 {
     Q_OBJECT
 
     /**
      * The feed being edited.
      *
-     * To use ProvisionalFeed to edit an existing feed, set targetFeed to the existing feed object.
+     * To use ProvisionalSubscription to edit an existing subscription, set targetFeed to the existing subscription object.
      * The properties of the target feed are copied into the provisional feed, which can then be
      * edited while leaving the original feed intact.  To copy the changed properties back to
-     * the original feed object, call ProvisionalFeed::save().
+     * the original subscription object, call ProvisionalSubscription::save().
      *
      * This property is null by default.
      */
-    Q_PROPERTY(Feed *targetFeed READ targetFeed WRITE setTargetFeed NOTIFY targetFeedChanged)
+    Q_PROPERTY(FeedCore::Subscription *targetFeed READ targetFeed WRITE setTargetFeed NOTIFY targetFeedChanged)
 
     /**
      * User input for the URL string.
@@ -44,7 +44,7 @@ class ProvisionalFeed : public UpdatableFeed
     Q_PROPERTY(QString urlString READ urlString WRITE setUrlString NOTIFY urlStringChanged)
 
 public:
-    explicit ProvisionalFeed(QObject *parent = nullptr);
+    explicit ProvisionalSubscription(QObject *parent = nullptr);
 
     enum UrlStringStatus { INVALID, VALID, PENDING };
     Q_ENUM(UrlStringStatus)
@@ -62,15 +62,15 @@ public:
     /**
      * Whether urlString was successfully parsed into a URL.
      */
-    Q_INVOKABLE ProvisionalFeed::UrlStringStatus urlStringStatus()
+    Q_INVOKABLE ProvisionalSubscription::UrlStringStatus urlStringStatus()
     {
         return m_urlStringStatus;
     }
 
     QFuture<ArticleRef> getArticles(bool unreadFilter) final;
 
-    Feed *targetFeed() const;
-    void setTargetFeed(Feed *targetFeed);
+    Subscription *targetFeed() const;
+    void setTargetFeed(Subscription *targetFeed);
 
     const QString &urlString() const;
     void setUrlString(const QString &newUrlString);
@@ -83,12 +83,12 @@ signals:
     /**
      * This signal is similar to urlStringChanged, but is only emitted
      * when the URL string is edited directly, and not when it changes
-     * because of Feed::setUrl(...)
+     * because of Subscription::setUrl(...)
      */
     void urlStringEdited();
 
 private:
-    Feed *m_targetFeed{nullptr};
+    Subscription *m_targetFeed{nullptr};
     Syndication::FeedPtr m_feed;
     QString m_urlString;
     UrlStringStatus m_urlStringStatus{INVALID};

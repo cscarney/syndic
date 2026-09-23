@@ -4,7 +4,7 @@
  */
 
 #include "editablefeedlistmodel.h"
-#include "feed.h"
+#include "subscription.h"
 #include "feedlistmodel.h"
 
 EditableFeedListModel::EditableFeedListModel(QObject *parent)
@@ -19,7 +19,7 @@ bool EditableFeedListModel::filterAcceptsRow(int sourceRow, const QModelIndex &s
 {
     QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
     auto *feed = sourceModel()->data(index, FeedListModel::FeedRole).value<FeedCore::Feed *>();
-    return (feed != nullptr) && feed->editable();
+    return qobject_cast<FeedCore::Subscription *>(feed) != nullptr;
 }
 
 bool EditableFeedListModel::lessThan(const QModelIndex &left, const QModelIndex &right) const

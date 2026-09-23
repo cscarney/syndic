@@ -10,10 +10,11 @@
 #include "feed.h"
 #include "future.h"
 #include "opmlreader.h"
-#include "provisionalfeed.h"
+#include "provisionalsubscription.h"
 #include "readability/readabilityprefetchrule.h"
 #include "scheduler.h"
 #include "storage.h"
+#include "subscription.h"
 #include <QDebug>
 #include <QFile>
 #include <QNetworkInformation>
@@ -59,8 +60,9 @@ struct Context::PrivData {
     QPointer<AbstractAutomationRule> prefetchContentRule{nullptr};
 
     PrivData(Storage *storage, Context *parent);
-    void configureUpdates(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime()) const;
-    void configureExpiration(Feed *feed) const;
+    QList<Subscription *> subscriptions() const;
+    void configureUpdates(Subscription *feed, const QDateTime &timestamp = QDateTime::currentDateTime()) const;
+    void configureExpiration(Subscription *feed) const;
 };
 
 Context::Context(Storage *storage, QObject *parent)
@@ -90,15 +92,26 @@ Context::PrivData::PrivData(Storage *storage, Context *parent)
     storage->setParent(parent);
 }
 
-void Context::PrivData::configureUpdates(Feed *feed, const QDateTime &timestamp) const
+QList<Subscription *> Context::PrivData::subscriptions() const
+{
+    QList<Subscription *> result;
+    for (auto *feed : feeds) {
+        if (auto *subscription = qobject_cast<Subscription *>(feed)) {
+            result << subscription;
+        }
+    }
+    return result;
+}
+
+void Context::PrivData::configureUpdates(Subscription *feed, const QDateTime &timestamp) const
 {
     auto updateMode{feed->updateMode()};
     bool shouldSchedule{false};
-    if (updateMode == Feed::InheritUpdateMode) {
+    if (updateMode == Subscription::InheritUpdateMode) {
         feed->setUpdateInterval(updateInterval);
         shouldSchedule = flags.testFlag(FeedsScheduledByDefault);
     } else {
-        shouldSchedule = (updateMode != Feed::DisableUpdateMode);
+        shouldSchedule = (updateMode != Subscription::DisableUpdateMode);
     }
 
     if (shouldSchedule) {
@@ -108,10 +121,10 @@ void Context::PrivData::configureUpdates(Feed *feed, const QDateTime &timestamp)
     }
 }
 
-void Context::PrivData::configureExpiration(Feed *feed) const
+void Context::PrivData::configureExpiration(Subscription *feed) const
 {
     auto expireMode{feed->expireMode()};
-    if (expireMode != Feed::OverrideUpdateMode) {
+    if (expireMode != Subscription::OverrideUpdateMode) {
         feed->setExpireAge(expireAge);
     }
 }
@@ -152,12 +165,12 @@ QFuture<ArticleRef> Context::searchArticles(const QString &query)
     return d->storage->getSearchResults(query);
 }
 
-void Context::addFeed(ProvisionalFeed *feed)
+void Context::addFeed(ProvisionalSubscription *feed)
 {
-    QFuture<Feed *> q{d->storage->storeFeed(feed)};
+    QFuture<Subscription *> q{d->storage->storeFeed(feed)};
     Future::safeThen(q, this, [this, feed = QPointer(feed)](auto &q) {
         const auto &result = Future::safeResults(q);
-        registerFeeds(result);
+        registerFeeds({result.begin(), result.end()});
         if (!feed.isNull()) {
             if (result.isEmpty()) {
                 // TODO report backend errors
@@ -210,7 +223,7 @@ void Context::abortUpdates()
 {
     const auto &feeds = d->feeds;
     for (Feed *const entry : feeds) {
-        entry->updater()->abort();
+        entry->cancelUpdates();
     }
 }
 
@@ -225,8 +238,9 @@ void Context::setDefaultUpdateInterval(qint64 defaultUpdateInterval)
         return;
     }
     d->updateInterval = defaultUpdateInterval;
-    for (Feed *feed : std::as_const(d->feeds)) {
-        if (feed->updateMode() == Feed::InheritUpdateMode) {
+    const auto subscriptions = d->subscriptions();
+    for (Subscription *feed : subscriptions) {
+        if (feed->updateMode() == Subscription::InheritUpdateMode) {
             feed->setUpdateInterval(defaultUpdateInterval);
         }
     }
@@ -244,8 +258,9 @@ void Context::setExpireAge(qint64 expireAge)
         return;
     }
     d->expireAge = expireAge;
-    for (Feed *feed : std::as_const(d->feeds)) {
-        if (feed->expireMode() != Feed::OverrideUpdateMode) {
+    const auto subscriptions = d->subscriptions();
+    for (Subscription *feed : subscriptions) {
+        if (feed->expireMode() != Subscription::OverrideUpdateMode) {
             feed->setExpireAge(expireAge);
         }
     }
@@ -266,7 +281,7 @@ static QString urlToPath(const QUrl &url)
     return path;
 }
 
-static void writeOpmlFeed(QXmlStreamWriter &xml, Feed *feed)
+static void writeOpmlFeed(QXmlStreamWriter &xml, Subscription *feed)
 {
     xml.writeEmptyElement("outline");
     xml.writeAttribute("type", "rss");
@@ -280,9 +295,10 @@ void Context::exportOpml(const QUrl &url) const
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         return;
     }
-    QList<Feed *> uncategorizedFeeds;
-    QMap<QString, QList<Feed *>> categories;
-    for (Feed *feed : std::as_const(d->feeds)) {
+    QList<Subscription *> uncategorizedFeeds;
+    QMap<QString, QList<Subscription *>> categories;
+    const auto subscriptions = d->subscriptions();
+    for (Subscription *feed : subscriptions) {
         QString category = feed->category();
         if (category.isEmpty()) {
             uncategorizedFeeds.append(feed);
@@ -298,13 +314,13 @@ void Context::exportOpml(const QUrl &url) const
     xml.writeStartElement("head");
     xml.writeEndElement();
     xml.writeStartElement("body");
-    for (Feed *feed : std::as_const(uncategorizedFeeds)) {
+    for (Subscription *feed : std::as_const(uncategorizedFeeds)) {
         writeOpmlFeed(xml, feed);
     }
     for (auto i = categories.constBegin(); i != categories.constEnd(); ++i) {
         xml.writeStartElement("outline");
         xml.writeAttribute("text", i.key());
-        for (Feed *feed : i.value()) {
+        for (Subscription *feed : i.value()) {
             writeOpmlFeed(xml, feed);
         }
         xml.writeEndElement();
@@ -330,15 +346,16 @@ void Context::importOpml(const QUrl &url)
         return;
     }
 
-    for (ProvisionalFeed *feed : opml->updatedFeeds()) {
+    for (ProvisionalSubscription *feed : opml->updatedFeeds()) {
         feed->save();
     }
 
     d->updateScheduler->stop();
-    for (ProvisionalFeed *feed : opml->newFeeds()) {
+    for (ProvisionalSubscription *feed : opml->newFeeds()) {
         auto q = d->storage->storeFeed(feed);
         Future::safeThen(q, this, [this, opml](auto &q) {
-            registerFeeds(Future::safeResults(q));
+            const auto &result = Future::safeResults(q);
+            registerFeeds({result.begin(), result.end()});
         });
     }
     QObject::connect(opml.get(), &QObject::destroyed, this, [this] {
@@ -381,8 +398,9 @@ void Context::setDefaultUpdateEnabled(bool defaultUpdateEnabled)
 
     d->flags.setFlag(PrivData::FeedsScheduledByDefault, defaultUpdateEnabled);
     const QDateTime timestamp = QDateTime::currentDateTime();
-    for (Feed *feed : std::as_const(d->feeds)) {
-        if (feed->updateMode() == Feed::InheritUpdateMode) {
+    const auto subscriptions = d->subscriptions();
+    for (Subscription *feed : subscriptions) {
+        if (feed->updateMode() == Subscription::InheritUpdateMode) {
             d->configureUpdates(feed, timestamp);
         }
     }
@@ -406,17 +424,19 @@ void Context::registerFeeds(const QList<Feed *> &feeds)
     const QDateTime timestamp = QDateTime::currentDateTime();
     for (const auto &feed : feeds) {
         d->feeds.insert(feed);
-        d->configureExpiration(feed);
-        d->configureUpdates(feed, timestamp);
         QObject::connect(feed, &QObject::destroyed, this, [this, feed] {
             d->feeds.remove(feed);
         });
-        QObject::connect(feed, &Feed::updateModeChanged, this, [this, feed] {
-            d->configureUpdates(feed);
-        });
-        QObject::connect(feed, &Feed::expireModeChanged, this, [this, feed] {
-            d->configureExpiration(feed);
-        });
+        if (auto *subscription = qobject_cast<Subscription *>(feed)) {
+            d->configureExpiration(subscription);
+            d->configureUpdates(subscription, timestamp);
+            QObject::connect(subscription, &Subscription::updateModeChanged, this, [this, subscription] {
+                d->configureUpdates(subscription);
+            });
+            QObject::connect(subscription, &Subscription::expireModeChanged, this, [this, subscription] {
+                d->configureExpiration(subscription);
+            });
+        }
         emit feedAdded(feed);
     }
 }
@@ -435,7 +455,7 @@ void Context::startUpdatesForAllFeeds()
     const auto &timestamp = QDateTime::currentDateTime();
     const auto &feeds = d->feeds;
     for (Feed *const entry : feeds) {
-        entry->updater()->start(timestamp);
+        entry->update(timestamp);
     }
 }
 

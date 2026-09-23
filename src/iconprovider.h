@@ -28,6 +28,12 @@ public:
     IconProvider();
     ~IconProvider();
     QQuickImageResponse *requestImageResponse(const QString &id, const QSize &requestedSize) override;
+
+    /**
+     * Find a favicon for a subscription that doesn't provide its own icon.
+     *
+     * Feeds that are not Subscriptions are ignored.
+     */
     static void discoverIcon(FeedCore::Feed *feed);
 
 private:

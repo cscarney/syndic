@@ -5,7 +5,7 @@
 
 #pragma once
 #include "factory.h"
-#include "updatablefeed.h"
+#include "localsubscription.h"
 class QSqlQuery;
 namespace FeedCore
 {
@@ -18,17 +18,13 @@ class StorageImpl;
 class ArticleImpl;
 class FeedQuery;
 
-class FeedImpl : public FeedCore::UpdatableFeed
+class FeedImpl : public FeedCore::LocalSubscription
 {
     Q_OBJECT
 public:
     qint64 id() const;
     void updateFromQuery(const FeedQuery &query);
     QFuture<FeedCore::ArticleRef> getArticles(bool unreadFilter) final;
-    bool editable() final
-    {
-        return true;
-    }
     void onArticleReadChanged(ArticleImpl *article);
 
 private:

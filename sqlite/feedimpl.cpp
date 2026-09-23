@@ -17,7 +17,7 @@ using namespace FeedCore;
 using namespace SqliteStorage;
 
 FeedImpl::FeedImpl(qint64 feedId, StorageImpl *storage)
-    : UpdatableFeed(storage)
+    : LocalSubscription(storage)
     , m_id{feedId}
     , m_storage{storage}
 {

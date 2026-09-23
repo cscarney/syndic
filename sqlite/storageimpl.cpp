@@ -42,7 +42,8 @@ public:
     void runOnMainThread(Func func);
 
     void appendArticleResults(QPromise<FeedCore::ArticleRef> &op, ItemQuery &q);
-    void appendFeedResults(QPromise<FeedCore::Feed *> &op, FeedQuery &q);
+    template<typename FeedType>
+    void appendFeedResults(QPromise<FeedType *> &op, FeedQuery &q);
     void ensureTransaction();
     bool hasArticle(qint64 id) const;
 
@@ -95,7 +96,7 @@ void StorageImpl::Worker::appendArticleResults(QPromise<ArticleRef> &op, ItemQue
 
 void StorageImpl::onFeedRequestDelete(FeedImpl *feed)
 {
-    feed->updater()->abort();
+    feed->cancelUpdates();
     qint64 feedId{feed->id()};
     feed->deleteLater();
     m_worker->runInDatabaseThread([feedId](auto &m_db) {
@@ -298,7 +299,8 @@ void StorageImpl::onArticleStarredChanged(ArticleImpl *article)
     });
 }
 
-void StorageImpl::Worker::appendFeedResults(QPromise<Feed *> &op, FeedQuery &q)
+template<typename FeedType>
+void StorageImpl::Worker::appendFeedResults(QPromise<FeedType *> &op, FeedQuery &q)
 {
     while (q.next()) {
         runOnMainThread([this, &op, &q]() {
@@ -317,39 +319,39 @@ QFuture<Feed *> StorageImpl::getFeeds()
     });
 }
 
-static qint64 packModeValue(Feed::UpdateMode mode, qint64 value)
+static qint64 packModeValue(Subscription::UpdateMode mode, qint64 value)
 {
     switch (mode) {
-    case Feed::InheritUpdateMode:
+    case Subscription::InheritUpdateMode:
     default:
         return 0;
 
-    case Feed::DisableUpdateMode:
+    case Subscription::DisableUpdateMode:
         return -1;
 
-    case Feed::OverrideUpdateMode:
+    case Subscription::OverrideUpdateMode:
         return value;
     }
 }
 
-static qint64 packFeedUpdateInterval(Feed *feed)
+static qint64 packFeedUpdateInterval(Subscription *feed)
 {
     return packModeValue(feed->updateMode(), feed->updateInterval());
 }
 
-static qint64 packFeedExpireAge(Feed *feed)
+static qint64 packFeedExpireAge(Subscription *feed)
 {
     return packModeValue(feed->expireMode(), feed->expireAge());
 }
 
-QFuture<Feed *> StorageImpl::storeFeed(Feed *feed)
+QFuture<Subscription *> StorageImpl::storeFeed(Subscription *feed)
 {
     const QUrl &url = feed->url();
     const QString &name = feed->name();
     const QString &category = feed->category();
     const qint64 updateInterval = packFeedUpdateInterval(feed);
     const qint64 expireAge = packFeedExpireAge(feed);
-    return m_worker->runInDatabaseThread<FeedCore::Feed *>([this, url, name, category, updateInterval, expireAge](auto &db, auto &op) {
+    return m_worker->runInDatabaseThread<FeedCore::Subscription *>([this, url, name, category, updateInterval, expireAge](auto &db, auto &op) {
         m_worker->ensureTransaction();
         const auto &insertId = db.insertFeed(url);
         if (!insertId) {
@@ -372,7 +374,7 @@ void StorageImpl::onUpdateModeChanged(FeedImpl *feed)
 
 void StorageImpl::onUpdateIntervalChanged(FeedImpl *feed)
 {
-    if (feed->updateMode() != Feed::OverrideUpdateMode) {
+    if (feed->updateMode() != Subscription::OverrideUpdateMode) {
         return;
     }
     m_worker->runInDatabaseThread(&FeedDatabase::updateFeedUpdateInterval, feed->id(), feed->updateInterval());
@@ -386,7 +388,7 @@ void StorageImpl::onExpireModeChanged(FeedImpl *feed)
 
 void StorageImpl::onExpireAgeChanged(FeedImpl *feed)
 {
-    if (feed->expireMode() != Feed::OverrideUpdateMode) {
+    if (feed->expireMode() != Subscription::OverrideUpdateMode) {
         return;
     }
     m_worker->runInDatabaseThread(&FeedDatabase::updateFeedExpireAge, feed->id(), feed->expireAge());
@@ -397,37 +399,37 @@ void StorageImpl::listenForChanges(FeedImpl *feed)
     QObject::connect(feed, &Feed::lastUpdateChanged, this, [this, feed] {
         m_worker->runInDatabaseThread(&FeedDatabase::updateFeedLastUpdate, feed->id(), feed->lastUpdate());
     });
-    QObject::connect(feed, &Feed::updateIntervalChanged, this, [this, feed] {
+    QObject::connect(feed, &Subscription::updateIntervalChanged, this, [this, feed] {
         onUpdateIntervalChanged(feed);
     });
-    QObject::connect(feed, &Feed::updateModeChanged, this, [this, feed] {
+    QObject::connect(feed, &Subscription::updateModeChanged, this, [this, feed] {
         onUpdateModeChanged(feed);
     });
-    QObject::connect(feed, &Feed::expireModeChanged, this, [this, feed] {
+    QObject::connect(feed, &Subscription::expireModeChanged, this, [this, feed] {
         onExpireModeChanged(feed);
     });
-    QObject::connect(feed, &Feed::expireAgeChanged, this, [this, feed] {
+    QObject::connect(feed, &Subscription::expireAgeChanged, this, [this, feed] {
         onExpireAgeChanged(feed);
     });
     QObject::connect(feed, &Feed::nameChanged, this, [this, feed] {
         m_worker->runInDatabaseThread(&FeedDatabase::updateFeedName, feed->id(), feed->name());
     });
-    QObject::connect(feed, &Feed::urlChanged, this, [this, feed] {
+    QObject::connect(feed, &Subscription::urlChanged, this, [this, feed] {
         m_worker->runInDatabaseThread(&FeedDatabase::updateFeedUrl, feed->id(), feed->url());
     });
     QObject::connect(feed, &Feed::categoryChanged, this, [this, feed] {
         m_worker->runInDatabaseThread(&FeedDatabase::updateFeedCategory, feed->id(), feed->category());
     });
-    QObject::connect(feed, &Feed::linkChanged, this, [this, feed] {
+    QObject::connect(feed, &Subscription::linkChanged, this, [this, feed] {
         m_worker->runInDatabaseThread(&FeedDatabase::updateFeedLink, feed->id(), feed->link().toString());
     });
     QObject::connect(feed, &Feed::iconChanged, this, [this, feed] {
         m_worker->runInDatabaseThread(&FeedDatabase::updateFeedIcon, feed->id(), feed->icon().toString());
     });
-    QObject::connect(feed, &Feed::flagsChanged, this, [this, feed] {
+    QObject::connect(feed, &Subscription::flagsChanged, this, [this, feed] {
         m_worker->runInDatabaseThread(&FeedDatabase::updateFeedFlags, feed->id(), feed->flags());
     });
-    QObject::connect(feed, &Feed::deleteRequested, this, [this, feed] {
+    QObject::connect(feed, &Subscription::deleteRequested, this, [this, feed] {
         onFeedRequestDelete(feed);
     });
 }

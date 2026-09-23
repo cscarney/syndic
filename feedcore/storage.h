@@ -13,6 +13,7 @@
 namespace FeedCore
 {
 class Feed;
+class Subscription;
 
 class Storage : public QObject
 {
@@ -25,7 +26,21 @@ public:
     virtual QFuture<ArticleRef> getStarred() = 0;
     virtual QFuture<ArticleRef> getSearchResults(const QString &search) = 0;
     virtual QFuture<ArticleRef> getHighlights(size_t limit) = 0;
+    /**
+     * Load all stored feeds.
+     *
+     * Backends that manage subscriptions locally should return Subscription
+     * instances.  Backends where subscriptions are managed elsewhere (e.g. by a
+     * server) may return plain Feed instances, which will not be scheduled
+     * or editable.
+     */
     virtual QFuture<Feed *> getFeeds() = 0;
-    virtual QFuture<Feed *> storeFeed(Feed *feed) = 0;
+
+    /**
+     * Store a new subscription using the configuration in /feed/, returning the stored subscription.
+     *
+     * Backends that do not support adding subscriptions should return an empty result.
+     */
+    virtual QFuture<Subscription *> storeFeed(Subscription *feed) = 0;
 };
 }

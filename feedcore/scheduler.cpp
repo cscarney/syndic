@@ -4,14 +4,14 @@
  */
 
 #include "scheduler.h"
-#include "feed.h"
+#include "subscription.h"
 #include <QSet>
 #include <QTimer>
 
 namespace FeedCore
 {
 struct Scheduler::PrivData {
-    QList<Feed *> schedule;
+    QList<Subscription *> schedule;
     QTimer timer;
 };
 
@@ -23,21 +23,21 @@ Scheduler::Scheduler(QObject *parent)
 
 Scheduler::~Scheduler() = default;
 
-static QDateTime nextUpdate(Feed *feed)
+static QDateTime nextUpdate(Subscription *feed)
 {
     const QDateTime &updateStartTime = feed->updater()->updateStartTime();
     QDateTime lastUpdate{updateStartTime.isValid() ? updateStartTime : feed->lastUpdate()};
     return lastUpdate.addSecs(feed->updateInterval());
 }
 
-static bool needsUpdate(Feed *feed, const QDateTime &timestamp)
+static bool needsUpdate(Subscription *feed, const QDateTime &timestamp)
 {
     return nextUpdate(feed) < timestamp;
 }
 
-void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
+void insertIntoSchedule(QList<Subscription *> &schedule, Subscription *feed)
 {
-    if (feed->updateMode() == Feed::DisableUpdateMode || feed->updateInterval() <= 0) {
+    if (feed->updateMode() == Subscription::DisableUpdateMode || feed->updateInterval() <= 0) {
         return;
     }
     const QDateTime &updateTime{nextUpdate(feed)};
@@ -50,12 +50,12 @@ void insertIntoSchedule(QList<Feed *> &schedule, Feed *feed)
     schedule.append(feed);
 }
 
-void Scheduler::schedule(Feed *feed, const QDateTime &timestamp)
+void Scheduler::schedule(Subscription *feed, const QDateTime &timestamp)
 {
     QObject::connect(feed, &Feed::statusChanged, this, [this, feed] {
         onFeedStatusChanged(feed);
     });
-    QObject::connect(feed, &Feed::updateIntervalChanged, this, [this, feed] {
+    QObject::connect(feed, &Subscription::updateIntervalChanged, this, [this, feed] {
         reschedule(feed);
     });
     QObject::connect(feed, &QObject::destroyed, this, [this, feed] {
@@ -64,7 +64,7 @@ void Scheduler::schedule(Feed *feed, const QDateTime &timestamp)
     reschedule(feed, timestamp);
 }
 
-void Scheduler::unschedule(Feed *feed)
+void Scheduler::unschedule(Subscription *feed)
 {
     d->schedule.removeOne(feed);
     QObject::disconnect(feed, nullptr, this, nullptr);
@@ -90,7 +90,7 @@ bool Scheduler::isRunning()
     return d->timer.isActive();
 }
 
-static void updateMany(const QDateTime &timestamp, const QList<Feed::Updater *> &toUpdate)
+static void updateMany(const QDateTime &timestamp, const QList<Subscription::Updater *> &toUpdate)
 {
     for (auto *entry : toUpdate) {
         entry->start(timestamp);
@@ -101,9 +101,9 @@ void Scheduler::updateStale()
 {
     // find all the stale feeds before we start updating them so that we don't modify the schedule while we're searching it...
     const auto &timestamp = QDateTime::currentDateTime();
-    QList<Feed::Updater *> toUpdate{};
+    QList<Subscription::Updater *> toUpdate{};
     const auto &schedule{d->schedule};
-    for (Feed *entry : schedule) {
+    for (Subscription *entry : schedule) {
         if (!needsUpdate(entry, timestamp)) {
             break;
         }
@@ -114,19 +114,19 @@ void Scheduler::updateStale()
 
 void Scheduler::clearErrors()
 {
-    QList<Feed *> errorFeeds;
-    for (Feed *feed : std::as_const(d->schedule)) {
+    QList<Subscription *> errorFeeds;
+    for (Subscription *feed : std::as_const(d->schedule)) {
         if (feed->status() == Feed::Error) {
             errorFeeds << feed;
         }
     }
     QDateTime timestamp{QDateTime::currentDateTime()};
-    for (Feed *feed : std::as_const(errorFeeds)) {
+    for (Subscription *feed : std::as_const(errorFeeds)) {
         feed->updater()->start(timestamp);
     }
 }
 
-void Scheduler::reschedule(Feed *feed, const QDateTime &timestamp)
+void Scheduler::reschedule(Subscription *feed, const QDateTime &timestamp)
 {
     d->schedule.removeOne(feed);
     if (feed->status() == LoadStatus::Updating) {
@@ -139,7 +139,7 @@ void Scheduler::reschedule(Feed *feed, const QDateTime &timestamp)
     }
 }
 
-void Scheduler::onFeedStatusChanged(Feed *sender)
+void Scheduler::onFeedStatusChanged(Subscription *sender)
 {
     if (sender->status() == LoadStatus::Updating) {
         d->schedule.removeOne(sender);

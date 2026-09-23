@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "updatablefeed.h"
+#include "localsubscription.h"
 #include "article.h"
 #include "articlelinkextractor.h"
 #include "context.h"
@@ -52,7 +52,7 @@ class Update : public QObject
 {
     Q_OBJECT
 public:
-    explicit Update(const UpdatableFeed *feed);
+    explicit Update(const LocalSubscription *feed);
     void abort();
     void start();
 
@@ -62,7 +62,7 @@ signals:
     void aborted();
 
 private:
-    UpdatableFeed *m_feed{nullptr};
+    LocalSubscription *m_feed{nullptr};
     std::unique_ptr<LoadOperation, DeleteLater> m_currentOperation;
     QByteArray m_firstData;
 
@@ -77,29 +77,29 @@ private:
 
 }
 
-class UpdatableFeed::UpdaterImpl : public Feed::Updater
+class LocalSubscription::UpdaterImpl : public Subscription::Updater
 {
 public:
-    UpdaterImpl(UpdatableFeed *feed, QObject *parent);
+    UpdaterImpl(LocalSubscription *feed, QObject *parent);
     void run() final;
     void abort() final;
     void cleanup() final;
 
 private:
-    UpdatableFeed *m_updatableFeed{nullptr};
+    LocalSubscription *m_subscription{nullptr};
     std::unique_ptr<Update> m_currentUpdate;
 
     void onSucceeded(const Syndication::FeedPtr &feed);
     void onFailed(const QString &errorString);
 };
 
-Feed::Updater *UpdatableFeed::updater()
+Subscription::Updater *LocalSubscription::updater()
 {
     return m_updater;
 }
 
-FeedCore::UpdatableFeed::UpdatableFeed(QObject *parent)
-    : Feed(parent)
+LocalSubscription::LocalSubscription(QObject *parent)
+    : Subscription(parent)
     , m_updater{new UpdaterImpl(this, this)}
 {
 }
@@ -124,7 +124,7 @@ static inline QUrl getIconUrl(const Syndication::FeedPtr &feed, const QUrl &feed
     return QUrl();
 }
 
-QFuture<void> UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
+QFuture<void> LocalSubscription::updateFromSource(const Syndication::FeedPtr &feed)
 {
     if (name().isEmpty()) {
         setName(feed->title());
@@ -150,48 +150,48 @@ QFuture<void> UpdatableFeed::updateFromSource(const Syndication::FeedPtr &feed)
     return QtFuture::whenAll(addResults.begin(), addResults.end()).then([](auto) {});
 }
 
-UpdatableFeed::UpdaterImpl::UpdaterImpl(UpdatableFeed *feed, QObject *parent)
+LocalSubscription::UpdaterImpl::UpdaterImpl(LocalSubscription *feed, QObject *parent)
     : Updater(feed, parent)
-    , m_updatableFeed{feed}
+    , m_subscription{feed}
 {
 }
 
-void UpdatableFeed::UpdaterImpl::run()
+void LocalSubscription::UpdaterImpl::run()
 {
     if (!feed()->url().isValid()) {
         setError(tr("Invalid URL", "error message"));
         return;
     }
-    m_currentUpdate.reset(new Update(m_updatableFeed));
+    m_currentUpdate.reset(new Update(m_subscription));
     QObject::connect(m_currentUpdate.get(), &Update::succeeded, this, &UpdaterImpl::onSucceeded);
     QObject::connect(m_currentUpdate.get(), &Update::failed, this, &UpdaterImpl::onFailed);
     QObject::connect(m_currentUpdate.get(), &Update::aborted, this, &UpdaterImpl::aborted);
     m_currentUpdate->start();
 }
 
-void UpdatableFeed::UpdaterImpl::abort()
+void LocalSubscription::UpdaterImpl::abort()
 {
     if (m_currentUpdate) {
         m_currentUpdate->abort();
     }
 }
 
-void UpdatableFeed::UpdaterImpl::cleanup()
+void LocalSubscription::UpdaterImpl::cleanup()
 {
     if (auto *update = m_currentUpdate.release()) {
         update->deleteLater();
     }
 }
 
-void UpdatableFeed::UpdaterImpl::onSucceeded(const Syndication::FeedPtr &feed)
+void LocalSubscription::UpdaterImpl::onSucceeded(const Syndication::FeedPtr &feed)
 {
-    auto whenDone = m_updatableFeed->updateFromSource(feed);
+    auto whenDone = m_subscription->updateFromSource(feed);
     Future::safeThen(whenDone, this, [this](auto) {
         finish();
     });
 }
 
-void UpdatableFeed::UpdaterImpl::onFailed(const QString &errorString)
+void LocalSubscription::UpdaterImpl::onFailed(const QString &errorString)
 {
     qDebug() << "Updater Error:" << errorString;
     setError(errorString);
@@ -247,8 +247,8 @@ void LoadOperation::onReplyFinished()
     }
 }
 
-Update::Update(const UpdatableFeed *feed)
-    : m_feed{const_cast<UpdatableFeed *>(feed)}
+Update::Update(const LocalSubscription *feed)
+    : m_feed{const_cast<LocalSubscription *>(feed)}
 {
 }
 
@@ -262,7 +262,7 @@ void Update::abort()
 void Update::start()
 {
     m_currentOperation.reset(new LoadOperation);
-    if (m_feed->flags() & Feed::IsWebPageFlag) {
+    if (m_feed->flags() & Subscription::IsWebPageFlag) {
         QObject::connect(m_currentOperation.get(), &LoadOperation::succeeded, this, &Update::onWebPageFetchSucceeded);
     } else {
         QObject::connect(m_currentOperation.get(), &LoadOperation::succeeded, this, &Update::onPrimaryFeedFetchSucceeded);
@@ -319,7 +319,7 @@ void Update::fallbackToWebPage()
     ArticleLinkExtractor extractor(m_firstData, m_feed->url());
     extractor.walk();
     if (m_feed) {
-        m_feed->setFlags(m_feed->flags() | Feed::IsWebPageFlag);
+        m_feed->setFlags(m_feed->flags() | Subscription::IsWebPageFlag);
     }
     Syndication::FeedPtr feed = extractor.articleLinksFeed();
     emit succeeded(feed);
@@ -336,4 +336,4 @@ void Update::onAborted()
     emit aborted();
 }
 
-#include "updatablefeed.moc"
+#include "localsubscription.moc"

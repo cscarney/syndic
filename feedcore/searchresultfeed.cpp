@@ -2,35 +2,14 @@
 
 using namespace FeedCore;
 
-class SearchResultFeed::Updater : public Feed::Updater
-{
-public:
-    Updater(SearchResultFeed *feed, QObject *parent)
-        : Feed::Updater(feed, parent)
-    {
-    }
-
-private:
-    void run() override
-    {
-        QMetaObject::invokeMethod(this, &Updater::finish, Qt::QueuedConnection);
-    }
-};
-
 SearchResultFeed::SearchResultFeed(QObject *parent)
     : FeedCore::Feed{parent}
-    , m_updater{new Updater(this, this)}
 {
 }
 
 QFuture<ArticleRef> SearchResultFeed::getArticles(bool unreadFilter)
 {
     return m_context->searchArticles(m_query);
-}
-
-Feed::Updater *SearchResultFeed::updater()
-{
-    return m_updater;
 }
 
 Context *SearchResultFeed::context() const

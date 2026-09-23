@@ -71,7 +71,7 @@ ArticleListModel::ArticleComparator FeedModel::getArticleComparator()
 
 void FeedModel::requestUpdate()
 {
-    feed()->updater()->start();
+    feed()->update();
     removeRead();
 }
 

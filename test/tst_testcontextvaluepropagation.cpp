@@ -5,7 +5,7 @@
 
 #include "context.h"
 #include "future.h"
-#include "provisionalfeed.h"
+#include "provisionalsubscription.h"
 #include "storage.h"
 #include <QCoreApplication>
 #include <QSignalSpy>
@@ -38,10 +38,10 @@ public:
             }
         });
     }
-    QFuture<FeedCore::Feed *> storeFeed(FeedCore::Feed *feed) override
+    QFuture<FeedCore::Subscription *> storeFeed(FeedCore::Subscription *feed) override
     {
         m_feeds.append(feed);
-        return Future::yield<Feed *>(this, [feed](auto &r) {
+        return Future::yield<Subscription *>(this, [feed](auto &r) {
             r.addResult(feed);
         });
     }
@@ -70,6 +70,7 @@ private slots:
     void initTestCase()
     {
         qRegisterMetaType<FeedCore::Feed *>();
+        qRegisterMetaType<FeedCore::Subscription *>();
     }
 
     void init()
@@ -87,42 +88,42 @@ private slots:
     void testContextPropagatesUpdateInterval()
     {
         const int feedUpdateInterval = 11304;
-        ProvisionalFeed feedWithInheritUpdateMode;
-        feedWithInheritUpdateMode.setUpdateMode(Feed::InheritUpdateMode);
+        ProvisionalSubscription feedWithInheritUpdateMode;
+        feedWithInheritUpdateMode.setUpdateMode(Subscription::InheritUpdateMode);
         feedWithInheritUpdateMode.setUpdateInterval(feedUpdateInterval);
 
-        ProvisionalFeed feedWithOverrideUpdateMode;
-        feedWithOverrideUpdateMode.setUpdateMode(Feed::OverrideUpdateMode);
+        ProvisionalSubscription feedWithOverrideUpdateMode;
+        feedWithOverrideUpdateMode.setUpdateMode(Subscription::OverrideUpdateMode);
         feedWithOverrideUpdateMode.setUpdateInterval(feedUpdateInterval);
 
         {
             m_context->addFeed(&feedWithInheritUpdateMode);
-            QSignalSpy waitForSignal(&feedWithInheritUpdateMode, &ProvisionalFeed::targetFeedChanged);
+            QSignalSpy waitForSignal(&feedWithInheritUpdateMode, &ProvisionalSubscription::targetFeedChanged);
             waitForSignal.wait();
         }
 
         {
             m_context->addFeed(&feedWithOverrideUpdateMode);
-            QSignalSpy waitForSignal(&feedWithOverrideUpdateMode, &ProvisionalFeed::targetFeedChanged);
+            QSignalSpy waitForSignal(&feedWithOverrideUpdateMode, &ProvisionalSubscription::targetFeedChanged);
             waitForSignal.wait();
         }
 
         QVERIFY(feedWithInheritUpdateMode.updateInterval() == contextUpdateInterval);
         QVERIFY(feedWithOverrideUpdateMode.updateInterval() == feedUpdateInterval);
 
-        feedWithOverrideUpdateMode.setUpdateMode(Feed::InheritUpdateMode);
+        feedWithOverrideUpdateMode.setUpdateMode(Subscription::InheritUpdateMode);
         QVERIFY(feedWithOverrideUpdateMode.updateInterval() == contextUpdateInterval);
     }
 
     void testContextPropagatesExpireAge()
     {
         const int feedExpireAge = 9933;
-        ProvisionalFeed feedWithInheritExpireMode;
-        feedWithInheritExpireMode.setExpireMode(Feed::InheritUpdateMode);
+        ProvisionalSubscription feedWithInheritExpireMode;
+        feedWithInheritExpireMode.setExpireMode(Subscription::InheritUpdateMode);
         feedWithInheritExpireMode.setExpireAge(feedExpireAge);
 
-        ProvisionalFeed feedWithOverrideExpireMode;
-        feedWithOverrideExpireMode.setExpireMode(Feed::OverrideUpdateMode);
+        ProvisionalSubscription feedWithOverrideExpireMode;
+        feedWithOverrideExpireMode.setExpireMode(Subscription::OverrideUpdateMode);
         feedWithOverrideExpireMode.setExpireAge(feedExpireAge);
 
         QSignalSpy waitForSignal(m_context, &Context::feedAdded);
@@ -135,7 +136,7 @@ private slots:
         QVERIFY(feedWithInheritExpireMode.expireAge() == contextExpireAge);
         QVERIFY(feedWithOverrideExpireMode.expireAge() == feedExpireAge);
 
-        feedWithOverrideExpireMode.setExpireMode(Feed::InheritUpdateMode);
+        feedWithOverrideExpireMode.setExpireMode(Subscription::InheritUpdateMode);
         QVERIFY(feedWithOverrideExpireMode.expireAge() == contextExpireAge);
     }
 };

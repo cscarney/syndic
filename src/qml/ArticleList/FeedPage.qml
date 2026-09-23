@@ -39,7 +39,7 @@ AbstractFeedPage {
             text: qsTr("Edit…")
             icon.name: "document-edit"
             displayHint: Kirigami.DisplayHint.AlwaysHide
-            visible: feed && feed.editable
+            visible: feed instanceof Subscription
             onTriggered: {
                 pageRow.pop(root)
                 pageRow.push("qrc:/qml/EditFeedPage.qml", {targetFeed: feed, onDone:()=>root.childPageChanged()});
@@ -67,7 +67,7 @@ AbstractFeedPage {
             enabled: feed && feed.status===Feed.Updating
             visible: enabled
             onTriggered: {
-                feed.updater.abort()
+                feed.cancelUpdates()
             }
         }
     ]

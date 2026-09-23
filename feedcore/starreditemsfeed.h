@@ -18,11 +18,8 @@ class StarredItemsFeed : public Feed
 public:
     StarredItemsFeed(Context *context, const QString &name, QObject *parent = nullptr);
     QFuture<ArticleRef> getArticles(bool unreadFilter) final;
-    Updater *updater() final;
 
 private:
     Context *m_context{nullptr};
-    Updater *m_updater{nullptr};
-    class StarredUpdater;
 };
 }

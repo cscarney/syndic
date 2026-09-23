@@ -21,7 +21,7 @@ class TestAutomationEngine : public QObject
     Q_OBJECT
     QScopedPointer<FeedCore::Context> m_context;
     QPointer<MockStorage> m_mockStorage;
-    QScopedPointer<MockFeed> m_mockFeed;
+    QScopedPointer<MockSubscription> m_mockFeed;
     QScopedPointer<AutomationEngine> m_engine;
 
     class TestRule : public AbstractAutomationRule
@@ -70,7 +70,7 @@ private slots:
 
     void init()
     {
-        m_mockFeed.reset(new MockFeed);
+        m_mockFeed.reset(new MockSubscription);
         m_mockStorage = new MockStorage;
         m_mockStorage->m_feeds = {m_mockFeed.get()};
         m_context.reset(new Context(m_mockStorage));

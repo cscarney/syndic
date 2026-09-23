@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "provisionalfeed.h"
+#include "provisionalsubscription.h"
 #include "article.h"
 #include <QDir>
 #include <Syndication/Image>
@@ -11,7 +11,7 @@
 #include <Syndication/Person>
 using namespace FeedCore;
 
-class ProvisionalFeed::ArticleImpl : public Article
+class ProvisionalSubscription::ArticleImpl : public Article
 {
 public:
     explicit ArticleImpl(const Syndication::ItemPtr &item, Feed *feed, QObject *parent = nullptr);
@@ -23,26 +23,26 @@ private:
     Syndication::ItemPtr m_item;
 };
 
-void ProvisionalFeed::onUrlChanged()
+void ProvisionalSubscription::onUrlChanged()
 {
     syncUrlString();
-    updater()->abort();
+    cancelUpdates();
     m_feed = nullptr;
-    setFlags(flags() & ~Feed::IsWebPageFlag);
+    setFlags(flags() & ~Subscription::IsWebPageFlag);
     emit reset();
 }
 
-ProvisionalFeed::ProvisionalFeed(QObject *parent)
-    : UpdatableFeed(parent)
+ProvisionalSubscription::ProvisionalSubscription(QObject *parent)
+    : LocalSubscription(parent)
 {
     syncUrlString();
-    QObject::connect(this, &Feed::urlChanged, this, &ProvisionalFeed::onUrlChanged);
-    QObject::connect(this, &ProvisionalFeed::targetFeedChanged, this, [this] {
+    QObject::connect(this, &Subscription::urlChanged, this, &ProvisionalSubscription::onUrlChanged);
+    QObject::connect(this, &ProvisionalSubscription::targetFeedChanged, this, [this] {
         updateParams(m_targetFeed);
     });
 }
 
-QFuture<ArticleRef> ProvisionalFeed::getArticles(bool /* unreadFilter */)
+QFuture<ArticleRef> ProvisionalSubscription::getArticles(bool /* unreadFilter */)
 {
     return Future::yield<ArticleRef>(this, [this](auto &op) {
         if (m_feed == nullptr) {
@@ -55,7 +55,7 @@ QFuture<ArticleRef> ProvisionalFeed::getArticles(bool /* unreadFilter */)
     });
 }
 
-QFuture<void> ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed)
+QFuture<void> ProvisionalSubscription::updateFromSource(const Syndication::FeedPtr &feed)
 {
     if (name().isEmpty()) {
         setName(feed->title());
@@ -70,17 +70,17 @@ QFuture<void> ProvisionalFeed::updateFromSource(const Syndication::FeedPtr &feed
     return QtFuture::makeReadyVoidFuture();
 }
 
-QFuture<void> ProvisionalFeed::updateSourceArticle(const Syndication::ItemPtr &)
+QFuture<void> ProvisionalSubscription::updateSourceArticle(const Syndication::ItemPtr &)
 {
     return QtFuture::makeReadyVoidFuture();
 }
 
-Feed *ProvisionalFeed::targetFeed() const
+Subscription *ProvisionalSubscription::targetFeed() const
 {
     return m_targetFeed;
 }
 
-void ProvisionalFeed::setTargetFeed(Feed *targetFeed)
+void ProvisionalSubscription::setTargetFeed(Subscription *targetFeed)
 {
     if (m_targetFeed == targetFeed) {
         return;
@@ -90,7 +90,7 @@ void ProvisionalFeed::setTargetFeed(Feed *targetFeed)
     emit targetFeedChanged();
 }
 
-void ProvisionalFeed::save()
+void ProvisionalSubscription::save()
 {
     if (m_targetFeed == nullptr) {
         return;
@@ -98,13 +98,13 @@ void ProvisionalFeed::save()
     m_targetFeed->updateParams(this);
 }
 
-void ProvisionalFeed::ArticleImpl::requestContent()
+void ProvisionalSubscription::ArticleImpl::requestContent()
 {
     QString content{m_item->content()};
     emit gotContent(content.isEmpty() ? m_item->description() : content);
 }
 
-ProvisionalFeed::ArticleImpl::ArticleImpl(const Syndication::ItemPtr &item, Feed *feed, QObject *parent)
+ProvisionalSubscription::ArticleImpl::ArticleImpl(const Syndication::ItemPtr &item, Feed *feed, QObject *parent)
     : Article(feed, parent)
     , m_item(item)
 {
@@ -115,7 +115,7 @@ ProvisionalFeed::ArticleImpl::ArticleImpl(const Syndication::ItemPtr &item, Feed
     setAuthor(authors.isEmpty() ? "" : authors[0]->name());
 }
 
-const QString &ProvisionalFeed::urlString() const
+const QString &ProvisionalSubscription::urlString() const
 {
     return m_urlString;
 }
@@ -146,7 +146,7 @@ static QUrl urlFromString(const QString &string)
     return QUrl();
 }
 
-void ProvisionalFeed::setUrlString(const QString &newUrlString)
+void ProvisionalSubscription::setUrlString(const QString &newUrlString)
 {
     if (m_urlStringStatus == PENDING) {
         return;
@@ -167,7 +167,7 @@ void ProvisionalFeed::setUrlString(const QString &newUrlString)
     emit urlStringEdited();
 }
 
-void ProvisionalFeed::syncUrlString()
+void ProvisionalSubscription::syncUrlString()
 {
     if (m_urlStringStatus == PENDING) {
         return;

@@ -31,14 +31,14 @@ Kirigami.Dialog {
             text: feed.name
 
             // Check if feed's flags include the UseReadableContentFlag
-            checked: feed.flags & Feed.UseReadableContentFlag
+            checked: feed.flags & Subscription.UseReadableContentFlag
 
             onToggled: {
                 // Toggle the flag using bitwise operations
                 if (checked) {
-                    feed.flags |= Feed.UseReadableContentFlag
+                    feed.flags |= Subscription.UseReadableContentFlag
                 } else {
-                    feed.flags &= ~Feed.UseReadableContentFlag
+                    feed.flags &= ~Subscription.UseReadableContentFlag
                 }
             }
 

@@ -4,7 +4,7 @@
  */
 
 #include "iconprovider.h"
-#include "feed.h"
+#include "subscription.h"
 #include "networkaccessmanager.h"
 #include <QBuffer>
 #include <QImageReader>
@@ -231,9 +231,10 @@ QQuickImageResponse *IconProvider::requestImageResponse(const QString &id, const
 }
 
 // TODO this should be refactored into it's own class, probably in core
-void IconProvider::discoverIcon(FeedCore::Feed *feed)
+void IconProvider::discoverIcon(FeedCore::Feed *target)
 {
-    if (!feed->icon().isEmpty()) {
+    auto *feed = qobject_cast<FeedCore::Subscription *>(target);
+    if (feed == nullptr || !feed->icon().isEmpty()) {
         return;
     }
 

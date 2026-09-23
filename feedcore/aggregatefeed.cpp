@@ -7,44 +7,25 @@
 #include "article.h"
 using namespace FeedCore;
 
-class AggregateFeed::Updater : public Feed::Updater
-{
-public:
-    Updater(AggregateFeed *feed, QObject *parent)
-        : Feed::Updater(feed, parent)
-    {
-    }
-
-    void run() final
-    {
-        if (auto *af = qobject_cast<AggregateFeed *>(feed())) {
-            // TODO need to pass the pending update timestamp
-            for (auto *subfeed : std::as_const(af->m_feeds)) {
-                subfeed->updater()->start(updateStartTime());
-            }
-            finish();
-        }
-    }
-
-    void abort() final
-    {
-        if (auto *af = qobject_cast<AggregateFeed *>(feed())) {
-            for (auto *subfeed : std::as_const(af->m_active)) {
-                subfeed->updater()->abort();
-            }
-        }
-    }
-};
-
 AggregateFeed::AggregateFeed(QObject *parent)
     : Feed(parent)
-    , m_updater{new AggregateFeed::Updater(this, this)}
 {
 }
 
-Feed::Updater *AggregateFeed::updater()
+void AggregateFeed::update(const QDateTime &timestamp)
 {
-    return m_updater;
+    for (auto *subfeed : std::as_const(m_feeds)) {
+        subfeed->update(timestamp);
+    }
+}
+
+void AggregateFeed::cancelUpdates()
+{
+    // cancelling can synchronously update the status of the subfeed, which modifies m_active
+    const auto active = m_active;
+    for (auto *subfeed : active) {
+        subfeed->cancelUpdates();
+    }
 }
 
 QFuture<ArticleRef> AggregateFeed::getArticles(bool unreadOnly)

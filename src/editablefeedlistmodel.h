@@ -7,7 +7,7 @@
 #include <QSortFilterProxyModel>
 
 /**
- * Proxy model for the feed list that filters to show only editable feeds and sorts them by name
+ * Proxy model for the feed list that filters to show only subscriptions (the editable feeds) and sorts them by name
  *
  * Source model is expected to be a FeedListModel
  */
@@ -19,7 +19,7 @@ public:
     explicit EditableFeedListModel(QObject *parent = nullptr);
 
 protected:
-    // filter by editable feeds
+    // filter to subscriptions
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
 
     // sort by feed name

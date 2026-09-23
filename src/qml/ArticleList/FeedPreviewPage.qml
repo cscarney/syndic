@@ -10,7 +10,7 @@ import ".."
 
 AbstractFeedPage {
     id: root
-    required property ProvisionalFeed provisionalFeed
+    required property ProvisionalSubscription provisionalFeed
     automaticOpen: false
     unreadFilter: false
     feed: provisionalFeed

@@ -15,7 +15,8 @@ namespace FeedCore
 {
 class Storage;
 class Feed;
-class ProvisionalFeed;
+class ProvisionalSubscription;
+class Subscription;
 class Readability;
 class AutomationEngine;
 
@@ -29,14 +30,14 @@ class Context : public QObject
     Q_OBJECT
 
     /**
-     * Whether to schedule updates for feeds using UpdateMode::DefaultUpdateMode.
+     * Whether to schedule updates for feeds using Subscription::InheritUpdateMode.
      *
      * The default value is false.  Set defaultUpdateInterval to a sane value before setting this to true.
      */
     Q_PROPERTY(bool defaultUpdateEnabled READ defaultUpdateEnabled WRITE setDefaultUpdateEnabled NOTIFY defaultUpdateEnabledChanged)
 
     /**
-     * The update interval (in seconds) that will be used for UpdateMode::DefaultUpdateMode.
+     * The update interval (in seconds) that will be used for Subscription::InheritUpdateMode.
      *
      * The default is 0.
      */
@@ -99,7 +100,7 @@ public:
     QSharedPointer<Feed> allItemsFeed();
 
     /**
-     * Request a filtered set of feeds matching the given category.
+     * Request a filtered set of subscriptions matching the given category.
      *
      * The resulting set is generated on each call, so the caller should
      * cache it when possible.
@@ -121,24 +122,24 @@ public:
     QFuture<ArticleRef> searchArticles(const QString &query);
 
     /**
-     * Create a new feed in the Context's storage object.
+     * Create a new subscription in the Context's storage object.
      *
      * The pattern for adding a new feed is:
-     *  - Create a new ProvisionalFeed object and set (at least) the URL property
-     *  - Optionally update the ProvisionalFeed to populate the remaining feed properties
-     *  - Pass the ProvisionalFeed to Context::addFeed
-     *  - Listen for ProvisionalFeed::targetFeedChanged and ProvisionalFeed::saveFailed signals
-     *  - Delete the ProvisionalFeed
+     *  - Create a new ProvisionalSubscription object and set (at least) the URL property
+     *  - Optionally update the ProvisionalSubscription to populate the remaining feed properties
+     *  - Pass the ProvisionalSubscription to Context::addFeed
+     *  - Listen for ProvisionalSubscription::targetFeedChanged and ProvisionalSubscription::saveFailed signals
+     *  - Delete the ProvisionalSubscription
      *
-     * On success, ProvisionalFeed::targetFeed will be set to the newly created feed. On failure,
-     * the ProvisionalFeed::saveFailed signal will be emitted.
+     * On success, ProvisionalSubscription::targetFeed will be set to the newly created feed. On failure,
+     * the ProvisionalSubscription::saveFailed signal will be emitted.
      *
      * The newly created feed is owned by the context's storage object. Ownership of the
-     * ProvisionalFeed remains with the caller. The ProvisionalFeed may be deleted immediately
+     * ProvisionalSubscription remains with the caller. The ProvisionalSubscription may be deleted immediately
      * after the addFeed call if the caller does not need feedback on the success of the
      * add operation.
      */
-    Q_INVOKABLE void addFeed(FeedCore::ProvisionalFeed *feed);
+    Q_INVOKABLE void addFeed(FeedCore::ProvisionalSubscription *feed);
 
     /**
      * Get a list of category strings

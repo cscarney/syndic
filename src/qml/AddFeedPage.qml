@@ -14,10 +14,10 @@ AbstractFeedEditorPage {
     property bool keepDrawerOpen: true
     title: qsTr("Add Content")
 
-    provisionalFeed: ProvisionalFeed {
-        updateMode: Feed.InheritUpdateMode
+    provisionalFeed: ProvisionalSubscription {
+        updateMode: Subscription.InheritUpdateMode
         updateInterval: globalSettings.updateInterval
-        expireMode: Feed.InheritUpdateMode
+        expireMode: Subscription.InheritUpdateMode
         expireAge: globalSettings.expireAge
 
         onUrlStringEdited: {
@@ -39,7 +39,7 @@ AbstractFeedEditorPage {
 
     onPreviewOpenChanged: {
         if (previewOpen) {
-            provisionalFeed.updater.start()
+            provisionalFeed.update()
             pageRow.currentIndex = Kirigami.ColumnView.index
             pageRow.push("qrc:/qml/ArticleList/FeedPreviewPage.qml",
                          {provisionalFeed: root.provisionalFeed,
