@@ -16,8 +16,8 @@ class testAllItemsFeed : public QObject
     Q_OBJECT
     QSharedPointer<Feed> m_allItemsFeed;
     QPointer<MockStorage> m_mockStorage;
-    QScopedPointer<MockFeed> m_mockFeed1;
-    QScopedPointer<MockFeed> m_mockFeed2;
+    QScopedPointer<MockSubscription> m_mockFeed1;
+    QScopedPointer<MockSubscription> m_mockFeed2;
     QScopedPointer<FeedCore::Context> m_context;
 
 private slots:
@@ -28,11 +28,11 @@ private slots:
 
     void init()
     {
-        m_mockFeed1.reset(new MockFeed);
+        m_mockFeed1.reset(new MockSubscription);
         m_mockFeed1->m_articles = {QSharedPointer<MockArticle>(new MockArticle(m_mockFeed1.get())),
                                    QSharedPointer<MockArticle>(new MockArticle(m_mockFeed1.get()))};
 
-        m_mockFeed2.reset(new MockFeed);
+        m_mockFeed2.reset(new MockSubscription);
         m_mockFeed2->m_articles = {QSharedPointer<MockArticle>(new MockArticle(m_mockFeed2.get())),
                                    QSharedPointer<MockArticle>(new MockArticle(m_mockFeed2.get()))};
 
@@ -102,6 +102,55 @@ private slots:
         emit m_mockFeed1->articleAdded(art);
         qDebug() << waitArticleAdded;
         QVERIFY(waitArticleAdded.length() == 1);
+    }
+
+    void testAllItemsFeedStaysUpdatingUntilAllSubscriptionsFinish()
+    {
+        QVERIFY(m_allItemsFeed->status() == Feed::Idle);
+
+        const QDateTime timestamp = QDateTime::currentDateTime().addSecs(-30);
+        m_allItemsFeed->update(timestamp);
+        QVERIFY(m_mockFeed1->status() == Feed::Updating);
+        QVERIFY(m_mockFeed2->status() == Feed::Updating);
+        QVERIFY(m_mockFeed1->m_updater.updateStartTime() == timestamp);
+        QVERIFY(m_mockFeed2->m_updater.updateStartTime() == timestamp);
+        QVERIFY(m_allItemsFeed->status() == Feed::Updating);
+
+        m_mockFeed1->m_updater.finish();
+        QVERIFY(m_allItemsFeed->status() == Feed::Updating);
+
+        m_mockFeed2->m_updater.finish();
+        QVERIFY(m_allItemsFeed->status() == Feed::Idle);
+    }
+
+    void testContextAcceptsFeedsThatAreNotSubscriptions()
+    {
+        auto *plainFeed = new MockFeed;
+        auto *subscription = new MockSubscription;
+        auto *storage = new MockStorage;
+        storage->m_feeds = {subscription};
+        storage->m_plainFeeds = {plainFeed};
+        plainFeed->setParent(storage);
+        subscription->setParent(storage);
+        Context context(storage);
+        QVERIFY(QTest::qWaitFor([&context] {
+            return context.feedListComplete();
+        }));
+
+        QVERIFY(context.getFeeds().contains(plainFeed));
+        QVERIFY(context.getFeeds().contains(subscription));
+
+        context.setDefaultUpdateInterval(60);
+        context.setExpireAge(60);
+        QVERIFY(subscription->updateInterval() == 60);
+
+        context.requestUpdate();
+        QVERIFY(plainFeed->m_updateCount == 1);
+        QVERIFY(subscription->m_updater.m_call_count == 1);
+        QVERIFY(plainFeed->m_lastUpdateTimestamp == subscription->m_updater.updateStartTime());
+
+        context.abortUpdates();
+        QVERIFY(plainFeed->m_cancelCount == 1);
     }
 };
 

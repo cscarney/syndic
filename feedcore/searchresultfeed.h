@@ -16,7 +16,6 @@ public:
     explicit SearchResultFeed(QObject *parent = nullptr);
 
     QFuture<ArticleRef> getArticles(bool unreadFilter) override;
-    Updater *updater() override;
     Context *context() const;
     void setContext(Context *newContext);
     QString query() const;
@@ -27,10 +26,8 @@ signals:
     void queryChanged();
 
 private:
-    class Updater;
-    Context *m_context{nullptr};
+    Context *m_context;
     QString m_query;
-    Updater *m_updater{nullptr};
 };
 
 } // namespace FeedCore

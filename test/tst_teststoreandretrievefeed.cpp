@@ -6,7 +6,7 @@
 #include "article.h"
 #include "context.h"
 #include "future.h"
-#include "provisionalfeed.h"
+#include "provisionalsubscription.h"
 #include "sqlite/storageimpl.h"
 #include <QCoreApplication>
 #include <QSignalSpy>
@@ -28,7 +28,7 @@ class testStoreAndRetrieveFeed : public QObject
     Q_OBJECT
 
     FeedCore::Context *m_context{nullptr};
-    FeedCore::Feed *m_feed{nullptr};
+    FeedCore::Subscription *m_feed{nullptr};
 
     void refreshContext()
     {
@@ -42,10 +42,10 @@ class testStoreAndRetrieveFeed : public QObject
             qCritical() << "Feed list did not complete";
         }
         auto feeds = m_context->getFeeds();
-        m_feed = feeds.isEmpty() ? nullptr : *feeds.begin();
+        m_feed = feeds.isEmpty() ? nullptr : qobject_cast<FeedCore::Subscription *>(*feeds.begin());
     }
 
-    void setupModifyUpdateModeTest(FeedCore::Feed::UpdateMode mode)
+    void setupModifyUpdateModeTest(FeedCore::Subscription::UpdateMode mode)
     {
         m_feed->setUpdateInterval(testFeedUpdateInterval);
         m_feed->setUpdateMode(mode);
@@ -53,7 +53,7 @@ class testStoreAndRetrieveFeed : public QObject
         refreshContext();
     }
 
-    void setupModifyExpireModeTest(FeedCore::Feed::UpdateMode mode)
+    void setupModifyExpireModeTest(FeedCore::Subscription::UpdateMode mode)
     {
         m_feed->setExpireAge(testFeedExpireAge);
         m_feed->setExpireMode(mode);
@@ -113,9 +113,10 @@ class testStoreAndRetrieveFeed : public QObject
 
     static auto indexFeedsByUrl(const QSet<FeedCore::Feed *> &feeds)
     {
-        QMap<QUrl, FeedCore::Feed *> result;
+        QMap<QUrl, FeedCore::Subscription *> result;
         for (auto *feed : feeds) {
-            result[feed->url()] = feed;
+            auto *subscription = qobject_cast<FeedCore::Subscription *>(feed);
+            result[subscription->url()] = subscription;
         }
         return result;
     }
@@ -129,6 +130,7 @@ private slots:
     void initTestCase()
     {
         qRegisterMetaType<FeedCore::Feed *>();
+        qRegisterMetaType<FeedCore::Subscription *>();
     }
 
     void init()
@@ -136,10 +138,10 @@ private slots:
         {
             QFile(testDbName).remove();
             refreshContext();
-            FeedCore::ProvisionalFeed testFeed;
+            FeedCore::ProvisionalSubscription testFeed;
             testFeed.setUrl(QUrl(testUrl));
             testFeed.setName(testFeedName);
-            QSignalSpy waitForFeed(&testFeed, &FeedCore::ProvisionalFeed::targetFeedChanged);
+            QSignalSpy waitForFeed(&testFeed, &FeedCore::ProvisionalSubscription::targetFeedChanged);
             m_context->addFeed(&testFeed);
             QVERIFY(waitForFeed.count() || waitForFeed.wait());
         }
@@ -194,47 +196,47 @@ private slots:
 
     void testSetUpdateModeInherit()
     {
-        setupModifyUpdateModeTest(FeedCore::Feed::InheritUpdateMode);
+        setupModifyUpdateModeTest(FeedCore::Subscription::InheritUpdateMode);
         QVERIFY(m_feed != nullptr);
-        QVERIFY(m_feed->updateMode() == FeedCore::Feed::InheritUpdateMode);
+        QVERIFY(m_feed->updateMode() == FeedCore::Subscription::InheritUpdateMode);
         QVERIFY(m_feed->updateInterval() == testContextUpdateInterval);
     }
 
     void testSetUpdateModeOverride()
     {
-        setupModifyUpdateModeTest(FeedCore::Feed::OverrideUpdateMode);
+        setupModifyUpdateModeTest(FeedCore::Subscription::OverrideUpdateMode);
         QVERIFY(m_feed != nullptr);
-        QVERIFY(m_feed->updateMode() == FeedCore::Feed::OverrideUpdateMode);
+        QVERIFY(m_feed->updateMode() == FeedCore::Subscription::OverrideUpdateMode);
         QVERIFY(m_feed->updateInterval() == testFeedUpdateInterval);
     }
 
     void testSetUpdateModeDisable()
     {
-        setupModifyUpdateModeTest(FeedCore::Feed::DisableUpdateMode);
+        setupModifyUpdateModeTest(FeedCore::Subscription::DisableUpdateMode);
         QVERIFY(m_feed != nullptr);
-        QVERIFY(m_feed->updateMode() == FeedCore::Feed::DisableUpdateMode);
+        QVERIFY(m_feed->updateMode() == FeedCore::Subscription::DisableUpdateMode);
     }
 
     void testSetExpireModeInherit()
     {
-        setupModifyExpireModeTest(FeedCore::Feed::InheritUpdateMode);
+        setupModifyExpireModeTest(FeedCore::Subscription::InheritUpdateMode);
         QVERIFY(m_feed != nullptr);
-        QVERIFY(m_feed->expireMode() == FeedCore::Feed::InheritUpdateMode);
+        QVERIFY(m_feed->expireMode() == FeedCore::Subscription::InheritUpdateMode);
         QVERIFY(m_feed->expireAge() == testContextExpireAge);
     }
 
     void testSetExpireModeOverride()
     {
-        setupModifyExpireModeTest(FeedCore::Feed::OverrideUpdateMode);
+        setupModifyExpireModeTest(FeedCore::Subscription::OverrideUpdateMode);
         QVERIFY(m_feed != nullptr);
-        QVERIFY(m_feed->expireMode() == FeedCore::Feed::OverrideUpdateMode);
+        QVERIFY(m_feed->expireMode() == FeedCore::Subscription::OverrideUpdateMode);
         QVERIFY(m_feed->expireAge() == testFeedExpireAge);
     }
 
     void testSetExpireModeDisable()
     {
-        setupModifyExpireModeTest(FeedCore::Feed::DisableUpdateMode);
-        QVERIFY(m_feed->expireMode() == FeedCore::Feed::DisableUpdateMode);
+        setupModifyExpireModeTest(FeedCore::Subscription::DisableUpdateMode);
+        QVERIFY(m_feed->expireMode() == FeedCore::Subscription::DisableUpdateMode);
     }
 
     void testStoreArticles()

@@ -19,11 +19,8 @@ class HighlightsFeed : public Feed
 public:
     HighlightsFeed(Context *context, const QString &name, QObject *parent = nullptr);
     QFuture<ArticleRef> getArticles(bool unreadFilter) final;
-    Updater *updater() final;
 
 private:
     Context *m_context{nullptr};
-    Updater *m_updater{nullptr};
-    class HighlightsUpdater;
 };
 }

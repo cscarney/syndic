@@ -11,7 +11,8 @@
 namespace FeedCore
 {
 class Feed;
-class ProvisionalFeed;
+class Subscription;
+class ProvisionalSubscription;
 class OpmlReader : public QObject
 {
     Q_OBJECT
@@ -33,20 +34,20 @@ public:
         return xml.errorString();
     }
 
-    const QSet<ProvisionalFeed *> &newFeeds()
+    const QSet<ProvisionalSubscription *> &newFeeds()
     {
         return m_newFeeds;
     }
-    const QSet<ProvisionalFeed *> &updatedFeeds()
+    const QSet<ProvisionalSubscription *> &updatedFeeds()
     {
         return m_updatedFeeds;
     }
 
 private:
     QXmlStreamReader xml;
-    QHash<QUrl, Feed *> m_existingFeeds;
-    QSet<ProvisionalFeed *> m_newFeeds;
-    QSet<ProvisionalFeed *> m_updatedFeeds;
+    QHash<QUrl, Subscription *> m_existingFeeds;
+    QSet<ProvisionalSubscription *> m_newFeeds;
+    QSet<ProvisionalSubscription *> m_updatedFeeds;
     void foundFeed(const QUrl &xmlUrl, const QString &text, const QString &category);
 };
 }

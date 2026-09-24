@@ -10,18 +10,11 @@ using namespace FeedCore;
 struct Feed::PrivData {
     QString name;
     QString category;
-    QUrl url;
-    QUrl link;
     QUrl icon;
     int unreadCount{0};
     int pendingUnreadCountChange{0};
     LoadStatus status{LoadStatus::Idle};
-    UpdateMode updateMode{InheritUpdateMode};
-    time_t updateInterval{0};
-    UpdateMode expireMode{InheritUpdateMode};
-    qint64 expireAge{0};
     QDateTime lastUpdate;
-    int flags{0};
 };
 
 Feed::Feed(QObject *parent)
@@ -35,6 +28,14 @@ Feed::~Feed()
     setUnreadCount(0);
 }
 
+void Feed::update(const QDateTime & /*timestamp*/)
+{
+}
+
+void Feed::cancelUpdates()
+{
+}
+
 const QString &Feed::name() const
 {
     return d->name;
@@ -46,11 +47,6 @@ void Feed::setName(const QString &name)
         d->name = name;
         emit nameChanged();
     }
-}
-
-const QUrl &Feed::url() const
-{
-    return d->url;
 }
 
 void Feed::setUnreadCount(int unreadCount)
@@ -81,24 +77,16 @@ void Feed::decrementUnreadCount()
     incrementUnreadCount(-1);
 }
 
-void Feed::setUrl(const QUrl &url)
+QString Feed::category() const
 {
-    if (d->url != url) {
-        d->url = url;
-        emit urlChanged();
-    }
+    return d->category;
 }
 
-const QUrl &Feed::link()
+void Feed::setCategory(const QString &category)
 {
-    return d->link;
-}
-
-void Feed::setLink(const QUrl &link)
-{
-    if (d->link != link) {
-        d->link = link;
-        emit linkChanged();
+    if (d->category != category) {
+        d->category = category;
+        emit categoryChanged();
     }
 }
 
@@ -147,172 +135,4 @@ void Feed::setLastUpdate(const QDateTime &lastUpdate)
         d->lastUpdate = lastUpdate;
         emit lastUpdateChanged();
     }
-}
-
-Feed::UpdateMode Feed::updateMode()
-{
-    return d->updateMode;
-}
-
-void Feed::setUpdateMode(Feed::UpdateMode updateMode)
-{
-    if (updateMode != d->updateMode) {
-        d->updateMode = updateMode;
-        emit updateModeChanged();
-    }
-}
-
-qint64 Feed::updateInterval()
-{
-    return d->updateInterval;
-}
-
-void Feed::setUpdateInterval(qint64 updateInterval)
-{
-    if (updateInterval != d->updateInterval) {
-        d->updateInterval = updateInterval;
-        emit updateIntervalChanged();
-    }
-}
-
-Feed::UpdateMode Feed::expireMode()
-{
-    return d->expireMode;
-}
-
-void Feed::setExpireMode(Feed::UpdateMode expireMode)
-{
-    if (d->expireMode != expireMode) {
-        d->expireMode = expireMode;
-        emit expireModeChanged();
-    }
-}
-
-void Feed::setExpireAge(qint64 expireAge)
-{
-    if (expireAge != d->expireAge) {
-        d->expireAge = expireAge;
-        emit expireAgeChanged();
-    }
-}
-
-qint64 Feed::expireAge()
-{
-    return d->expireAge;
-}
-
-void Feed::setFlags(int flags)
-{
-    if (flags != d->flags) {
-        d->flags = flags;
-        emit flagsChanged();
-    }
-}
-
-int Feed::flags() const
-{
-    return d->flags;
-}
-
-void Feed::updateParams(Feed *other)
-{
-    if (other == nullptr) {
-        return;
-    }
-    setName(other->name());
-    setCategory(other->category());
-    setUrl(other->url());
-    setUpdateInterval(other->updateInterval());
-    setUpdateMode(other->updateMode());
-    setExpireAge(other->expireAge());
-    setExpireMode(other->expireMode());
-    setFlags(other->flags());
-}
-
-bool Feed::editable()
-{
-    return false;
-}
-
-void Feed::requestDelete()
-{
-    emit deleteRequested();
-}
-
-QString Feed::category() const
-{
-    return d->category;
-}
-
-void Feed::setCategory(const QString &category)
-{
-    if (d->category != category) {
-        d->category = category;
-        emit categoryChanged();
-    }
-}
-
-struct Feed::Updater::PrivData {
-    Feed *feed;
-    QDateTime updateStartTime;
-    QString errorMsg;
-    bool active{false};
-    explicit PrivData(Feed *feed)
-        : feed(feed){};
-};
-
-Feed::Updater::Updater(Feed *feed, QObject *parent)
-    : QObject(parent)
-    , d{std::make_unique<PrivData>(feed)}
-{
-}
-
-Feed::Updater::~Updater() = default;
-
-void Feed::Updater::start(const QDateTime &timestamp)
-{
-    d->updateStartTime = timestamp;
-    if (d->feed->status() != LoadStatus::Updating) {
-        d->feed->setStatus(LoadStatus::Updating);
-        run();
-    }
-}
-
-QString Feed::Updater::error()
-{
-    return d->errorMsg;
-}
-
-Feed *Feed::Updater::feed()
-{
-    return d->feed;
-}
-
-const QDateTime &Feed::Updater::updateStartTime()
-{
-    return d->updateStartTime;
-}
-
-void Feed::Updater::finish()
-{
-    d->feed->setLastUpdate(d->updateStartTime);
-    d->feed->setStatus(LoadStatus::Idle);
-    cleanup();
-}
-
-void Feed::Updater::setError(const QString &errorMsg)
-{
-    d->errorMsg = errorMsg;
-    d->feed->setStatus(LoadStatus::Error);
-    cleanup();
-}
-
-void Feed::Updater::aborted()
-{
-    d->feed->setStatus(LoadStatus::Idle);
-    cleanup();
-}
-
-void Feed::Updater::cleanup()
-{
 }

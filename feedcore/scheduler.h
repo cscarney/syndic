@@ -4,7 +4,7 @@
  */
 
 #pragma once
-#include "feed.h"
+#include "subscription.h"
 #include "future.h"
 #include <QDateTime>
 #include <QObject>
@@ -28,12 +28,12 @@ public:
      * If the feed is already stale as of /timestamp/ it is updated immediately and /timestamp/ is
      * recorded as the update time.
      */
-    void schedule(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime());
+    void schedule(Subscription *feed, const QDateTime &timestamp = QDateTime::currentDateTime());
 
     /**
      * Remove a feed from the update schedule.
      */
-    void unschedule(Feed *feedRef);
+    void unschedule(Subscription *feedRef);
 
     static constexpr const int kDefaultTimerResolution = 60000;
 
@@ -65,9 +65,9 @@ public:
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
-    void reschedule(Feed *feed, const QDateTime &timestamp = QDateTime::currentDateTime());
-    void onUpdateModeChanged(Feed *feed);
-    void onFeedStatusChanged(Feed *sender);
+    void reschedule(Subscription *feed, const QDateTime &timestamp = QDateTime::currentDateTime());
+    void onUpdateModeChanged(Subscription *feed);
+    void onFeedStatusChanged(Subscription *sender);
     void onNetworkStateChanged();
 };
 }

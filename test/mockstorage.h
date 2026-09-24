@@ -1,12 +1,14 @@
 #pragma once
 #include "article.h"
 #include "mockfeed.h"
+#include "mocksubscription.h"
 #include "storage.h"
 
 class MockStorage : public FeedCore::Storage
 {
 public:
-    QList<MockFeed *> m_feeds;
+    QList<MockSubscription *> m_feeds;
+    QList<MockFeed *> m_plainFeeds;
 
     QFuture<FeedCore::ArticleRef> getAll() override
     {
@@ -51,16 +53,19 @@ public:
             for (auto &item : std::as_const(m_feeds)) {
                 op.addResult(item);
             }
+            for (auto &item : std::as_const(m_plainFeeds)) {
+                op.addResult(item);
+            }
         });
     }
 
-    QFuture<FeedCore::Feed *> storeFeed(FeedCore::Feed *feed) override
+    QFuture<FeedCore::Subscription *> storeFeed(FeedCore::Subscription *feed) override
     {
-        MockFeed *newFeed = new MockFeed;
+        MockSubscription *newFeed = new MockSubscription;
         newFeed->setParent(this);
         newFeed->updateParams(feed);
         m_feeds << newFeed;
-        return FeedCore::Future::yield<FeedCore::Feed *>(newFeed, [newFeed](auto &op) {
+        return FeedCore::Future::yield<FeedCore::Subscription *>(newFeed, [newFeed](auto &op) {
             op.addResult(newFeed);
         });
     }

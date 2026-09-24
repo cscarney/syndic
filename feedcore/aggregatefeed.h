@@ -16,8 +16,9 @@ class AggregateFeed : public FeedCore::Feed
     Q_OBJECT
 public:
     explicit AggregateFeed(QObject *parent = nullptr);
-    FeedCore::Feed::Updater *updater() override;
     QFuture<FeedCore::ArticleRef> getArticles(bool unreadOnly) override;
+    void update(const QDateTime &timestamp = QDateTime::currentDateTime()) override;
+    void cancelUpdates() override;
 
 protected:
     void addFeed(Feed *feed);
@@ -25,10 +26,8 @@ protected:
     void setIdleStatus(FeedCore::Feed::LoadStatus status);
 
 private:
-    class Updater;
     QSet<Feed *> m_feeds;
     QSet<Feed *> m_active;
-    Updater *m_updater{nullptr};
     LoadStatus m_idleStatus{Feed::Idle};
     void onUnreadCountChanged(int delta);
     void onArticleAdded(const ArticleRef &article);

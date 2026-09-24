@@ -4,8 +4,8 @@
  */
 
 #include "networkaccessmanager.h"
-#include "provisionalfeed.h"
-#include "updatablefeed.h"
+#include "provisionalsubscription.h"
+#include "localsubscription.h"
 #include <QCoreApplication>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -132,7 +132,7 @@ class TestWebPageFallback : public QObject
 
 private:
     QPointer<MockNetworkAccessManager> m_networkManager;
-    QScopedPointer<UpdatableFeed> m_feed;
+    QScopedPointer<LocalSubscription> m_feed;
 
     // Sample data
     const QByteArray m_atomFeedData = QByteArray(
@@ -175,13 +175,14 @@ private slots:
     {
         qRegisterMetaType<FeedCore::Feed::LoadStatus>();
         qRegisterMetaType<FeedCore::Feed *>();
+        qRegisterMetaType<FeedCore::Subscription *>();
     }
 
     void init()
     {
         m_networkManager = new MockNetworkAccessManager();
         FeedCore::NetworkAccessManager::setInstance(m_networkManager.get());
-        m_feed.reset(new ProvisionalFeed());
+        m_feed.reset(new ProvisionalSubscription());
     }
 
     void cleanup()
@@ -209,7 +210,7 @@ private slots:
         // Verify the feed loaded correctly
         QCOMPARE(m_feed->status(), Feed::Idle);
         QCOMPARE(m_feed->name(), QString("Test Feed"));
-        QCOMPARE(m_feed->flags() & Feed::IsWebPageFlag, 0); // Should not have web page flag
+        QCOMPARE(m_feed->flags() & Subscription::IsWebPageFlag, 0); // Should not have web page flag
 
         // Verify status changes: Idle -> Updating -> Idle
         QCOMPARE(statusSpy.count(), 2);
@@ -228,7 +229,7 @@ private slots:
 
         // Set up signal spies
         QSignalSpy statusSpy(m_feed.get(), &Feed::statusChanged);
-        QSignalSpy urlChangedSpy(m_feed.get(), &Feed::urlChanged);
+        QSignalSpy urlChangedSpy(m_feed.get(), &Subscription::urlChanged);
 
         // Set the feed URL and start the update
         m_feed->updater()->start();
@@ -240,7 +241,7 @@ private slots:
         QCOMPARE(m_feed->status(), Feed::Idle);
         QCOMPARE(m_feed->name(), QString("Test Feed"));
         QCOMPARE(m_feed->url(), discoveredFeedUrl);
-        QCOMPARE(m_feed->flags() & Feed::IsWebPageFlag, 0); // Should not have web page flag
+        QCOMPARE(m_feed->flags() & Subscription::IsWebPageFlag, 0); // Should not have web page flag
 
         // Verify URL changed (from webpage to feed URL)
         QCOMPARE(urlChangedSpy.count(), 1);
@@ -256,7 +257,7 @@ private slots:
 
         // Set up signal spies
         QSignalSpy statusSpy(m_feed.get(), &Feed::statusChanged);
-        QSignalSpy flagsChangedSpy(m_feed.get(), &Feed::flagsChanged);
+        QSignalSpy flagsChangedSpy(m_feed.get(), &Subscription::flagsChanged);
 
         // Set the feed URL and start the update
         m_feed->setUrl(webpageUrl);
@@ -267,7 +268,7 @@ private slots:
 
         // Verify the feed was processed as a web page
         QCOMPARE(m_feed->status(), Feed::Idle);
-        QCOMPARE(m_feed->flags() & Feed::IsWebPageFlag, Feed::IsWebPageFlag); // Should have web page flag
+        QCOMPARE(m_feed->flags() & Subscription::IsWebPageFlag, Subscription::IsWebPageFlag); // Should have web page flag
 
         // Verify flags changed (indicating web page mode was set)
         QCOMPARE(flagsChangedSpy.count(), 1);
@@ -288,7 +289,7 @@ private slots:
 
         // Set up signal spies
         QSignalSpy statusSpy(m_feed.get(), &Feed::statusChanged);
-        QSignalSpy flagsChangedSpy(m_feed.get(), &Feed::flagsChanged);
+        QSignalSpy flagsChangedSpy(m_feed.get(), &Subscription::flagsChanged);
 
         // Set the feed URL and start the update
         m_feed->setUrl(webpageUrl);
@@ -299,7 +300,7 @@ private slots:
 
         // Verify the feed was processed as a web page after feed loading failed
         QCOMPARE(m_feed->status(), Feed::Idle);
-        QCOMPARE(m_feed->flags() & Feed::IsWebPageFlag, Feed::IsWebPageFlag); // Should have web page flag
+        QCOMPARE(m_feed->flags() & Subscription::IsWebPageFlag, Subscription::IsWebPageFlag); // Should have web page flag
 
         // Verify flags changed (indicating web page mode was set)
         QCOMPARE(flagsChangedSpy.count(), 1);

@@ -3,28 +3,15 @@
 #include "feed.h"
 #include <QList>
 
+/**
+ * A Feed that is not a Subscription, as returned by a backend that manages subscriptions remotely.
+ */
 class MockFeed : public FeedCore::Feed
 {
 public:
-    class Updater : public FeedCore::Feed::Updater
-    {
-    public:
-        int m_call_count{0};
-        void run() override
-        {
-            m_call_count++;
-        }
-        using Feed::Updater::finish;
-        using Feed::Updater::setError;
-        using Feed::Updater::Updater;
-    };
-    Updater m_updater;
+    int m_updateCount{0};
+    int m_cancelCount{0};
     QList<FeedCore::ArticleRef> m_articles;
-
-    Feed::Updater *updater() override
-    {
-        return &m_updater;
-    }
 
     QFuture<FeedCore::ArticleRef> getArticles(bool /*unreadFilter*/) override
     {
@@ -35,8 +22,16 @@ public:
         });
     }
 
-    MockFeed()
-        : m_updater(this, this)
+    QDateTime m_lastUpdateTimestamp;
+
+    void update(const QDateTime &timestamp = QDateTime::currentDateTime()) override
     {
+        m_updateCount++;
+        m_lastUpdateTimestamp = timestamp;
+    }
+
+    void cancelUpdates() override
+    {
+        m_cancelCount++;
     }
 };

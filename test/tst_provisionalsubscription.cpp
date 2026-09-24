@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "provisionalfeed.h"
+#include "provisionalsubscription.h"
 #include <QCoreApplication>
 #include <QSignalSpy>
 #include <QtTest>
@@ -13,10 +13,10 @@ constexpr const char *kValidUrl = "https://runningincircles.com/feed";
 constexpr const char *kUrlMissingSchema = "runningincircles.com/feed";
 constexpr const char *kInvalidUrl = "!!!";
 
-class testProvisionalFeed : public QObject
+class testProvisionalSubscription : public QObject
 {
     Q_OBJECT
-    QScopedPointer<ProvisionalFeed> m_testFeed;
+    QScopedPointer<ProvisionalSubscription> m_testFeed;
     QScopedPointer<QSignalSpy> m_spyUrlChanged;
     QScopedPointer<QSignalSpy> m_spyUrlStringChanged;
 
@@ -24,14 +24,15 @@ private slots:
     void initTestCase()
     {
         qRegisterMetaType<FeedCore::Feed *>();
-        qRegisterMetaType<FeedCore::ProvisionalFeed *>();
+        qRegisterMetaType<FeedCore::Subscription *>();
+        qRegisterMetaType<FeedCore::ProvisionalSubscription *>();
     }
 
     void init()
     {
-        m_testFeed.reset(new ProvisionalFeed());
-        m_spyUrlChanged.reset(new QSignalSpy(m_testFeed.get(), &ProvisionalFeed::urlChanged));
-        m_spyUrlStringChanged.reset(new QSignalSpy(m_testFeed.get(), &ProvisionalFeed::urlStringChanged));
+        m_testFeed.reset(new ProvisionalSubscription());
+        m_spyUrlChanged.reset(new QSignalSpy(m_testFeed.get(), &ProvisionalSubscription::urlChanged));
+        m_spyUrlStringChanged.reset(new QSignalSpy(m_testFeed.get(), &ProvisionalSubscription::urlStringChanged));
     }
 
     void cleanup()
@@ -87,5 +88,5 @@ private slots:
     }
 };
 
-QTEST_MAIN(testProvisionalFeed)
-#include "tst_provisionalFeed.moc"
+QTEST_MAIN(testProvisionalSubscription)
+#include "tst_provisionalsubscription.moc"

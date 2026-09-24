@@ -3,6 +3,7 @@
 
 set(feedcore_HEADERS
     feed.h
+    subscription.h
     article.h
     articleref.h
     storage.h
@@ -12,11 +13,11 @@ set(feedcore_HEADERS
     aggregatefeed.h
     categoryfeed.h
     factory.h
-    provisionalfeed.h
+    provisionalsubscription.h
     networkaccessmanager.h
     starreditemsfeed.h
     articlesummary.h
-    updatablefeed.h
+    localsubscription.h
     opmlreader.h
     sharedcache.h
     gumbovisitor.h
@@ -34,16 +35,17 @@ set(feedcore_HEADERS
 set(feedcore_SRCS
     ${feedcore_HEADERS}
     feed.cpp
+    subscription.cpp
     article.cpp
     context.cpp
     scheduler.cpp
     aggregatefeed.cpp
     categoryfeed.cpp
-    provisionalfeed.cpp
+    provisionalsubscription.cpp
     networkaccessmanager.cpp
     starreditemsfeed.cpp
     articlesummary.cpp
-    updatablefeed.cpp
+    localsubscription.cpp
     opmlreader.cpp
     sharedcache.cpp
     gumbovisitor.cpp

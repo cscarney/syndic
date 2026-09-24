@@ -4,7 +4,7 @@
  */
 #include "readabilityprefetchrule.h"
 #include "article.h"
-#include "feed.h"
+#include "subscription.h"
 #include "readability.h"
 #include "readabilityresult.h"
 #include <QFlags>
@@ -20,12 +20,11 @@ ReadabilityPrefetchRule::ReadabilityPrefetchRule(Readability *readability, QObje
 
 bool ReadabilityPrefetchRule::matches(const ArticleRef &article)
 {
-    if (!article->feed()) {
-        // feed has been deleted, don't match
+    auto *subscription = qobject_cast<Subscription *>(article->feed());
+    if (subscription == nullptr) {
         return false;
-    };
-    // check if we have already fetched the content
-    return QFlags<Feed::FeedFlags>(article->feed()->flags()).testFlag(Feed::UseReadableContentFlag);
+    }
+    return QFlags<Subscription::FeedFlags>(subscription->flags()).testFlag(Subscription::UseReadableContentFlag);
 }
 
 QFuture<void> ReadabilityPrefetchRule::beginPerformAction(const ArticleRef &article)

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "mockfeed.h"
+#include "mocksubscription.h"
 #include "scheduler.h"
 #include <QCoreApplication>
 #include <QSignalSpy>
@@ -26,7 +26,7 @@ private slots:
 
     void testStaleFeedGetsUpdatedWhenScheduled()
     {
-        MockFeed staleFeed;
+        MockSubscription staleFeed;
         const QDateTime lastUpdate = QDateTime::currentDateTime().addSecs(-10);
         const int updateInterval = 5;
         staleFeed.setLastUpdate(lastUpdate);
@@ -41,7 +41,7 @@ private slots:
 
     void testFeedGetsUpdatedWhenScheduledTimeArrives()
     {
-        MockFeed notQuiteStaleFeed;
+        MockSubscription notQuiteStaleFeed;
         const QDateTime lastUpdate = QDateTime::currentDateTime().addSecs(-30);
         const int updateInterval = 32;
         notQuiteStaleFeed.setLastUpdate(lastUpdate);
@@ -65,12 +65,12 @@ private slots:
         const int longUpdateInterval = 40;
         const int longerUpdateInterval = 50;
 
-        MockFeed feed1;
+        MockSubscription feed1;
         feed1.setLastUpdate(lastUpdate);
         feed1.setUpdateInterval(longUpdateInterval);
         scheduler->schedule(&feed1);
 
-        MockFeed feed2;
+        MockSubscription feed2;
         feed2.setLastUpdate(lastUpdate);
         feed2.setUpdateInterval(longerUpdateInterval);
         scheduler->schedule(&feed2);
@@ -91,7 +91,7 @@ private slots:
 
     void testFeedNotScheduledWhileBeingUpdated()
     {
-        MockFeed feedWithShortUpdateInterval;
+        MockSubscription feedWithShortUpdateInterval;
         const QDateTime lastUpdate = QDateTime::currentDateTime();
         feedWithShortUpdateInterval.setLastUpdate(lastUpdate);
         feedWithShortUpdateInterval.setUpdateInterval(1);
@@ -113,7 +113,7 @@ private slots:
 
     void testAddFeedDuringUpdate()
     {
-        MockFeed feed;
+        MockSubscription feed;
         const QDateTime lastUpdate = QDateTime::currentDateTime().addSecs(-10);
         feed.setLastUpdate(lastUpdate);
         feed.setUpdateInterval(1);
@@ -126,7 +126,7 @@ private slots:
     void testFeedNotScheduledAfterBeingRemoved()
     {
         const QDateTime lastUpdate = QDateTime::currentDateTime();
-        MockFeed feed;
+        MockSubscription feed;
         feed.setLastUpdate(lastUpdate);
         feed.setUpdateInterval(1);
         scheduler->schedule(&feed);
@@ -145,7 +145,7 @@ private slots:
     {
         const QDateTime timestamp = QDateTime::currentDateTime();
         const QDateTime lastUpdate = timestamp.addSecs(1);
-        MockFeed feed;
+        MockSubscription feed;
         feed.setLastUpdate(lastUpdate);
         feed.setUpdateInterval(1);
         scheduler->schedule(&feed);
@@ -168,7 +168,7 @@ private slots:
     {
         const QDateTime timestamp = QDateTime::currentDateTime();
         const QDateTime lastUpdate = timestamp.addSecs(-10);
-        MockFeed feed;
+        MockSubscription feed;
         feed.setLastUpdate(lastUpdate);
         feed.setUpdateInterval(1);
         scheduler->schedule(&feed);
@@ -188,7 +188,7 @@ private slots:
     {
         const QDateTime timestamp = QDateTime::currentDateTime();
         const QDateTime lastUpdate = timestamp.addSecs(-10);
-        MockFeed feed;
+        MockSubscription feed;
         feed.setLastUpdate(lastUpdate);
         feed.setUpdateInterval(1);
         scheduler->schedule(&feed);
@@ -207,12 +207,12 @@ private slots:
         const QDateTime timestamp = QDateTime::currentDateTime();
         const int updateInterval = 2;
 
-        MockFeed feed1;
+        MockSubscription feed1;
         const QDateTime lastUpdate1 = timestamp.addSecs(-3);
         feed1.setLastUpdate(lastUpdate1);
         feed1.setUpdateInterval(updateInterval);
 
-        MockFeed feed2;
+        MockSubscription feed2;
         const QDateTime lastUpdate2 = timestamp.addSecs(-4);
         feed1.setLastUpdate(lastUpdate2);
         feed1.setUpdateInterval(updateInterval);

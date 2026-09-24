@@ -4,7 +4,7 @@
  */
 
 #pragma once
-#include "feed.h"
+#include "subscription.h"
 #include <Syndication/Feed>
 #include <Syndication/Item>
 namespace FeedCore
@@ -12,13 +12,13 @@ namespace FeedCore
 /**
  * Base class for feed implementations that are updated locally using the Syndication library
  */
-class UpdatableFeed : public Feed
+class LocalSubscription : public Subscription
 {
 public:
     Updater *updater() final;
 
 protected:
-    explicit UpdatableFeed(QObject *parent);
+    explicit LocalSubscription(QObject *parent);
 
 private:
     /**

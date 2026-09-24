@@ -4,7 +4,7 @@
  */
 
 #include "opmlreader.h"
-#include "provisionalfeed.h"
+#include "provisionalsubscription.h"
 #include <QUrl>
 
 using namespace FeedCore;
@@ -23,7 +23,9 @@ OpmlReader::OpmlReader(QIODevice *device, const QSet<Feed *> &existingFeeds)
     : OpmlReader(device)
 {
     for (Feed *feed : existingFeeds) {
-        m_existingFeeds[feed->url()] = feed;
+        if (auto *subscription = qobject_cast<Subscription *>(feed)) {
+            m_existingFeeds[subscription->url()] = subscription;
+        }
     }
 }
 
@@ -67,7 +69,7 @@ void OpmlReader::readAll()
 
 void OpmlReader::foundFeed(const QUrl &xmlUrl, const QString &text, const QString &category)
 {
-    auto *feed = new ProvisionalFeed(this);
+    auto *feed = new ProvisionalSubscription(this);
     feed->setUrl(xmlUrl);
     feed->setName(text);
     feed->setCategory(category);

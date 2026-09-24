@@ -1,6 +1,6 @@
 #include "article.h"
 #include "articlesummary.h"
-#include "mockfeed.h"
+#include "mocksubscription.h"
 #include <QCoreApplication>
 #include <QSignalSpy>
 #include <QtTest>
@@ -26,7 +26,7 @@ public:
 class testArticleSummary : public QObject
 {
     Q_OBJECT
-    MockFeed m_mockFeed;
+    MockSubscription m_mockFeed;
 private slots:
     void initTestCase()
     {
