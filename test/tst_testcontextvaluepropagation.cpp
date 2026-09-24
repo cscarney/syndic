@@ -14,7 +14,7 @@ using namespace FeedCore;
 
 class MockStorage : public FeedCore::Storage
 {
-    QList<Feed *> m_feeds;
+    QList<Subscription *> m_feeds;
 
 public:
     QFuture<FeedCore::ArticleRef> getAll() override
@@ -30,9 +30,9 @@ public:
     {
         return Future::yield<ArticleRef>(this, [](auto &) {});
     }
-    QFuture<FeedCore::Feed *> getFeeds() override
+    QFuture<FeedCore::Subscription *> getFeeds() override
     {
-        return Future::yield<Feed *>(this, [this](auto &r) {
+        return Future::yield<Subscription *>(this, [this](auto &r) {
             for (const auto &item : std::as_const(m_feeds)) {
                 r.addResult(item);
             }

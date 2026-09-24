@@ -76,7 +76,7 @@ public:
      * In a newly created context, this will return an empty set, since feeds
      * are asynchronously loaded from storage.
      */
-    const QSet<Feed *> &getFeeds();
+    const QSet<Subscription *> &getFeeds();
 
     /**
      * Returns a shared instance of the "All Items" feed for this context.
@@ -237,7 +237,7 @@ signals:
      *
      * The supplied feed object is unique-per-feed and belongs to the feed's storage backend.
      */
-    void feedAdded(FeedCore::Feed *feed);
+    void feedAdded(FeedCore::Subscription *feed);
 
     /**
      * Emitted when the user needs to be prompted to configure the context.
@@ -249,8 +249,8 @@ signals:
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
-    void populateFeeds(const QList<Feed *> &feeds);
-    void registerFeeds(const QList<Feed *> &feeds);
+    void populateFeeds(const QList<Subscription *> &feeds);
+    void registerFeeds(const QList<Subscription *> &feeds);
     void setFeedListComplete(bool feedListComplete);
     void startUpdatesForAllFeeds();
 };

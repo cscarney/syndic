@@ -34,7 +34,7 @@ public:
     QFuture<FeedCore::ArticleRef> getStarred() final;
     QFuture<FeedCore::ArticleRef> getSearchResults(const QString &search) override;
     QFuture<FeedCore::ArticleRef> getHighlights(size_t limit) final;
-    QFuture<FeedCore::Feed *> getFeeds() final;
+    QFuture<FeedCore::Subscription *> getFeeds() final;
     QFuture<FeedCore::Subscription *> storeFeed(FeedCore::Subscription *feed) final;
     void listenForChanges(FeedImpl *feed);
     void expire(FeedImpl *feed, const QDateTime &olderThan);
