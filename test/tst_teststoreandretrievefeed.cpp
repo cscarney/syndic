@@ -111,11 +111,11 @@ class testStoreAndRetrieveFeed : public QObject
         return articles;
     }
 
-    static auto indexFeedsByUrl(const QSet<FeedCore::Feed *> &feeds)
+    static auto indexFeedsByUrl(const QSet<FeedCore::Subscription *> &feeds)
     {
         QMap<QUrl, FeedCore::Subscription *> result;
         for (auto *feed : feeds) {
-            auto *subscription = qobject_cast<FeedCore::Subscription *>(feed);
+            auto *subscription = feed;
             result[subscription->url()] = subscription;
         }
         return result;
@@ -292,7 +292,7 @@ private slots:
         }
         {
             refreshContext();
-            const QSet<FeedCore::Feed *> &feeds = m_context->getFeeds();
+            const QSet<FeedCore::Subscription *> &feeds = m_context->getFeeds();
             QVERIFY(feeds.count() == 5);
 
             const auto feedsByUrl = indexFeedsByUrl(feeds);

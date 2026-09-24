@@ -311,9 +311,9 @@ void StorageImpl::Worker::appendFeedResults(QPromise<FeedType *> &op, FeedQuery 
     }
 }
 
-QFuture<Feed *> StorageImpl::getFeeds()
+QFuture<Subscription *> StorageImpl::getFeeds()
 {
-    return m_worker->runInDatabaseThread<Feed *>([this](auto &db, auto &op) {
+    return m_worker->runInDatabaseThread<Subscription *>([this](auto &db, auto &op) {
         FeedQuery q{db.selectAllFeeds()};
         m_worker->appendFeedResults(op, q);
     });

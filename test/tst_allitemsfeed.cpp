@@ -122,36 +122,6 @@ private slots:
         m_mockFeed2->m_updater.finish();
         QVERIFY(m_allItemsFeed->status() == Feed::Idle);
     }
-
-    void testContextAcceptsFeedsThatAreNotSubscriptions()
-    {
-        auto *plainFeed = new MockFeed;
-        auto *subscription = new MockSubscription;
-        auto *storage = new MockStorage;
-        storage->m_feeds = {subscription};
-        storage->m_plainFeeds = {plainFeed};
-        plainFeed->setParent(storage);
-        subscription->setParent(storage);
-        Context context(storage);
-        QVERIFY(QTest::qWaitFor([&context] {
-            return context.feedListComplete();
-        }));
-
-        QVERIFY(context.getFeeds().contains(plainFeed));
-        QVERIFY(context.getFeeds().contains(subscription));
-
-        context.setDefaultUpdateInterval(60);
-        context.setExpireAge(60);
-        QVERIFY(subscription->updateInterval() == 60);
-
-        context.requestUpdate();
-        QVERIFY(plainFeed->m_updateCount == 1);
-        QVERIFY(subscription->m_updater.m_call_count == 1);
-        QVERIFY(plainFeed->m_lastUpdateTimestamp == subscription->m_updater.updateStartTime());
-
-        context.abortUpdates();
-        QVERIFY(plainFeed->m_cancelCount == 1);
-    }
 };
 
 QTEST_MAIN(testAllItemsFeed)

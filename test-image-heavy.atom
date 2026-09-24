@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Image Heavy Test Feed</title>
+  <id>urn:uuid:test-image-heavy-feed</id>
+  <updated>2026-02-17T00:00:00Z</updated>
+  <link href="https://www.heise.de/" />
+  <entry>
+    <title>Top 10: Das beste Heizkörperthermostat im Test</title>
+    <id>urn:uuid:test-image-heavy-entry-1</id>
+    <updated>2026-02-17T00:00:00Z</updated>
+    <link href="https://www.heise.de/bestenlisten/testsieger/top-10-das-beste-heizkoerperthermostat-im-test-smart-heizen-und-geld-sparen/1e43f3r" />
+    <summary>A long, image-heavy article for testing memory limits of ContentImageItem.</summary>
+  </entry>
+</feed>

@@ -19,13 +19,11 @@ OpmlReader::OpmlReader(QIODevice *device)
 {
 }
 
-OpmlReader::OpmlReader(QIODevice *device, const QSet<Feed *> &existingFeeds)
+OpmlReader::OpmlReader(QIODevice *device, const QSet<Subscription *> &existingFeeds)
     : OpmlReader(device)
 {
-    for (Feed *feed : existingFeeds) {
-        if (auto *subscription = qobject_cast<Subscription *>(feed)) {
-            m_existingFeeds[subscription->url()] = subscription;
-        }
+    for (Subscription *feed : existingFeeds) {
+        m_existingFeeds[feed->url()] = feed;
     }
 }
 

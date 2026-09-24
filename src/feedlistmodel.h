@@ -7,6 +7,7 @@
 #include "articleref.h"
 #include "context.h"
 #include "future.h"
+#include "subscription.h"
 #include <QAbstractListModel>
 #include <QQmlParserStatus>
 #include <memory>
@@ -54,8 +55,8 @@ private:
     class PrivData;
     std::unique_ptr<PrivData> d;
     void loadFeeds();
-    void onFeedAdded(FeedCore::Feed *feed);
-    void onFeedSortValueChanged(FeedCore::Feed *feed);
+    void onFeedAdded(FeedCore::Subscription *feed);
+    void onFeedSortValueChanged(FeedCore::Subscription *feed);
 };
 
 class FeedSortNotifier : public QObject
@@ -64,5 +65,5 @@ class FeedSortNotifier : public QObject
     using QObject::QObject;
 
 signals:
-    void feedSortValueChanged(FeedCore::Feed *feed);
+    void feedSortValueChanged(FeedCore::Subscription *feed);
 };

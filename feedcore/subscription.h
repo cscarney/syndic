@@ -10,11 +10,6 @@ namespace FeedCore
 {
 /**
  * Abstract class for feeds that the user has subscribed to.
- *
- * A subscription has a source URL, per-feed settings, and an Updater that
- * fetches new content.  Subscriptions are the feeds managed by the Context,
- * stored by the Storage backend, and updated by the Scheduler.  All
- * subscriptions are editable in the UI.
  */
 class Subscription : public Feed
 {

@@ -39,7 +39,7 @@ public:
 
     void onFeedSortValueChanged()
     {
-        emit feedSortValueChanged(qobject_cast<Feed *>(QObject::sender()));
+        emit feedSortValueChanged(qobject_cast<Subscription *>(QObject::sender()));
     }
 };
 
@@ -100,7 +100,7 @@ public:
     QSharedPointer<Feed> allItems = nullptr;
     StarredItemsFeed *starredItems = nullptr;
     HighlightsFeed *highlightsFeed = nullptr;
-    QList<FeedCore::Feed *> feeds;
+    QList<FeedCore::Subscription *> feeds;
     Sort sortMode = Name;
     std::unique_ptr<SortHelper> sortHelper = std::make_unique<NameSortHelper>();
 
@@ -109,9 +109,9 @@ public:
     {
     }
 
-    void addItem(FeedCore::Feed *feed);
-    void addItem(FeedCore::Feed *feed, int index);
-    void removeItem(FeedCore::Feed *feed);
+    void addItem(FeedCore::Subscription *feed);
+    void addItem(FeedCore::Subscription *feed, int index);
+    void removeItem(FeedCore::Subscription *feed);
 };
 
 FeedListModel::FeedListModel(QObject *parent)
@@ -123,12 +123,12 @@ FeedListModel::FeedListModel(QObject *parent)
 
 FeedListModel::~FeedListModel() = default;
 
-void FeedListModel::PrivData::addItem(Feed *feed)
+void FeedListModel::PrivData::addItem(Subscription *feed)
 {
     addItem(feed, feeds.size());
 }
 
-void FeedListModel::PrivData::addItem(FeedCore::Feed *feed, int index)
+void FeedListModel::PrivData::addItem(FeedCore::Subscription *feed, int index)
 {
     feeds.insert(index, feed);
     IconProvider::discoverIcon(feed);
@@ -138,7 +138,7 @@ void FeedListModel::PrivData::addItem(FeedCore::Feed *feed, int index)
     sortHelper->connectFeed(feed);
 }
 
-void FeedListModel::PrivData::removeItem(FeedCore::Feed *feed)
+void FeedListModel::PrivData::removeItem(FeedCore::Subscription *feed)
 {
     int i = feeds.indexOf(feed);
     if (i < 0) {
@@ -295,7 +295,7 @@ void FeedListModel::loadFeeds()
     endResetModel();
 }
 
-void FeedListModel::onFeedAdded(FeedCore::Feed *feed)
+void FeedListModel::onFeedAdded(FeedCore::Subscription *feed)
 {
     const auto it = std::lower_bound(d->feeds.constBegin(), d->feeds.constEnd(), feed, d->sortHelper->comparator);
     const int index = int(it - d->feeds.constBegin());
@@ -305,19 +305,19 @@ void FeedListModel::onFeedAdded(FeedCore::Feed *feed)
     endInsertRows();
 }
 
-void FeedListModel::onFeedSortValueChanged(Feed *feed)
+void FeedListModel::onFeedSortValueChanged(Subscription *feed)
 {
     const auto comparator = d->sortHelper->comparator;
-    const QList<Feed *>::iterator it = std::find(d->feeds.begin(), d->feeds.end(), feed);
+    const QList<Subscription *>::iterator it = std::find(d->feeds.begin(), d->feeds.end(), feed);
     if (it == d->feeds.end()) {
         // feed not found
         return;
     }
 
-    const QList<Feed *>::iterator next_it = it + 1;
+    const QList<Subscription *>::iterator next_it = it + 1;
     if (next_it != d->feeds.end() && comparator(*next_it, feed)) {
         // move toward end
-        const QList<Feed *>::iterator newLocation = std::lower_bound(next_it, d->feeds.end(), feed, comparator);
+        const QList<Subscription *>::iterator newLocation = std::lower_bound(next_it, d->feeds.end(), feed, comparator);
         int oldRow = int(it - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         int newRow = int(newLocation - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
@@ -326,10 +326,10 @@ void FeedListModel::onFeedSortValueChanged(Feed *feed)
         return;
     }
 
-    const QList<Feed *>::iterator prev_it = it - 1;
+    const QList<Subscription *>::iterator prev_it = it - 1;
     if (it != d->feeds.begin() && comparator(feed, *prev_it)) {
         // move toward beginning
-        const QList<Feed *>::iterator newLocation = std::lower_bound(d->feeds.begin(), it, feed, comparator);
+        const QList<Subscription *>::iterator newLocation = std::lower_bound(d->feeds.begin(), it, feed, comparator);
         int oldRow = int(it - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         int newRow = int(newLocation - d->feeds.begin()) + SPECIAL_FEED_COUNT;
         beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);

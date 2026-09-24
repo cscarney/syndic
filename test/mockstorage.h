@@ -8,7 +8,6 @@ class MockStorage : public FeedCore::Storage
 {
 public:
     QList<MockSubscription *> m_feeds;
-    QList<MockFeed *> m_plainFeeds;
 
     QFuture<FeedCore::ArticleRef> getAll() override
     {
@@ -47,13 +46,10 @@ public:
         });
     }
 
-    QFuture<FeedCore::Feed *> getFeeds() override
+    QFuture<FeedCore::Subscription *> getFeeds() override
     {
-        return FeedCore::Future::yield<FeedCore::Feed *>(this, [this](auto &op) {
+        return FeedCore::Future::yield<FeedCore::Subscription *>(this, [this](auto &op) {
             for (auto &item : std::as_const(m_feeds)) {
-                op.addResult(item);
-            }
-            for (auto &item : std::as_const(m_plainFeeds)) {
                 op.addResult(item);
             }
         });

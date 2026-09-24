@@ -22,7 +22,7 @@ public:
     /**
      * \warning All of the feed pointers in existingFeeds must remain valid for the life of the reader
      */
-    OpmlReader(QIODevice *device, const QSet<Feed *> &existingFeeds);
+    OpmlReader(QIODevice *device, const QSet<Subscription *> &existingFeeds);
 
     void readAll();
     bool hasError() const
