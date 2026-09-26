@@ -123,6 +123,17 @@ Kirigami.ScrollablePage {
             }
         }
 
+        CheckBox {
+            id: showUnreadCounts
+            text: qsTr("Show unread counts in feed list")
+            checked: globalSettings.showUnreadCounts
+            Binding {
+                target: globalSettings
+                property: "showUnreadCounts"
+                value: showUnreadCounts.checked
+            }
+        }
+
             
         Rectangle {
             id: fontPreview
