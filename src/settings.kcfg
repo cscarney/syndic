@@ -70,5 +70,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
             </choices>
             <default>Highlights</default>
         </entry>
+        <entry name="showUnreadCounts" type="Bool">
+            <default>true</default>
+        </entry>
     </group>
 </kcfg>

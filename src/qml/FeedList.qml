@@ -70,7 +70,7 @@ ListView {
 
             Label {
                 id: unreadCountLabel
-                visible: listItem.unreadCount !== 0
+                visible: globalSettings.showUnreadCounts && listItem.unreadCount !== 0
                 horizontalAlignment: Text.AlignCenter
                 Layout.leftMargin: background.radius
                 Layout.rightMargin: background.radius
