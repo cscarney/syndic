@@ -177,6 +177,45 @@ Kirigami.ScrollablePage {
             }
         }
 
+        ColumnLayout {
+            Kirigami.FormData.label: qsTr("Browser extension:")
+            visible: pairingController !== null && !Kirigami.Settings.isMobile
+
+            CheckBox {
+                id: saveServerEnabled
+                text: qsTr("Allow saving pages from the browser")
+                checked: globalSettings.saveServerEnabled
+                Binding {
+                    target: globalSettings
+                    property: "saveServerEnabled"
+                    value: saveServerEnabled.checked
+                }
+            }
+
+            RowLayout {
+                enabled: saveServerEnabled.checked
+                Label {
+                    text: qsTr("Port:")
+                }
+                SpinBox {
+                    id: saveServerPort
+                    from: 1024
+                    to: 65535
+                    editable: true
+                    value: globalSettings.saveServerPort
+                    textFromValue: (value, locale)=>value.toString()
+                    valueFromText: (text, locale)=>+text.replace(/[^\d]/g, "")
+                    onValueModified: globalSettings.saveServerPort = value
+                }
+            }
+
+            Button {
+                text: qsTr("Disconnect %n Paired Browser(s)", "", pairingController?.pairedClientCount ?? 0)
+                enabled: (pairingController?.pairedClientCount ?? 0) > 0
+                onClicked: pairingController.forgetPairedClients()
+            }
+        }
+
         RowLayout {
             Kirigami.FormData.label: qsTr("OPML Data:")
             Button {

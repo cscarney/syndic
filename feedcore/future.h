@@ -7,6 +7,8 @@
 #include <QFuture>
 #include <QObject>
 #include <QPointer>
+#include <QPromise>
+#include <memory>
 
 namespace FeedCore::Future
 {
@@ -50,5 +52,26 @@ template<typename T>
 QList<T> safeResults(const QFuture<T> &f)
 {
     return f.isValid() ? f.results() : QList<T>();
+}
+
+/**
+ * Create a started promise that can be shared between callbacks.
+ */
+template<typename T>
+std::shared_ptr<QPromise<T>> makeSharedPromise()
+{
+    auto promise = std::make_shared<QPromise<T>>();
+    promise->start();
+    return promise;
+}
+
+/**
+ * Add /value/ to /promise/ as its only result, and finish it.
+ */
+template<typename T>
+void fulfill(const std::shared_ptr<QPromise<T>> &promise, const T &value)
+{
+    promise->addResult(value);
+    promise->finish();
 }
 }

@@ -1,0 +1,173 @@
+/**
+ * SPDX-FileCopyrightText: 2026 Connor Carney <hello@connorcarney.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+:root {
+    --bg: #fcfcfc;
+    --fg: #232629;
+    --muted: #6e7175;
+    --border: #c5c7c9;
+    --accent: #3daee9;
+    --accent-fg: #ffffff;
+    --error: #da4453;
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #232629;
+        --fg: #eff0f1;
+        --muted: #a1a9b1;
+        --border: #4d5257;
+        --accent: #3daee9;
+        --accent-fg: #ffffff;
+        --error: #ed5565;
+        color-scheme: dark;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 12px 14px 14px;
+    background: var(--bg);
+    color: var(--fg);
+    font: menu;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+body.popup {
+    width: 380px;
+}
+
+body.page {
+    max-width: 520px;
+    margin: 48px auto;
+    font-size: 15px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+h1 {
+    font-size: 1.15em;
+    font-weight: 600;
+    margin: 0;
+}
+
+label {
+    display: block;
+    margin: 10px 0 4px;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+}
+
+input:focus,
+select:focus,
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+button {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+    cursor: pointer;
+}
+
+button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.hint {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 0.92em;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 28px;
+}
+
+.error {
+    color: var(--error);
+}
+
+.code {
+    font-size: 2em;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-align: center;
+    margin: 16px 0;
+}
+
+.spinner {
+    width: 14px;
+    height: 14px;
+    flex: none;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.status.idle .spinner {
+    display: none;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation-duration: 3s;
+    }
+}
+
+[hidden] {
+    display: none !important;
+}

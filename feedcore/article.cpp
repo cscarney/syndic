@@ -124,6 +124,20 @@ QFuture<QString> Article::getCachedReadableContent()
     return QFuture<QString>();
 }
 
+void Article::storeSavedContent(const QString &readableContent)
+{
+    cacheReadableContent(readableContent);
+    setPreferReadable(true);
+}
+
+void Article::setPreferReadable(bool preferReadable)
+{
+    if (m_preferReadable != preferReadable) {
+        m_preferReadable = preferReadable;
+        emit preferReadableChanged();
+    }
+}
+
 void Article::setRead(bool isRead)
 {
     if (m_readStatus != isRead) {

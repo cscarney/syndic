@@ -2,7 +2,8 @@
 Name=Syndic
 GenericName=News Reader
 Icon=com.rocksandpaper.syndic
-Exec=syndic
+Exec=syndic %u
+MimeType=x-scheme-handler/syndic;
 Type=Application
 Categories=Network;News;Feed;
 Terminal=false

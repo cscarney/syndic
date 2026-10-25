@@ -32,6 +32,7 @@ find_package(KF6Syndication REQUIRED)
 find_package(KF6Config REQUIRED)
 find_package(KF6BreezeIcons CONFIG QUIET)
 find_package(KF6DBusAddons CONFIG QUIET)
+find_package(Qt6HttpServer CONFIG QUIET)
 
 if (NOT WITHOUT_QREADABLE)
 find_package(QReadable REQUIRED)

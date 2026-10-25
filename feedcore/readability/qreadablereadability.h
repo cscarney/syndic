@@ -20,6 +20,7 @@ public:
     QReadableReadability();
     virtual ~QReadableReadability();
     ReadabilityResult *fetch(const QUrl &url) override;
+    ReadabilityResult *parse(const QString &html, const QUrl &url) override;
 
 private:
     class Worker;

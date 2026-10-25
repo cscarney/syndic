@@ -46,9 +46,10 @@ int main(int argc, char *argv[])
     {
         QCommandLineParser commandLine;
         commandLine.addOption(QCommandLineOption("background"));
+        commandLine.addPositionalArgument("url", QStringLiteral("syndic:// URL (used by the browser extension to start Syndic)"), "[url]");
         commandLine.process(app);
 
-        if (commandLine.isSet("background")) {
+        if (commandLine.isSet("background") || Application::isBackgroundLaunchRequest(commandLine.positionalArguments())) {
             app.startBackgroundNotifier();
         } else {
             app.loadMainWindow();

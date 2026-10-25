@@ -31,6 +31,18 @@ SPDX-License-Identifier: GPL-3.0-or-later
             <default>false</default>
         </entry>
     </group>
+    <group name="BrowserIntegration">
+        <entry name="saveServerEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="saveServerPort" type="Int">
+            <default>47913</default>
+            <min>1024</min>
+            <max>65535</max>
+        </entry>
+        <entry name="pairedClients" type="StringList">
+        </entry>
+    </group>
     <group name="MainWindow">
         <entry name="width" type="Int">
             <default>1700</default>

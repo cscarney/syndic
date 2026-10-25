@@ -12,6 +12,7 @@
 #include <QQmlContext>
 #include <QStandardPaths>
 #include <QWindow>
+#include <algorithm>
 
 #ifdef KF6DBusAddons_FOUND
 #include <KDBusService>
@@ -34,11 +35,20 @@
 #include "settings.h"
 #include "sqlite/storageimpl.h"
 
+#ifdef Qt6HttpServer_FOUND
+#include "pairingcontroller.h"
+#include "saveserver.h"
+#endif
+
 struct Application::PrivData {
     FeedCore::Context *context{nullptr};
     Settings settings;
     std::unique_ptr<QQmlApplicationEngine> engine;
     std::unique_ptr<NotificationController> notifier;
+#ifdef Qt6HttpServer_FOUND
+    std::unique_ptr<PairingController> pairing;
+    std::unique_ptr<SaveServer> saveServer;
+#endif
 
 #ifdef KF6DBusAddons_FOUND
     KDBusService *service{nullptr};
@@ -151,6 +161,7 @@ Application::Application(int &argc, char **argv)
 
     d->context = createContext(this);
     bindContextPropertiesToSettings();
+    startSaveServer();
 }
 
 Application::~Application() = default;
@@ -173,6 +184,11 @@ void Application::loadMainWindow()
         d->engine->rootContext()->setContextProperty("feedContext", d->context);
         d->engine->rootContext()->setContextProperty("platformHelper", new PlatformHelper);
         d->engine->rootContext()->setContextProperty("globalSettings", settings());
+#ifdef Qt6HttpServer_FOUND
+        d->engine->rootContext()->setContextProperty("pairingController", d->pairing.get());
+#else
+        d->engine->rootContext()->setContextProperty("pairingController", static_cast<QObject *>(nullptr));
+#endif
         d->engine->addImageProvider("feedicons", new IconProvider);
         d->engine->load(QUrl("qrc:/qml/main.qml"));
         d->notifier = nullptr;
@@ -237,9 +253,46 @@ void Application::onLastWindowClosed()
 #endif
 }
 
-void Application::onActivateRequested(const QStringList & /*unused*/, const QString & /*unused*/)
+void Application::onActivateRequested(const QStringList &arguments, const QString & /*unused*/)
 {
+    // arguments[0] is the executable name
+    if (isBackgroundLaunchRequest(arguments.mid(1))) {
+        // a client (e.g. the browser extension) just needs us to be running
+        return;
+    }
     loadMainWindow();
+}
+
+bool Application::isBackgroundLaunchRequest(const QStringList &arguments)
+{
+    // syndic:// URLs are used by clients to launch Syndic so that it can serve
+    // the save API; they don't need a window
+    return std::any_of(arguments.begin(), arguments.end(), [](const QString &arg) {
+        return arg.startsWith(QStringLiteral("syndic:"), Qt::CaseInsensitive);
+    });
+}
+
+void Application::startSaveServer()
+{
+#ifdef Qt6HttpServer_FOUND
+    d->pairing = std::make_unique<PairingController>(settings());
+    QObject::connect(d->pairing.get(), &PairingController::pairingRequested, this, &Application::loadMainWindow);
+    d->saveServer = std::make_unique<SaveServer>(d->context, d->pairing.get());
+    syncSaveServer();
+    QObject::connect(settings(), &Settings::saveServerEnabledChanged, this, &Application::syncSaveServer);
+    QObject::connect(settings(), &Settings::saveServerPortChanged, this, &Application::syncSaveServer);
+#endif
+}
+
+void Application::syncSaveServer()
+{
+#ifdef Qt6HttpServer_FOUND
+    if (d->settings.saveServerEnabled()) {
+        d->saveServer->listen(d->settings.saveServerPort());
+    } else {
+        d->saveServer->close();
+    }
+#endif
 }
 
 void Application::bindContextPropertiesToSettings()

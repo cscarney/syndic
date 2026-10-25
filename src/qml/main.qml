@@ -228,6 +228,55 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    Loader {
+        active: pairingController !== null
+        // the dialog is a popup, which Loader can't load directly
+        sourceComponent: Item {
+            Kirigami.PromptDialog {
+                id: pairingDialog
+                title: qsTr("Allow Access?")
+                subtitle: qsTr("“%1” wants to save pages to Syndic.\n\nOnly allow this if you just asked to connect it, and it shows the code %2.")
+                            .arg(pairingController.pendingClientName)
+                            .arg(pairingController.pendingCode)
+                standardButtons: Kirigami.Dialog.NoButton
+                customFooterActions: [
+                    Kirigami.Action {
+                        text: qsTr("Allow")
+                        icon.name: "dialog-ok"
+                        onTriggered: {
+                            pairingController.respond(true);
+                            pairingDialog.close();
+                        }
+                    },
+                    Kirigami.Action {
+                        text: qsTr("Deny")
+                        icon.name: "dialog-cancel"
+                        onTriggered: {
+                            pairingController.respond(false);
+                            pairingDialog.close();
+                        }
+                    }
+                ]
+                onRejected: pairingController.respond(false)
+
+                function sync() {
+                    if (pairingController.pending) {
+                        open();
+                    } else {
+                        close();
+                    }
+                }
+
+                Connections {
+                    target: pairingController
+                    function onPendingChanged() { pairingDialog.sync() }
+                }
+
+                Component.onCompleted: Qt.callLater(sync)
+            }
+        }
+    }
+
     onClosing: {
         globalSettings.isMaximized = (root.visibility === Window.Maximized)
         if (root.visibility === Window.Windowed) {

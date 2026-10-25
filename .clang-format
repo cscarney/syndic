@@ -36,3 +36,7 @@ Language: Java
 
 Language: Json
 
+---
+
+Language: JavaScript
+SpacesInContainerLiterals: false

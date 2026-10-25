@@ -23,6 +23,7 @@ public:
     ItemQuery selectAllItems();
     ItemQuery selectUnreadItems();
     ItemQuery selectStarredItems();
+    ItemQuery selectUnfiledItems();
     ItemQuery selectItemsBySearch(const QString &search);
     ItemQuery selectItemsByRecommended(int limit);
     ItemQuery selectItemsByFeed(qint64 feedId);
@@ -34,10 +35,20 @@ public:
     std::optional<qint64> selectItemId(qint64 feedId, const QString &localId);
     std::optional<qint64>
     insertItem(qint64 feedId, const QString &localId, const QString &title, const QString &author, time_t date, const QUrl &url, const QString &content);
+    std::optional<qint64>
+    insertSavedItem(std::optional<qint64> feedId, const QString &title, const QString &author, time_t date, const QUrl &url, const QString &content);
+    ItemQuery selectItemsByUrlKey(const QString &urlKey);
+
+    /**
+     * Find an item in /feedId/ that the user saved with a URL matching /urlKey/, and
+     * give it the feed's /localId/ so that it is treated as a normal feed item.
+     */
+    std::optional<qint64> adoptSavedItem(qint64 feedId, const QString &urlKey, const QString &localId);
     void updateItemHeaders(qint64 id, const QString &title, const QString &author, const QUrl &url);
     void updateItemDate(qint64 id, time_t date);
     void updateItemContent(qint64 id, const QString &content);
     void updateItemReadableContent(qint64 id, const QString &readableContent);
+    void updateItemSavedContent(qint64 id, const QString &readableContent);
     void updateItemRead(qint64 id, bool isRead);
     void updateItemStarred(qint64 id, bool isStarred);
     void deleteItemsForFeed(qint64 feedId);

@@ -38,6 +38,17 @@ set(syndic_SRCS
     resources.qrc
     )
     
+if (Qt6HttpServer_FOUND)
+    set(syndic_SRCS ${syndic_SRCS}
+        pairingcontroller.h
+        pairingcontroller.cpp
+        saveapi.h
+        saveapi.cpp
+        saveserver.h
+        saveserver.cpp
+        )
+endif()
+
 add_executable(syndic ${syndic_SRCS})
 
 kconfig_add_kcfg_files(syndic settings.kcfgc GENERATE_MOC)
@@ -58,6 +69,12 @@ target_link_libraries(syndic
 if (Qt6Widgets_FOUND)
     target_link_libraries(syndic
         Qt6::Widgets
+        )
+endif()
+
+if (Qt6HttpServer_FOUND)
+    target_link_libraries(syndic
+        Qt6::HttpServer
         )
 endif()
 

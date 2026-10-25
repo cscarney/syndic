@@ -1,0 +1,190 @@
+{
+  "extensionName": {
+    "message": "Save to Syndic",
+    "description": "Name of the extension, also used as the toolbar button title and popup heading."
+  },
+  "extensionDescription": {
+    "message": "Save the page you are reading to the Syndic feed reader, exactly as it appears in the browser.",
+    "description": "Extension description shown in the add-ons manager."
+  },
+  "pairingClientName": {
+    "message": "Save to Syndic browser extension",
+    "description": "How the extension identifies itself in Syndic's “Allow access?” prompt."
+  },
+  "labelTitle": {
+    "message": "Title",
+    "description": "Label for the article title field in the popup."
+  },
+  "labelFeed": {
+    "message": "Feed",
+    "description": "Label for the drop-down list of feeds to save the article into."
+  },
+  "buttonCancel": {
+    "message": "Cancel"
+  },
+  "buttonSave": {
+    "message": "Save"
+  },
+  "buttonStartSyndicEllipsis": {
+    "message": "Start Syndic…",
+    "description": "Popup button that opens a tab for starting Syndic."
+  },
+  "buttonConnectEllipsis": {
+    "message": "Connect…",
+    "description": "Button that opens a tab for connecting the browser to Syndic."
+  },
+  "buttonReconnectEllipsis": {
+    "message": "Reconnect…",
+    "description": "Button that opens a tab for connecting the browser to Syndic again."
+  },
+  "statusConnecting": {
+    "message": "Connecting to Syndic…"
+  },
+  "statusCheckingFeed": {
+    "message": "Checking for a matching feed…",
+    "description": "Shown while Syndic looks for an existing article or feed for the page, which may involve searching the site for a feed."
+  },
+  "statusSaving": {
+    "message": "Saving…"
+  },
+  "statusSubscribing": {
+    "message": "Subscribing and saving…"
+  },
+  "pageNotSavable": {
+    "message": "This page can’t be saved to Syndic.",
+    "description": "Shown for pages that aren't regular web pages, e.g. about: pages."
+  },
+  "notRunning": {
+    "message": "Syndic isn’t running, or “Allow saving pages from the browser” is turned off in Syndic’s settings."
+  },
+  "notConnected": {
+    "message": "This browser isn’t connected to Syndic yet."
+  },
+  "tokenRejected": {
+    "message": "Syndic no longer recognizes this browser."
+  },
+  "feedOptionSubscribe": {
+    "message": "Subscribe to “$FEED$” (new feed)",
+    "description": "Drop-down option for subscribing to a feed that Syndic discovered for the site.",
+    "placeholders": {
+      "feed": {
+        "content": "$1",
+        "example": "Planet KDE"
+      }
+    }
+  },
+  "feedOptionNone": {
+    "message": "No feed",
+    "description": "Drop-down option for saving the article without a feed. Articles without a feed only appear in Starred."
+  },
+  "doneSaved": {
+    "message": "Saved."
+  },
+  "doneSavedToFeed": {
+    "message": "Saved to “$FEED$”.",
+    "placeholders": {
+      "feed": {
+        "content": "$1",
+        "example": "Planet KDE"
+      }
+    }
+  },
+  "doneUpdated": {
+    "message": "Updated the article in Syndic."
+  },
+  "errorUnreachable": {
+    "message": "Syndic isn’t running."
+  },
+  "errorTimeout": {
+    "message": "Syndic took too long to respond."
+  },
+  "errorUnauthorized": {
+    "message": "Syndic no longer recognizes this browser. Connect again from the extension’s options."
+  },
+  "errorForbidden": {
+    "message": "Syndic refused the connection."
+  },
+  "errorInvalidUrl": {
+    "message": "This page’s address can’t be saved."
+  },
+  "errorInvalidFeed": {
+    "message": "The selected feed no longer exists."
+  },
+  "errorTooLarge": {
+    "message": "This page is too large to save."
+  },
+  "errorExtractionFailed": {
+    "message": "Syndic couldn’t find any readable content on this page."
+  },
+  "errorSubscribeFailed": {
+    "message": "Syndic couldn’t subscribe to the feed."
+  },
+  "errorSaveFailed": {
+    "message": "Syndic couldn’t save the page."
+  },
+  "errorUnknown": {
+    "message": "Something went wrong ($CODE$).",
+    "description": "Generic error. The placeholder is a technical error code.",
+    "placeholders": {
+      "code": {
+        "content": "$1",
+        "example": "http-502"
+      }
+    }
+  },
+  "connectTitle": {
+    "message": "Connect to Syndic"
+  },
+  "buttonAllow": {
+    "message": "Allow",
+    "description": "Button for granting the extension permission to connect to Syndic."
+  },
+  "buttonStartSyndic": {
+    "message": "Start Syndic"
+  },
+  "statusLookingForSyndic": {
+    "message": "Looking for Syndic…"
+  },
+  "statusWaitingForPermission": {
+    "message": "Waiting for permission…"
+  },
+  "statusWaitingForStart": {
+    "message": "Waiting for Syndic to start…"
+  },
+  "statusAlreadyConnected": {
+    "message": "This browser is connected to Syndic. You can close this tab."
+  },
+  "statusRequestingAccess": {
+    "message": "Asking Syndic for access…"
+  },
+  "statusWaitingForApproval": {
+    "message": "Waiting for you to approve in Syndic…"
+  },
+  "statusConnected": {
+    "message": "Connected! You can close this tab and click “Save to Syndic” again."
+  },
+  "statusDenied": {
+    "message": "Syndic didn’t allow access. Reload this page to try again."
+  },
+  "statusFailed": {
+    "message": "Something went wrong: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Syndic took too long to respond."
+      }
+    }
+  },
+  "optionsTitle": {
+    "message": "Save to Syndic Options"
+  },
+  "buttonDisconnect": {
+    "message": "Disconnect from Syndic"
+  },
+  "optionsConnected": {
+    "message": "Connected to Syndic."
+  },
+  "optionsNotConnected": {
+    "message": "Not connected."
+  }
+}

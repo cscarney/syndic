@@ -4,6 +4,7 @@
  */
 
 #include "feeddatabase.h"
+#include "urlmatch.h"
 #include <QDebug>
 #include <QDir>
 #include <QSqlDatabase>
@@ -31,6 +32,9 @@ static int getVersion(QSqlDatabase &db)
     return q.value(0).toInt();
 }
 
+// localId of an item that was saved by the user rather than received from its feed
+static const QString kSavedItemLocalIdPrefix = QStringLiteral("syndic-saved:");
+
 static bool exec(QSqlDatabase &db, const QString &queryString)
 {
     QSqlQuery q(db);
@@ -49,6 +53,35 @@ static bool exec(QSqlDatabase &db, const QList<QString> &queries)
         }
     }
     return true;
+}
+
+static bool backfillUrlKeys(QSqlDatabase &db)
+{
+    QList<QPair<qint64, QString>> keys;
+    {
+        QSqlQuery q(db);
+        if (!q.exec("SELECT id, url FROM Item")) {
+            qWarning() << "SQL Error in backfillUrlKeys: " + q.lastError().text();
+            return false;
+        }
+        while (q.next()) {
+            keys.append({q.value(0).toLongLong(), FeedCore::UrlMatch::normalizedUrlKey(q.value(1).toUrl())});
+        }
+    }
+
+    db.transaction();
+    QSqlQuery update(db);
+    update.prepare("UPDATE Item SET urlKey=:urlKey WHERE id=:id");
+    for (const auto &[id, key] : std::as_const(keys)) {
+        update.bindValue(":urlKey", key);
+        update.bindValue(":id", id);
+        if (!update.exec()) {
+            qWarning() << "SQL Error in backfillUrlKeys: " + update.lastError().text();
+            db.rollback();
+            return false;
+        }
+    }
+    return db.commit();
 }
 
 static void initDatabase(QSqlDatabase &db)
@@ -95,9 +128,22 @@ static void initDatabase(QSqlDatabase &db)
                      "ADD COLUMN flags INTEGER;",
 
                      "PRAGMA user_version = 2;"});
-        break;
+        // fall through
 
     case 2:
+        success = success
+            && exec(db,
+                    {"ALTER TABLE Item "
+                     "ADD COLUMN urlKey TEXT;",
+
+                     "ALTER TABLE Item "
+                     "ADD COLUMN preferReadable INTEGER DEFAULT 0;",
+
+                     "CREATE INDEX Item_urlKey ON Item(urlKey);"})
+            && backfillUrlKeys(db) && exec(db, "PRAGMA user_version = 3;");
+        break;
+
+    case 3:
         break;
 
     default:
@@ -153,6 +199,15 @@ ItemQuery FeedDatabase::selectStarredItems()
     ItemQuery q(db(), "isStarred=1 " + select_sort);
     if (!q.exec()) {
         qWarning() << "SQL Error in selectStarredItems: " + q.lastError().text();
+    }
+    return q;
+}
+
+ItemQuery FeedDatabase::selectUnfiledItems()
+{
+    ItemQuery q(db(), "feed IS NULL " + select_sort);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in selectUnfiledItems: " + q.lastError().text();
     }
     return q;
 }
@@ -285,14 +340,15 @@ std::optional<qint64> FeedDatabase::insertItem(qint64 feedId,
 {
     QSqlQuery q(db());
     q.prepare(
-        "INSERT INTO Item (id, feed, localId, headline, author, date, url, feedContent, isRead, isStarred) "
-        "VALUES (:id, :feed, :localId, :headline, :author, :date, :url, :feedContent, :isRead, :isStarred);");
+        "INSERT INTO Item (id, feed, localId, headline, author, date, url, urlKey, feedContent, isRead, isStarred) "
+        "VALUES (:id, :feed, :localId, :headline, :author, :date, :url, :urlKey, :feedContent, :isRead, :isStarred);");
     q.bindValue(":feed", feedId);
     q.bindValue(":localId", localId);
     q.bindValue(":headline", title);
     q.bindValue(":author", author);
     q.bindValue(":date", qint64(date));
     q.bindValue(":url", url.toString());
+    q.bindValue(":urlKey", FeedCore::UrlMatch::normalizedUrlKey(url));
     q.bindValue(":feedContent", content);
     q.bindValue(":isRead", false);
     q.bindValue(":isStarred", false);
@@ -303,6 +359,68 @@ std::optional<qint64> FeedDatabase::insertItem(qint64 feedId,
     return q.lastInsertId().toLongLong();
 }
 
+std::optional<qint64>
+FeedDatabase::insertSavedItem(std::optional<qint64> feedId, const QString &title, const QString &author, time_t date, const QUrl &url, const QString &content)
+{
+    QSqlQuery q(db());
+    q.prepare(
+        "INSERT INTO Item (feed, localId, headline, author, date, url, urlKey, feedContent, readableContent, isRead, isStarred, preferReadable) "
+        "VALUES (:feed, :localId, :headline, :author, :date, :url, :urlKey, :content, :content, 1, 1, 1);");
+    q.bindValue(":feed", feedId ? QVariant(*feedId) : QVariant(QMetaType::fromType<qint64>()));
+    q.bindValue(":localId", kSavedItemLocalIdPrefix + url.toString());
+    q.bindValue(":headline", title);
+    q.bindValue(":author", author);
+    q.bindValue(":date", qint64(date));
+    q.bindValue(":url", url.toString());
+    q.bindValue(":urlKey", FeedCore::UrlMatch::normalizedUrlKey(url));
+    q.bindValue(":content", content);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in insertSavedItem: " + q.lastError().text();
+        return std::nullopt;
+    }
+    return q.lastInsertId().toLongLong();
+}
+
+ItemQuery FeedDatabase::selectItemsByUrlKey(const QString &urlKey)
+{
+    ItemQuery q(db(), "urlKey=:urlKey " + select_sort);
+    q.bindValue(":urlKey", urlKey);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in selectItemsByUrlKey: " + q.lastError().text();
+    }
+    return q;
+}
+
+std::optional<qint64> FeedDatabase::adoptSavedItem(qint64 feedId, const QString &urlKey, const QString &localId)
+{
+    QSqlQuery q(db());
+    q.prepare(
+        "SELECT id FROM Item "
+        "WHERE feed=:feed AND urlKey=:urlKey AND localId LIKE :savedPattern "
+        "ORDER BY date DESC LIMIT 1;");
+    q.bindValue(":feed", feedId);
+    q.bindValue(":urlKey", urlKey);
+    q.bindValue(":savedPattern", kSavedItemLocalIdPrefix + QLatin1Char('%'));
+    if (!q.exec()) {
+        qWarning() << "SQL Error in adoptSavedItem: " + q.lastError().text();
+        return std::nullopt;
+    }
+    if (!q.next()) {
+        return std::nullopt;
+    }
+    const qint64 id = q.value(0).toLongLong();
+
+    QSqlQuery update(db());
+    update.prepare("UPDATE Item SET localId=:localId WHERE id=:id;");
+    update.bindValue(":localId", localId);
+    update.bindValue(":id", id);
+    if (!update.exec()) {
+        qWarning() << "SQL Error in adoptSavedItem: " + update.lastError().text();
+        return std::nullopt;
+    }
+    return id;
+}
+
 void FeedDatabase::updateItemHeaders(qint64 id, const QString &title, const QString &author, const QUrl &url)
 {
     QSqlQuery q(db());
@@ -310,11 +428,13 @@ void FeedDatabase::updateItemHeaders(qint64 id, const QString &title, const QStr
         "UPDATE Item SET "
         "headline=:headline,"
         "author=:author,"
-        "url=:url "
+        "url=:url,"
+        "urlKey=:urlKey "
         "WHERE id=:id;");
     q.bindValue(":headline", title);
     q.bindValue(":author", author);
     q.bindValue(":url", url.toString());
+    q.bindValue(":urlKey", FeedCore::UrlMatch::normalizedUrlKey(url));
     q.bindValue(":id", id);
     if (!q.exec()) {
         qWarning() << "SQL Error in updateItemHeaders: " + q.lastError().text();
@@ -360,6 +480,21 @@ void FeedDatabase::updateItemReadableContent(qint64 id, const QString &readableC
     q.bindValue(":id", id);
     if (!q.exec()) {
         qWarning() << "SQL Error in updateItemReadableContent: " + q.lastError().text();
+    }
+}
+
+void FeedDatabase::updateItemSavedContent(qint64 id, const QString &readableContent)
+{
+    QSqlQuery q(db());
+    q.prepare(
+        "UPDATE Item SET "
+        "readableContent=:readableContent,"
+        "preferReadable=1 "
+        "WHERE id=:id;");
+    q.bindValue(":readableContent", readableContent);
+    q.bindValue(":id", id);
+    if (!q.exec()) {
+        qWarning() << "SQL Error in updateItemSavedContent: " + q.lastError().text();
     }
 }
 

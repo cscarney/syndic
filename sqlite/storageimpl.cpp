@@ -7,6 +7,8 @@
 #include "articleref.h"
 #include "sqlite/articleimpl.h"
 #include "sqlite/feedimpl.h"
+#include "subscription.h"
+#include "urlmatch.h"
 #include <QAbstractEventDispatcher>
 #include <QCoreApplication>
 #include <QEvent>
@@ -85,7 +87,7 @@ void StorageImpl::Worker::appendArticleResults(QPromise<ArticleRef> &op, ItemQue
                 op.addResult(existingArticle);
             } else {
                 qint64 id = q.id();
-                const auto &feed = m_feedFactory.getInstance(q.feed(), m_storage);
+                Feed *feed = q.hasFeed() ? static_cast<Feed *>(m_feedFactory.getInstance(q.feed(), m_storage)) : m_storage->unfiledFeed();
                 QSharedPointer<ArticleImpl> newArticle{new ArticleImpl(id, m_storage, feed, q)};
                 m_articles[id] = newArticle;
                 op.addResult(newArticle);
@@ -224,7 +226,11 @@ QFuture<ArticleRef> StorageImpl::storeArticle(FeedImpl *feed, const Syndication:
                                                       title = item->title(),
                                                       link = item->link(),
                                                       content = item->content().isEmpty() ? item->description() : item->content()](auto &db, auto &op) {
-        const auto &itemId = db.selectItemId(feedId, id);
+        auto itemId = db.selectItemId(feedId, id);
+        if (!itemId) {
+            // The user may have saved this page before it showed up in the feed
+            itemId = db.adoptSavedItem(feedId, UrlMatch::normalizedUrlKey(QUrl(link)), id);
+        }
 
         if (itemId) {
             // Item already exists in the database; update it and return
@@ -283,6 +289,15 @@ void StorageImpl::cacheReadableContent(ArticleImpl *article, const QString &read
     });
 }
 
+void StorageImpl::storeSavedContent(ArticleImpl *article, const QString &readableContent)
+{
+    const qint64 itemId{article->id()};
+    m_worker->runInDatabaseThread([itemId, readableContent, worker = m_worker](auto &db) {
+        worker->ensureTransaction();
+        db.updateItemSavedContent(itemId, readableContent);
+    });
+}
+
 void StorageImpl::onArticleReadChanged(ArticleImpl *article)
 {
     m_worker->runInDatabaseThread([itemId = article->id(), isRead = article->isRead(), worker = m_worker](auto &db) {
@@ -297,6 +312,62 @@ void StorageImpl::onArticleStarredChanged(ArticleImpl *article)
         worker->ensureTransaction();
         db.updateItemStarred(itemId, isStarred);
     });
+}
+
+Feed *StorageImpl::unfiledFeed()
+{
+    if (m_unfiledFeed == nullptr) {
+        m_unfiledFeed = new UnfiledFeed(this);
+    }
+    return m_unfiledFeed;
+}
+
+QFuture<ArticleRef> StorageImpl::getUnfiled()
+{
+    return m_worker->runInDatabaseThread<ArticleRef>([this](auto &db, auto &op) {
+        ItemQuery q{db.selectUnfiledItems()};
+        m_worker->appendArticleResults(op, q);
+    });
+}
+
+QFuture<ArticleRef> StorageImpl::getByUrl(const QUrl &url)
+{
+    const QString urlKey = UrlMatch::normalizedUrlKey(url);
+    return m_worker->runInDatabaseThread<ArticleRef>([this, urlKey](auto &db, auto &op) {
+        if (urlKey.isEmpty()) {
+            return;
+        }
+        ItemQuery q{db.selectItemsByUrlKey(urlKey)};
+        m_worker->appendArticleResults(op, q);
+    });
+}
+
+QFuture<ArticleRef> StorageImpl::storeSavedPage(Subscription *feed, const SavedPage &page)
+{
+    std::optional<qint64> feedId;
+    if (auto *feedImpl = qobject_cast<FeedImpl *>(feed)) {
+        feedId = feedImpl->id();
+    }
+    return m_worker->runInDatabaseThread<ArticleRef>([this, feedId, page](auto &db, auto &op) {
+        m_worker->ensureTransaction();
+        const auto &newId = db.insertSavedItem(feedId, page.title, page.author, QDateTime::currentSecsSinceEpoch(), page.url, page.content);
+        if (!newId) {
+            return;
+        }
+        ItemQuery result{db.selectItem(*newId)};
+        m_worker->appendArticleResults(op, result);
+    });
+}
+
+UnfiledFeed::UnfiledFeed(StorageImpl *storage)
+    : Feed(storage)
+    , m_storage(storage)
+{
+}
+
+QFuture<ArticleRef> UnfiledFeed::getArticles(bool /*unreadFilter*/)
+{
+    return m_storage->getUnfiled();
 }
 
 template<typename FeedType>

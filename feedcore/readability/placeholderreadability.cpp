@@ -6,7 +6,12 @@ namespace FeedCore
 
 PlaceholderReadability::PlaceholderReadability() = default;
 
-ReadabilityResult *PlaceholderReadability::fetch(const QUrl &url)
+ReadabilityResult *PlaceholderReadability::parse(const QString & /*html*/, const QUrl &url)
+{
+    return fetch(url);
+}
+
+ReadabilityResult *PlaceholderReadability::fetch(const QUrl & /*url*/)
 {
     auto *result = new ReadabilityResult;
     QMetaObject::invokeMethod(

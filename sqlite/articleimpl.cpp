@@ -11,7 +11,7 @@
 using namespace FeedCore;
 using namespace SqliteStorage;
 
-ArticleImpl::ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const ItemQuery &q)
+ArticleImpl::ArticleImpl(qint64 id, StorageImpl *storage, FeedCore::Feed *feed, const ItemQuery &q)
     : Article(feed, nullptr)
     , m_id{id}
     , m_storage(storage)
@@ -20,9 +20,11 @@ ArticleImpl::ArticleImpl(qint64 id, StorageImpl *storage, FeedImpl *feed, const 
     QObject::connect(this, &Article::readStatusChanged, storage, [this, storage] {
         storage->onArticleReadChanged(this);
     });
-    QObject::connect(this, &Article::readStatusChanged, feed, [this, feed] {
-        feed->onArticleReadChanged(this);
-    });
+    if (auto *feedImpl = qobject_cast<FeedImpl *>(feed)) {
+        QObject::connect(this, &Article::readStatusChanged, feedImpl, [this, feedImpl] {
+            feedImpl->onArticleReadChanged(this);
+        });
+    }
     QObject::connect(this, &Article::starredChanged, storage, [this, storage] {
         storage->onArticleStarredChanged(this);
     });
@@ -41,6 +43,7 @@ void ArticleImpl::updateFromQuery(const ItemQuery &q)
     Article::setUrl(q.url());
     Article::setRead(q.isRead());
     Article::setStarred(q.isStarred());
+    Article::setPreferReadable(q.preferReadable());
 }
 
 void ArticleImpl::requestContent()
@@ -62,4 +65,10 @@ QFuture<QString> ArticleImpl::getCachedReadableContent()
 void ArticleImpl::cacheReadableContent(const QString &readableContent)
 {
     m_storage->cacheReadableContent(this, readableContent);
+}
+
+void ArticleImpl::storeSavedContent(const QString &readableContent)
+{
+    m_storage->storeSavedContent(this, readableContent);
+    Article::setPreferReadable(true);
 }

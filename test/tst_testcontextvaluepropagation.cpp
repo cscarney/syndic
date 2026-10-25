@@ -55,6 +55,16 @@ public:
     {
         return Future::yield<ArticleRef>(this, [](auto &) {});
     }
+
+    QFuture<ArticleRef> getByUrl(const QUrl & /*url*/) override
+    {
+        return Future::yield<ArticleRef>(this, [](auto &) {});
+    }
+
+    QFuture<ArticleRef> storeSavedPage(Subscription * /*feed*/, const SavedPage & /*page*/) override
+    {
+        return Future::yield<ArticleRef>(this, [](auto &) {});
+    }
 };
 
 constexpr const int contextUpdateInterval = 1904;

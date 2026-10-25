@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--
+SPDX-FileCopyrightText: 2026 Connor Carney <hello@connorcarney.com>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+    <title data-i18n="connectTitle"></title>
+</head>
+<body class="page">
+    <header>
+        <img src="icons/syndic.svg" alt="" width="32" height="32">
+        <h1 data-i18n="connectTitle"></h1>
+    </header>
+
+    <section id="permission" hidden>
+        <div class="buttons"><button id="grant" class="primary" data-i18n="buttonAllow"></button></div>
+    </section>
+
+    <section id="launch" hidden>
+        <p data-i18n="notRunning"></p>
+        <div class="buttons"><a id="launch-link" href="syndic://start"><button class="primary" tabindex="-1" data-i18n="buttonStartSyndic"></button></a></div>
+    </section>
+
+    <section id="pairing" hidden>
+        <div id="code" class="code"></div>
+    </section>
+
+    <section id="status" class="status" role="status">
+        <span class="spinner"></span>
+        <span id="status-text" data-i18n="statusLookingForSyndic"></span>
+    </section>
+
+    <script src="lib/syndic-client.js"></script>
+    <script src="lib/i18n.js"></script>
+    <script src="lib/ui.js"></script>
+    <script src="connect.js"></script>
+</body>
+</html>

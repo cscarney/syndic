@@ -59,6 +59,12 @@ class Article : public QObject
      */
     Q_PROPERTY(QUrl url READ url NOTIFY urlChanged);
 
+    /**
+     * True if the article's readable content should be shown even when its feed
+     * doesn't use readable content
+     */
+    Q_PROPERTY(bool preferReadable READ preferReadable NOTIFY preferReadableChanged);
+
 public:
     enum ContentType { FeedContent, ReadableContent };
     Q_ENUM(ContentType);
@@ -107,6 +113,14 @@ public:
     virtual QFuture<QString> getCachedReadableContent();
 
     /**
+     * Store content that the user explicitly provided (e.g. a page saved from the
+     * browser) as the readable content.
+     *
+     * The default implementation calls cacheReadableContent.
+     */
+    virtual void storeSavedContent(const QString &readableContent);
+
+    /**
      * Resolves a link relative to the article page
      */
     Q_INVOKABLE QUrl resolvedLink(const QUrl &link);
@@ -137,6 +151,10 @@ public:
         return m_starred;
     }
     virtual void setStarred(bool isStarred);
+    bool preferReadable() const
+    {
+        return m_preferReadable;
+    }
 
 signals:
     void titleChanged();
@@ -145,6 +163,7 @@ signals:
     void urlChanged();
     void readStatusChanged();
     void starredChanged();
+    void preferReadableChanged();
     void gotContent(const QString &content, FeedCore::Article::ContentType type = FeedContent);
 
 protected:
@@ -153,6 +172,7 @@ protected:
     void setAuthor(const QString &author);
     void setDate(const QDateTime &date);
     void setUrl(const QUrl &url);
+    void setPreferReadable(bool preferReadable);
 
 private:
     QPointer<Feed> m_feed;
@@ -162,6 +182,7 @@ private:
     QUrl m_url;
     bool m_readStatus{false};
     bool m_starred{false};
+    bool m_preferReadable{false};
 
     void setDefaultTitle();
     void reloadReadableContent(FeedCore::Readability *readability);

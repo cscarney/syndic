@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!--
+SPDX-FileCopyrightText: 2026 Connor Carney <hello@connorcarney.com>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+    <title data-i18n="optionsTitle"></title>
+</head>
+<body>
+    <div class="buttons">
+        <button id="forget" data-i18n="buttonDisconnect"></button>
+        <button id="connect" class="primary" data-i18n="buttonConnectEllipsis"></button>
+    </div>
+    <p id="status" class="hint" role="status"></p>
+
+    <script src="lib/syndic-client.js"></script>
+    <script src="lib/i18n.js"></script>
+    <script src="lib/ui.js"></script>
+    <script src="options.js"></script>
+</body>
+</html>

@@ -83,4 +83,22 @@ public:
     {
         return getAll();
     }
+
+    QFuture<FeedCore::ArticleRef> getByUrl(const QUrl &url) override
+    {
+        return FeedCore::Future::yield<FeedCore::ArticleRef>(this, [this, url](auto &op) {
+            for (auto *feed : m_feeds) {
+                for (auto &ar : std::as_const(feed->m_articles)) {
+                    if (ar->url() == url) {
+                        op.addResult(ar);
+                    }
+                }
+            }
+        });
+    }
+
+    QFuture<FeedCore::ArticleRef> storeSavedPage(FeedCore::Subscription * /*feed*/, const FeedCore::SavedPage & /*page*/) override
+    {
+        return FeedCore::Future::yield<FeedCore::ArticleRef>(this, [](auto & /*op*/) {});
+    }
 };

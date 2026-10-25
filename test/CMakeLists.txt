@@ -44,3 +44,16 @@ target_link_libraries(testArticleLinkExtractor PRIVATE Qt6::Test feedcore)
 add_executable(testFeedDiscovery tst_feeddiscovery.cpp)
 add_test(NAME testFeedDiscovery COMMAND testFeedDiscovery)
 target_link_libraries(testFeedDiscovery PRIVATE Qt6::Test feedcore)
+
+add_executable(testUrlMatch tst_urlmatch.cpp)
+add_test(NAME testUrlMatch COMMAND testUrlMatch)
+target_link_libraries(testUrlMatch PRIVATE Qt6::Test feedcore)
+
+add_executable(testPageSaver tst_pagesaver.cpp)
+add_test(NAME testPageSaver COMMAND testPageSaver)
+target_link_libraries(testPageSaver PRIVATE Qt6::Test feedcore sqlite)
+
+# SaveApi is part of the application, but doesn't need Qt6HttpServer, so it can be tested anywhere
+add_executable(testSaveApi tst_saveapi.cpp ${CMAKE_SOURCE_DIR}/src/saveapi.cpp)
+add_test(NAME testSaveApi COMMAND testSaveApi)
+target_link_libraries(testSaveApi PRIVATE Qt6::Test feedcore sqlite)

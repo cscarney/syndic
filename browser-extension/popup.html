@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--
+SPDX-FileCopyrightText: 2026 Connor Carney <hello@connorcarney.com>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+    <title data-i18n="extensionName"></title>
+</head>
+<body class="popup">
+    <header>
+        <img src="icons/syndic.svg" alt="" width="20" height="20">
+        <h1 data-i18n="extensionName"></h1>
+    </header>
+
+    <section id="status" class="status" role="status">
+        <span class="spinner"></span>
+        <span id="status-text" data-i18n="statusConnecting"></span>
+    </section>
+
+    <section id="connect" hidden>
+        <p id="connect-text"></p>
+        <button id="connect-button" class="primary"></button>
+    </section>
+
+    <form id="save-form" hidden>
+        <label for="title" data-i18n="labelTitle"></label>
+        <input id="title" type="text" required>
+
+        <div id="feed-row">
+            <label for="feed" data-i18n="labelFeed"></label>
+            <select id="feed"></select>
+        </div>
+
+        <div class="buttons">
+            <button type="button" id="cancel" data-i18n="buttonCancel"></button>
+            <button type="submit" id="save" class="primary" data-i18n="buttonSave"></button>
+        </div>
+    </form>
+
+    <section id="done" class="status" hidden>
+        <span id="done-text"></span>
+    </section>
+
+    <script src="lib/syndic-client.js"></script>
+    <script src="lib/i18n.js"></script>
+    <script src="lib/ui.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>

@@ -33,6 +33,12 @@ public:
     void loadMainWindow();
     void startBackgroundNotifier();
 
+    /**
+     * Whether the command line arguments only ask for Syndic to be running (e.g. a
+     * syndic:// URL opened by the browser extension), rather than for a window.
+     */
+    static bool isBackgroundLaunchRequest(const QStringList &arguments);
+
 private:
     struct PrivData;
     std::unique_ptr<PrivData> d;
@@ -47,4 +53,6 @@ private:
     void syncExpireAge();
     void syncPrefetchContent();
     void startNotifications();
+    void startSaveServer();
+    void syncSaveServer();
 };

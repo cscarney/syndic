@@ -13,7 +13,7 @@ Files: 3rdparty/gumbo/*
 Copyright: 2010 Google Inc.
 License: Apache-2.0
 
-Files: data/* android/* README.md src/settings.kcfgc androidstyleplugin/androidstyleplugin.json src/qtquickcontrols2.conf syndic.png
+Files: data/* android/* browser-extension/icons/* browser-extension/_locales/* browser-extension/manifest.json README.md src/settings.kcfgc androidstyleplugin/androidstyleplugin.json src/qtquickcontrols2.conf syndic.png
 Copyright: 2021 Connor Carney <hello@connorcarney.com>
 License: GPL-3.0-or-later
 

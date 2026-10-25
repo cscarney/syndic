@@ -25,6 +25,8 @@ set(feedcore_HEADERS
     searchresultfeed.h
     articlelinkextractor.h
     highlightsfeed.h
+    urlmatch.h
+    pagesaver.h
     automation/automationengine.h
     automation/automationrule.h
     readability/readability.h
@@ -53,6 +55,8 @@ set(feedcore_SRCS
     searchresultfeed.cpp
     articlelinkextractor.cpp
     highlightsfeed.cpp
+    urlmatch.cpp
+    pagesaver.cpp
     automation/abstractautomationrule.h
     automation/automationengine.cpp
     automation/automationrule.cpp

@@ -5,6 +5,7 @@
 
 #pragma once
 #include "factory.h"
+#include "feed.h"
 #include "feeddatabase.h"
 #include "storage.h"
 
@@ -12,6 +13,24 @@ namespace SqliteStorage
 {
 class FeedImpl;
 class ArticleImpl;
+class StorageImpl;
+
+/**
+ * Pseudo-feed for saved pages that aren't associated with a subscription.
+ *
+ * It doesn't appear in the feed list; its articles are visible through the
+ * all items and starred items lists.
+ */
+class UnfiledFeed : public FeedCore::Feed
+{
+    Q_OBJECT
+public:
+    explicit UnfiledFeed(StorageImpl *storage);
+    QFuture<FeedCore::ArticleRef> getArticles(bool unreadFilter) final;
+
+private:
+    StorageImpl *m_storage;
+};
 
 class StorageImpl : public FeedCore::Storage
 {
@@ -26,6 +45,7 @@ public:
     QFuture<QString> getContent(ArticleImpl *article);
     QFuture<QString> getReadableContent(ArticleImpl *article);
     void cacheReadableContent(ArticleImpl *article, const QString &readableContent);
+    void storeSavedContent(ArticleImpl *article, const QString &readableContent);
     void onArticleReadChanged(ArticleImpl *article);
     void onArticleStarredChanged(ArticleImpl *article);
 
@@ -36,6 +56,14 @@ public:
     QFuture<FeedCore::ArticleRef> getHighlights(size_t limit) final;
     QFuture<FeedCore::Subscription *> getFeeds() final;
     QFuture<FeedCore::Subscription *> storeFeed(FeedCore::Subscription *feed) final;
+    QFuture<FeedCore::ArticleRef> getByUrl(const QUrl &url) final;
+    QFuture<FeedCore::ArticleRef> storeSavedPage(FeedCore::Subscription *feed, const FeedCore::SavedPage &page) final;
+    QFuture<FeedCore::ArticleRef> getUnfiled();
+
+    /**
+     * The placeholder feed that owns articles which don't belong to any subscription.
+     */
+    FeedCore::Feed *unfiledFeed();
     void listenForChanges(FeedImpl *feed);
     void expire(FeedImpl *feed, const QDateTime &olderThan);
 
@@ -44,6 +72,7 @@ private:
     class Worker;
     WorkerThread *m_thread;
     Worker *m_worker;
+    FeedCore::Feed *m_unfiledFeed{nullptr};
     void onFeedRequestDelete(FeedImpl *feed);
     void onUpdateIntervalChanged(FeedImpl *feed);
     void onExpireModeChanged(FeedImpl *feed);

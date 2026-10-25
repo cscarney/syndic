@@ -7,3 +7,4 @@
 #cmakedefine KF6DBusAddons_FOUND
 #cmakedefine QReadable_FOUND
 #cmakedefine KF6BreezeIcons_FOUND
+#cmakedefine Qt6HttpServer_FOUND

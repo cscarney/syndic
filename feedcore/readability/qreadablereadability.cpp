@@ -20,15 +20,20 @@ static constexpr const char *kBrowserUserAgent = "Mozilla/5.0 (X11; Ubuntu; Linu
 
 class QReadableReadability::Result : public ReadabilityResult
 {
-    QNetworkReply *m_reply;
+    QNetworkReply *m_reply{nullptr};
     QReadableReadability *m_parent;
 
 public:
-    Result(QReadableReadability *parent, QNetworkReply *reply)
+    explicit Result(QReadableReadability *parent)
         : ReadabilityResult(parent)
-        , m_reply{reply}
         , m_parent{parent}
     {
+    }
+
+    Result(QReadableReadability *parent, QNetworkReply *reply)
+        : Result(parent)
+    {
+        m_reply = reply;
         reply->setParent(this);
         QObject::connect(reply, &QNetworkReply::finished, this, &Result::onNetworkReplyFinished);
     }
@@ -95,6 +100,13 @@ ReadabilityResult *QReadableReadability::fetch(const QUrl &url)
     req.setHeader(QNetworkRequest::UserAgentHeader, kBrowserUserAgent);
     auto *reply = nam->get(req);
     return new Result(this, reply);
+}
+
+ReadabilityResult *QReadableReadability::parse(const QString &html, const QUrl &url)
+{
+    auto *result = new Result(this);
+    parse(html, url, result);
+    return result;
 }
 
 void QReadableReadability::parse(const QString &rawHtml, const QUrl &url, Result *result)

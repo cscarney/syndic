@@ -16,7 +16,7 @@ class ItemQuery : public QSqlQuery
 public:
     static inline QString fieldList()
     {
-        return "id, feed, localId, headline, author, date, url, isRead, isStarred";
+        return "id, feed, localId, headline, author, date, url, isRead, isStarred, preferReadable";
     }
 
     explicit ItemQuery(const QSqlDatabase &db)
@@ -37,6 +37,10 @@ public:
     qint64 feed() const
     {
         return value(1).toLongLong();
+    }
+    bool hasFeed() const
+    {
+        return !value(1).isNull();
     }
     QString localId() const
     {
@@ -65,6 +69,10 @@ public:
     bool isStarred() const
     {
         return value(8).toBool();
+    }
+    bool preferReadable() const
+    {
+        return value(9).toBool();
     }
 };
 }
