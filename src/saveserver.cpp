@@ -4,6 +4,7 @@
  */
 
 #include "saveserver.h"
+#include "pagesaver.h"
 #include "pairingcontroller.h"
 #include "saveapi.h"
 #include <QDebug>
@@ -75,9 +76,9 @@ std::optional<QJsonObject> parseBody(const QHttpServerRequest &request)
 }
 }
 
-SaveServer::SaveServer(Context *context, PairingController *pairing, QObject *parent)
+SaveServer::SaveServer(Context *context, Storage *storage, PairingController *pairing, QObject *parent)
     : QObject(parent)
-    , m_api(new SaveApi(context, this))
+    , m_api(new SaveApi(context, new PageSaver(context, storage, this), this))
     , m_pairing(pairing)
 {
 }

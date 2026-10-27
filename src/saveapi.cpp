@@ -51,9 +51,10 @@ QUrl requestUrl(const QJsonObject &body)
 }
 }
 
-SaveApi::SaveApi(Context *context, QObject *parent)
+SaveApi::SaveApi(Context *context, PageSaver *saver, QObject *parent)
     : QObject(parent)
     , m_context(context)
+    , m_saver(saver)
 {
 }
 
@@ -118,7 +119,7 @@ QFuture<SaveApi::Response> SaveApi::resolve(const QJsonObject &body)
         return ready(error(400, QStringLiteral("invalid-url")));
     }
 
-    return m_context->pageSaver()->resolve(url).then(this, [this](const PageSaver::Resolution &resolution) {
+    return m_saver->resolve(url).then(this, [this](const PageSaver::Resolution &resolution) {
         QJsonObject result{{QStringLiteral("feeds"), feedList()}};
         if (resolution.article) {
             result.insert(QStringLiteral("article"), articleJson(resolution.article));
@@ -140,7 +141,6 @@ QFuture<SaveApi::Response> SaveApi::resolve(const QJsonObject &body)
 
 QFuture<SaveApi::Response> SaveApi::save(const QJsonObject &body)
 {
-    PageSaver *saver = m_context->pageSaver();
     PageSaver::Request request;
     request.url = requestUrl(body);
     if (request.url.isEmpty()) {
@@ -162,7 +162,7 @@ QFuture<SaveApi::Response> SaveApi::save(const QJsonObject &body)
         }
     } else if (feed.isString()) {
         request.target = PageSaver::Request::ExistingFeed;
-        request.feed = saver->feedByUrl(QUrl(feed.toString()));
+        request.feed = m_saver->feedByUrl(QUrl(feed.toString()));
         if (request.feed == nullptr) {
             return ready(error(400, QStringLiteral("invalid-feed")));
         }
@@ -172,7 +172,7 @@ QFuture<SaveApi::Response> SaveApi::save(const QJsonObject &body)
         return ready(error(400, QStringLiteral("invalid-feed")));
     }
 
-    return saver->save(request).then(this, [](const PageSaver::Result &result) {
+    return m_saver->save(request).then(this, [](const PageSaver::Result &result) {
         if (!result.article) {
             return saveError(result.error);
         }

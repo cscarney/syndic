@@ -8,7 +8,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QPromise>
-#include <memory>
+#include <QSharedPointer>
 
 namespace FeedCore::Future
 {
@@ -58,9 +58,9 @@ QList<T> safeResults(const QFuture<T> &f)
  * Create a started promise that can be shared between callbacks.
  */
 template<typename T>
-std::shared_ptr<QPromise<T>> makeSharedPromise()
+QSharedPointer<QPromise<T>> makeSharedPromise()
 {
-    auto promise = std::make_shared<QPromise<T>>();
+    auto promise = QSharedPointer<QPromise<T>>::create();
     promise->start();
     return promise;
 }
@@ -69,7 +69,7 @@ std::shared_ptr<QPromise<T>> makeSharedPromise()
  * Add /value/ to /promise/ as its only result, and finish it.
  */
 template<typename T>
-void fulfill(const std::shared_ptr<QPromise<T>> &promise, const T &value)
+void fulfill(const QSharedPointer<QPromise<T>> &promise, const T &value)
 {
     promise->addResult(value);
     promise->finish();

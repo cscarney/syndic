@@ -81,14 +81,16 @@ private slots:
     void init()
     {
         m_dir = std::make_unique<QTemporaryDir>();
-        m_context = new Context(new SqliteStorage::StorageImpl(m_dir->filePath("test.db")));
+        auto *storage = new SqliteStorage::StorageImpl(m_dir->filePath("test.db"));
+        m_context = new Context(storage);
         QVERIFY(QTest::qWaitFor([this] {
             return m_context->feedListComplete();
         }));
         auto *readability = new EchoReadability;
         readability->setParent(m_context);
-        m_context->pageSaver()->setReadability(readability);
-        m_api = new SaveApi(m_context, m_context);
+        auto *saver = new PageSaver(m_context, storage, m_context);
+        saver->setReadability(readability);
+        m_api = new SaveApi(m_context, saver, m_context);
     }
 
     void cleanup()

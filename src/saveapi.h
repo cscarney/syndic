@@ -12,6 +12,7 @@
 namespace FeedCore
 {
 class Context;
+class PageSaver;
 }
 
 /**
@@ -33,7 +34,7 @@ public:
         QJsonObject body;
     };
 
-    explicit SaveApi(FeedCore::Context *context, QObject *parent = nullptr);
+    SaveApi(FeedCore::Context *context, FeedCore::PageSaver *saver, QObject *parent = nullptr);
 
     /**
      * /paired/ is whether the request carried a valid token.
@@ -58,5 +59,6 @@ public:
 
 private:
     FeedCore::Context *m_context;
+    FeedCore::PageSaver *m_saver;
     QJsonArray feedList() const;
 };

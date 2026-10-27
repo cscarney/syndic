@@ -13,9 +13,9 @@
 #include "storage.h"
 #include "subscription.h"
 #include "urlmatch.h"
+#include <QSharedPointer>
 #include <QTimer>
 #include <functional>
-#include <memory>
 #include <utility>
 
 using namespace FeedCore;
@@ -30,7 +30,7 @@ namespace
 template<typename Func>
 auto once(Func func)
 {
-    return [func, done = std::make_shared<bool>(false)] {
+    return [func, done = QSharedPointer<bool>::create(false)] {
         if (!std::exchange(*done, true)) {
             func();
         }

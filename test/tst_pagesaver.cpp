@@ -79,6 +79,7 @@ class testPageSaver : public QObject
     std::unique_ptr<QTemporaryDir> m_dir;
     Context *m_context{nullptr};
     MockReadability *m_readability{nullptr};
+    PageSaver *m_saver{nullptr};
 
     QString path(const QString &name)
     {
@@ -88,14 +89,16 @@ class testPageSaver : public QObject
     void openContext()
     {
         delete m_context;
-        m_context = new Context(new SqliteStorage::StorageImpl(path("test.db")));
+        auto *storage = new SqliteStorage::StorageImpl(path("test.db"));
+        m_context = new Context(storage);
         QVERIFY(QTest::qWaitFor([this] {
             return m_context->feedListComplete();
         }));
         m_readability = new MockReadability;
         m_readability->setParent(m_context);
-        m_context->pageSaver()->setReadability(m_readability);
-        m_context->pageSaver()->setTimeout(5000);
+        m_saver = new PageSaver(m_context, storage, m_context);
+        m_saver->setReadability(m_readability);
+        m_saver->setTimeout(5000);
     }
 
     QUrl writeFeed(const QList<int> &posts)
@@ -176,7 +179,7 @@ class testPageSaver : public QObject
         request.title = QStringLiteral("Saved title");
         request.target = target;
         request.feed = feed;
-        return await(m_context->pageSaver()->save(request));
+        return await(m_saver->save(request));
     }
 
 private slots:
@@ -213,7 +216,7 @@ private slots:
     void testResolveExistingArticle()
     {
         Subscription *feed = addFeed(writeFeed({1}));
-        auto resolution = await(m_context->pageSaver()->resolve(QUrl("https://example.com/posts/1/")));
+        auto resolution = await(m_saver->resolve(QUrl("https://example.com/posts/1/")));
         QVERIFY(resolution.article);
         QCOMPARE(resolution.suggestedFeed.data(), feed);
     }
@@ -222,7 +225,7 @@ private slots:
     {
         Subscription *feed = addFeed(writeFeed({1}));
         QCOMPARE(feed->link(), QUrl("http://example.com/"));
-        auto resolution = await(m_context->pageSaver()->resolve(QUrl("https://example.com/posts/99")));
+        auto resolution = await(m_saver->resolve(QUrl("https://example.com/posts/99")));
         QVERIFY(!resolution.article);
         QCOMPARE(resolution.suggestedFeed.data(), feed);
         QVERIFY(resolution.discovered.url.isEmpty());
@@ -299,7 +302,7 @@ private slots:
         PageSaver::Request request;
         request.url = QUrl("https://other.example.org/article");
         request.html = "<html><head><title>Ignored</title></head><body>x</body></html>";
-        auto result = await(m_context->pageSaver()->save(request));
+        auto result = await(m_saver->save(request));
         QVERIFY(result.article);
         QCOMPARE(result.article->title(), QStringLiteral("https://other.example.org/article"));
     }
@@ -320,7 +323,7 @@ private slots:
         page.write(kDiscoveryPage);
         page.close();
 
-        auto discovery = await(m_context->pageSaver()->discover(QUrl::fromLocalFile(page.fileName())));
+        auto discovery = await(m_saver->discover(QUrl::fromLocalFile(page.fileName())));
         QCOMPARE(discovery.url, feedUrl);
         QCOMPARE(discovery.name, QStringLiteral("Example Feed"));
         QVERIFY(!discovery.isWebPage);
@@ -335,7 +338,7 @@ private slots:
         request.target = PageSaver::Request::SubscribeToFeed;
         request.subscribe.url = feedUrl;
         request.subscribe.name = "Discovered";
-        auto result = await(m_context->pageSaver()->save(request));
+        auto result = await(m_saver->save(request));
         QVERIFY(result.article);
         QVERIFY(result.updatedExisting);
         auto *feed = qobject_cast<Subscription *>(result.article->feed());
@@ -355,7 +358,7 @@ private slots:
         request.html = "<p>dom</p>";
         request.target = PageSaver::Request::SubscribeToFeed;
         request.subscribe.url = feedUrl;
-        auto result = await(m_context->pageSaver()->save(request));
+        auto result = await(m_saver->save(request));
         QVERIFY(result.article);
         QVERIFY(!result.updatedExisting);
         auto *feed = qobject_cast<Subscription *>(result.article->feed());
@@ -367,6 +370,7 @@ private slots:
     {
         delete m_context;
         m_context = nullptr;
+        m_saver = nullptr;
         const QString dbPath = path("old.db");
         {
             auto db = QSqlDatabase::addDatabase("QSQLITE", "migration");
@@ -388,11 +392,13 @@ private slots:
         }
         QSqlDatabase::removeDatabase("migration");
 
-        m_context = new Context(new SqliteStorage::StorageImpl(dbPath));
+        auto *storage = new SqliteStorage::StorageImpl(dbPath);
+        m_context = new Context(storage);
         QVERIFY(QTest::qWaitFor([this] {
             return m_context->feedListComplete();
         }));
-        auto resolution = await(m_context->pageSaver()->resolve(QUrl("https://www.example.com/old-post/")));
+        PageSaver saver(m_context, storage);
+        auto resolution = await(saver.resolve(QUrl("https://www.example.com/old-post/")));
         QVERIFY(resolution.article);
         QCOMPARE(resolution.article->title(), QStringLiteral("Old post"));
     }

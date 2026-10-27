@@ -10,7 +10,6 @@
 #include "feed.h"
 #include "future.h"
 #include "opmlreader.h"
-#include "pagesaver.h"
 #include "provisionalsubscription.h"
 #include "readability/readabilityprefetchrule.h"
 #include "scheduler.h"
@@ -59,7 +58,6 @@ struct Context::PrivData {
     QWeakPointer<AllItemsFeed> allItemsFeed{nullptr};
     std::unique_ptr<AutomationEngine> automationEngine;
     QPointer<AbstractAutomationRule> prefetchContentRule{nullptr};
-    PageSaver *pageSaver{nullptr};
 
     PrivData(Storage *storage, Context *parent);
     void configureUpdates(Subscription *feed, const QDateTime &timestamp = QDateTime::currentDateTime()) const;
@@ -360,14 +358,6 @@ Readability *Context::getReadability()
         d->readability->setParent(this);
     }
     return d->readability;
-}
-
-PageSaver *Context::pageSaver()
-{
-    if (d->pageSaver == nullptr) {
-        d->pageSaver = new PageSaver(this, d->storage, this);
-    }
-    return d->pageSaver;
 }
 
 AutomationEngine *Context::automationEngine()

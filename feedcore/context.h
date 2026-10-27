@@ -19,7 +19,6 @@ class ProvisionalSubscription;
 class Subscription;
 class Readability;
 class AutomationEngine;
-class PageSaver;
 
 class Context;
 
@@ -214,12 +213,6 @@ public:
     Readability *getReadability();
 
     AutomationEngine *automationEngine();
-
-    /**
-     * Gets the PageSaver for this context, which saves web pages supplied
-     * from outside of Syndic as starred articles.
-     */
-    PageSaver *pageSaver();
 
     bool defaultUpdateEnabled() const;
     void setDefaultUpdateEnabled(bool defaultUpdateEnabled);

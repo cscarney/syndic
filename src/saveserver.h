@@ -14,6 +14,7 @@
 namespace FeedCore
 {
 class Context;
+class Storage;
 }
 class PairingController;
 class QHttpServer;
@@ -30,7 +31,7 @@ class SaveServer : public QObject
 {
     Q_OBJECT
 public:
-    SaveServer(FeedCore::Context *context, PairingController *pairing, QObject *parent = nullptr);
+    SaveServer(FeedCore::Context *context, FeedCore::Storage *storage, PairingController *pairing, QObject *parent = nullptr);
     ~SaveServer();
 
     /**

@@ -42,6 +42,7 @@
 
 struct Application::PrivData {
     FeedCore::Context *context{nullptr};
+    FeedCore::Storage *storage{nullptr};
     Settings settings;
     std::unique_ptr<QQmlApplicationEngine> engine;
     std::unique_ptr<NotificationController> notifier;
@@ -63,13 +64,6 @@ static QString filePath(QString const &fileName)
         appDataDir = QDir(".");
     }
     return appDataDir.filePath(fileName);
-}
-
-static FeedCore::Context *createContext(QObject *parent = nullptr)
-{
-    QString dbPath = filePath("feeds.db");
-    auto *fm = new SqliteStorage::StorageImpl(dbPath); // ownership passes to context
-    return new FeedCore::Context(fm, parent);
 }
 
 static void registerQmlTypes()
@@ -159,7 +153,8 @@ Application::Application(int &argc, char **argv)
     loadEmbeddedFonts();
 #endif
 
-    d->context = createContext(this);
+    d->storage = new SqliteStorage::StorageImpl(filePath("feeds.db"));
+    d->context = new FeedCore::Context(d->storage, this); // ownership of storage passes to context
     bindContextPropertiesToSettings();
     startSaveServer();
 }
@@ -277,7 +272,7 @@ void Application::startSaveServer()
 #ifdef Qt6HttpServer_FOUND
     d->pairing = std::make_unique<PairingController>(settings());
     QObject::connect(d->pairing.get(), &PairingController::pairingRequested, this, &Application::loadMainWindow);
-    d->saveServer = std::make_unique<SaveServer>(d->context, d->pairing.get());
+    d->saveServer = std::make_unique<SaveServer>(d->context, d->storage, d->pairing.get());
     syncSaveServer();
     QObject::connect(settings(), &Settings::saveServerEnabledChanged, this, &Application::syncSaveServer);
     QObject::connect(settings(), &Settings::saveServerPortChanged, this, &Application::syncSaveServer);
